@@ -19,6 +19,7 @@ import { ExamSimulatorView } from './components/ExamSimulatorView';
 import { ErrorBankView } from './components/ErrorBankView';
 import { HistoryTimelineView } from './components/HistoryTimelineView';
 import { ExamTestPaperGenerator } from './components/ExamTestPaperGenerator';
+import { GeneralKnowledgeView } from './components/GeneralKnowledgeView';
 import { errorBankService } from './services/errorBankService';
 
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
@@ -36,7 +37,8 @@ import {
   AlertCircle,
   Clock,
   Printer,
-  FileText
+  FileText,
+  Compass
 } from 'lucide-react';
 import './App.css';
 
@@ -180,7 +182,7 @@ export function App() {
         </div>
 
         {/* Extended Segmented Navigation Controls */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-1 p-1 rounded-xl bg-slate-900 border border-slate-800/90 mb-8 shadow-sm text-center">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-11 gap-1 p-1 rounded-xl bg-slate-900 border border-slate-800/90 mb-8 shadow-sm text-center">
           
           <button
             onClick={() => setActiveTab('diagnostic')}
@@ -282,6 +284,18 @@ export function App() {
           </button>
 
           <button
+            onClick={() => setActiveTab('knowledge')}
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
+              activeTab === 'knowledge'
+                ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+            }`}
+          >
+            <Compass className="w-3.5 h-3.5 text-amber-400" />
+            <span>Обща култура</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('generator')}
             className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'generator'
@@ -369,6 +383,10 @@ export function App() {
 
           {activeTab === 'timeline' && (
             <HistoryTimelineView />
+          )}
+
+          {activeTab === 'knowledge' && (
+            <GeneralKnowledgeView />
           )}
 
           {activeTab === 'generator' && (

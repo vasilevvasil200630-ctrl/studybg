@@ -1,9 +1,9 @@
 import React from 'react';
-import { Camera, BookOpen, MessageSquare, Zap, BookMarked, CheckSquare, GraduationCap, Clock, AlertCircle, FileText, Printer } from 'lucide-react';
+import { Camera, BookOpen, MessageSquare, Zap, BookMarked, CheckSquare, GraduationCap, Clock, AlertCircle, FileText, Printer, Compass } from 'lucide-react';
 import { StudentStats } from './StudentStats';
 import { errorBankService } from '../services/errorBankService';
 
-export type AppNavTab = 'scan' | 'diagnostic' | 'audit' | 'summary' | 'flashcards' | 'quiz' | 'chat' | 'simulator' | 'errorbank' | 'timeline' | 'generator';
+export type AppNavTab = 'scan' | 'diagnostic' | 'audit' | 'summary' | 'flashcards' | 'quiz' | 'chat' | 'simulator' | 'errorbank' | 'timeline' | 'generator' | 'knowledge';
 
 interface NavbarProps {
   activeTab: AppNavTab;
@@ -125,6 +125,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Clock className="w-3.5 h-3.5 text-amber-400" />
               <span>Хронология</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('knowledge')}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                activeTab === 'knowledge'
+                  ? 'bg-slate-800 text-white shadow-sm border border-slate-700/70 font-semibold'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+              }`}
+            >
+              <Compass className="w-3.5 h-3.5 text-amber-400" />
+              <span>Обща култура</span>
             </button>
 
             <button

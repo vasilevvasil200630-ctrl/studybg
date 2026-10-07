@@ -1,8 +1,20 @@
 import React, { useState } from 'react';
-import { Clock, ShieldAlert, Award, MapPin, User, ChevronRight } from 'lucide-react';
+import { Clock, ShieldAlert, Award, MapPin, User, ChevronRight, BookOpen, GraduationCap, MessageSquare, ArrowRight } from 'lucide-react';
 import { BULGARIAN_HISTORY_TIMELINE } from '../data/bulgarianHistoryTimeline';
+import type { LessonData } from '../types';
+import type { AppNavTab } from './Navbar';
 
-export const HistoryTimelineView: React.FC = () => {
+interface HistoryTimelineViewProps {
+  lessons?: LessonData[];
+  onSelectLesson?: (lesson: LessonData) => void;
+  onNavigateTab?: (tab: AppNavTab) => void;
+}
+
+export const HistoryTimelineView: React.FC<HistoryTimelineViewProps> = ({
+  lessons = [],
+  onSelectLesson,
+  onNavigateTab
+}) => {
   const [selectedPeriod, setSelectedPeriod] = useState<string>('Всички епохи');
   const [activeEventId, setActiveEventId] = useState<string>(BULGARIAN_HISTORY_TIMELINE[0].id);
 
@@ -20,6 +32,15 @@ export const HistoryTimelineView: React.FC = () => {
 
   const activeEvent = BULGARIAN_HISTORY_TIMELINE.find(e => e.id === activeEventId) || filteredEvents[0];
 
+  // Look for a corresponding lesson in the catalog
+  const matchingLesson = lessons.find(l => {
+    if (activeEvent.year === 1876 && l.id === 'history-april-uprising') return true;
+    const lTitle = l.title.toLowerCase();
+    const eTitle = activeEvent.title.toLowerCase();
+    return lTitle.includes(eTitle.slice(0, 10)) || eTitle.includes(lTitle.slice(0, 10)) ||
+      (l.subject === 'История и цивилизации' && (lTitle.includes(activeEvent.rulerOrLeader.toLowerCase()) || eTitle.includes(l.title.slice(0, 8))));
+  });
+
   return (
     <div className="space-y-6">
       
@@ -33,7 +54,7 @@ export const HistoryTimelineView: React.FC = () => {
           Интерактивна линия на българската история
         </h2>
         <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl leading-relaxed">
-          Всички ключови събития, владетели, мирни договори и специфични изпитни капани от 681 г. до обявяването на Независимостта през 1908 г.
+          Всички ключови събития, владетели, мирни договори и специфични изпитни капани от 681 г. до обявяването на Независимостта през 1908 г. Кликни върху всяко събитие за детайлен разбор и свързани уроци.
         </p>
 
         {/* Period Selector */}
@@ -187,6 +208,39 @@ export const HistoryTimelineView: React.FC = () => {
                       <span>{k}</span>
                     </span>
                   ))}
+                </div>
+              </div>
+
+              {/* Interactive Cause-and-Effect Action Buttons */}
+              <div className="pt-3 border-t border-slate-800/90 space-y-2">
+                {matchingLesson && onSelectLesson ? (
+                  <button
+                    onClick={() => onSelectLesson(matchingLesson)}
+                    className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors shadow-sm"
+                  >
+                    <span className="flex items-center gap-2">
+                      <BookOpen className="w-4 h-4" />
+                      <span>Отвори пълния конспект: {matchingLesson.title}</span>
+                    </span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                ) : null}
+
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => onNavigateTab?.('quiz')}
+                    className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
+                  >
+                    <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
+                    <span>Реши тест</span>
+                  </button>
+                  <button
+                    onClick={() => onNavigateTab?.('chat')}
+                    className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Питай ментора</span>
+                  </button>
                 </div>
               </div>
 

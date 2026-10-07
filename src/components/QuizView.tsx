@@ -1,15 +1,24 @@
 import React, { useState } from 'react';
 import { RefreshCw, MessageSquare, ArrowRight, CheckSquare, HelpCircle } from 'lucide-react';
 import type { QuizQuestion } from '../types';
+import type { AppNavTab } from './Navbar';
 import confetti from 'canvas-confetti';
 
 interface QuizViewProps {
   questions: QuizQuestion[];
   onReviewFlashcards: () => void;
   onOpenChat: () => void;
+  onNavigateTab?: (tab: AppNavTab) => void;
+  onRecordError?: (q: QuizQuestion, chosenIndex: number) => void;
 }
 
-export const QuizView: React.FC<QuizViewProps> = ({ questions, onReviewFlashcards, onOpenChat }) => {
+export const QuizView: React.FC<QuizViewProps> = ({
+  questions,
+  onReviewFlashcards,
+  onOpenChat,
+  onNavigateTab,
+  onRecordError
+}) => {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -78,6 +87,14 @@ export const QuizView: React.FC<QuizViewProps> = ({ questions, onReviewFlashcard
         origin: { y: 0.5 }
       });
     }
+
+    // Automatically record any mistakes to the Error Bank
+    questions.forEach((q) => {
+      const chosen = selectedAnswers[q.id];
+      if (chosen !== undefined && chosen !== q.correctIndex) {
+        onRecordError?.(q, chosen);
+      }
+    });
   };
 
   const handleReset = () => {
@@ -165,7 +182,7 @@ export const QuizView: React.FC<QuizViewProps> = ({ questions, onReviewFlashcard
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-2.5">
+            <div className="flex flex-col sm:flex-row flex-wrap items-center gap-2.5">
               <button
                 onClick={onReviewFlashcards}
                 className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
@@ -180,6 +197,22 @@ export const QuizView: React.FC<QuizViewProps> = ({ questions, onReviewFlashcard
                 <MessageSquare className="w-3.5 h-3.5" />
                 <span>Обяснение на грешките</span>
               </button>
+              {onNavigateTab && (
+                <>
+                  <button
+                    onClick={() => onNavigateTab('errorbank')}
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-rose-950/40 hover:bg-rose-900/50 border border-rose-500/30 text-rose-200 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
+                  >
+                    <span>Банка с грешки</span>
+                  </button>
+                  <button
+                    onClick={() => onNavigateTab('simulator')}
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
+                  >
+                    <span>100-т. симулатор</span>
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

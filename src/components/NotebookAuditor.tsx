@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
-import { Square, CheckCircle2, Copy, Check, CheckSquare, HelpCircle, PenTool, Award, ArrowRight } from 'lucide-react';
+import { Square, CheckCircle2, Copy, Check, CheckSquare, HelpCircle, PenTool, Award, ArrowRight, AlertCircle, Zap, GraduationCap } from 'lucide-react';
 import type { LessonData } from '../types';
+import type { AppNavTab } from './Navbar';
+import { errorBankService } from '../services/errorBankService';
 
 interface NotebookAuditorProps {
   lesson: LessonData;
   onProceedToHolyTrinity: () => void;
+  onNavigateTab?: (tab: AppNavTab) => void;
 }
 
-export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({ lesson, onProceedToHolyTrinity }) => {
+export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({
+  lesson,
+  onProceedToHolyTrinity,
+  onNavigateTab
+}) => {
   const checklist = lesson.notebookChecklist || [];
   const [checkedIds, setCheckedIds] = useState<string[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [savedToBankIds, setSavedToBankIds] = useState<string[]>([]);
 
   const toggleCheck = (id: string) => {
     setCheckedIds(prev =>
@@ -22,6 +30,11 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({ lesson, onProc
     navigator.clipboard.writeText(text);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleSaveToErrorBank = (id: string, req: string, whyNeeded: string, notes: string) => {
+    errorBankService.recordNotebookMissingItem(req, whyNeeded, notes, lesson, id);
+    setSavedToBankIds(prev => [...prev, id]);
   };
 
   const totalItems = checklist.length;
@@ -85,8 +98,8 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({ lesson, onProc
           </div>
         </div>
 
-        {/* Verdict Box */}
-        <div className="mt-6 pt-5 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Verdict Box & Action Navigation */}
+        <div className="mt-6 pt-5 border-t border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <span className={`inline-block px-3 py-1 rounded-md text-xs font-semibold border mb-1.5 ${auditInfo.badge}`}>
               {auditInfo.verdict}
@@ -96,13 +109,33 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({ lesson, onProc
             </div>
           </div>
 
-          <button
-            onClick={onProceedToHolyTrinity}
-            className="self-start sm:self-auto flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors whitespace-nowrap"
-          >
-            <span>Премини към Конспекта</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={onProceedToHolyTrinity}
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors shadow-sm whitespace-nowrap"
+            >
+              <span>Към Конспекта</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+            {onNavigateTab && (
+              <>
+                <button
+                  onClick={() => onNavigateTab('flashcards')}
+                  className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
+                >
+                  <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Флаш карти</span>
+                </button>
+                <button
+                  onClick={() => onNavigateTab('quiz')}
+                  className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
+                >
+                  <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
+                  <span>Реши тест</span>
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
@@ -120,6 +153,7 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({ lesson, onProc
         {checklist.map((item, idx) => {
           const isChecked = checkedIds.includes(item.id);
           const isCopied = copiedId === item.id;
+          const isSavedToBank = savedToBankIds.includes(item.id);
 
           return (
             <div
@@ -151,7 +185,7 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({ lesson, onProc
                     </span>
                     {item.isEssentialForSix && (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/25">
-                        <Award className="w-3 h-3 text-amber-400" />
+                        <Award className="w-3.5 h-3.5 text-amber-400" />
                         <span>Критерий за 6.00</span>
                       </span>
                     )}
@@ -173,7 +207,7 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({ lesson, onProc
                     <span><strong className="text-slate-300">Методическа цел:</strong> {item.whyNeeded}</span>
                   </div>
 
-                  {/* Missing notes copy box */}
+                  {/* Missing notes copy & Error Bank save box */}
                   <div className="mt-3 p-3 rounded-lg bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                     <div className="text-xs text-slate-300 leading-relaxed flex items-start gap-2">
                       <PenTool className="w-3.5 h-3.5 text-indigo-400 flex-shrink-0 mt-0.5" />
@@ -183,13 +217,38 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({ lesson, onProc
                       </div>
                     </div>
 
-                    <button
-                      onClick={() => handleCopyNote(item.id, item.suggestedNotes)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex-shrink-0"
-                    >
-                      {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
-                      <span>{isCopied ? 'Копирано' : 'Копирай'}</span>
-                    </button>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => handleSaveToErrorBank(item.id, item.requirement, item.whyNeeded, item.suggestedNotes)}
+                        disabled={isSavedToBank}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border transition-colors ${
+                          isSavedToBank
+                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 cursor-default'
+                            : 'bg-slate-850 hover:bg-slate-800 text-rose-300 hover:text-rose-200 border-rose-500/30'
+                        }`}
+                        title="Запази като пропуск за преговор в Банката с грешки"
+                      >
+                        {isSavedToBank ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>В Банката</span>
+                          </>
+                        ) : (
+                          <>
+                            <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
+                            <span>Запази в Банка с грешки</span>
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() => handleCopyNote(item.id, item.suggestedNotes)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-slate-850 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
+                      >
+                        {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
+                        <span>{isCopied ? 'Копирано' : 'Копирай'}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import { AlertTriangle, CheckCircle2, ChevronRight, Copy, Check, BookOpen, ShieldCheck, ArrowRight } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ChevronRight, Copy, Check, BookOpen, ShieldCheck, ArrowRight, CheckSquare, Zap, GraduationCap } from 'lucide-react';
 import type { NotebookDiagnosis } from '../services/curriculumClassifier';
+import type { AppNavTab } from './Navbar';
 
 interface NotebookDiagnosticViewProps {
   diagnosis: NotebookDiagnosis;
   onProceedToHolyTrinity: () => void;
   onScanAnother: () => void;
+  onNavigateTab?: (tab: AppNavTab) => void;
 }
 
 export const NotebookDiagnosticView: React.FC<NotebookDiagnosticViewProps> = ({
   diagnosis,
   onProceedToHolyTrinity,
-  onScanAnother
+  onScanAnother,
+  onNavigateTab
 }) => {
   const [copiedText, setCopiedText] = useState<string | null>(null);
 
@@ -109,13 +112,24 @@ export const NotebookDiagnosticView: React.FC<NotebookDiagnosticViewProps> = ({
             </p>
           </div>
 
-          <button
-            onClick={onProceedToHolyTrinity}
-            className="w-full mt-4 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 border border-indigo-500/40"
-          >
-            <span>Отвори урока и тестовете</span>
-            <ArrowRight className="w-3.5 h-3.5 text-white" />
-          </button>
+          <div className="flex flex-col gap-2 mt-4">
+            <button
+              onClick={onProceedToHolyTrinity}
+              className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 border border-indigo-500/40"
+            >
+              <span>Отвори урока и тестовете</span>
+              <ArrowRight className="w-3.5 h-3.5 text-white" />
+            </button>
+            {onNavigateTab && (
+              <button
+                onClick={() => onNavigateTab('audit')}
+                className="w-full py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700/80 transition-colors flex items-center justify-center gap-1.5"
+              >
+                <CheckSquare className="w-3.5 h-3.5 text-amber-400" />
+                <span>Одит на критериите за 6.00</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -206,21 +220,42 @@ export const NotebookDiagnosticView: React.FC<NotebookDiagnosticViewProps> = ({
       </div>
 
       {/* Bottom Navigation Actions */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="p-4 sm:p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-3">
         <button
           onClick={onScanAnother}
           className="text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors"
         >
-          ← Сканирай друга страница от тетрадката
+          ← Сканирай друга страница
         </button>
 
-        <button
-          onClick={onProceedToHolyTrinity}
-          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 border border-indigo-500/40"
-        >
-          <span>Отвори синтезирания урок и изпитния тест</span>
-          <BookOpen className="w-4 h-4" />
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          {onNavigateTab && (
+            <>
+              <button
+                onClick={() => onNavigateTab('flashcards')}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
+              >
+                <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Флаш карти</span>
+              </button>
+              <button
+                onClick={() => onNavigateTab('quiz')}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
+              >
+                <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
+                <span>Реши тест</span>
+              </button>
+            </>
+          )}
+
+          <button
+            onClick={onProceedToHolyTrinity}
+            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 border border-indigo-500/40"
+          >
+            <span>Отвори синтезирания урок</span>
+            <BookOpen className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </div>
   );

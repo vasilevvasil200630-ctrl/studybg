@@ -1,8 +1,20 @@
 import React, { useState } from 'react';
-import { Compass, Search, Sparkles, ChevronRight, HelpCircle, CheckCircle2, FileQuestion, Lightbulb, Calendar } from 'lucide-react';
+import { Compass, Search, Sparkles, ChevronRight, HelpCircle, CheckCircle2, FileQuestion, Lightbulb, Calendar, MessageSquare, Clock, BookOpen, ArrowRight } from 'lucide-react';
 import { UNSOLVED_MYSTERIES_DATA, type UnsolvedMysteryItem } from '../data/generalKnowledgeData';
+import type { LessonData } from '../types';
+import type { AppNavTab } from './Navbar';
 
-export const GeneralKnowledgeView: React.FC = () => {
+interface GeneralKnowledgeViewProps {
+  onNavigateTab?: (tab: AppNavTab) => void;
+  onSelectLesson?: (lesson: LessonData) => void;
+  lessons?: LessonData[];
+}
+
+export const GeneralKnowledgeView: React.FC<GeneralKnowledgeViewProps> = ({
+  onNavigateTab,
+  onSelectLesson,
+  lessons = []
+}) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [expandedItemId, setExpandedItemId] = useState<string | null>(UNSOLVED_MYSTERIES_DATA[0].id);
@@ -34,6 +46,16 @@ export const GeneralKnowledgeView: React.FC = () => {
 
     const el = document.getElementById(`mystery-${chosen.id}`);
     el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  const getRelatedLesson = (item: UnsolvedMysteryItem) => {
+    return lessons.find(l => {
+      const lTitle = l.title.toLowerCase();
+      const iTitle = item.title.toLowerCase();
+      if (item.id === 'mystery-levski-grave' && (lTitle.includes('априлск') || lTitle.includes('възраждане') || lTitle.includes('левски'))) return true;
+      if (item.id === 'mystery-varne-gold' && (lTitle.includes('траки') || lTitle.includes('елада') || lTitle.includes('древн'))) return true;
+      return lTitle.includes(iTitle.slice(0, 8)) || iTitle.includes(lTitle.slice(0, 8));
+    });
   };
 
   return (
@@ -98,84 +120,81 @@ export const GeneralKnowledgeView: React.FC = () => {
 
       {/* Items Stream */}
       <div className="space-y-4">
-        {filteredItems.map((item: UnsolvedMysteryItem) => {
+        {filteredItems.map(item => {
           const isExpanded = expandedItemId === item.id;
+          const relatedLesson = getRelatedLesson(item);
 
           return (
             <div
-              id={`mystery-${item.id}`}
               key={item.id}
-              className={`rounded-2xl border transition-all overflow-hidden ${
+              id={`mystery-${item.id}`}
+              className={`rounded-2xl border transition-all ${
                 isExpanded
-                  ? 'bg-slate-900 border-indigo-500/70 shadow-xl'
-                  : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
+                  ? 'bg-slate-950 border-amber-500/40 shadow-xl'
+                  : 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
               }`}
             >
-              {/* Card Header Accordion */}
+              {/* Item Card Header */}
               <div
                 onClick={() => setExpandedItemId(isExpanded ? null : item.id)}
-                className="p-5 sm:p-6 cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4 select-none hover:bg-slate-800/20 transition-colors"
+                className="p-5 sm:p-6 cursor-pointer flex items-start justify-between gap-4"
               >
-                <div className="flex-1">
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                      {item.tag}
-                    </span>
-                    <span className="text-xs text-slate-400 flex items-center gap-1 font-mono">
-                      <Calendar className="w-3 h-3 text-slate-500" />
+                <div className="space-y-1.5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs px-2.5 py-0.5 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/20 font-semibold font-mono flex items-center gap-1">
+                      <Calendar className="w-3 h-3 text-amber-400" />
                       <span>{item.unsolvedYearOrPeriod}</span>
+                    </span>
+                    <span className="text-[11px] text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                      {item.tag}
                     </span>
                   </div>
 
-                  <h3 className="text-base sm:text-lg font-bold text-slate-100">
+                  <h3 className="text-base sm:text-lg font-bold text-slate-100 leading-snug">
                     {item.title}
                   </h3>
-
-                  <p className="text-xs text-slate-400 mt-1 leading-relaxed line-clamp-2">
+                  <p className="text-xs text-slate-400">
                     {item.subtitle}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs font-semibold text-indigo-400 flex-shrink-0">
-                  <FileQuestion className="w-4 h-4" />
-                  <span>{isExpanded ? 'Затвори досието' : 'Разгледай фактите и мистерията'}</span>
-                  <ChevronRight className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                <div className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white flex-shrink-0 mt-1">
+                  <ChevronRight className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-90 text-amber-400' : ''}`} />
                 </div>
               </div>
 
-              {/* Expanded Investigation Content */}
+              {/* Expanded Dossier Content */}
               {isExpanded && (
-                <div className="p-5 sm:p-7 border-t border-slate-800/80 bg-slate-950/70 space-y-6">
+                <div className="px-5 sm:px-6 pb-6 pt-2 border-t border-slate-800/80 space-y-6">
                   
-                  {/* 1. ФАКТИТЕ, КОИТО ЗНАЕМ СЪС СИГУРНОСТ */}
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-400">
+                  {/* 1. ДОКАЗАНИТЕ ФАКТИ */}
+                  <div className="space-y-2">
+                    <div className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                      <span>1. Фактите, които знаем със сигурност:</span>
+                      <span>1. Доказаните исторически факти:</span>
                     </div>
-
-                    <ul className="space-y-2 text-xs sm:text-sm text-slate-300 pl-1">
+                    <ul className="space-y-1.5 pl-1">
                       {item.knownFacts.map((fact, fIdx) => (
-                        <li key={fIdx} className="flex items-start gap-2.5 p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
-                          <span className="font-mono text-emerald-400 font-bold mt-0.5">•</span>
-                          <span className="leading-relaxed">{fact}</span>
+                        <li key={fIdx} className="text-xs sm:text-sm text-slate-300 flex items-start gap-2 leading-relaxed">
+                          <span className="text-emerald-400 font-bold mt-0.5">✓</span>
+                          <span>{fact}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
 
-                  {/* 2. МИСТЕРИЯТА / КАКВО ОСТАВА НЕРАЗГАДАНО? */}
+                  {/* 2. НЕРАЗГАДАНАТА МИСТЕРИЯ */}
                   <div className="p-4 sm:p-5 rounded-xl bg-amber-950/20 border border-amber-500/30 space-y-2">
                     <div className="flex items-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-wider">
                       <HelpCircle className="w-4 h-4 text-amber-400" />
-                      <span>2. Мистерията: Какво остава неразгадано?</span>
+                      <span>2. Неразгаданата мистерия:</span>
                     </div>
-                    <p className="text-xs sm:text-sm text-amber-100 leading-relaxed font-serif sm:font-sans">
+                    <p className="text-xs sm:text-sm text-amber-100/90 leading-relaxed font-medium">
                       {item.unsolvedMystery}
                     </p>
                   </div>
 
-                  {/* 3. ХИПОТЕЗИТЕ И ТЕОРИИТЕ */}
+                  {/* 3. ВОДЕЩИ ХИПОТЕЗИ */}
                   <div className="space-y-3">
                     <div className="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-2">
                       <FileQuestion className="w-4 h-4 text-indigo-400" />
@@ -206,6 +225,38 @@ export const GeneralKnowledgeView: React.FC = () => {
                     <p className="text-xs sm:text-sm text-slate-200 leading-relaxed italic font-serif">
                       „{item.foodForThought}“
                     </p>
+                  </div>
+
+                  {/* 5. INTERACTIVE CAUSE-AND-EFFECT ACTIONS */}
+                  <div className="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        onClick={() => onNavigateTab?.('timeline')}
+                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-medium border border-slate-800 transition-colors"
+                      >
+                        <Clock className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Хронология на събитията</span>
+                      </button>
+
+                      <button
+                        onClick={() => onNavigateTab?.('chat')}
+                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-medium border border-slate-800 transition-colors"
+                      >
+                        <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Дискутирай с учебния ментор</span>
+                      </button>
+                    </div>
+
+                    {relatedLesson && onSelectLesson && (
+                      <button
+                        onClick={() => onSelectLesson(relatedLesson)}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-sm transition-colors"
+                      >
+                        <BookOpen className="w-3.5 h-3.5" />
+                        <span>Учебен конспект: {relatedLesson.title}</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
 
                 </div>

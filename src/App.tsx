@@ -54,11 +54,17 @@ export function App() {
   const [isFormulaModalOpen, setIsFormulaModalOpen] = useState(false);
   const [practiceQuestions, setPracticeQuestions] = useState<QuizQuestion[] | null>(null);
 
-  const handleLessonSelected = (lesson: LessonData) => {
+  const handleNavigateTab = (tab: AppNavTab) => {
+    setActiveTab(tab);
+    const el = document.getElementById('workspace');
+    el?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleLessonSelected = (lesson: LessonData, preferredTab: AppNavTab = 'summary') => {
     setCurrentLesson(lesson);
     const diag = classifyAndDiagnoseNotebook(lesson.originalNoteExcerpt || lesson.summary.overview, lesson.title);
     setCurrentDiagnosis(diag);
-    setActiveTab('diagnostic');
+    setActiveTab(preferredTab);
     const el = document.getElementById('workspace');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -102,7 +108,7 @@ export function App() {
       {/* Sticky Navigation */}
       <Navbar
         activeTab={activeTab}
-        setActiveTab={(t) => setActiveTab(t)}
+        setActiveTab={(t) => handleNavigateTab(t)}
         onOpenScan={() => setIsScanModalOpen(true)}
         onScrollToCatalog={scrollToCatalog}
         onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
@@ -111,9 +117,11 @@ export function App() {
       {/* Hero Section */}
       <Hero
         onScanClick={() => setIsScanModalOpen(true)}
-        onSelectSample={handleLessonSelected}
+        onSelectSample={(l) => handleLessonSelected(l, 'summary')}
         lessons={lessons}
         currentLesson={currentLesson}
+        onNavigateTab={handleNavigateTab}
+        onScrollToCatalog={scrollToCatalog}
       />
 
       {/* Smart Scan Modal / Overlay if open */}
@@ -333,44 +341,48 @@ export function App() {
           {activeTab === 'diagnostic' && (
             <NotebookDiagnosticView
               diagnosis={currentDiagnosis}
-              onProceedToHolyTrinity={() => setActiveTab('summary')}
-              onScanAnother={() => setActiveTab('scan')}
+              onProceedToHolyTrinity={() => handleNavigateTab('summary')}
+              onScanAnother={() => setIsScanModalOpen(true)}
+              onNavigateTab={handleNavigateTab}
             />
           )}
 
           {activeTab === 'audit' && (
             <NotebookAuditor
               lesson={currentLesson}
-              onProceedToHolyTrinity={() => setActiveTab('summary')}
+              onProceedToHolyTrinity={() => handleNavigateTab('summary')}
+              onNavigateTab={handleNavigateTab}
             />
           )}
 
           {activeTab === 'summary' && (
             <SummaryView
               lesson={currentLesson}
-              onProceedToFlashcards={() => setActiveTab('flashcards')}
+              onProceedToFlashcards={() => handleNavigateTab('flashcards')}
             />
           )}
 
           {activeTab === 'flashcards' && (
             <FlashcardsView
               flashcards={currentLesson.flashcards}
-              onProceedToQuiz={() => setActiveTab('quiz')}
+              onProceedToQuiz={() => handleNavigateTab('quiz')}
             />
           )}
 
           {activeTab === 'quiz' && (
             <QuizView
               questions={practiceQuestions || currentLesson.quiz}
-              onReviewFlashcards={() => setActiveTab('flashcards')}
-              onOpenChat={() => setActiveTab('chat')}
+              onReviewFlashcards={() => handleNavigateTab('flashcards')}
+              onOpenChat={() => handleNavigateTab('chat')}
+              onNavigateTab={handleNavigateTab}
+              onRecordError={handleRecordError}
             />
           )}
 
           {activeTab === 'simulator' && (
             <ExamSimulatorView
               currentLesson={currentLesson}
-              onOpenErrorBank={() => setActiveTab('errorbank')}
+              onOpenErrorBank={() => handleNavigateTab('errorbank')}
               onRecordError={handleRecordError}
             />
           )}
@@ -382,18 +394,26 @@ export function App() {
           )}
 
           {activeTab === 'timeline' && (
-            <HistoryTimelineView />
+            <HistoryTimelineView
+              lessons={lessons}
+              onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+              onNavigateTab={handleNavigateTab}
+            />
           )}
 
           {activeTab === 'knowledge' && (
-            <GeneralKnowledgeView />
+            <GeneralKnowledgeView
+              lessons={lessons}
+              onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+              onNavigateTab={handleNavigateTab}
+            />
           )}
 
           {activeTab === 'generator' && (
             <ExamTestPaperGenerator
               currentLesson={currentLesson}
               allLessons={lessons}
-              onSelectLesson={handleLessonSelected}
+              onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
             />
           )}
 
@@ -404,7 +424,7 @@ export function App() {
 
         {/* Interactive Curriculum Hierarchy Browser */}
         <CurriculumTreeBrowser
-          onSelectTopic={handleLessonSelected}
+          onSelectTopic={(l) => handleLessonSelected(l, 'summary')}
         />
 
         {/* Subject Catalog & Library Section */}
@@ -412,7 +432,7 @@ export function App() {
           <SubjectCatalog
             lessons={lessons}
             currentLessonId={currentLesson.id}
-            onSelectLesson={handleLessonSelected}
+            onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
             onAddNewScan={() => setIsScanModalOpen(true)}
           />
         </div>
@@ -420,10 +440,18 @@ export function App() {
       </main>
 
       {/* Features Deep Dive Showcase */}
-      <FeaturesShowcase />
+      <FeaturesShowcase
+        onNavigateTab={handleNavigateTab}
+        onOpenScan={() => setIsScanModalOpen(true)}
+      />
 
       {/* Footer */}
-      <Footer />
+      <Footer
+        onNavigateTab={handleNavigateTab}
+        onOpenScan={() => setIsScanModalOpen(true)}
+        onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
+        onScrollToCatalog={scrollToCatalog}
+      />
 
     </div>
   );

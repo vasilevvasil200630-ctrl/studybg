@@ -1,15 +1,25 @@
 import React from 'react';
-import { Camera, BookOpen, ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Camera, BookOpen, ArrowRight, CheckCircle2, ShieldCheck, GraduationCap, CheckSquare } from 'lucide-react';
 import type { LessonData } from '../types';
+import type { AppNavTab } from './Navbar';
 
 interface HeroProps {
   onScanClick: () => void;
   onSelectSample: (lesson: LessonData) => void;
   lessons: LessonData[];
   currentLesson: LessonData;
+  onNavigateTab: (tab: AppNavTab) => void;
+  onScrollToCatalog: () => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onScanClick, onSelectSample, lessons, currentLesson }) => {
+export const Hero: React.FC<HeroProps> = ({
+  onScanClick,
+  onSelectSample,
+  lessons,
+  currentLesson,
+  onNavigateTab,
+  onScrollToCatalog
+}) => {
   // Curate 4 high-yield featured lessons for quick testing instead of dumping all 17
   const featuredLessons = lessons.slice(0, 4);
 
@@ -51,13 +61,13 @@ export const Hero: React.FC<HeroProps> = ({ onScanClick, onSelectSample, lessons
             <span>Качи снимка на тетрадка / PDF</span>
           </button>
 
-          <a
-            href="#workspace"
+          <button
+            onClick={() => onNavigateTab('summary')}
             className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 font-medium text-sm sm:text-base transition-all"
           >
-            <span>Прегледай: {currentLesson.title.split(':')[0]}</span>
+            <span>Прегледай конспект: {currentLesson.title.split(':')[0]}</span>
             <ArrowRight className="w-4 h-4 text-slate-400" />
-          </a>
+          </button>
         </div>
 
         {/* Curated Demo Lesson Switcher */}
@@ -67,13 +77,13 @@ export const Hero: React.FC<HeroProps> = ({ onScanClick, onSelectSample, lessons
               <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
               <span>Бърз избор на примерен урок по МОН:</span>
             </span>
-            <a
-              href="#catalog"
+            <button
+              onClick={onScrollToCatalog}
               className="text-xs text-sky-400 hover:text-sky-300 font-medium inline-flex items-center gap-1 transition-colors"
             >
               <span>Виж всички {lessons.length} урока в каталога</span>
               <ArrowRight className="w-3 h-3" />
-            </a>
+            </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -109,31 +119,46 @@ export const Hero: React.FC<HeroProps> = ({ onScanClick, onSelectSample, lessons
           </div>
         </div>
 
-        {/* High-Trust Value Pillars */}
+        {/* High-Trust Interactive Value Pillars */}
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3.5 max-w-4xl mx-auto">
-          <div className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-900/40 border border-slate-800/80 text-left">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+          <button
+            onClick={() => onNavigateTab('audit')}
+            className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-900/40 hover:bg-slate-850 border border-slate-800/80 hover:border-indigo-500/50 text-left transition-all group"
+          >
+            <CheckSquare className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform flex-shrink-0" />
             <div>
-              <div className="text-xs font-semibold text-white">Одит на записките за 6.00</div>
-              <div className="text-[11px] text-slate-400">Проверка за задължителни термини и дати</div>
+              <div className="text-xs font-semibold text-white group-hover:text-indigo-300 transition-colors">
+                Одит на записките за 6.00
+              </div>
+              <div className="text-[11px] text-slate-400">Провери какво липсва в тетрадката ➔</div>
             </div>
-          </div>
+          </button>
 
-          <div className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-900/40 border border-slate-800/80 text-left">
-            <CheckCircle2 className="w-5 h-5 text-sky-400 flex-shrink-0" />
+          <button
+            onClick={onScrollToCatalog}
+            className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-900/40 hover:bg-slate-850 border border-slate-800/80 hover:border-sky-500/50 text-left transition-all group"
+          >
+            <CheckCircle2 className="w-5 h-5 text-sky-400 group-hover:scale-110 transition-transform flex-shrink-0" />
             <div>
-              <div className="text-xs font-semibold text-white">100% покритие на МОН стандартите</div>
-              <div className="text-[11px] text-slate-400">Таксономия за 5. до 12. клас и НВО</div>
+              <div className="text-xs font-semibold text-white group-hover:text-sky-300 transition-colors">
+                100% покритие на МОН
+              </div>
+              <div className="text-[11px] text-slate-400">Отвори целия учебен каталог ➔</div>
             </div>
-          </div>
+          </button>
 
-          <div className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-900/40 border border-slate-800/80 text-left">
-            <CheckCircle2 className="w-5 h-5 text-indigo-400 flex-shrink-0" />
+          <button
+            onClick={() => onNavigateTab('quiz')}
+            className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-900/40 hover:bg-slate-850 border border-slate-800/80 hover:border-emerald-500/50 text-left transition-all group"
+          >
+            <GraduationCap className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform flex-shrink-0" />
             <div>
-              <div className="text-xs font-semibold text-white">Интерактивни тестове с обяснения</div>
-              <div className="text-[11px] text-slate-400">10 въпроса с моментален аналитичен фийдбек</div>
+              <div className="text-xs font-semibold text-white group-hover:text-emerald-300 transition-colors">
+                Изпитен тест за контролно
+              </div>
+              <div className="text-[11px] text-slate-400">Реши тест с 10 въпроса веднага ➔</div>
             </div>
-          </div>
+          </button>
         </div>
 
       </div>

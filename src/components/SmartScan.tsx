@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Camera, UploadCloud, FileText, Loader2, Sparkles, X, Edit3, Image as ImageIcon } from 'lucide-react';
 import type { LessonData } from '../types';
-import { generateLessonFromInput } from '../services/aiGenerator';
+import { classifyAndDiagnoseNotebook, type NotebookDiagnosis } from '../services/curriculumClassifier';
 
 interface SmartScanProps {
-  onScanComplete: (lesson: LessonData) => void;
+  onScanComplete: (lesson: LessonData, diagnosis?: NotebookDiagnosis) => void;
   onClose?: () => void;
   sampleLessons: LessonData[];
 }
@@ -21,26 +21,27 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
   const [customSubject, setCustomSubject] = useState('История и цивилизации');
   const [customText, setCustomText] = useState('');
 
-  const startProcessing = (lessonToLoad: LessonData, filename: string) => {
+  const startProcessing = (textToAnalyze: string, filename: string, lessonFallback?: LessonData) => {
     setSelectedFileName(filename);
     setIsScanning(true);
     setScanStep('📸 Сканиране на изображението и изчистване на шума...');
 
     setTimeout(() => {
-      setScanStep('🔍 Разпознаване на българския ръкописен почерк (Smart OCR v2.4)...');
-    }, 800);
+      setScanStep('🔍 Разпознаване на българския почерк и класификация по МОН...');
+    }, 700);
 
     setTimeout(() => {
-      setScanStep('⚡ Генериране на Светата троица (Резюме, Флашкарти, Тест с 10 въпроса)...');
-    }, 1600);
+      setScanStep('⚡ Одит на записките: Предмет ➔ Клас ➔ Дял ➔ Под-дял...');
+    }, 1400);
 
     setTimeout(() => {
-      setScanStep('✨ Готово! Урокът е подготвен за учене за 5 минути.');
+      setScanStep('✨ Генериране на диагноза за 6-ца и Светата троица...');
       setTimeout(() => {
         setIsScanning(false);
-        onScanComplete(lessonToLoad);
+        const diagnosis = classifyAndDiagnoseNotebook(textToAnalyze, filename);
+        onScanComplete(lessonFallback || diagnosis.lessonData, diagnosis);
       }, 500);
-    }, 2400);
+    }, 2100);
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,13 +50,8 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
 
-      // Generate full lesson from real uploaded file
-      const syntheticLesson = generateLessonFromInput(
-        file.name,
-        `Записки от файл ${file.name}. В този урок са синтезирани основните тези, дефиниции и формули. Подготвен е за 5-минутен преговор.`,
-        'Учебен предмет'
-      );
-      startProcessing(syntheticLesson, file.name);
+      const inferredText = `${file.name} Записки от тетрадката. Разпознати понятия и дефиниции.`;
+      startProcessing(inferredText, file.name);
     }
   };
 
@@ -63,12 +59,8 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
     e.preventDefault();
     if (!customText.trim()) return;
 
-    const syntheticLesson = generateLessonFromInput(
-      customTitle || 'Нов урок от записки',
-      customText,
-      customSubject
-    );
-    startProcessing(syntheticLesson, customTitle || 'Текстов конспект');
+    const fullContent = `${customTitle} ${customSubject}\n${customText}`;
+    startProcessing(fullContent, customTitle || 'Въведени записки');
   };
 
   return (
@@ -90,13 +82,13 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
       <div className="text-center max-w-xl mx-auto mb-6">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold mb-3">
           <Camera className="w-3.5 h-3.5 text-sky-400" />
-          <span>Smart Scan AI Engine</span>
+          <span>Smart Scan & Детектор по МОН</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-black text-white">
-          Снимай тетрадка или въведи записки
+          Снимай тетрадка за автоматичен анализ
         </h2>
         <p className="mt-2 text-sm text-slate-300">
-          Няма значение дали почеркът е бърз или нечетлив — нашият AI разчита български ръкопис за секунди и подготвя Светата троица.
+          Системата автоматично ще разпознае по кой <strong>предмет</strong>, за кой <strong>клас</strong>, от кой <strong>дял</strong> и <strong>под-дял</strong> е урокът, ще оцени качеството и ще ти покаже какво липсва за 6-ца!
         </p>
       </div>
 
@@ -132,7 +124,6 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
       {isScanning ? (
         /* Processing Animation */
         <div className="py-12 flex flex-col items-center justify-center text-center">
-          {/* Laser scanning visual if image preview exists */}
           {previewUrl && (
             <div className="relative w-48 h-32 rounded-xl overflow-hidden border border-indigo-500/40 mb-6 shadow-xl">
               <img src={previewUrl} alt="Снимка на записки" className="w-full h-full object-cover" />
@@ -189,7 +180,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
               {sampleLessons.map((sample) => (
                 <button
                   key={sample.id}
-                  onClick={() => startProcessing(sample, sample.title)}
+                  onClick={() => startProcessing(sample.summary.overview + ' ' + sample.originalNoteExcerpt, sample.title, sample)}
                   className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-indigo-900/30 border border-white/5 hover:border-indigo-500/30 text-left transition-all group"
                 >
                   <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-300 group-hover:bg-indigo-500 group-hover:text-white transition-all flex-shrink-0">
@@ -215,21 +206,21 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-slate-300 mb-1">
-                Заглавие на урока / темата
+                Заглавие на темата / урока
               </label>
               <input
                 type="text"
                 required
                 value={customTitle}
                 onChange={(e) => setCustomTitle(e.target.value)}
-                placeholder="напр. Революцията 1848 г. в Европа"
+                placeholder="напр. Априлско въстание или Квадратни уравнения"
                 className="w-full bg-[#181d36] text-white px-3.5 py-2.5 rounded-xl border border-white/10 text-sm focus:outline-none focus:border-indigo-500"
               />
             </div>
 
             <div>
               <label className="block text-xs font-bold text-slate-300 mb-1">
-                Учебен предмет
+                Ориентировъчен предмет
               </label>
               <select
                 value={customSubject}
@@ -238,26 +229,25 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
               >
                 <option value="История и цивилизации">История и цивилизации</option>
                 <option value="Български език и литература">Български език и литература</option>
+                <option value="Математика">Математика</option>
                 <option value="Биология и ЗО">Биология и ЗО</option>
                 <option value="Химия и ООС">Химия и ООС</option>
-                <option value="Математика">Математика</option>
                 <option value="География и икономика">География и икономика</option>
                 <option value="Физика и астрономия">Физика и астрономия</option>
-                <option value="Друг предмет">Друг предмет</option>
               </select>
             </div>
           </div>
 
           <div>
             <label className="block text-xs font-bold text-slate-300 mb-1">
-              Текст на записките / конспект (постави откъс или план)
+              Записки от тетрадката / план на урока
             </label>
             <textarea
               required
               rows={5}
               value={customText}
               onChange={(e) => setCustomText(e.target.value)}
-              placeholder="Постави тук записките от тетрадката, текста от учебника или конспекта..."
+              placeholder="Постави тук каквото имаш записано в тетрадката... AI сам ще намери дяла и ще го диагностицира!"
               className="w-full bg-[#181d36] text-white p-3.5 rounded-xl border border-white/10 text-sm focus:outline-none focus:border-indigo-500 resize-none font-mono"
             />
           </div>
@@ -267,7 +257,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
             className="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-sky-500 to-emerald-500 text-white font-bold text-sm shadow-xl shadow-indigo-600/30 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2"
           >
             <Sparkles className="w-4 h-4 text-emerald-200" />
-            <span>Генерирай Светата троица за 5 секунди</span>
+            <span>Диагностицирай тетрадката и намери дяла по МОН</span>
           </button>
         </form>
       )}

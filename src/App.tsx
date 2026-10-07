@@ -2,39 +2,54 @@ import { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { SmartScan } from './components/SmartScan';
+import { NotebookDiagnosticView } from './components/NotebookDiagnosticView';
 import { NotebookAuditor } from './components/NotebookAuditor';
 import { SummaryView } from './components/SummaryView';
 import { FlashcardsView } from './components/FlashcardsView';
 import { QuizView } from './components/QuizView';
 import { NotebookChat } from './components/NotebookChat';
 import { SubjectCatalog } from './components/SubjectCatalog';
+import { CurriculumTreeBrowser } from './components/CurriculumTreeBrowser';
 import { FeaturesShowcase } from './components/FeaturesShowcase';
 import { Footer } from './components/Footer';
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
+import { classifyAndDiagnoseNotebook, type NotebookDiagnosis } from './services/curriculumClassifier';
 import type { LessonData } from './types';
-import { Camera, BookOpen, Zap, MessageSquare, ChevronRight, CheckSquare } from 'lucide-react';
+import { Camera, BookOpen, Zap, MessageSquare, ChevronRight, CheckSquare, Search } from 'lucide-react';
 import './App.css';
 
 export function App() {
   const [lessons, setLessons] = useState<LessonData[]>(CURRICULUM_LESSONS);
   const [currentLesson, setCurrentLesson] = useState<LessonData>(CURRICULUM_LESSONS[0]);
-  const [activeTab, setActiveTab] = useState<'scan' | 'audit' | 'summary' | 'flashcards' | 'quiz' | 'chat'>('audit');
+  const [currentDiagnosis, setCurrentDiagnosis] = useState<NotebookDiagnosis>(() =>
+    classifyAndDiagnoseNotebook(CURRICULUM_LESSONS[0].originalNoteExcerpt, CURRICULUM_LESSONS[0].title)
+  );
+
+  const [activeTab, setActiveTab] = useState<'scan' | 'diagnostic' | 'audit' | 'summary' | 'flashcards' | 'quiz' | 'chat'>('diagnostic');
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
 
   const handleLessonSelected = (lesson: LessonData) => {
     setCurrentLesson(lesson);
-    setActiveTab('audit');
+    const diag = classifyAndDiagnoseNotebook(lesson.originalNoteExcerpt || lesson.summary.overview, lesson.title);
+    setCurrentDiagnosis(diag);
+    setActiveTab('diagnostic');
     const el = document.getElementById('workspace');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleScanCompleted = (newLesson: LessonData) => {
+  const handleScanCompleted = (newLesson: LessonData, diag?: NotebookDiagnosis) => {
     if (!lessons.some(l => l.id === newLesson.id)) {
       setLessons(prev => [newLesson, ...prev]);
     }
     setCurrentLesson(newLesson);
+    if (diag) {
+      setCurrentDiagnosis(diag);
+    } else {
+      const calculatedDiag = classifyAndDiagnoseNotebook(newLesson.originalNoteExcerpt || newLesson.summary.overview, newLesson.title);
+      setCurrentDiagnosis(calculatedDiag);
+    }
     setIsScanModalOpen(false);
-    setActiveTab('audit');
+    setActiveTab('diagnostic');
     const el = document.getElementById('workspace');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -49,8 +64,8 @@ export function App() {
       
       {/* Sticky Navigation */}
       <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        activeTab={activeTab === 'diagnostic' ? 'audit' : activeTab}
+        setActiveTab={(t) => setActiveTab(t as any)}
         onOpenScan={() => setIsScanModalOpen(true)}
         onScrollToCatalog={scrollToCatalog}
       />
@@ -112,8 +127,8 @@ export function App() {
           </button>
         </div>
 
-        {/* Tab Selection Bar (6 Features) */}
-        <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 p-1.5 rounded-2xl bg-[#12162a] border border-white/10 mb-8">
+        {/* Tab Selection Bar (7 Features) */}
+        <div className="grid grid-cols-2 sm:grid-cols-7 gap-1.5 p-1.5 rounded-2xl bg-[#12162a] border border-white/10 mb-8">
           
           <button
             onClick={() => setActiveTab('scan')}
@@ -125,6 +140,18 @@ export function App() {
           >
             <Camera className="w-4 h-4 text-sky-400" />
             <span>📸 Скенер</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('diagnostic')}
+            className={`flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+              activeTab === 'diagnostic'
+                ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Search className="w-4 h-4 text-sky-400" />
+            <span>🔍 Диагноза</span>
           </button>
 
           <button
@@ -177,7 +204,7 @@ export function App() {
 
           <button
             onClick={() => setActiveTab('chat')}
-            className={`flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
               activeTab === 'chat'
                 ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
@@ -195,6 +222,14 @@ export function App() {
             <SmartScan
               onScanComplete={handleScanCompleted}
               sampleLessons={lessons}
+            />
+          )}
+
+          {activeTab === 'diagnostic' && (
+            <NotebookDiagnosticView
+              diagnosis={currentDiagnosis}
+              onProceedToHolyTrinity={() => setActiveTab('summary')}
+              onScanAnother={() => setActiveTab('scan')}
             />
           )}
 
@@ -231,6 +266,11 @@ export function App() {
             <NotebookChat lesson={currentLesson} />
           )}
         </div>
+
+        {/* Interactive Curriculum Hierarchy Browser */}
+        <CurriculumTreeBrowser
+          onSelectTopic={handleLessonSelected}
+        />
 
         {/* Subject Catalog & Library Section */}
         <div id="catalog">

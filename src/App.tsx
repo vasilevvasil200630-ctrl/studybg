@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navbar, type AppNavTab } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { SmartScan } from './components/SmartScan';
@@ -42,6 +42,11 @@ import {
 } from 'lucide-react';
 import './App.css';
 
+const VALID_TABS: AppNavTab[] = [
+  'scan', 'diagnostic', 'audit', 'summary', 'flashcards', 'quiz',
+  'chat', 'simulator', 'errorbank', 'timeline', 'generator', 'knowledge'
+];
+
 export function App() {
   const [lessons, setLessons] = useState<LessonData[]>(CURRICULUM_LESSONS);
   const [currentLesson, setCurrentLesson] = useState<LessonData>(CURRICULUM_LESSONS[0]);
@@ -49,13 +54,16 @@ export function App() {
     classifyAndDiagnoseNotebook(CURRICULUM_LESSONS[0].originalNoteExcerpt, CURRICULUM_LESSONS[0].title)
   );
 
-  const [activeTab, setActiveTab] = useState<AppNavTab>('diagnostic');
+  const [activeTab, setActiveTab] = useState<AppNavTab>('summary');
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
   const [isFormulaModalOpen, setIsFormulaModalOpen] = useState(false);
   const [practiceQuestions, setPracticeQuestions] = useState<QuizQuestion[] | null>(null);
 
   const handleNavigateTab = (tab: AppNavTab) => {
     setActiveTab(tab);
+    if (window.location.hash !== `#${tab}`) {
+      window.history.pushState(null, '', `#${tab}`);
+    }
     const el = document.getElementById('workspace');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -65,9 +73,39 @@ export function App() {
     const diag = classifyAndDiagnoseNotebook(lesson.originalNoteExcerpt || lesson.summary.overview, lesson.title);
     setCurrentDiagnosis(diag);
     setActiveTab(preferredTab);
+    if (window.location.hash !== `#${preferredTab}`) {
+      window.history.pushState(null, '', `#${preferredTab}`);
+    }
     const el = document.getElementById('workspace');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  // URL Hash Sync for deep linking and browser back/forward buttons
+  useEffect(() => {
+    const syncFromHash = () => {
+      const hash = window.location.hash.replace('#', '').trim();
+      if (!hash) return;
+
+      if (VALID_TABS.includes(hash as AppNavTab)) {
+        setActiveTab(hash as AppNavTab);
+        const el = document.getElementById('workspace');
+        el?.scrollIntoView({ behavior: 'smooth' });
+      } else if (hash === 'catalog') {
+        const el = document.getElementById('catalog');
+        el?.scrollIntoView({ behavior: 'smooth' });
+      } else if (hash.startsWith('lesson-')) {
+        const lessonId = hash.replace('lesson-', '');
+        const targetLesson = lessons.find(l => l.id === lessonId);
+        if (targetLesson) {
+          handleLessonSelected(targetLesson, 'summary');
+        }
+      }
+    };
+
+    syncFromHash();
+    window.addEventListener('hashchange', syncFromHash);
+    return () => window.removeEventListener('hashchange', syncFromHash);
+  }, [lessons]);
 
   const handleScanCompleted = (newLesson: LessonData, diag?: NotebookDiagnosis) => {
     if (!lessons.some(l => l.id === newLesson.id)) {
@@ -81,21 +119,20 @@ export function App() {
       setCurrentDiagnosis(calculatedDiag);
     }
     setIsScanModalOpen(false);
-    setActiveTab('diagnostic');
-    const el = document.getElementById('workspace');
-    el?.scrollIntoView({ behavior: 'smooth' });
+    handleNavigateTab('diagnostic');
   };
 
   const scrollToCatalog = () => {
+    if (window.location.hash !== '#catalog') {
+      window.history.pushState(null, '', '#catalog');
+    }
     const el = document.getElementById('catalog');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleStartCustomQuizFromErrors = (customQuestions: QuizQuestion[]) => {
     setPracticeQuestions(customQuestions);
-    setActiveTab('quiz');
-    const el = document.getElementById('workspace');
-    el?.scrollIntoView({ behavior: 'smooth' });
+    handleNavigateTab('quiz');
   };
 
   const handleRecordError = (q: QuizQuestion, chosenIndex: number) => {
@@ -193,7 +230,7 @@ export function App() {
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-11 gap-1 p-1 rounded-xl bg-slate-900 border border-slate-800/90 mb-8 shadow-sm text-center">
           
           <button
-            onClick={() => setActiveTab('diagnostic')}
+            onClick={() => handleNavigateTab('diagnostic')}
             className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'diagnostic'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
@@ -205,7 +242,7 @@ export function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('audit')}
+            onClick={() => handleNavigateTab('audit')}
             className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'audit'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
@@ -217,7 +254,7 @@ export function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('summary')}
+            onClick={() => handleNavigateTab('summary')}
             className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'summary'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
@@ -229,7 +266,7 @@ export function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('flashcards')}
+            onClick={() => handleNavigateTab('flashcards')}
             className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'flashcards'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
@@ -243,7 +280,7 @@ export function App() {
           <button
             onClick={() => {
               setPracticeQuestions(null);
-              setActiveTab('quiz');
+              handleNavigateTab('quiz');
             }}
             className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'quiz'
@@ -256,7 +293,7 @@ export function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('simulator')}
+            onClick={() => handleNavigateTab('simulator')}
             className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'simulator'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
@@ -268,7 +305,7 @@ export function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('errorbank')}
+            onClick={() => handleNavigateTab('errorbank')}
             className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'errorbank'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
@@ -280,7 +317,7 @@ export function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('timeline')}
+            onClick={() => handleNavigateTab('timeline')}
             className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'timeline'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
@@ -292,7 +329,7 @@ export function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('knowledge')}
+            onClick={() => handleNavigateTab('knowledge')}
             className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'knowledge'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
@@ -304,7 +341,7 @@ export function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('generator')}
+            onClick={() => handleNavigateTab('generator')}
             className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'generator'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
@@ -316,7 +353,7 @@ export function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('chat')}
+            onClick={() => handleNavigateTab('chat')}
             className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'chat'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
@@ -359,6 +396,7 @@ export function App() {
             <SummaryView
               lesson={currentLesson}
               onProceedToFlashcards={() => handleNavigateTab('flashcards')}
+              onNavigateTab={handleNavigateTab}
             />
           )}
 
@@ -366,6 +404,7 @@ export function App() {
             <FlashcardsView
               flashcards={currentLesson.flashcards}
               onProceedToQuiz={() => handleNavigateTab('quiz')}
+              onNavigateTab={handleNavigateTab}
             />
           )}
 
@@ -390,6 +429,8 @@ export function App() {
           {activeTab === 'errorbank' && (
             <ErrorBankView
               onStartCustomQuiz={handleStartCustomQuizFromErrors}
+              allLessons={lessons}
+              onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
             />
           )}
 
@@ -414,6 +455,7 @@ export function App() {
               currentLesson={currentLesson}
               allLessons={lessons}
               onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+              onNavigateTab={handleNavigateTab}
             />
           )}
 

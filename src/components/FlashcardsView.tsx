@@ -1,14 +1,20 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { RotateCw, CheckCircle2, RotateCcw, ArrowLeft, ArrowRight, Shuffle, HelpCircle, Layers } from 'lucide-react';
+import { RotateCw, CheckCircle2, RotateCcw, ArrowLeft, ArrowRight, Shuffle, HelpCircle, Layers, BookOpen, CheckSquare } from 'lucide-react';
 import type { Flashcard } from '../types';
+import type { AppNavTab } from './Navbar';
 import confetti from 'canvas-confetti';
 
 interface FlashcardsViewProps {
   flashcards: Flashcard[];
   onProceedToQuiz: () => void;
+  onNavigateTab?: (tab: AppNavTab) => void;
 }
 
-export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ flashcards, onProceedToQuiz }) => {
+export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
+  flashcards,
+  onProceedToQuiz,
+  onNavigateTab
+}) => {
   const [cards, setCards] = useState<Flashcard[]>(flashcards);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -151,6 +157,27 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ flashcards, onPr
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
+
+          {onNavigateTab && (
+            <>
+              <button
+                onClick={() => onNavigateTab('summary')}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
+                title="Отвори резюмето на урока"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Конспект</span>
+              </button>
+              <button
+                onClick={() => onNavigateTab('audit')}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
+                title="Отвори одит на записките за 6.00"
+              >
+                <CheckSquare className="w-3.5 h-3.5 text-amber-400" />
+                <span>Одит</span>
+              </button>
+            </>
+          )}
 
           <button
             onClick={onProceedToQuiz}

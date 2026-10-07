@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { BookOpen, Copy, Check, Award, Calendar, AlertTriangle, FileText, Timer as TimerIcon, ArrowRight, ShieldCheck } from 'lucide-react';
+import { BookOpen, Copy, Check, Calendar, AlertTriangle, FileText, Timer as TimerIcon, ArrowRight, ShieldCheck, CheckSquare, Zap, GraduationCap, MessageSquare, Clock } from 'lucide-react';
 import type { LessonData } from '../types';
+import type { AppNavTab } from './Navbar';
 import { AudioReader } from './AudioReader';
 import { CheatSheetModal } from './CheatSheetModal';
 import { FiveMinuteTimer } from './FiveMinuteTimer';
@@ -8,9 +9,14 @@ import { FiveMinuteTimer } from './FiveMinuteTimer';
 interface SummaryViewProps {
   lesson: LessonData;
   onProceedToFlashcards: () => void;
+  onNavigateTab?: (tab: AppNavTab) => void;
 }
 
-export const SummaryView: React.FC<SummaryViewProps> = ({ lesson, onProceedToFlashcards }) => {
+export const SummaryView: React.FC<SummaryViewProps> = ({
+  lesson,
+  onProceedToFlashcards,
+  onNavigateTab
+}) => {
   const [copied, setCopied] = useState(false);
   const [showCheatSheet, setShowCheatSheet] = useState(false);
   const [showTimer, setShowTimer] = useState(true);
@@ -138,30 +144,30 @@ export const SummaryView: React.FC<SummaryViewProps> = ({ lesson, onProceedToFla
           <div className="mb-6">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
               <Calendar className="w-4 h-4 text-sky-400" />
-              <span>Ключови хронологии и формули:</span>
+              <span>Формули, хронология и ключови стойности:</span>
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {summary.formulasOrDates.map((item, idx) => (
-                <div key={idx} className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col justify-center">
-                  <span className="text-xs font-medium text-indigo-400">{item.label}</span>
-                  <span className="text-sm font-semibold text-slate-100 mt-0.5 font-mono">{item.value}</span>
+                <div key={idx} className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800/90 flex flex-col justify-between">
+                  <span className="text-slate-400 text-xs font-medium">{item.label}</span>
+                  <span className="text-slate-100 font-bold text-sm mt-1 font-mono">{item.value}</span>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* Golden Rule for Grade 6 */}
-        <div className="p-4 sm:p-5 rounded-xl bg-emerald-950/20 border border-emerald-500/30 mb-5 flex items-start gap-3.5">
+        {/* Exam Golden Rule */}
+        <div className="p-4 sm:p-5 rounded-xl bg-emerald-950/20 border border-emerald-500/30 flex items-start gap-3.5 mb-6">
           <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 flex-shrink-0 mt-0.5">
-            <Award className="w-4 h-4" />
+            <ShieldCheck className="w-4 h-4" />
           </div>
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-400">
-              Златно правило за контролно (Критерий за 6.00)
+              Златно правило за отличен (6.00) на изпита
             </h4>
-            <p className="text-xs sm:text-sm font-medium text-emerald-200 mt-1 leading-relaxed">
+            <p className="mt-1 text-sm font-semibold text-emerald-200 leading-snug">
               {summary.examGoldenRule}
             </p>
           </div>
@@ -186,6 +192,56 @@ export const SummaryView: React.FC<SummaryViewProps> = ({ lesson, onProceedToFla
             </ul>
           </div>
         </div>
+
+        {/* Cross-Link Action Hub */}
+        {onNavigateTab && (
+          <div className="mt-6 pt-5 border-t border-slate-800">
+            <span className="text-xs font-semibold uppercase text-slate-400 tracking-wider block mb-3">
+              Следващи стъпки за подготовка по „{lesson.title}“:
+            </span>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+              <button
+                onClick={() => onNavigateTab('audit')}
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-200 text-xs font-medium border border-slate-800 hover:border-slate-700 transition-colors"
+              >
+                <CheckSquare className="w-3.5 h-3.5 text-amber-400" />
+                <span>Одит за 6.00</span>
+              </button>
+
+              <button
+                onClick={() => onNavigateTab('flashcards')}
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-200 text-xs font-medium border border-slate-800 hover:border-slate-700 transition-colors"
+              >
+                <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Флаш карти</span>
+              </button>
+
+              <button
+                onClick={() => onNavigateTab('quiz')}
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors shadow-sm"
+              >
+                <GraduationCap className="w-3.5 h-3.5" />
+                <span>Реши тест</span>
+              </button>
+
+              <button
+                onClick={() => onNavigateTab('simulator')}
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-200 text-xs font-medium border border-slate-800 hover:border-slate-700 transition-colors"
+              >
+                <Clock className="w-3.5 h-3.5 text-sky-400" />
+                <span>Симулатор (100т.)</span>
+              </button>
+
+              <button
+                onClick={() => onNavigateTab('chat')}
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-200 text-xs font-medium border border-slate-800 hover:border-slate-700 transition-colors col-span-2 sm:col-span-1"
+              >
+                <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Питай ментора</span>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Original Excerpt Toggle info */}
         <div className="mt-6 pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">

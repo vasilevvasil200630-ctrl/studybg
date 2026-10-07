@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import { Printer, FileText, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import { Printer, FileText, ShieldCheck, Eye, EyeOff, GraduationCap, BookOpen } from 'lucide-react';
 import type { LessonData } from '../types';
+import type { AppNavTab } from './Navbar';
 
 interface ExamTestPaperGeneratorProps {
   currentLesson: LessonData;
   allLessons: LessonData[];
   onSelectLesson: (lesson: LessonData) => void;
+  onNavigateTab?: (tab: AppNavTab) => void;
 }
 
 export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
   currentLesson,
   allLessons,
-  onSelectLesson
+  onSelectLesson,
+  onNavigateTab
 }) => {
   const [activeGroup, setActiveGroup] = useState<'A' | 'B'>('A');
   const [showAnswerKey, setShowAnswerKey] = useState<boolean>(false);
@@ -84,6 +87,27 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
             <Printer className="w-3.5 h-3.5" />
             <span>Принтирай тест</span>
           </button>
+
+          {onNavigateTab && (
+            <>
+              <button
+                onClick={() => onNavigateTab('quiz')}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
+                title="Реши този тест интерактивно с таймер и оценка"
+              >
+                <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
+                <span>Реши онлайн</span>
+              </button>
+              <button
+                onClick={() => onNavigateTab('summary')}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
+                title="Отвори пълния конспект за подготовка"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Към Конспекта</span>
+              </button>
+            </>
+          )}
         </div>
       </div>
 

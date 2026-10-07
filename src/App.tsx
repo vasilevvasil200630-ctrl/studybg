@@ -15,7 +15,7 @@ import { Footer } from './components/Footer';
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
 import { classifyAndDiagnoseNotebook, type NotebookDiagnosis } from './services/curriculumClassifier';
 import type { LessonData } from './types';
-import { Camera, BookOpen, Zap, MessageSquare, ChevronRight, CheckSquare, Search } from 'lucide-react';
+import { Camera, BookOpen, Zap, MessageSquare, ChevronRight, CheckSquare, FileSearch, GraduationCap } from 'lucide-react';
 import './App.css';
 
 export function App() {
@@ -95,22 +95,23 @@ export function App() {
       <main id="workspace" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
         
         {/* Workspace Title & Current Active Subject */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-5 border-b border-slate-800/80">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-1">
-              <span>Работно пространство</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-              <span className="text-emerald-400 font-bold">{currentLesson.subject}</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-              <span className="text-slate-300 truncate max-w-xs">{currentLesson.title}</span>
+            <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400 mb-1.5">
+              <span className="text-slate-500">Учебен предмет</span>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
+              <span className="text-emerald-400 font-semibold">{currentLesson.subject}</span>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
+              <span className="text-slate-300 font-medium truncate max-w-xs">{currentLesson.grade}</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-white flex items-center gap-3">
+
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex flex-wrap items-center gap-3">
               <span>{currentLesson.title}</span>
-              <span className="text-xs px-2.5 py-1 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+              <span className="text-xs px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700/80 font-medium">
                 {currentLesson.grade}
               </span>
               {currentLesson.examType && (
-                <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 font-bold">
+                <span className="text-xs px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/25 font-semibold">
                   {currentLesson.examType}
                 </span>
               )}
@@ -120,98 +121,98 @@ export function App() {
           {/* Quick scan button on workspace */}
           <button
             onClick={() => setIsScanModalOpen(true)}
-            className="self-start md:self-auto flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-200 transition-all hover:scale-[1.02]"
+            className="self-start md:self-auto flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 text-xs font-semibold shadow-sm transition-all"
           >
-            <Camera className="w-3.5 h-3.5 text-sky-400" />
-            <span>Смени или качи нови записки</span>
+            <Camera className="w-4 h-4 text-sky-400" />
+            <span>Качи нови записки</span>
           </button>
         </div>
 
-        {/* Tab Selection Bar (7 Features) */}
-        <div className="grid grid-cols-2 sm:grid-cols-7 gap-1.5 p-1.5 rounded-2xl bg-[#12162a] border border-white/10 mb-8">
+        {/* Professional Segmented Navigation Tabs */}
+        <div className="grid grid-cols-2 sm:grid-cols-7 gap-1 p-1 rounded-xl bg-slate-900 border border-slate-800/90 mb-8 shadow-sm">
           
           <button
-            onClick={() => setActiveTab('scan')}
-            className={`flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
-              activeTab === 'scan'
-                ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
-            }`}
-          >
-            <Camera className="w-4 h-4 text-sky-400" />
-            <span>📸 Скенер</span>
-          </button>
-
-          <button
             onClick={() => setActiveTab('diagnostic')}
-            className={`flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'diagnostic'
-                ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
             }`}
           >
-            <Search className="w-4 h-4 text-sky-400" />
-            <span>🔍 Диагноза</span>
+            <FileSearch className="w-3.5 h-3.5 text-sky-400" />
+            <span>Диагноза</span>
           </button>
 
           <button
             onClick={() => setActiveTab('audit')}
-            className={`flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'audit'
-                ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
             }`}
           >
-            <CheckSquare className="w-4 h-4 text-amber-400" />
-            <span>📋 Одит за 6-ца</span>
+            <CheckSquare className="w-3.5 h-3.5 text-amber-400" />
+            <span>Одит за 6.00</span>
           </button>
 
           <button
             onClick={() => setActiveTab('summary')}
-            className={`flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'summary'
-                ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
             }`}
           >
-            <BookOpen className="w-4 h-4 text-indigo-400" />
-            <span>1. Резюме</span>
+            <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
+            <span>Резюме</span>
           </button>
 
           <button
             onClick={() => setActiveTab('flashcards')}
-            className={`flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'flashcards'
-                ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
             }`}
           >
-            <Zap className="w-4 h-4 text-emerald-400" />
-            <span>2. Флашкарти</span>
+            <Zap className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Флаш карти</span>
           </button>
 
           <button
             onClick={() => setActiveTab('quiz')}
-            className={`flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'quiz'
-                ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
             }`}
           >
-            <span>🏆</span>
-            <span>3. Тест</span>
+            <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
+            <span>Изпитен тест</span>
           </button>
 
           <button
             onClick={() => setActiveTab('chat')}
-            className={`col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'chat'
-                ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
             }`}
           >
-            <MessageSquare className="w-4 h-4 text-sky-400" />
-            <span>💬 Чат</span>
+            <MessageSquare className="w-3.5 h-3.5 text-slate-300" />
+            <span>Въпроси</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('scan')}
+            className={`col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-medium transition-all ${
+              activeTab === 'scan'
+                ? 'bg-indigo-600 text-white font-semibold shadow-sm'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+            }`}
+          >
+            <Camera className="w-3.5 h-3.5 text-slate-300" />
+            <span>Скенер</span>
           </button>
 
         </div>

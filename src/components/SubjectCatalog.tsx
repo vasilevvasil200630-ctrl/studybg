@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, BookOpen, Camera, ChevronRight } from 'lucide-react';
+import { Search, BookOpen, ChevronRight, Layers, GraduationCap, Clock } from 'lucide-react';
 import type { LessonData, GradeLevel, SubjectName } from '../types';
 import { GRADES_LIST, SUBJECTS_LIST } from '../data/curriculumDatabase';
 
@@ -14,7 +14,6 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
   lessons,
   currentLessonId,
   onSelectLesson,
-  onAddNewScan
 }) => {
   const [selectedGrade, setSelectedGrade] = useState<GradeLevel>('Всички класове');
   const [selectedSubject, setSelectedSubject] = useState<SubjectName>('Всички предмети');
@@ -30,19 +29,19 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
   });
 
   return (
-    <div className="p-6 sm:p-8 rounded-3xl bg-[#12162c] border border-white/10 shadow-2xl mb-12">
+    <div className="p-6 sm:p-8 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl mb-12">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <div className="inline-flex items-center gap-2 text-xs font-bold text-sky-400 uppercase tracking-wider mb-1">
+          <div className="inline-flex items-center gap-2 text-xs font-semibold text-indigo-400 uppercase tracking-wider mb-1">
             <BookOpen className="w-3.5 h-3.5" />
             <span>Държавни образователни стандарти (МОН)</span>
           </div>
-          <h3 className="text-xl sm:text-2xl font-black text-white">
-            Учебен каталог по класове и предмети
+          <h3 className="text-xl sm:text-2xl font-bold text-slate-100">
+            Учебен каталог по класове и дисциплини
           </h3>
           <p className="text-xs text-slate-400 mt-1">
-            Избери своя клас и предмет, за да видиш точния материал, изискванията за 6-ца и Светата троица.
+            Изберете клас и предмет за достъп до структурирания конспект, изискванията за пълно отличие и тестовете.
           </p>
         </div>
 
@@ -53,26 +52,27 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Търси тема, автор, формула, дата..."
-            className="w-full bg-[#181d38] text-white placeholder-slate-400 pl-10 pr-4 py-2.5 rounded-xl border border-white/10 text-xs focus:outline-none focus:border-indigo-500"
+            placeholder="Търсене на тема, автор, формула, събитие..."
+            className="w-full bg-slate-950 text-slate-100 placeholder-slate-500 pl-10 pr-4 py-2.5 rounded-xl border border-slate-800 text-xs focus:outline-none focus:border-indigo-500 transition-colors"
           />
         </div>
       </div>
 
       {/* Grade Selector Row */}
       <div className="mb-4">
-        <span className="text-[11px] font-bold uppercase text-slate-400 block mb-2">
-          🎓 Избери клас / изпит:
-        </span>
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+        <div className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-2">
+          <GraduationCap className="w-3.5 h-3.5 text-slate-500" />
+          <span>Образователен етап и клас:</span>
+        </div>
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 no-scrollbar">
           {GRADES_LIST.map((grade) => (
             <button
               key={grade}
               onClick={() => setSelectedGrade(grade)}
-              className={`whitespace-nowrap px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 selectedGrade === grade
-                  ? 'bg-gradient-to-r from-indigo-600 to-sky-500 text-white shadow-md shadow-indigo-600/25'
-                  : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
+                  ? 'bg-indigo-600 text-white shadow-sm'
+                  : 'bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700/80 border border-slate-700/50'
               }`}
             >
               {grade}
@@ -83,18 +83,19 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
 
       {/* Subject Filter Row */}
       <div className="mb-6">
-        <span className="text-[11px] font-bold uppercase text-slate-400 block mb-2">
-          📚 Избери учебен предмет:
-        </span>
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+        <div className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-2">
+          <Layers className="w-3.5 h-3.5 text-slate-500" />
+          <span>Учебна дисциплина:</span>
+        </div>
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 no-scrollbar">
           {SUBJECTS_LIST.map((subj) => (
             <button
               key={subj}
               onClick={() => setSelectedSubject(subj)}
-              className={`whitespace-nowrap px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 selectedSubject === subj
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm'
-                  : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
+                  ? 'bg-slate-100 text-slate-900 shadow-sm font-semibold'
+                  : 'bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700/80 border border-slate-700/50'
               }`}
             >
               {subj}
@@ -104,37 +105,37 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
       </div>
 
       {/* Lessons Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
         {filteredLessons.map((lesson) => {
           const isCurrent = lesson.id === currentLessonId;
           return (
             <div
               key={lesson.id}
               onClick={() => onSelectLesson(lesson)}
-              className={`p-5 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between group ${
+              className={`p-4 sm:p-5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between group ${
                 isCurrent
-                  ? 'bg-indigo-950/70 border-indigo-500 shadow-lg shadow-indigo-500/10 ring-1 ring-indigo-500'
-                  : 'bg-[#161a33]/60 border-white/5 hover:border-indigo-500/30 hover:bg-[#1a2040]'
+                  ? 'bg-slate-850 border-indigo-500 shadow-md ring-1 ring-indigo-500/50'
+                  : 'bg-slate-950/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900/60'
               }`}
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-xs font-bold text-emerald-400">
+                  <span className="text-xs font-semibold text-emerald-400">
                     {lesson.subject}
                   </span>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
                     {lesson.examType && (
-                      <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/25">
                         {lesson.examType}
                       </span>
                     )}
-                    <span className="text-[10px] text-slate-400 bg-white/5 px-2 py-0.5 rounded">
+                    <span className="text-[10px] text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/50">
                       {lesson.grade}
                     </span>
                   </div>
                 </div>
 
-                <h4 className="text-sm font-bold text-white group-hover:text-indigo-300 transition-colors line-clamp-1 mb-2">
+                <h4 className="text-sm font-bold text-slate-100 group-hover:text-indigo-300 transition-colors line-clamp-1 mb-1.5">
                   {lesson.title}
                 </h4>
 
@@ -143,36 +144,21 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-white/5 flex items-center justify-between text-xs">
-                <span className="text-slate-400 text-[11px] flex items-center gap-1">
-                  ⚡ 5 мин • {lesson.notebookChecklist ? `${lesson.notebookChecklist.length} задължителни точки` : 'Тест за 6-ца'}
+              <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
+                <span className="text-slate-400 text-[11px] flex items-center gap-1.5">
+                  <Clock className="w-3 h-3 text-slate-500" />
+                  <span>{lesson.notebookChecklist ? `${lesson.notebookChecklist.length} критерия` : 'Стандарт МОН'}</span>
                 </span>
-                <span className={`font-semibold flex items-center gap-1 ${
-                  isCurrent ? 'text-indigo-400' : 'text-slate-400 group-hover:text-white'
+                <span className={`font-medium flex items-center gap-1 text-xs ${
+                  isCurrent ? 'text-indigo-400 font-semibold' : 'text-slate-400 group-hover:text-slate-200'
                 }`}>
-                  <span>{isCurrent ? 'Активен' : 'Отвори'}</span>
+                  <span>{isCurrent ? 'Активен урок' : 'Преглед'}</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </span>
               </div>
             </div>
           );
         })}
-
-        {/* Add New Scan Card */}
-        <div
-          onClick={onAddNewScan}
-          className="p-5 rounded-2xl border-2 border-dashed border-white/15 hover:border-indigo-400/60 bg-white/[0.02] hover:bg-white/[0.05] cursor-pointer transition-all flex flex-col items-center justify-center text-center group min-h-[160px]"
-        >
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600/30 to-sky-500/30 border border-indigo-500/30 flex items-center justify-center text-sky-400 mb-2.5 group-hover:scale-110 transition-transform">
-            <Camera className="w-5 h-5" />
-          </div>
-          <div className="text-sm font-bold text-white group-hover:text-sky-300">
-            + Снимай нова тема
-          </div>
-          <div className="text-xs text-slate-400 mt-1 max-w-[200px]">
-            Качи тетрадка за който и да е клас или предмет
-          </div>
-        </div>
       </div>
     </div>
   );

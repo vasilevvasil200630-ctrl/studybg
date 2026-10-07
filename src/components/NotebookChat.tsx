@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Trash2 } from 'lucide-react';
+import { Bot, User, Trash2, HelpCircle, FileText, CornerDownLeft } from 'lucide-react';
 import type { LessonData, ChatMessage } from '../types';
 
 interface NotebookChatProps {
@@ -11,9 +11,9 @@ export const NotebookChat: React.FC<NotebookChatProps> = ({ lesson }) => {
     {
       id: 'init-1',
       sender: 'assistant',
-      text: `Здравей! Аз съм твоят StudyBG асистент. Прочетох записките ти за „${lesson.title}“. Можеш да ме питаш всичко — да ти обясня нещо по-просто, да проверим трудни термини или да познаем какво ще те пита учителят!`,
+      text: `Здравейте. Анализирах записките за „${lesson.title}“. Готов съм да разясня неясни понятия, да изведем най-важните формули или да симулираме въпроси от изпитния формат на МОН.`,
       timestamp: 'Сега',
-      referencedLine: 'Снимка на тетрадката, стр. 1'
+      referencedLine: 'Учебен конспект • МОН Стандарт'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
@@ -26,9 +26,9 @@ export const NotebookChat: React.FC<NotebookChatProps> = ({ lesson }) => {
       {
         id: `init-${lesson.id}`,
         sender: 'assistant',
-        text: `Заредих новите записки за „${lesson.title}“ (${lesson.subject}). Питай ме свободен въпрос или избери от бързите бутони отгоре!`,
+        text: `Заредени са учебните материали за „${lesson.title}“ (${lesson.subject}, ${lesson.grade}). С какво мога да помогна за подготовката ви днес?`,
         timestamp: 'Сега',
-        referencedLine: `${lesson.subject}, ${lesson.grade}`
+        referencedLine: `${lesson.subject} • ${lesson.grade}`
       }
     ]);
   }, [lesson]);
@@ -45,23 +45,23 @@ export const NotebookChat: React.FC<NotebookChatProps> = ({ lesson }) => {
     const q = userQuestion.toLowerCase();
 
     if (q.includes('по-просто') || q.includes('като за 5') || q.includes('лесно') || q.includes('приятел')) {
-      return `Ето най-простото обяснение: Представи си, че ${lesson.title} се крепи на едно главно правило:\n\n👉 „${lesson.summary.keyPoints[0]}“\n\nАко това го разбереш, останалото се подрежда само!`;
+      return `Основното обобщение на достъпен език:\n\nТемата „${lesson.title}“ стъпва върху следната базова зависимост:\n\n• ${lesson.summary.keyPoints[0]}\n\nКогато овладеете този фундамент, останалите следствия се извеждат логически.`;
     }
 
     if (q.includes('контролно') || q.includes('ще се падне') || q.includes('учител') || q.includes('изпит')) {
-      return `🎯 На 99% госпожата/господинът ще се опита да ви хване на следното:\n\n⚠️ ${lesson.summary.commonTraps[0]}\n\nСъщо така запомни златното правило за 6.00: „${lesson.summary.examGoldenRule}“!`;
+      return `Ключови акценти, които преподавателите задължително изискват:\n\n1. Основно изискване: „${lesson.summary.examGoldenRule}“\n2. Често срещан капан: ${lesson.summary.commonTraps[0]}\n\nУверете се, че можете да формулирате тези две точки без колебание.`;
     }
 
     if (q.includes('трик') || q.includes('мнемоника') || q.includes('запомняне')) {
-      const datesOrFormulas = lesson.summary.formulasOrDates?.map(f => `• ${f.label} ➔ ${f.value}`).join('\n');
-      return `🧠 Трик за запомняне на „${lesson.title}“:\nСвържи понятията с асоциация. Ето най-важното за фотографска памет:\n${datesOrFormulas || lesson.summary.keyPoints.slice(0, 3).join('\n')}`;
+      const datesOrFormulas = lesson.summary.formulasOrDates?.map(f => `• ${f.label}: ${f.value}`).join('\n');
+      return `Структурирани опорни точки за бързо запомняне на „${lesson.title}“:\n\n${datesOrFormulas || lesson.summary.keyPoints.slice(0, 3).map(p => `• ${p}`).join('\n')}\n\nПрепоръчваме да си ги запишете схематично в полето на тетрадката.`;
     }
 
     if (q.includes('задача') || q.includes('пример')) {
-      return `✍️ Ето класическа тестова ситуация по темата:\n\nВъпрос: ${lesson.quiz[0].question}\n\nВерен отговор: ${lesson.quiz[0].options[lesson.quiz[0].correctIndex]}\n\nЗащо: ${lesson.quiz[0].explanation}`;
+      return `Примерен въпрос от формат за външно оценяване / контролна работа:\n\nВъпрос: ${lesson.quiz[0].question}\n\nВерен отговор: ${lesson.quiz[0].options[lesson.quiz[0].correctIndex]}\n\nОбосновка: ${lesson.quiz[0].explanation}`;
     }
 
-    return `Според записаното на твоя лист:\n\n„${lesson.summary.overview}“\n\nНай-важният акцент от тетрадката е:\n${lesson.summary.keyPoints[0]}\n\nИскаш ли да ти задам един бърз въпрос, за да проверим дали си го усвоил?`;
+    return `Съгласно държавния образователен стандарт за темата:\n\n„${lesson.summary.overview}“\n\nВодещ акцент в конспекта:\n${lesson.summary.keyPoints[0]}\n\nЖелаете ли да разгледаме конкретна задача или допълнителен пример?`;
   };
 
   const handleSendMessage = (textToSend?: string) => {
@@ -86,11 +86,11 @@ export const NotebookChat: React.FC<NotebookChatProps> = ({ lesson }) => {
         sender: 'assistant',
         text: aiReplyText,
         timestamp: 'Сега',
-        referencedLine: 'Записки в тетрадката'
+        referencedLine: 'Учебен материал • МОН'
       };
       setMessages((prev) => [...prev, aiMsg]);
       setIsTyping(false);
-    }, 900);
+    }, 700);
   };
 
   const handleClearChat = () => {
@@ -98,60 +98,54 @@ export const NotebookChat: React.FC<NotebookChatProps> = ({ lesson }) => {
       {
         id: `cleared-${Date.now()}`,
         sender: 'assistant',
-        text: `Историята на чата е изчистена. Какво искаш да обсъдим за „${lesson.title}“?`,
+        text: `Историята на разговора е изчистена. С какво мога да съдействам за „${lesson.title}“?`,
         timestamp: 'Сега'
       }
     ]);
   };
 
   return (
-    <div className="flex flex-col h-[650px] rounded-3xl bg-[#111426] border border-white/10 shadow-2xl overflow-hidden">
+    <div className="flex flex-col h-[620px] rounded-2xl bg-slate-900 border border-slate-800 shadow-xl overflow-hidden">
       {/* Chat Header */}
-      <div className="p-4 sm:p-5 bg-[#141830] border-b border-white/10 flex items-center justify-between">
+      <div className="p-4 sm:p-5 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="relative">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-sky-400 p-[1px] flex items-center justify-center">
-              <div className="w-full h-full bg-[#0d0f1f] rounded-2xl flex items-center justify-center">
-                <Bot className="w-5 h-5 text-sky-400" />
-              </div>
-            </div>
-            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#141830]" />
+          <div className="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-indigo-400">
+            <Bot className="w-5 h-5" />
           </div>
 
           <div>
-            <div className="flex items-center gap-1.5">
-              <h3 className="text-sm font-bold text-white">Питай тетрадката си</h3>
-              <span className="text-[10px] font-bold bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-md border border-indigo-500/30">
-                AI Чат
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-bold text-slate-100">Учебен консултант</h3>
+              <span className="text-[10px] font-semibold bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded border border-indigo-500/20">
+                МОН Стандарт
               </span>
             </div>
             <p className="text-xs text-slate-400 truncate max-w-xs sm:max-w-md">
-              Свързан с: <span className="text-white font-medium">{lesson.title}</span>
+              Текущ контекст: <span className="text-slate-200 font-medium">{lesson.title}</span>
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleClearChat}
-            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-rose-300 transition-all"
-            title="Изчисти чата"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
+        <button
+          onClick={handleClearChat}
+          className="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700/60 transition-colors"
+          title="Изчисти разговора"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
       </div>
 
       {/* Suggested Quick Prompt Chips */}
-      <div className="p-3 bg-[#13162b]/60 border-b border-white/5 flex items-center gap-2 overflow-x-auto no-scrollbar">
-        <span className="text-[11px] font-semibold text-slate-400 whitespace-nowrap pl-1">
-          💡 Бързи въпроси:
+      <div className="p-2.5 bg-slate-950/60 border-b border-slate-800 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+        <span className="text-[11px] font-medium text-slate-400 whitespace-nowrap pl-1 flex items-center gap-1">
+          <HelpCircle className="w-3 h-3 text-slate-500" />
+          <span>Чести въпроси:</span>
         </span>
         {lesson.quickQuestions.map((q, idx) => (
           <button
             key={idx}
             onClick={() => handleSendMessage(q)}
-            className="text-xs whitespace-nowrap px-3 py-1 rounded-xl bg-white/5 hover:bg-indigo-600/30 text-slate-300 hover:text-white border border-white/5 hover:border-indigo-500/40 transition-all active:scale-95"
+            className="text-xs whitespace-nowrap px-3 py-1 rounded-md bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 transition-colors"
           >
             {q}
           </button>
@@ -159,7 +153,7 @@ export const NotebookChat: React.FC<NotebookChatProps> = ({ lesson }) => {
       </div>
 
       {/* Messages Scroll Area */}
-      <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4">
+      <div className="flex-1 p-4 sm:p-5 overflow-y-auto space-y-4">
         {messages.map((msg) => {
           const isUser = msg.sender === 'user';
           return (
@@ -169,28 +163,28 @@ export const NotebookChat: React.FC<NotebookChatProps> = ({ lesson }) => {
             >
               {/* Avatar */}
               <div
-                className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs flex-shrink-0 ${
+                className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs flex-shrink-0 ${
                   isUser
-                    ? 'bg-gradient-to-tr from-sky-500 to-indigo-600 text-white'
-                    : 'bg-[#1e2340] border border-indigo-500/30 text-sky-400'
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-slate-800 border border-slate-700 text-indigo-400'
                 }`}
               >
-                {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                {isUser ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
               </div>
 
               {/* Message Bubble */}
               <div
-                className={`max-w-[85%] sm:max-w-[75%] p-4 rounded-2xl text-sm leading-relaxed ${
+                className={`max-w-[85%] sm:max-w-[75%] p-3.5 rounded-xl text-xs sm:text-sm leading-relaxed ${
                   isUser
-                    ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-tr-none shadow-md shadow-indigo-600/20'
-                    : 'bg-[#181d36] text-slate-200 border border-white/5 rounded-tl-none'
+                    ? 'bg-indigo-600 text-white rounded-tr-none shadow-sm'
+                    : 'bg-slate-950/80 text-slate-200 border border-slate-800 rounded-tl-none'
                 }`}
               >
                 <div className="whitespace-pre-line">{msg.text}</div>
 
                 {msg.referencedLine && (
-                  <div className="mt-2 pt-2 border-t border-white/10 text-[10px] text-slate-400 flex items-center gap-1">
-                    <span className="text-emerald-400 font-bold">📄 Източник:</span>
+                  <div className="mt-2 pt-2 border-t border-slate-800 text-[10px] text-slate-400 flex items-center gap-1.5">
+                    <FileText className="w-3 h-3 text-indigo-400" />
                     <span>{msg.referencedLine}</span>
                   </div>
                 )}
@@ -201,13 +195,13 @@ export const NotebookChat: React.FC<NotebookChatProps> = ({ lesson }) => {
 
         {isTyping && (
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-[#1e2340] border border-indigo-500/30 text-sky-400 flex items-center justify-center">
-              <Bot className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 text-indigo-400 flex items-center justify-center">
+              <Bot className="w-3.5 h-3.5" />
             </div>
-            <div className="p-3.5 rounded-2xl bg-[#181d36] border border-white/5 rounded-tl-none flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-sky-400 animate-bounce" />
-              <span className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce [animation-delay:0.2s]" />
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce [animation-delay:0.4s]" />
+            <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 rounded-tl-none flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse [animation-delay:0.2s]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse [animation-delay:0.4s]" />
             </div>
           </div>
         )}
@@ -216,7 +210,7 @@ export const NotebookChat: React.FC<NotebookChatProps> = ({ lesson }) => {
       </div>
 
       {/* Input Area */}
-      <div className="p-3 sm:p-4 bg-[#141830] border-t border-white/10">
+      <div className="p-3 sm:p-4 bg-slate-900 border-t border-slate-800">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -228,16 +222,17 @@ export const NotebookChat: React.FC<NotebookChatProps> = ({ lesson }) => {
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder={`Попитай нещо за „${lesson.title}“...`}
-            className="flex-1 bg-[#1a1f3d] text-white placeholder-slate-400 text-sm px-4 py-3 rounded-xl border border-white/10 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder={`Задайте въпрос относно „${lesson.title}“...`}
+            className="flex-1 bg-slate-950 text-slate-100 placeholder-slate-500 text-xs sm:text-sm px-3.5 py-2.5 rounded-lg border border-slate-800 focus:outline-none focus:border-indigo-500 transition-colors"
           />
 
           <button
             type="submit"
             disabled={!inputValue.trim()}
-            className="p-3 rounded-xl bg-gradient-to-r from-indigo-600 via-sky-500 to-emerald-500 disabled:opacity-40 disabled:pointer-events-none text-white transition-all shadow-md shadow-indigo-600/20 hover:scale-105 active:scale-95"
+            className="px-3.5 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:pointer-events-none text-white transition-colors flex items-center gap-1.5 text-xs font-semibold shadow-sm"
           >
-            <Send className="w-4 h-4" />
+            <span>Изпрати</span>
+            <CornerDownLeft className="w-3.5 h-3.5" />
           </button>
         </form>
       </div>

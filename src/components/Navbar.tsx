@@ -1,22 +1,29 @@
 import React from 'react';
-import { Camera, BookOpen, MessageSquare, Zap, BookMarked, CheckSquare, GraduationCap } from 'lucide-react';
+import { Camera, BookOpen, MessageSquare, Zap, BookMarked, CheckSquare, GraduationCap, Clock, AlertCircle, FileText, Printer } from 'lucide-react';
 import { StudentStats } from './StudentStats';
+import { errorBankService } from '../services/errorBankService';
+
+export type AppNavTab = 'scan' | 'diagnostic' | 'audit' | 'summary' | 'flashcards' | 'quiz' | 'chat' | 'simulator' | 'errorbank' | 'timeline' | 'generator';
 
 interface NavbarProps {
-  activeTab: 'scan' | 'audit' | 'summary' | 'flashcards' | 'quiz' | 'chat';
-  setActiveTab: (tab: 'scan' | 'audit' | 'summary' | 'flashcards' | 'quiz' | 'chat') => void;
+  activeTab: AppNavTab;
+  setActiveTab: (tab: AppNavTab) => void;
   onOpenScan: () => void;
   onScrollToCatalog: () => void;
+  onOpenFormulaModal: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   setActiveTab,
   onOpenScan,
-  onScrollToCatalog
+  onScrollToCatalog,
+  onOpenFormulaModal
 }) => {
+  const unresolvedErrorCount = errorBankService.getUnresolvedCount();
+
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#0d101d]/95 border-b border-slate-800/80 transition-all">
+    <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#0d101d]/95 border-b border-slate-800/80 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-18">
           
@@ -42,22 +49,22 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Clean Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800/90">
+          <nav className="hidden xl:flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800/90">
             <button
               onClick={() => setActiveTab('audit')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 activeTab === 'audit'
                   ? 'bg-slate-800 text-white shadow-sm border border-slate-700/70 font-semibold'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
               }`}
             >
               <CheckSquare className="w-3.5 h-3.5 text-amber-400" />
-              <span>Одит за 6-ца</span>
+              <span>Одит за 6.00</span>
             </button>
 
             <button
               onClick={() => setActiveTab('summary')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 activeTab === 'summary'
                   ? 'bg-slate-800 text-white shadow-sm border border-slate-700/70 font-semibold'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
@@ -69,7 +76,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => setActiveTab('flashcards')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 activeTab === 'flashcards'
                   ? 'bg-slate-800 text-white shadow-sm border border-slate-700/70 font-semibold'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
@@ -80,41 +87,92 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <button
-              onClick={() => setActiveTab('quiz')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                activeTab === 'quiz'
+              onClick={() => setActiveTab('simulator')}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                activeTab === 'simulator'
                   ? 'bg-slate-800 text-white shadow-sm border border-slate-700/70 font-semibold'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
               }`}
             >
               <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
-              <span>Изпитен тест</span>
+              <span>Симулатор (100т.)</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('errorbank')}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                activeTab === 'errorbank'
+                  ? 'bg-slate-800 text-white shadow-sm border border-slate-700/70 font-semibold'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+              }`}
+            >
+              <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
+              <span>Банка с грешки</span>
+              {unresolvedErrorCount > 0 && (
+                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-rose-500/20 text-rose-300 font-bold border border-rose-500/30">
+                  {unresolvedErrorCount}
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={() => setActiveTab('timeline')}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                activeTab === 'timeline'
+                  ? 'bg-slate-800 text-white shadow-sm border border-slate-700/70 font-semibold'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+              }`}
+            >
+              <Clock className="w-3.5 h-3.5 text-amber-400" />
+              <span>Хронология</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('generator')}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                activeTab === 'generator'
+                  ? 'bg-slate-800 text-white shadow-sm border border-slate-700/70 font-semibold'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+              }`}
+            >
+              <Printer className="w-3.5 h-3.5 text-slate-300" />
+              <span>Група А & Б</span>
             </button>
 
             <button
               onClick={() => setActiveTab('chat')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 activeTab === 'chat'
                   ? 'bg-slate-800 text-white shadow-sm border border-slate-700/70 font-semibold'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
               }`}
             >
               <MessageSquare className="w-3.5 h-3.5 text-slate-300" />
-              <span>Въпроси & Чат</span>
+              <span>Чат</span>
             </button>
 
             <button
               onClick={onScrollToCatalog}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all border-l border-slate-800/80 ml-1 pl-2.5"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all border-l border-slate-800/80 ml-1 pl-2"
             >
               <BookMarked className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Учебен каталог</span>
+              <span>Каталог</span>
             </button>
           </nav>
 
-          {/* Student Stats & Primary Action */}
-          <div className="flex items-center gap-2.5 sm:gap-3.5">
+          {/* Right Action Bar */}
+          <div className="flex items-center gap-2 sm:gap-3">
             <StudentStats />
+
+            {/* Formula Sheets Button */}
+            <button
+              onClick={onOpenFormulaModal}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors shadow-sm"
+              title="Официални свитъци и формуляри на МОН"
+            >
+              <FileText className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Справочник МОН</span>
+            </button>
 
             <button
               onClick={onOpenScan}

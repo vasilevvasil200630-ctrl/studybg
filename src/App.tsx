@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Navbar } from './components/Navbar';
+import { Navbar, type AppNavTab } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { SmartScan } from './components/SmartScan';
 import { NotebookDiagnosticView } from './components/NotebookDiagnosticView';
@@ -12,10 +12,32 @@ import { SubjectCatalog } from './components/SubjectCatalog';
 import { CurriculumTreeBrowser } from './components/CurriculumTreeBrowser';
 import { FeaturesShowcase } from './components/FeaturesShowcase';
 import { Footer } from './components/Footer';
+
+// New Thematic МОН Modules
+import { MonFormulaSheetsModal } from './components/MonFormulaSheetsModal';
+import { ExamSimulatorView } from './components/ExamSimulatorView';
+import { ErrorBankView } from './components/ErrorBankView';
+import { HistoryTimelineView } from './components/HistoryTimelineView';
+import { ExamTestPaperGenerator } from './components/ExamTestPaperGenerator';
+import { errorBankService } from './services/errorBankService';
+
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
 import { classifyAndDiagnoseNotebook, type NotebookDiagnosis } from './services/curriculumClassifier';
-import type { LessonData } from './types';
-import { Camera, BookOpen, Zap, MessageSquare, ChevronRight, CheckSquare, FileSearch, GraduationCap } from 'lucide-react';
+import type { LessonData, QuizQuestion } from './types';
+import {
+  Camera,
+  BookOpen,
+  Zap,
+  MessageSquare,
+  ChevronRight,
+  CheckSquare,
+  FileSearch,
+  GraduationCap,
+  AlertCircle,
+  Clock,
+  Printer,
+  FileText
+} from 'lucide-react';
 import './App.css';
 
 export function App() {
@@ -25,8 +47,10 @@ export function App() {
     classifyAndDiagnoseNotebook(CURRICULUM_LESSONS[0].originalNoteExcerpt, CURRICULUM_LESSONS[0].title)
   );
 
-  const [activeTab, setActiveTab] = useState<'scan' | 'diagnostic' | 'audit' | 'summary' | 'flashcards' | 'quiz' | 'chat'>('diagnostic');
+  const [activeTab, setActiveTab] = useState<AppNavTab>('diagnostic');
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
+  const [isFormulaModalOpen, setIsFormulaModalOpen] = useState(false);
+  const [practiceQuestions, setPracticeQuestions] = useState<QuizQuestion[] | null>(null);
 
   const handleLessonSelected = (lesson: LessonData) => {
     setCurrentLesson(lesson);
@@ -59,15 +83,27 @@ export function App() {
     el?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleStartCustomQuizFromErrors = (customQuestions: QuizQuestion[]) => {
+    setPracticeQuestions(customQuestions);
+    setActiveTab('quiz');
+    const el = document.getElementById('workspace');
+    el?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleRecordError = (q: QuizQuestion, chosenIndex: number) => {
+    errorBankService.recordQuizError(q, currentLesson, chosenIndex);
+  };
+
   return (
     <div className="min-h-screen bg-[#0b0d17] text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30 selection:text-indigo-300">
       
       {/* Sticky Navigation */}
       <Navbar
-        activeTab={activeTab === 'diagnostic' ? 'audit' : activeTab}
-        setActiveTab={(t) => setActiveTab(t as any)}
+        activeTab={activeTab}
+        setActiveTab={(t) => setActiveTab(t)}
         onOpenScan={() => setIsScanModalOpen(true)}
         onScrollToCatalog={scrollToCatalog}
+        onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
       />
 
       {/* Hero Section */}
@@ -89,6 +125,11 @@ export function App() {
             />
           </div>
         </div>
+      )}
+
+      {/* Official МОН Formula Sheets Modal */}
+      {isFormulaModalOpen && (
+        <MonFormulaSheetsModal onClose={() => setIsFormulaModalOpen(false)} />
       )}
 
       {/* Main Interactive Learning Workspace */}
@@ -118,22 +159,32 @@ export function App() {
             </h2>
           </div>
 
-          {/* Quick scan button on workspace */}
-          <button
-            onClick={() => setIsScanModalOpen(true)}
-            className="self-start md:self-auto flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 text-xs font-semibold shadow-sm transition-all"
-          >
-            <Camera className="w-4 h-4 text-sky-400" />
-            <span>Качи нови записки</span>
-          </button>
+          {/* Quick Action Tools Bar */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsFormulaModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 text-xs font-semibold shadow-sm transition-all"
+            >
+              <FileText className="w-4 h-4 text-indigo-400" />
+              <span>Формули МОН</span>
+            </button>
+
+            <button
+              onClick={() => setIsScanModalOpen(true)}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-sm transition-all"
+            >
+              <Camera className="w-4 h-4 text-indigo-200" />
+              <span>Сканирай записки</span>
+            </button>
+          </div>
         </div>
 
-        {/* Professional Segmented Navigation Tabs */}
-        <div className="grid grid-cols-2 sm:grid-cols-7 gap-1 p-1 rounded-xl bg-slate-900 border border-slate-800/90 mb-8 shadow-sm">
+        {/* Extended Segmented Navigation Controls */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-1 p-1 rounded-xl bg-slate-900 border border-slate-800/90 mb-8 shadow-sm text-center">
           
           <button
             onClick={() => setActiveTab('diagnostic')}
-            className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'diagnostic'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
@@ -145,7 +196,7 @@ export function App() {
 
           <button
             onClick={() => setActiveTab('audit')}
-            className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'audit'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
@@ -157,19 +208,19 @@ export function App() {
 
           <button
             onClick={() => setActiveTab('summary')}
-            className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'summary'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
             }`}
           >
             <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Резюме</span>
+            <span>Конспект</span>
           </button>
 
           <button
             onClick={() => setActiveTab('flashcards')}
-            className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'flashcards'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
@@ -180,20 +231,71 @@ export function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('quiz')}
-            className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-medium transition-all ${
+            onClick={() => {
+              setPracticeQuestions(null);
+              setActiveTab('quiz');
+            }}
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'quiz'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
             }`}
           >
             <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
-            <span>Изпитен тест</span>
+            <span>Тест</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('simulator')}
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
+              activeTab === 'simulator'
+                ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+            }`}
+          >
+            <Clock className="w-3.5 h-3.5 text-amber-400" />
+            <span>Симулатор</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('errorbank')}
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
+              activeTab === 'errorbank'
+                ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+            }`}
+          >
+            <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
+            <span>Грешки</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('timeline')}
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
+              activeTab === 'timeline'
+                ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+            }`}
+          >
+            <Clock className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Хронология</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('generator')}
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
+              activeTab === 'generator'
+                ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+            }`}
+          >
+            <Printer className="w-3.5 h-3.5 text-slate-300" />
+            <span>Група А & Б</span>
           </button>
 
           <button
             onClick={() => setActiveTab('chat')}
-            className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === 'chat'
                 ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
@@ -201,18 +303,6 @@ export function App() {
           >
             <MessageSquare className="w-3.5 h-3.5 text-slate-300" />
             <span>Въпроси</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('scan')}
-            className={`col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-medium transition-all ${
-              activeTab === 'scan'
-                ? 'bg-indigo-600 text-white font-semibold shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-            }`}
-          >
-            <Camera className="w-3.5 h-3.5 text-slate-300" />
-            <span>Скенер</span>
           </button>
 
         </div>
@@ -257,9 +347,35 @@ export function App() {
 
           {activeTab === 'quiz' && (
             <QuizView
-              questions={currentLesson.quiz}
+              questions={practiceQuestions || currentLesson.quiz}
               onReviewFlashcards={() => setActiveTab('flashcards')}
               onOpenChat={() => setActiveTab('chat')}
+            />
+          )}
+
+          {activeTab === 'simulator' && (
+            <ExamSimulatorView
+              currentLesson={currentLesson}
+              onOpenErrorBank={() => setActiveTab('errorbank')}
+              onRecordError={handleRecordError}
+            />
+          )}
+
+          {activeTab === 'errorbank' && (
+            <ErrorBankView
+              onStartCustomQuiz={handleStartCustomQuizFromErrors}
+            />
+          )}
+
+          {activeTab === 'timeline' && (
+            <HistoryTimelineView />
+          )}
+
+          {activeTab === 'generator' && (
+            <ExamTestPaperGenerator
+              currentLesson={currentLesson}
+              allLessons={lessons}
+              onSelectLesson={handleLessonSelected}
             />
           )}
 

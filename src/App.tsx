@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { SmartScan } from './components/SmartScan';
+import { NotebookAuditor } from './components/NotebookAuditor';
 import { SummaryView } from './components/SummaryView';
 import { FlashcardsView } from './components/FlashcardsView';
 import { QuizView } from './components/QuizView';
@@ -9,32 +10,31 @@ import { NotebookChat } from './components/NotebookChat';
 import { SubjectCatalog } from './components/SubjectCatalog';
 import { FeaturesShowcase } from './components/FeaturesShowcase';
 import { Footer } from './components/Footer';
-import { SAMPLE_LESSONS } from './data/mockLessons';
+import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
 import type { LessonData } from './types';
-import { Camera, BookOpen, Zap, MessageSquare, ChevronRight } from 'lucide-react';
+import { Camera, BookOpen, Zap, MessageSquare, ChevronRight, CheckSquare } from 'lucide-react';
 import './App.css';
 
 export function App() {
-  const [lessons, setLessons] = useState<LessonData[]>(SAMPLE_LESSONS);
-  const [currentLesson, setCurrentLesson] = useState<LessonData>(SAMPLE_LESSONS[0]);
-  const [activeTab, setActiveTab] = useState<'scan' | 'summary' | 'flashcards' | 'quiz' | 'chat'>('summary');
+  const [lessons, setLessons] = useState<LessonData[]>(CURRICULUM_LESSONS);
+  const [currentLesson, setCurrentLesson] = useState<LessonData>(CURRICULUM_LESSONS[0]);
+  const [activeTab, setActiveTab] = useState<'scan' | 'audit' | 'summary' | 'flashcards' | 'quiz' | 'chat'>('audit');
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
 
   const handleLessonSelected = (lesson: LessonData) => {
     setCurrentLesson(lesson);
-    setActiveTab('summary');
+    setActiveTab('audit');
     const el = document.getElementById('workspace');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleScanCompleted = (newLesson: LessonData) => {
-    // Add newly scanned/generated lesson to lessons library if not already present
     if (!lessons.some(l => l.id === newLesson.id)) {
       setLessons(prev => [newLesson, ...prev]);
     }
     setCurrentLesson(newLesson);
     setIsScanModalOpen(false);
-    setActiveTab('summary');
+    setActiveTab('audit');
     const el = document.getElementById('workspace');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -94,6 +94,11 @@ export function App() {
               <span className="text-xs px-2.5 py-1 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
                 {currentLesson.grade}
               </span>
+              {currentLesson.examType && (
+                <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 font-bold">
+                  {currentLesson.examType}
+                </span>
+              )}
             </h2>
           </div>
 
@@ -107,67 +112,79 @@ export function App() {
           </button>
         </div>
 
-        {/* Tab Selection Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 p-1.5 rounded-2xl bg-[#12162a] border border-white/10 mb-8">
+        {/* Tab Selection Bar (6 Features) */}
+        <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 p-1.5 rounded-2xl bg-[#12162a] border border-white/10 mb-8">
           
           <button
             onClick={() => setActiveTab('scan')}
-            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
               activeTab === 'scan'
                 ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
             <Camera className="w-4 h-4 text-sky-400" />
-            <span>📸 Сканиране</span>
+            <span>📸 Скенер</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('audit')}
+            className={`flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+              activeTab === 'audit'
+                ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <CheckSquare className="w-4 h-4 text-amber-400" />
+            <span>📋 Одит за 6-ца</span>
           </button>
 
           <button
             onClick={() => setActiveTab('summary')}
-            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
               activeTab === 'summary'
                 ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
             <BookOpen className="w-4 h-4 text-indigo-400" />
-            <span>1. Резюме (1/2 стр.)</span>
+            <span>1. Резюме</span>
           </button>
 
           <button
             onClick={() => setActiveTab('flashcards')}
-            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
               activeTab === 'flashcards'
                 ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
             <Zap className="w-4 h-4 text-emerald-400" />
-            <span>2. Флашкарти ⚡</span>
+            <span>2. Флашкарти</span>
           </button>
 
           <button
             onClick={() => setActiveTab('quiz')}
-            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
               activeTab === 'quiz'
                 ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
             <span>🏆</span>
-            <span>3. Тест за 6-ца</span>
+            <span>3. Тест</span>
           </button>
 
           <button
             onClick={() => setActiveTab('chat')}
-            className={`col-span-2 sm:col-span-1 flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center justify-center gap-1.5 py-3 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
               activeTab === 'chat'
                 ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/25'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
             <MessageSquare className="w-4 h-4 text-sky-400" />
-            <span>💬 Питай тетрадката</span>
+            <span>💬 Чат</span>
           </button>
 
         </div>
@@ -178,6 +195,13 @@ export function App() {
             <SmartScan
               onScanComplete={handleScanCompleted}
               sampleLessons={lessons}
+            />
+          )}
+
+          {activeTab === 'audit' && (
+            <NotebookAuditor
+              lesson={currentLesson}
+              onProceedToHolyTrinity={() => setActiveTab('summary')}
             />
           )}
 

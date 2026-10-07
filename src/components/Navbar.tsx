@@ -1,10 +1,10 @@
 import React from 'react';
-import { Sparkles, Camera, BookOpen, MessageSquare, Zap, BookMarked } from 'lucide-react';
+import { Sparkles, Camera, BookOpen, MessageSquare, Zap, BookMarked, CheckSquare } from 'lucide-react';
 import { StudentStats } from './StudentStats';
 
 interface NavbarProps {
-  activeTab: 'scan' | 'summary' | 'flashcards' | 'quiz' | 'chat';
-  setActiveTab: (tab: 'scan' | 'summary' | 'flashcards' | 'quiz' | 'chat') => void;
+  activeTab: 'scan' | 'audit' | 'summary' | 'flashcards' | 'quiz' | 'chat';
+  setActiveTab: (tab: 'scan' | 'audit' | 'summary' | 'flashcards' | 'quiz' | 'chat') => void;
   onOpenScan: () => void;
   onScrollToCatalog: () => void;
 }
@@ -46,11 +46,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Navigation Links (Светата троица & функции) */}
+          {/* Navigation Links */}
           <nav className="hidden xl:flex items-center gap-1 bg-[#131627]/80 p-1.5 rounded-2xl border border-white/5 shadow-inner">
             <button
               onClick={() => setActiveTab('scan')}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                 activeTab === 'scan'
                   ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-600/30'
                   : 'text-slate-300 hover:text-white hover:bg-white/5'
@@ -61,8 +61,20 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <button
+              onClick={() => setActiveTab('audit')}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                activeTab === 'audit'
+                  ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-600/30'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <CheckSquare className="w-3.5 h-3.5 text-amber-400" />
+              Одит за 6-ца
+            </button>
+
+            <button
               onClick={() => setActiveTab('summary')}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                 activeTab === 'summary'
                   ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-600/30'
                   : 'text-slate-300 hover:text-white hover:bg-white/5'
@@ -74,7 +86,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => setActiveTab('flashcards')}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                 activeTab === 'flashcards'
                   ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-600/30'
                   : 'text-slate-300 hover:text-white hover:bg-white/5'
@@ -86,7 +98,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => setActiveTab('quiz')}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                 activeTab === 'quiz'
                   ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-600/30'
                   : 'text-slate-300 hover:text-white hover:bg-white/5'
@@ -98,7 +110,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => setActiveTab('chat')}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                 activeTab === 'chat'
                   ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-600/30'
                   : 'text-slate-300 hover:text-white hover:bg-white/5'
@@ -112,8 +124,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={onScrollToCatalog}
               className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all"
             >
-              <BookMarked className="w-3.5 h-3.5 text-amber-400" />
-              Библиотека
+              <BookMarked className="w-3.5 h-3.5 text-emerald-400" />
+              Каталог МОН
             </button>
           </nav>
 

@@ -292,7 +292,7 @@ export function App() {
             }`}
           >
             <Compass className="w-3.5 h-3.5 text-amber-400" />
-            <span>Обща култура</span>
+            <span>Неразгадани случки</span>
           </button>
 
           <button

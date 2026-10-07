@@ -234,6 +234,8 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
                 <option value="Химия и ООС">Химия и ООС</option>
                 <option value="География и икономика">География и икономика</option>
                 <option value="Физика и астрономия">Физика и астрономия</option>
+                <option value="Английски език">Английски език</option>
+                <option value="Гражданско образование и философия">Гражданско образование и философия</option>
               </select>
             </div>
           </div>

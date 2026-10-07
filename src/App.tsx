@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Navbar, type AppNavTab } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { CultureHero, type CultureSubTab } from './components/CultureHero';
-import { CultureHubView } from './components/CultureHubView';
 import { SmartScan } from './components/SmartScan';
 import { NotebookDiagnosticView } from './components/NotebookDiagnosticView';
 import { NotebookAuditor } from './components/NotebookAuditor';
@@ -11,15 +10,18 @@ import { FlashcardsView } from './components/FlashcardsView';
 import { QuizView } from './components/QuizView';
 import { NotebookChat } from './components/NotebookChat';
 import { SubjectCatalog } from './components/SubjectCatalog';
-import { CurriculumTreeBrowser } from './components/CurriculumTreeBrowser';
 import { FeaturesShowcase } from './components/FeaturesShowcase';
 import { Footer } from './components/Footer';
 
+// Code-split heavy interactive modules for optimal bundle size and instant initial load
+const CultureHubView = lazy(() => import('./components/CultureHubView').then(m => ({ default: m.CultureHubView })));
+const ExamSimulatorView = lazy(() => import('./components/ExamSimulatorView').then(m => ({ default: m.ExamSimulatorView })));
+const ErrorBankView = lazy(() => import('./components/ErrorBankView').then(m => ({ default: m.ErrorBankView })));
+const ExamTestPaperGenerator = lazy(() => import('./components/ExamTestPaperGenerator').then(m => ({ default: m.ExamTestPaperGenerator })));
+const CurriculumTreeBrowser = lazy(() => import('./components/CurriculumTreeBrowser').then(m => ({ default: m.CurriculumTreeBrowser })));
+
 // МОН Thematic Modules
 import { MonFormulaSheetsModal } from './components/MonFormulaSheetsModal';
-import { ExamSimulatorView } from './components/ExamSimulatorView';
-import { ErrorBankView } from './components/ErrorBankView';
-import { ExamTestPaperGenerator } from './components/ExamTestPaperGenerator';
 import { errorBankService } from './services/errorBankService';
 
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
@@ -48,6 +50,15 @@ const STUDY_TABS: AppNavTab[] = [
   'scan', 'diagnostic', 'audit', 'summary', 'flashcards', 'quiz',
   'chat', 'simulator', 'errorbank', 'generator'
 ];
+
+const ViewLoadingSkeleton = () => (
+  <div className="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse flex items-center justify-center min-h-[260px]">
+    <div className="flex items-center gap-3 text-slate-400 text-xs sm:text-sm font-medium">
+      <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      <span>Зареждане на модула...</span>
+    </div>
+  </div>
+);
 
 export function App() {
   // Top-level portal partition: 'study' (Academic Academy & OCR) vs 'culture' (General Knowledge & Mysteries)
@@ -420,7 +431,7 @@ export function App() {
 
             </div>
 
-            {/* Academic Tab Content Rendering */}
+            {/* Academic Tab Content Rendering with Suspense */}
             <div className="transition-all mb-12">
               {activeTab === 'scan' && (
                 <SmartScan
@@ -473,28 +484,34 @@ export function App() {
               )}
 
               {activeTab === 'simulator' && (
-                <ExamSimulatorView
-                  currentLesson={currentLesson}
-                  onOpenErrorBank={() => handleNavigateStudyTab('errorbank')}
-                  onRecordError={handleRecordError}
-                />
+                <Suspense fallback={<ViewLoadingSkeleton />}>
+                  <ExamSimulatorView
+                    currentLesson={currentLesson}
+                    onOpenErrorBank={() => handleNavigateStudyTab('errorbank')}
+                    onRecordError={handleRecordError}
+                  />
+                </Suspense>
               )}
 
               {activeTab === 'errorbank' && (
-                <ErrorBankView
-                  onStartCustomQuiz={handleStartCustomQuizFromErrors}
-                  allLessons={lessons}
-                  onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
-                />
+                <Suspense fallback={<ViewLoadingSkeleton />}>
+                  <ErrorBankView
+                    onStartCustomQuiz={handleStartCustomQuizFromErrors}
+                    allLessons={lessons}
+                    onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+                  />
+                </Suspense>
               )}
 
               {activeTab === 'generator' && (
-                <ExamTestPaperGenerator
-                  currentLesson={currentLesson}
-                  allLessons={lessons}
-                  onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
-                  onNavigateTab={handleNavigateStudyTab}
-                />
+                <Suspense fallback={<ViewLoadingSkeleton />}>
+                  <ExamTestPaperGenerator
+                    currentLesson={currentLesson}
+                    allLessons={lessons}
+                    onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+                    onNavigateTab={handleNavigateStudyTab}
+                  />
+                </Suspense>
               )}
 
               {activeTab === 'chat' && (
@@ -529,9 +546,11 @@ export function App() {
             </div>
 
             {/* Interactive Curriculum Hierarchy Browser */}
-            <CurriculumTreeBrowser
-              onSelectTopic={(l) => handleLessonSelected(l, 'summary')}
-            />
+            <Suspense fallback={<ViewLoadingSkeleton />}>
+              <CurriculumTreeBrowser
+                onSelectTopic={(l) => handleLessonSelected(l, 'summary')}
+              />
+            </Suspense>
 
             {/* Subject Catalog & Library Section */}
             <div id="catalog">
@@ -548,14 +567,16 @@ export function App() {
           /* PORTAL 2: ОБЩА КУЛТУРА & ЗАГАДКИ */
           /* ========================================================================= */
           <div>
-            <CultureHubView
-              activeSubTab={cultureSubTab}
-              onSelectSubTab={setCultureSubTab}
-              onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
-              onNavigateTab={handleNavigateStudyTab}
-              onSwitchToStudy={() => handleSelectPortalMode('study')}
-              lessons={lessons}
-            />
+            <Suspense fallback={<ViewLoadingSkeleton />}>
+              <CultureHubView
+                activeSubTab={cultureSubTab}
+                onSelectSubTab={setCultureSubTab}
+                onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+                onNavigateTab={handleNavigateStudyTab}
+                onSwitchToStudy={() => handleSelectPortalMode('study')}
+                lessons={lessons}
+              />
+            </Suspense>
 
             {/* Cross-Portal Bridge Banner: General Knowledge -> Study */}
             <div className="mt-14 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-indigo-950/40 via-slate-900 to-sky-950/30 border border-indigo-500/30 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">

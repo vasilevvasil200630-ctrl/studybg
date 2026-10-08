@@ -56,9 +56,9 @@ const STUDY_TABS: AppNavTab[] = [
 ];
 
 const ViewLoadingSkeleton = () => (
-  <div className="p-8 rounded-2xl bg-slate-900/40 border border-slate-800/60 animate-pulse flex items-center justify-center min-h-[300px]">
-    <div className="flex items-center gap-3 text-slate-400 text-xs sm:text-sm font-medium">
-      <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+  <div className="p-8 rounded-2xl bg-white border border-slate-200 animate-pulse flex items-center justify-center min-h-[300px] shadow-xs">
+    <div className="flex items-center gap-3 text-slate-500 text-xs sm:text-sm font-medium">
+      <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
       <span>Зареждане на модула...</span>
     </div>
   </div>
@@ -235,7 +235,7 @@ export function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0d101d] text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30 selection:text-indigo-300">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900">
       
       {/* Sticky Clean Navigation Bar with Portal Switcher */}
       <Navbar
@@ -270,7 +270,7 @@ export function App() {
 
       {/* Smart Scan Modal / Overlay */}
       {isScanModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto">
             <SmartScan
               onScanComplete={handleScanCompleted}
@@ -312,38 +312,38 @@ export function App() {
           <div>
             
             {/* Top Workspace Breadcrumbs & Topic Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800/60">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200">
               <div className="space-y-1">
                 {/* Breadcrumbs Trail */}
-                <nav aria-label="Хлябни трохи" className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-400">
+                <nav aria-label="Хлябни трохи" className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-500">
                   <a
                     href="#study"
                     onClick={(e) => {
                       e.preventDefault();
                       handleSelectPortalMode('study');
                     }}
-                    className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
+                    className="flex items-center gap-1 text-slate-500 hover:text-slate-900 transition-colors"
                   >
                     <Home className="w-3.5 h-3.5" />
                     <span>StudyBG</span>
                   </a>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
-                  <span className="text-indigo-400 font-semibold">Учебна академия</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
-                  <span className="text-emerald-400 font-medium">{currentLesson.subject}</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
-                  <span className="text-slate-300 font-medium">{currentLesson.grade}</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                  <span className="text-blue-700 font-semibold">Учебна академия</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                  <span className="text-emerald-700 font-medium">{currentLesson.subject}</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                  <span className="text-slate-700 font-medium">{currentLesson.grade}</span>
                 </nav>
 
                 {/* Lesson Title & Quick Switcher Pill */}
                 <div className="flex flex-wrap items-center gap-3 pt-1">
-                  <h2 className="text-xl sm:text-2xl font-bold text-white flex flex-wrap items-center gap-2">
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                     <span>{currentLesson.title}</span>
-                    <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-800/80 text-slate-300 border border-slate-700/60 font-medium">
+                    <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-200 font-medium">
                       {currentLesson.grade}
                     </span>
                     {currentLesson.examType && (
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/20 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
                         {currentLesson.examType}
                       </span>
                     )}
@@ -355,25 +355,25 @@ export function App() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsQuickLessonModalOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/70 text-xs font-medium shadow-sm transition-all"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 border border-slate-300 text-xs font-medium shadow-xs transition-all"
                   title="Отвори списъка с уроци"
                 >
-                  <Search className="w-3.5 h-3.5 text-indigo-400" />
+                  <Search className="w-3.5 h-3.5 text-blue-600" />
                   <span>Смени тема</span>
                 </button>
 
                 <button
                   onClick={() => setIsScanModalOpen(true)}
-                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-sm transition-all"
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-all"
                 >
-                  <Camera className="w-4 h-4 text-indigo-200" />
+                  <Camera className="w-4 h-4 text-white" />
                   <span>Сканирай записки</span>
                 </button>
               </div>
             </div>
 
             {/* Mobile / Tablet Horizontal Quick Tab Strip (visible only on small viewports) */}
-            <div className="lg:hidden mb-6 p-1.5 rounded-xl bg-slate-900/80 border border-slate-800 overflow-x-auto no-scrollbar flex items-center gap-1">
+            <div className="lg:hidden mb-6 p-1.5 rounded-xl bg-white border border-slate-200 shadow-xs overflow-x-auto no-scrollbar flex items-center gap-1">
               {mobileNavPills.map((p) => {
                 const isActive = activeTab === p.tab;
                 return (
@@ -382,8 +382,8 @@ export function App() {
                     onClick={() => handleNavigateStudyTab(p.tab)}
                     className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
                       isActive
-                        ? 'bg-indigo-600 text-white shadow-sm font-semibold'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                        ? 'bg-blue-600 text-white shadow-xs font-semibold'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                     }`}
                   >
                     {p.icon}
@@ -412,7 +412,7 @@ export function App() {
 
               {/* Right Column: Clean Main Content Area Strictly Scoped to Active Tab */}
               <div className="lg:col-span-8 xl:col-span-9 min-w-0">
-                <div className="rounded-2xl bg-slate-900/40 border border-slate-800/60 p-4 sm:p-6 lg:p-7 backdrop-blur-sm shadow-sm transition-all">
+                <div className="rounded-2xl bg-white border border-slate-200 p-4 sm:p-6 lg:p-7 shadow-xs transition-all">
                   
                   {activeTab === 'scan' && (
                     <SmartScan
@@ -530,23 +530,23 @@ export function App() {
           /* ========================================================================= */
           <div>
             {/* Culture Wayfinding Header: Breadcrumbs Trail */}
-            <div className="mb-6 pb-4 border-b border-slate-800/60">
-              <nav aria-label="Хлябни трохи" className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-400">
+            <div className="mb-6 pb-4 border-b border-slate-200">
+              <nav aria-label="Хлябни трохи" className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-500">
                 <a
                   href="#culture"
                   onClick={(e) => {
                     e.preventDefault();
                     handleSelectPortalMode('culture');
                   }}
-                  className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
+                  className="flex items-center gap-1 text-slate-500 hover:text-slate-900 transition-colors"
                 >
                   <Home className="w-3.5 h-3.5" />
                   <span>StudyBG</span>
                 </a>
-                <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
-                <span className="text-amber-400 font-semibold">Обща култура & Загадки</span>
-                <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
-                <span className="text-slate-300 font-medium">
+                <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                <span className="text-amber-800 font-bold">Обща култура & Загадки</span>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                <span className="text-slate-800 font-medium">
                   {cultureSubTab === 'mysteries'
                     ? '📜 Неразгадани случки от историята'
                     : cultureSubTab === 'timeline'

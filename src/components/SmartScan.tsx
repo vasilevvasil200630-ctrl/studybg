@@ -60,7 +60,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
         setSelectedFileName(file.name);
         setIsScanning(true);
         setProgressPercent(25);
-        setScanStep('🤖 Google Gemini 1.5 Flash сканира изображението...');
+        setScanStep('Google Gemini сканира изображението...');
         try {
           setProgressPercent(60);
           const geminiExtracted = await extractNotebookTextWithGemini(file);
@@ -93,11 +93,11 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
   const featuredSamples = sampleLessons.slice(0, 4);
 
   return (
-    <div className="relative p-6 sm:p-8 rounded-2xl bg-[#0f121e] border border-slate-800 shadow-2xl overflow-hidden">
+    <div className="relative p-6 sm:p-8 rounded-2xl bg-white border border-slate-200 shadow-xl overflow-hidden">
       {onClose && (
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-800 transition-all z-10"
+          className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 transition-all z-10"
         >
           <X className="w-5 h-5" />
         </button>
@@ -106,21 +106,21 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
       {/* Header */}
       <div className="text-center max-w-xl mx-auto mb-6">
         <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-semibold border border-slate-700">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
             <span>МОН Детектор & Анализ на записки</span>
           </div>
           {isGeminiConfigured() && (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 text-indigo-300 text-xs font-semibold border border-indigo-500/30">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Google Gemini 1.5 Vision активен</span>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-200">
+              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+              <span>Google Gemini Vision активен</span>
             </div>
           )}
         </div>
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
           Качи снимка на своите записки
         </h2>
-        <p className="mt-2 text-xs sm:text-sm text-slate-400 leading-relaxed">
+        <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
           Системата анализира ръкописа, определя точния <strong>предмет</strong> и <strong>клас</strong> по МОН и проверява покритието на задължителните термини за отлична оценка.
         </p>
       </div>
@@ -132,11 +132,11 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
             onClick={() => setActiveMode('upload')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
               activeMode === 'upload'
-                ? 'bg-slate-800 text-white border border-slate-700 shadow-sm'
-                : 'bg-slate-900/60 text-slate-400 hover:text-slate-200'
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
             }`}
           >
-            <ImageIcon className="w-4 h-4 text-sky-400" />
+            <ImageIcon className="w-4 h-4 text-blue-600" />
             <span>Снимка / PDF документ</span>
           </button>
 
@@ -144,11 +144,11 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
             onClick={() => setActiveMode('paste')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
               activeMode === 'paste'
-                ? 'bg-slate-800 text-white border border-slate-700 shadow-sm'
-                : 'bg-slate-900/60 text-slate-400 hover:text-slate-200'
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
             }`}
           >
-            <Edit3 className="w-4 h-4 text-slate-400" />
+            <Edit3 className="w-4 h-4 text-slate-500" />
             <span>Въвеждане на текст</span>
           </button>
         </div>
@@ -158,35 +158,34 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
         /* Processing Animation */
         <div className="py-12 flex flex-col items-center justify-center text-center">
           {previewUrl && (
-            <div className="relative w-44 h-28 rounded-xl overflow-hidden border border-slate-700 mb-6 shadow-md bg-black/40">
-              <img src={previewUrl} alt="Преглед на документа" className="w-full h-full object-cover opacity-80" />
-              <div className="absolute inset-0 bg-indigo-950/20" />
+            <div className="relative w-44 h-28 rounded-xl overflow-hidden border border-slate-200 mb-6 shadow-md bg-slate-50">
+              <img src={previewUrl} alt="Преглед на документа" className="w-full h-full object-cover" />
             </div>
           )}
 
-          <div className="relative flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600/10 border border-indigo-500/30 mb-5">
-            <Loader2 className="w-8 h-8 text-indigo-400 animate-spin" />
+          <div className="relative flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-50 border border-blue-200 mb-5 text-blue-600">
+            <Loader2 className="w-8 h-8 animate-spin" />
           </div>
 
-          <div className="text-base font-bold text-white mb-1.5">{scanStep}</div>
-          <p className="text-xs text-slate-400 font-mono">
+          <div className="text-base font-bold text-slate-900 mb-1.5">{scanStep}</div>
+          <p className="text-xs text-slate-500 font-mono">
             {selectedFileName ? `Файл: ${selectedFileName}` : 'Обработка на документа...'}
           </p>
 
           {/* Clean Progress Bar */}
-          <div className="w-72 bg-slate-800 rounded-full h-2 mt-6 overflow-hidden border border-slate-700/60">
+          <div className="w-72 bg-slate-100 rounded-full h-2 mt-6 overflow-hidden border border-slate-200">
             <div
-              className="h-full bg-indigo-500 rounded-full transition-all duration-500 ease-out"
+              className="h-full bg-blue-600 rounded-full transition-all duration-500 ease-out"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <span className="text-[11px] font-mono text-slate-400 mt-2">{progressPercent}% завършено</span>
+          <span className="text-[11px] font-mono text-slate-500 mt-2">{progressPercent}% завършено</span>
         </div>
       ) : activeMode === 'upload' ? (
         /* Upload & Presets Area */
         <div>
           {/* Dropzone */}
-          <label className="group relative block cursor-pointer rounded-2xl border-2 border-dashed border-slate-700/80 hover:border-indigo-400 bg-slate-900/50 hover:bg-slate-800/40 p-8 sm:p-10 text-center transition-all">
+          <label className="group relative block cursor-pointer rounded-2xl border-2 border-dashed border-slate-300 hover:border-blue-600 bg-slate-50/60 hover:bg-blue-50/20 p-8 sm:p-10 text-center transition-all">
             <input
               type="file"
               accept="image/*,application/pdf"
@@ -194,22 +193,22 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
               onChange={handleFileUpload}
             />
 
-            <div className="w-14 h-14 mx-auto mb-3.5 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 group-hover:text-white transition-colors">
-              <UploadCloud className="w-7 h-7 text-indigo-400" />
+            <div className="w-14 h-14 mx-auto mb-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-center text-blue-600 group-hover:scale-105 transition-all">
+              <UploadCloud className="w-7 h-7" />
             </div>
 
-            <div className="text-sm font-semibold text-white mb-1">
-              Качи снимка на тетрадката тук или <span className="text-sky-400 underline underline-offset-4">избери файл от устройството</span>
+            <div className="text-sm font-semibold text-slate-900 mb-1">
+              Качи снимка на тетрадката тук или <span className="text-blue-600 underline underline-offset-4">избери файл от устройството</span>
             </div>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto mt-1">
+            <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
               Поддържа: JPG, PNG, HEIC (снимка от камера), както и PDF лекции или сканирани листове.
             </p>
           </label>
 
           {/* Quick Demo Previews */}
-          <div className="mt-6 pt-5 border-t border-slate-800">
-            <div className="text-xs font-semibold text-slate-400 mb-3 flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="mt-6 pt-5 border-t border-slate-100">
+            <div className="text-xs font-semibold text-slate-600 mb-3 flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
               <span>Или тествай веднага с готови примерни записки:</span>
             </div>
 
@@ -218,16 +217,16 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
                 <button
                   key={sample.id}
                   onClick={() => startProcessing(sample.summary.overview + ' ' + sample.originalNoteExcerpt, sample.title, sample)}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-slate-700 text-left transition-all group"
+                  className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 hover:bg-white border border-slate-200 hover:border-slate-300 text-left transition-all shadow-2xs group"
                 >
-                  <div className="p-2 rounded-lg bg-slate-800 text-slate-400 group-hover:text-white transition-all flex-shrink-0">
-                    <FileText className="w-4 h-4 text-indigo-400" />
+                  <div className="p-2 rounded-lg bg-white border border-slate-200 text-blue-600 group-hover:bg-blue-50 transition-all flex-shrink-0">
+                    <FileText className="w-4 h-4" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="text-xs font-semibold text-white truncate">
+                    <div className="text-xs font-semibold text-slate-900 truncate">
                       {sample.title}
                     </div>
-                    <div className="text-[10px] text-emerald-400">
+                    <div className="text-[10px] text-emerald-700 font-medium">
                       {sample.subject} • {sample.grade}
                     </div>
                   </div>
@@ -242,7 +241,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
         <form onSubmit={handlePasteSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Заглавие на темата / урока
               </label>
               <input
@@ -251,18 +250,18 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
                 value={customTitle}
                 onChange={(e) => setCustomTitle(e.target.value)}
                 placeholder="напр. Априлско въстание или Квадратни уравнения"
-                className="w-full bg-slate-900 text-white px-3.5 py-2.5 rounded-xl border border-slate-800 text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 text-slate-900 px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-blue-600 focus:bg-white"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Ориентировъчен предмет
               </label>
               <select
                 value={customSubject}
                 onChange={(e) => setCustomSubject(e.target.value)}
-                className="w-full bg-slate-900 text-white px-3.5 py-2.5 rounded-xl border border-slate-800 text-sm focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 text-slate-900 px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-blue-600 focus:bg-white"
               >
                 <option value="История и цивилизации">История и цивилизации</option>
                 <option value="Български език и литература">Български език и литература</option>
@@ -278,7 +277,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
               Записки от тетрадката / план на урока
             </label>
             <textarea
@@ -287,15 +286,15 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
               value={customText}
               onChange={(e) => setCustomText(e.target.value)}
               placeholder="Постави тук записаното в тетрадката... Системата автоматично ще намери дяла и ще изготви одит."
-              className="w-full bg-slate-900 text-white p-3.5 rounded-xl border border-slate-800 text-sm focus:outline-none focus:border-indigo-500 resize-none font-mono"
+              className="w-full bg-slate-50 text-slate-900 p-3.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-blue-600 focus:bg-white resize-none font-mono"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2 border border-indigo-500/40"
+            className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm shadow-xs transition-all flex items-center justify-center gap-2"
           >
-            <CheckCircle2 className="w-4 h-4 text-indigo-200" />
+            <CheckCircle2 className="w-4 h-4 text-blue-200" />
             <span>Анализирай съдържанието и намери дяла по МОН</span>
           </button>
         </form>

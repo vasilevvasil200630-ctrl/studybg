@@ -56,26 +56,26 @@ export const AudioReader: React.FC<AudioReaderProps> = ({ textToRead }) => {
   return (
     <button
       onClick={handleToggleSpeak}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors shadow-2xs ${
         isSpeaking
-          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-          : 'bg-slate-800/80 hover:bg-slate-700 text-slate-300 border-slate-700/60'
+          ? 'bg-emerald-50 text-emerald-800 border-emerald-200 font-semibold'
+          : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300'
       }`}
       title="Аудио прочит на конспекта"
     >
       {isSpeaking ? (
         <>
-          <VolumeX className="w-3.5 h-3.5 text-rose-400" />
+          <VolumeX className="w-3.5 h-3.5 text-rose-600" />
           <span>Спри звука</span>
           <span className="flex items-center gap-0.5 ml-1">
-            <span className="w-1 h-2 bg-emerald-400 rounded-full animate-pulse" />
-            <span className="w-1 h-3 bg-emerald-400 rounded-full animate-pulse [animation-delay:0.15s]" />
-            <span className="w-1 h-2 bg-emerald-400 rounded-full animate-pulse [animation-delay:0.3s]" />
+            <span className="w-1 h-2 bg-emerald-600 rounded-full animate-pulse" />
+            <span className="w-1 h-3 bg-emerald-600 rounded-full animate-pulse [animation-delay:0.15s]" />
+            <span className="w-1 h-2 bg-emerald-600 rounded-full animate-pulse [animation-delay:0.3s]" />
           </span>
         </>
       ) : (
         <>
-          <Volume2 className="w-3.5 h-3.5 text-indigo-400" />
+          <Volume2 className="w-3.5 h-3.5 text-blue-600" />
           <span>Аудио прочит</span>
         </>
       )}

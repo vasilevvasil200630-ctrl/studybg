@@ -80,40 +80,40 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
     if (points >= 90) {
       return {
         grade: 'Отличен 6.00',
-        badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+        badge: 'bg-emerald-50 text-emerald-800 border-emerald-200',
         status: 'Готовност за пълен Отличен на ДЗИ / НВО',
-        color: 'text-emerald-400'
+        color: 'text-emerald-700'
       };
     }
     if (points >= 75) {
       return {
         grade: 'Много добър 5.00',
-        badge: 'bg-sky-500/10 text-sky-400 border-sky-500/30',
+        badge: 'bg-sky-50 text-sky-800 border-sky-200',
         status: 'Много добра основа, има детайли за изчистване',
-        color: 'text-sky-400'
+        color: 'text-sky-700'
       };
     }
     if (points >= 59) {
       return {
         grade: 'Добър 4.00',
-        badge: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+        badge: 'bg-amber-50 text-amber-800 border-amber-200',
         status: 'Средна степен на усвояване на стандартите на МОН',
-        color: 'text-amber-400'
+        color: 'text-amber-700'
       };
     }
     if (points >= 30) {
       return {
         grade: 'Среден 3.00',
-        badge: 'bg-orange-500/10 text-orange-400 border-orange-500/30',
+        badge: 'bg-orange-50 text-orange-800 border-orange-200',
         status: 'Критичен праг — необходим е сериозен преговор',
-        color: 'text-orange-400'
+        color: 'text-orange-700'
       };
     }
     return {
       grade: 'Слаб 2.00',
-      badge: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
+      badge: 'bg-rose-50 text-rose-800 border-rose-200',
       status: 'Под официалния праг за преминаване (под 30 точки)',
-      color: 'text-rose-400'
+      color: 'text-rose-700'
     };
   };
 
@@ -155,23 +155,23 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         
         {/* NVO 7th Grade Card */}
-        <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl flex items-center justify-between">
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">
+              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200">
                 7. клас • НВО
               </span>
-              <span className="text-xs text-slate-400">17 – 19 юни 2026 г.</span>
+              <span className="text-xs text-slate-500">17 – 19 юни 2026 г.</span>
             </div>
-            <h4 className="text-sm font-bold text-slate-100">
+            <h4 className="text-sm font-bold text-slate-900">
               Национално външно оценяване
             </h4>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-600 mt-0.5">
               Български език и литература & Математика
             </p>
           </div>
           <div className="text-right">
-            <div className="text-3xl font-extrabold text-slate-100 font-mono">
+            <div className="text-3xl font-extrabold text-slate-900 font-mono">
               {diffNvo}
             </div>
             <span className="text-[11px] text-slate-500 uppercase tracking-wider">
@@ -181,23 +181,23 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
         </div>
 
         {/* DZI 12th Grade Card */}
-        <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl flex items-center justify-between">
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/25">
+              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
                 12. клас • ДЗИ
               </span>
-              <span className="text-xs text-slate-400">20 – 22 май 2026 г.</span>
+              <span className="text-xs text-slate-500">20 – 22 май 2026 г.</span>
             </div>
-            <h4 className="text-sm font-bold text-slate-100">
+            <h4 className="text-sm font-bold text-slate-900">
               Държавни зрелостни изпити (Матури)
             </h4>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-600 mt-0.5">
               Задължителна матура по БЕЛ и профилиран предмет
             </p>
           </div>
           <div className="text-right">
-            <div className="text-3xl font-extrabold text-slate-100 font-mono">
+            <div className="text-3xl font-extrabold text-slate-900 font-mono">
               {diffDzi}
             </div>
             <span className="text-[11px] text-slate-500 uppercase tracking-wider">
@@ -209,17 +209,17 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
       </div>
 
       {/* Simulator Control Box */}
-      <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-800">
+      <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-semibold text-indigo-400 uppercase tracking-wider mb-1">
+            <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 uppercase tracking-wider mb-1">
               <ShieldAlert className="w-3.5 h-3.5" />
               <span>Режим „Реален изпит без подсказки“ (100-точкова скала на МОН)</span>
             </div>
-            <h3 className="text-xl sm:text-2xl font-bold text-slate-100">
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
               Симулация на изпит за „{currentLesson.title}“
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-600 mt-0.5">
               Официална система: {questions.length} въпроса = 100 точки общ сбор.
             </p>
           </div>
@@ -227,9 +227,9 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
           {/* Time & State Indicator */}
           <div className="flex items-center gap-3">
             {isExamRunning && (
-              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-950 border border-slate-800">
-                <Clock className="w-4 h-4 text-amber-400 animate-pulse" />
-                <span className="font-mono text-base font-bold text-slate-100">
+              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-amber-50 border border-amber-200">
+                <Clock className="w-4 h-4 text-amber-600 animate-pulse" />
+                <span className="font-mono text-base font-bold text-amber-900">
                   {formatTimer(secondsLeft)}
                 </span>
               </div>
@@ -239,13 +239,13 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleStartExam(30)}
-                  className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
+                  className="px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium border border-slate-200 transition-colors"
                 >
                   30 мин
                 </button>
                 <button
                   onClick={() => handleStartExam(60)}
-                  className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors shadow-sm"
+                  className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-xs"
                 >
                   Старт симулация (60 мин)
                 </button>
@@ -256,9 +256,9 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
 
         {/* Exam active banner */}
         {isExamRunning && (
-          <div className="p-3 my-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between text-xs text-slate-400">
+          <div className="p-3 my-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs text-slate-600">
             <span>Времето тече. Отговорите не се показват до финално предаване.</span>
-            <span className="font-mono text-slate-300">
+            <span className="font-mono font-medium text-slate-800">
               Попълнени: {Object.keys(selectedAnswers).length} / {questions.length}
             </span>
           </div>
@@ -266,16 +266,16 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
 
         {/* Results Card */}
         {isSubmitted && (
-          <div className="p-6 my-6 rounded-xl bg-slate-950 border border-slate-800">
+          <div className="p-6 my-6 rounded-xl bg-slate-50 border border-slate-200">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div>
                 <span className={`inline-block px-3 py-1 rounded text-xs font-semibold border mb-2 ${gradeInfo.badge}`}>
                   Официална оценка: {gradeInfo.grade}
                 </span>
-                <h4 className="text-3xl font-extrabold text-slate-100 font-mono">
+                <h4 className="text-3xl font-extrabold text-slate-900 font-mono">
                   {totalPoints} / 100 точки
                 </h4>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-slate-600 mt-1">
                   {gradeInfo.status}
                 </p>
               </div>
@@ -283,7 +283,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
               <div className="flex flex-wrap items-center gap-2.5">
                 <button
                   onClick={() => handleStartExam(examDurationMinutes)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium border border-slate-300 transition-colors shadow-2xs"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   <span>Повтори симулацията</span>
@@ -292,7 +292,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                 {onOpenErrorBank && (
                   <button
                     onClick={onOpenErrorBank}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors shadow-sm"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-xs"
                   >
                     <span>Прегледай сгрешените в Банката с грешки</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -310,12 +310,12 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
               const selectedOpt = selectedAnswers[q.id];
 
               return (
-                <div key={q.id} className="p-4 sm:p-5 rounded-xl bg-slate-950/60 border border-slate-800 space-y-3">
+                <div key={q.id} className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200 space-y-3 shadow-2xs">
                   <div className="flex items-start gap-3">
-                    <span className="w-6 h-6 rounded bg-slate-900 border border-slate-800 text-slate-400 font-mono font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="w-6 h-6 rounded bg-slate-100 border border-slate-200 text-slate-700 font-mono font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
                       {qIdx + 1}
                     </span>
-                    <h5 className="text-sm font-semibold text-slate-100 leading-snug">
+                    <h5 className="text-sm font-semibold text-slate-900 leading-snug">
                       {q.question}
                     </h5>
                   </div>
@@ -331,11 +331,11 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                           onClick={() => handleSelectOption(q.id, oIdx)}
                           className={`flex items-center gap-3 p-3 rounded-lg border text-left text-xs transition-colors ${
                             isSelected
-                              ? 'bg-indigo-600/20 border-indigo-500 text-white font-medium ring-1 ring-indigo-500/50'
-                              : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:bg-slate-900'
+                              ? 'bg-blue-50 border-blue-500 text-blue-950 font-medium ring-1 ring-blue-500/50'
+                              : 'bg-slate-50/70 border-slate-200 text-slate-800 hover:bg-slate-100 hover:border-slate-300'
                           }`}
                         >
-                          <span className="w-5 h-5 rounded bg-slate-950 font-mono text-[11px] font-bold text-slate-400 flex items-center justify-center flex-shrink-0 border border-slate-800">
+                          <span className="w-5 h-5 rounded bg-white font-mono text-[11px] font-bold text-slate-700 flex items-center justify-center flex-shrink-0 border border-slate-200">
                             {letters[oIdx]}
                           </span>
                           <span className="flex-1">{opt}</span>
@@ -347,13 +347,13 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
               );
             })}
 
-            <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
-              <span className="text-xs text-slate-400">
+            <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+              <span className="text-xs text-slate-500">
                 Остават: {formatTimer(secondsLeft)}
               </span>
               <button
                 onClick={handleSubmitExam}
-                className="px-6 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors shadow-sm"
+                className="px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-xs"
               >
                 Предай симулационния изпит
               </button>

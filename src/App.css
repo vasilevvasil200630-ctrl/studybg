@@ -1,4 +1,4 @@
-/* Custom utility animations and styles for StudyBG */
+/* 3D card flip utilities for flashcards */
 .perspective-1000 {
   perspective: 1000px;
 }
@@ -16,39 +16,18 @@
   transform: rotateY(180deg);
 }
 
-.glass-panel {
-  background: rgba(17, 24, 39, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Clean, crisp academic card styles */
+.card-clean {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
-.glass-panel-glow {
-  background: rgba(17, 24, 39, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(99, 102, 241, 0.25);
-  box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.15);
+.card-clean-hover {
+  transition: all 0.15s ease-in-out;
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 40%, #38bdf8 80%, #34d399 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.gradient-border-mask {
-  position: relative;
-}
-.gradient-border-mask::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.6), rgba(56, 189, 248, 0.3), rgba(16, 185, 129, 0.6));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
+.card-clean-hover:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
 }

@@ -12,6 +12,8 @@ import { NotebookChat } from './components/NotebookChat';
 import { SubjectCatalog } from './components/SubjectCatalog';
 import { FeaturesShowcase } from './components/FeaturesShowcase';
 import { Footer } from './components/Footer';
+import { QuickLessonSwitcherModal } from './components/QuickLessonSwitcherModal';
+import { WayfindingDock } from './components/WayfindingDock';
 
 // Code-split heavy interactive modules for optimal bundle size and instant initial load
 const CultureHubView = lazy(() => import('./components/CultureHubView').then(m => ({ default: m.CultureHubView })));
@@ -42,7 +44,9 @@ import {
   FileText,
   Compass,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Search,
+  Home
 } from 'lucide-react';
 import './App.css';
 
@@ -74,6 +78,7 @@ export function App() {
   const [activeTab, setActiveTab] = useState<AppNavTab>('summary');
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
   const [isFormulaModalOpen, setIsFormulaModalOpen] = useState(false);
+  const [isQuickLessonModalOpen, setIsQuickLessonModalOpen] = useState(false);
   const [practiceQuestions, setPracticeQuestions] = useState<QuizQuestion[] | null>(null);
 
   const handleSelectPortalMode = (mode: 'study' | 'culture') => {
@@ -258,10 +263,26 @@ export function App() {
         </div>
       )}
 
+      {/* Quick Lesson Switcher Modal */}
+      <QuickLessonSwitcherModal
+        isOpen={isQuickLessonModalOpen}
+        onClose={() => setIsQuickLessonModalOpen(false)}
+        lessons={lessons}
+        currentLessonId={currentLesson.id}
+        onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+      />
+
       {/* Official МОН Formula Sheets Modal */}
       {isFormulaModalOpen && (
         <MonFormulaSheetsModal onClose={() => setIsFormulaModalOpen(false)} />
       )}
+
+      {/* Floating Wayfinding & Quick Actions Dock */}
+      <WayfindingDock
+        portalMode={portalMode}
+        onTogglePortalMode={() => handleSelectPortalMode(portalMode === 'study' ? 'culture' : 'study')}
+        onOpenQuickLessonPicker={() => setIsQuickLessonModalOpen(true)}
+      />
 
       {/* Main Workspace */}
       <main id="workspace" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
@@ -271,28 +292,54 @@ export function App() {
         {/* ========================================================================= */}
         {portalMode === 'study' ? (
           <div>
-            {/* Workspace Title & Current Active Subject */}
+            {/* Workspace Wayfinding Header: Interactive Breadcrumbs & Current Subject */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-5 border-b border-slate-800/80">
-              <div>
-                <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400 mb-1.5">
-                  <span className="text-slate-500">Учебен предмет</span>
+              <div className="space-y-1.5">
+                
+                {/* Breadcrumbs Trail */}
+                <nav aria-label="Хлябни трохи" className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-400">
+                  <a
+                    href="#study"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSelectPortalMode('study');
+                    }}
+                    className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
+                  >
+                    <Home className="w-3.5 h-3.5" />
+                    <span>StudyBG</span>
+                  </a>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
-                  <span className="text-emerald-400 font-semibold">{currentLesson.subject}</span>
+                  <span className="text-indigo-400 font-semibold">Учебна академия</span>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
-                  <span className="text-slate-300 font-medium truncate max-w-xs">{currentLesson.grade}</span>
-                </div>
+                  <span className="text-emerald-400 font-medium">{currentLesson.subject}</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
+                  <span className="text-slate-300 font-medium">{currentLesson.grade}</span>
+                </nav>
 
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex flex-wrap items-center gap-3">
-                  <span>{currentLesson.title}</span>
-                  <span className="text-xs px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700/80 font-medium">
-                    {currentLesson.grade}
-                  </span>
-                  {currentLesson.examType && (
-                    <span className="text-xs px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/25 font-semibold">
-                      {currentLesson.examType}
+                {/* Lesson Title & Quick Switcher Button */}
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex flex-wrap items-center gap-2.5">
+                    <span>{currentLesson.title}</span>
+                    <span className="text-xs px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700/80 font-medium">
+                      {currentLesson.grade}
                     </span>
-                  )}
-                </h2>
+                    {currentLesson.examType && (
+                      <span className="text-xs px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/25 font-semibold">
+                        {currentLesson.examType}
+                      </span>
+                    )}
+                  </h2>
+
+                  <button
+                    onClick={() => setIsQuickLessonModalOpen(true)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 hover:text-white border border-indigo-500/40 text-xs font-semibold shadow-sm transition-all cursor-pointer"
+                    title="Отвори бързо търсене и смяна на урок"
+                  >
+                    <Search className="w-3.5 h-3.5 text-indigo-400" />
+                    <span>Смени тема ({lessons.length})</span>
+                  </button>
+                </div>
               </div>
 
               {/* Quick Action Tools Bar */}
@@ -315,120 +362,168 @@ export function App() {
               </div>
             </div>
 
-            {/* Extended Segmented Academic Navigation Controls */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-1 p-1 rounded-xl bg-slate-900 border border-slate-800/90 mb-8 shadow-sm text-center">
-              
-              <button
-                onClick={() => handleNavigateStudyTab('diagnostic')}
-                className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
-                  activeTab === 'diagnostic'
-                    ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-                }`}
-              >
-                <FileSearch className="w-3.5 h-3.5 text-sky-400" />
-                <span>Диагноза</span>
-              </button>
+            {/* 3-Phase Pedagogical Navigation Controls */}
+            <div className="mb-8 space-y-2">
+              <div className="flex items-center justify-between text-xs text-slate-400 px-1">
+                <span className="font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>Учебна пътека • 3 стъпки към отличен 6.00:</span>
+                </span>
+                <span className="text-[11px] text-slate-500 hidden sm:inline">
+                  Избери модул според текущия етап на твоята подготовка
+                </span>
+              </div>
 
-              <button
-                onClick={() => handleNavigateStudyTab('audit')}
-                className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
-                  activeTab === 'audit'
-                    ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-                }`}
-              >
-                <CheckSquare className="w-3.5 h-3.5 text-amber-400" />
-                <span>Одит за 6.00</span>
-              </button>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 p-2 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-md">
+                
+                {/* Фаза 1: Научи & Анализирай */}
+                <div className="p-1.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-indigo-400 px-2 py-0.5 flex items-center justify-between">
+                    <span>1. Научи & Анализирай</span>
+                    <span className="text-slate-500">Теория</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1">
+                    <button
+                      onClick={() => handleNavigateStudyTab('summary')}
+                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
+                        activeTab === 'summary'
+                          ? 'bg-indigo-600 text-white font-semibold shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                      }`}
+                      title="Синтезиран конспект по темата"
+                    >
+                      <BookOpen className="w-3.5 h-3.5" />
+                      <span>Конспект</span>
+                    </button>
 
-              <button
-                onClick={() => handleNavigateStudyTab('summary')}
-                className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
-                  activeTab === 'summary'
-                    ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-                }`}
-              >
-                <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Конспект</span>
-              </button>
+                    <button
+                      onClick={() => handleNavigateStudyTab('audit')}
+                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
+                        activeTab === 'audit'
+                          ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                      }`}
+                      title="Провери какво ти липсва в тетрадката за 6.00"
+                    >
+                      <CheckSquare className="w-3.5 h-3.5" />
+                      <span>Одит 6.00</span>
+                    </button>
 
-              <button
-                onClick={() => handleNavigateStudyTab('flashcards')}
-                className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
-                  activeTab === 'flashcards'
-                    ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-                }`}
-              >
-                <Zap className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Флаш карти</span>
-              </button>
+                    <button
+                      onClick={() => handleNavigateStudyTab('diagnostic')}
+                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
+                        activeTab === 'diagnostic'
+                          ? 'bg-sky-600 text-white font-semibold shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                      }`}
+                      title="Диагностика на ръкописа от тетрадка"
+                    >
+                      <FileSearch className="w-3.5 h-3.5" />
+                      <span>Диагноза</span>
+                    </button>
+                  </div>
+                </div>
 
-              <button
-                onClick={() => {
-                  setPracticeQuestions(null);
-                  handleNavigateStudyTab('quiz');
-                }}
-                className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
-                  activeTab === 'quiz'
-                    ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-                }`}
-              >
-                <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
-                <span>Тест</span>
-              </button>
+                {/* Фаза 2: Тествай се */}
+                <div className="p-1.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 px-2 py-0.5 flex items-center justify-between">
+                    <span>2. Тествай се</span>
+                    <span className="text-slate-500">Практика</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1">
+                    <button
+                      onClick={() => handleNavigateStudyTab('flashcards')}
+                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
+                        activeTab === 'flashcards'
+                          ? 'bg-emerald-600 text-white font-semibold shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                      }`}
+                      title="Флаш карти за бързо запомняне"
+                    >
+                      <Zap className="w-3.5 h-3.5" />
+                      <span>Карти</span>
+                    </button>
 
-              <button
-                onClick={() => handleNavigateStudyTab('simulator')}
-                className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
-                  activeTab === 'simulator'
-                    ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-                }`}
-              >
-                <Clock className="w-3.5 h-3.5 text-amber-400" />
-                <span>Симулатор (100т.)</span>
-              </button>
+                    <button
+                      onClick={() => {
+                        setPracticeQuestions(null);
+                        handleNavigateStudyTab('quiz');
+                      }}
+                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
+                        activeTab === 'quiz'
+                          ? 'bg-sky-600 text-white font-semibold shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                      }`}
+                      title="10-въпросен тест за контролна работа"
+                    >
+                      <GraduationCap className="w-3.5 h-3.5" />
+                      <span>Тест</span>
+                    </button>
 
-              <button
-                onClick={() => handleNavigateStudyTab('errorbank')}
-                className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
-                  activeTab === 'errorbank'
-                    ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-                }`}
-              >
-                <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
-                <span>Грешки</span>
-              </button>
+                    <button
+                      onClick={() => handleNavigateStudyTab('simulator')}
+                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
+                        activeTab === 'simulator'
+                          ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                      }`}
+                      title="100-точков изпитен симулатор за НВО/ДЗИ"
+                    >
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>Симулатор</span>
+                    </button>
+                  </div>
+                </div>
 
-              <button
-                onClick={() => handleNavigateStudyTab('generator')}
-                className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
-                  activeTab === 'generator'
-                    ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-                }`}
-              >
-                <Printer className="w-3.5 h-3.5 text-slate-300" />
-                <span>Група А & Б</span>
-              </button>
+                {/* Фаза 3: Инструменти & AI */}
+                <div className="p-1.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-rose-400 px-2 py-0.5 flex items-center justify-between">
+                    <span>3. Инструменти & AI</span>
+                    <span className="text-slate-500">Напредък</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1">
+                    <button
+                      onClick={() => handleNavigateStudyTab('errorbank')}
+                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
+                        activeTab === 'errorbank'
+                          ? 'bg-rose-600 text-white font-semibold shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                      }`}
+                      title="Банка с грешки за поправителен тест"
+                    >
+                      <AlertCircle className="w-3.5 h-3.5" />
+                      <span>Грешки</span>
+                    </button>
 
-              <button
-                onClick={() => handleNavigateStudyTab('chat')}
-                className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-all ${
-                  activeTab === 'chat'
-                    ? 'bg-slate-800 text-white font-semibold shadow-sm border border-slate-700/80'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
-                }`}
-              >
-                <MessageSquare className="w-3.5 h-3.5 text-slate-300" />
-                <span>Въпроси</span>
-              </button>
+                    <button
+                      onClick={() => handleNavigateStudyTab('generator')}
+                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
+                        activeTab === 'generator'
+                          ? 'bg-slate-700 text-white font-semibold shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                      }`}
+                      title="Генерирай изпитни листове Група А & Група Б"
+                    >
+                      <Printer className="w-3.5 h-3.5" />
+                      <span>Група А & Б</span>
+                    </button>
 
+                    <button
+                      onClick={() => handleNavigateStudyTab('chat')}
+                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
+                        activeTab === 'chat'
+                          ? 'bg-indigo-600 text-white font-semibold shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                      }`}
+                      title="Интелигентен ментор за въпроси към урока"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      <span>Ментор</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
             </div>
 
             {/* Academic Tab Content Rendering with Suspense */}
@@ -567,6 +662,35 @@ export function App() {
           /* PORTAL 2: ОБЩА КУЛТУРА & ЗАГАДКИ */
           /* ========================================================================= */
           <div>
+            {/* Culture Wayfinding Header: Breadcrumbs Trail */}
+            <div className="mb-6 pb-4 border-b border-slate-800/80">
+              <nav aria-label="Хлябни трохи" className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-400">
+                <a
+                  href="#culture"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSelectPortalMode('culture');
+                  }}
+                  className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
+                >
+                  <Home className="w-3.5 h-3.5" />
+                  <span>StudyBG</span>
+                </a>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
+                <span className="text-amber-400 font-semibold">Обща култура & Загадки</span>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
+                <span className="text-slate-300 font-medium">
+                  {cultureSubTab === 'mysteries'
+                    ? '📜 Неразгадани случки от историята и географията'
+                    : cultureSubTab === 'timeline'
+                    ? '⏳ Интерактивна хронология (681–1908 г.)'
+                    : cultureSubTab === 'trivia'
+                    ? '🧠 Куиз за обща култура (15 въпроса)'
+                    : '⚖️ Факт или Мит? (Развенчаване)'}
+                </span>
+              </nav>
+            </div>
+
             <Suspense fallback={<ViewLoadingSkeleton />}>
               <CultureHubView
                 activeSubTab={cultureSubTab}

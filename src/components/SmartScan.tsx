@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { UploadCloud, FileText, Loader2, X, Edit3, Image as ImageIcon, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { UploadCloud, FileText, Loader2, X, Edit3, Image as ImageIcon, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
 import type { LessonData } from '../types';
 import { classifyAndDiagnoseNotebook, type NotebookDiagnosis } from '../services/curriculumClassifier';
+import { extractNotebookTextWithGemini, isGeminiConfigured } from '../services/geminiService';
 
 interface SmartScanProps {
   onScanComplete: (lesson: LessonData, diagnosis?: NotebookDiagnosis) => void;
@@ -49,11 +50,32 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
     }, 2100);
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
+
+      if (isGeminiConfigured() && file.type.startsWith('image/')) {
+        setSelectedFileName(file.name);
+        setIsScanning(true);
+        setProgressPercent(25);
+        setScanStep('🤖 Google Gemini 1.5 Flash сканира изображението...');
+        try {
+          setProgressPercent(60);
+          const geminiExtracted = await extractNotebookTextWithGemini(file);
+          setProgressPercent(90);
+          setScanStep('Съпоставка на разчетения текст с изискванията на МОН...');
+          setTimeout(() => {
+            setIsScanning(false);
+            const diagnosis = classifyAndDiagnoseNotebook(geminiExtracted, file.name);
+            onScanComplete(diagnosis.lessonData, diagnosis);
+          }, 600);
+          return;
+        } catch (err) {
+          console.warn('Gemini vision fallback:', err);
+        }
+      }
 
       const inferredText = `${file.name} Записки от тетрадката. Разпознати понятия и дефиниции.`;
       startProcessing(inferredText, file.name);
@@ -83,9 +105,17 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
 
       {/* Header */}
       <div className="text-center max-w-xl mx-auto mb-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-semibold mb-3 border border-slate-700">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>МОН Детектор & Анализ на записки</span>
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-semibold border border-slate-700">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>МОН Детектор & Анализ на записки</span>
+          </div>
+          {isGeminiConfigured() && (
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 text-indigo-300 text-xs font-semibold border border-indigo-500/30">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Google Gemini 1.5 Vision активен</span>
+            </div>
+          )}
         </div>
         <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
           Качи снимка на своите записки

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, User, Trash2, HelpCircle, FileText, CornerDownLeft } from 'lucide-react';
+import { Bot, User, Trash2, HelpCircle, FileText, CornerDownLeft, Sparkles } from 'lucide-react';
 import type { LessonData, ChatMessage } from '../types';
+import { askGeminiMentor, isGeminiConfigured } from '../services/geminiService';
 
 interface NotebookChatProps {
   lesson: LessonData;
@@ -64,7 +65,7 @@ export const NotebookChat: React.FC<NotebookChatProps> = ({ lesson }) => {
     return `Съгласно държавния образователен стандарт за темата:\n\n„${lesson.summary.overview}“\n\nВодещ акцент в конспекта:\n${lesson.summary.keyPoints[0]}\n\nЖелаете ли да разгледаме конкретна задача или допълнителен пример?`;
   };
 
-  const handleSendMessage = (textToSend?: string) => {
+  const handleSendMessage = async (textToSend?: string) => {
     const text = textToSend || inputValue;
     if (!text.trim()) return;
 
@@ -75,9 +76,32 @@ export const NotebookChat: React.FC<NotebookChatProps> = ({ lesson }) => {
       timestamp: 'Сега'
     };
 
-    setMessages((prev) => [...prev, userMsg]);
+    const nextMessages = [...messages, userMsg];
+    setMessages(nextMessages);
     setInputValue('');
     setIsTyping(true);
+
+    if (isGeminiConfigured()) {
+      try {
+        const geminiAnswer = await askGeminiMentor(
+          lesson,
+          nextMessages.map((m) => ({ sender: m.sender, text: m.text })),
+          text.trim()
+        );
+        const aiMsg: ChatMessage = {
+          id: `ai-${Date.now()}`,
+          sender: 'assistant',
+          text: geminiAnswer,
+          timestamp: 'Сега',
+          referencedLine: 'Google Gemini 1.5 Flash • МОН'
+        };
+        setMessages((prev) => [...prev, aiMsg]);
+        setIsTyping(false);
+        return;
+      } catch (err) {
+        console.warn('Gemini chat fallback:', err);
+      }
+    }
 
     setTimeout(() => {
       const aiReplyText = generateAIResponse(text);
@@ -119,6 +143,12 @@ export const NotebookChat: React.FC<NotebookChatProps> = ({ lesson }) => {
               <span className="text-[10px] font-semibold bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded border border-indigo-500/20">
                 МОН Стандарт
               </span>
+              {isGeminiConfigured() && (
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 font-semibold">
+                  <Sparkles className="w-3 h-3 text-emerald-400" />
+                  <span>Gemini 1.5 Flash</span>
+                </span>
+              )}
             </div>
             <p className="text-xs text-slate-400 truncate max-w-xs sm:max-w-md">
               Текущ контекст: <span className="text-slate-200 font-medium">{lesson.title}</span>

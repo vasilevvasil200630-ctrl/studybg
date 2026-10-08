@@ -15,9 +15,7 @@ import {
   Menu,
   X,
   Sparkles,
-  HelpCircle,
-  Layers,
-  FileSearch
+  HelpCircle
 } from 'lucide-react';
 import { StudentStats } from './StudentStats';
 import { errorBankService } from '../services/errorBankService';
@@ -25,7 +23,6 @@ import type { CultureSubTab } from './CultureHero';
 
 export type AppNavTab =
   | 'scan'
-  | 'diagnostic'
   | 'audit'
   | 'summary'
   | 'flashcards'
@@ -36,7 +33,6 @@ export type AppNavTab =
   | 'timeline'
   | 'generator'
   | 'catalog'
-  | 'curriculum'
   | 'knowledge';
 
 interface NavbarProps {
@@ -88,7 +84,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   const studyNavItems: { tab: AppNavTab; label: string; icon: React.ReactNode; badge?: React.ReactNode }[] = [
     { tab: 'summary', label: 'Конспект', icon: <BookOpen className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'audit', label: 'Одит 6.00', icon: <CheckSquare className="w-3.5 h-3.5 text-amber-600" /> },
-    { tab: 'diagnostic', label: 'Диагноза', icon: <FileSearch className="w-3.5 h-3.5 text-sky-600" /> },
     { tab: 'flashcards', label: 'Флаш карти', icon: <Zap className="w-3.5 h-3.5 text-emerald-600" /> },
     { tab: 'quiz', label: 'Тест', icon: <GraduationCap className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'simulator', label: 'Симулатор (100т.)', icon: <Clock className="w-3.5 h-3.5 text-amber-600" /> },
@@ -104,8 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     },
     { tab: 'generator', label: 'Група А & Б', icon: <Printer className="w-3.5 h-3.5 text-slate-600" /> },
     { tab: 'chat', label: 'AI Ментор', icon: <MessageSquare className="w-3.5 h-3.5 text-blue-600" /> },
-    { tab: 'catalog', label: 'Каталог с теми', icon: <BookMarked className="w-3.5 h-3.5 text-emerald-600" /> },
-    { tab: 'curriculum', label: 'Учебна програма', icon: <Layers className="w-3.5 h-3.5 text-sky-600" /> }
+    { tab: 'catalog', label: 'Каталог с теми', icon: <BookMarked className="w-3.5 h-3.5 text-emerald-600" /> }
   ];
 
   const cultureNavItems: { subTab: CultureSubTab; label: string; icon: React.ReactNode }[] = [

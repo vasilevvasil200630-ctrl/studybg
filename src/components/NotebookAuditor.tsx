@@ -72,9 +72,22 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({
       <div className="p-5 sm:p-6 rounded-xl bg-slate-50 border border-slate-200">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-3">
-              <CheckSquare className="w-3.5 h-3.5 text-blue-600" />
-              <span>Одит на съдържанието • Държавен образователен стандарт</span>
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <span className="px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                {lesson.subject}
+              </span>
+              <span className="text-xs text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-medium">
+                {lesson.grade}
+              </span>
+              {lesson.examType && (
+                <span className="text-xs px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
+                  {lesson.examType}
+                </span>
+              )}
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-medium">
+                <CheckSquare className="w-3.5 h-3.5 text-blue-600" />
+                <span>Одит по стандартите на МОН</span>
+              </span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
               Задължителни изисквания за тема „{lesson.title}“

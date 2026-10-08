@@ -3,17 +3,14 @@ import { Navbar, type AppNavTab } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { CultureHero, type CultureSubTab } from './components/CultureHero';
 import { SmartScan } from './components/SmartScan';
-import { NotebookDiagnosticView } from './components/NotebookDiagnosticView';
 import { NotebookAuditor } from './components/NotebookAuditor';
 import { SummaryView } from './components/SummaryView';
 import { FlashcardsView } from './components/FlashcardsView';
 import { QuizView } from './components/QuizView';
 import { NotebookChat } from './components/NotebookChat';
 import { SubjectCatalog } from './components/SubjectCatalog';
-import { FeaturesShowcase } from './components/FeaturesShowcase';
 import { Footer } from './components/Footer';
 import { QuickLessonSwitcherModal } from './components/QuickLessonSwitcherModal';
-import { WayfindingDock } from './components/WayfindingDock';
 import { StudySidebar } from './components/StudySidebar';
 import { CultureSidebar } from './components/CultureSidebar';
 
@@ -22,14 +19,12 @@ const CultureHubView = lazy(() => import('./components/CultureHubView').then(m =
 const ExamSimulatorView = lazy(() => import('./components/ExamSimulatorView').then(m => ({ default: m.ExamSimulatorView })));
 const ErrorBankView = lazy(() => import('./components/ErrorBankView').then(m => ({ default: m.ErrorBankView })));
 const ExamTestPaperGenerator = lazy(() => import('./components/ExamTestPaperGenerator').then(m => ({ default: m.ExamTestPaperGenerator })));
-const CurriculumTreeBrowser = lazy(() => import('./components/CurriculumTreeBrowser').then(m => ({ default: m.CurriculumTreeBrowser })));
 
 // МОН Thematic Modules
 import { MonFormulaSheetsModal } from './components/MonFormulaSheetsModal';
 import { errorBankService } from './services/errorBankService';
 
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
-import { classifyAndDiagnoseNotebook, type NotebookDiagnosis } from './services/curriculumClassifier';
 import type { LessonData, QuizQuestion } from './types';
 import {
   Camera,
@@ -38,21 +33,19 @@ import {
   MessageSquare,
   ChevronRight,
   CheckSquare,
-  FileSearch,
   GraduationCap,
   AlertCircle,
   Clock,
   Printer,
   Search,
   Home,
-  BookMarked,
-  Layers
+  BookMarked
 } from 'lucide-react';
 import './App.css';
 
 const STUDY_TABS: AppNavTab[] = [
-  'scan', 'diagnostic', 'audit', 'summary', 'flashcards', 'quiz',
-  'chat', 'simulator', 'errorbank', 'generator', 'catalog', 'curriculum'
+  'scan', 'audit', 'summary', 'flashcards', 'quiz',
+  'chat', 'simulator', 'errorbank', 'generator', 'catalog'
 ];
 
 const ViewLoadingSkeleton = () => (
@@ -71,9 +64,6 @@ export function App() {
 
   const [lessons, setLessons] = useState<LessonData[]>(CURRICULUM_LESSONS);
   const [currentLesson, setCurrentLesson] = useState<LessonData>(CURRICULUM_LESSONS[0]);
-  const [currentDiagnosis, setCurrentDiagnosis] = useState<NotebookDiagnosis>(() =>
-    classifyAndDiagnoseNotebook(CURRICULUM_LESSONS[0].originalNoteExcerpt, CURRICULUM_LESSONS[0].title)
-  );
 
   const [activeTab, setActiveTab] = useState<AppNavTab>('summary');
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
@@ -116,8 +106,6 @@ export function App() {
   const handleLessonSelected = (lesson: LessonData, preferredTab: AppNavTab = 'summary') => {
     setPortalMode('study');
     setCurrentLesson(lesson);
-    const diag = classifyAndDiagnoseNotebook(lesson.originalNoteExcerpt || lesson.summary.overview, lesson.title);
-    setCurrentDiagnosis(diag);
     setActiveTab(preferredTab);
     if (window.location.hash !== `#${preferredTab}`) {
       window.history.pushState(null, '', `#${preferredTab}`);
@@ -186,19 +174,13 @@ export function App() {
     return () => window.removeEventListener('hashchange', syncFromHash);
   }, [lessons]);
 
-  const handleScanCompleted = (newLesson: LessonData, diag?: NotebookDiagnosis) => {
+  const handleScanCompleted = (newLesson: LessonData) => {
     if (!lessons.some(l => l.id === newLesson.id)) {
       setLessons(prev => [newLesson, ...prev]);
     }
     setCurrentLesson(newLesson);
-    if (diag) {
-      setCurrentDiagnosis(diag);
-    } else {
-      const calculatedDiag = classifyAndDiagnoseNotebook(newLesson.originalNoteExcerpt || newLesson.summary.overview, newLesson.title);
-      setCurrentDiagnosis(calculatedDiag);
-    }
     setIsScanModalOpen(false);
-    handleNavigateStudyTab('diagnostic');
+    handleNavigateStudyTab('audit');
   };
 
   const scrollToCatalog = () => {
@@ -223,7 +205,6 @@ export function App() {
   const mobileNavPills: { tab: AppNavTab; label: string; icon: React.ReactNode }[] = [
     { tab: 'summary', label: 'Конспект', icon: <BookOpen className="w-3.5 h-3.5" /> },
     { tab: 'audit', label: 'Одит 6.00', icon: <CheckSquare className="w-3.5 h-3.5" /> },
-    { tab: 'diagnostic', label: 'Диагноза', icon: <FileSearch className="w-3.5 h-3.5" /> },
     { tab: 'flashcards', label: 'Флаш карти', icon: <Zap className="w-3.5 h-3.5" /> },
     { tab: 'quiz', label: 'Тест', icon: <GraduationCap className="w-3.5 h-3.5" /> },
     { tab: 'simulator', label: 'Симулатор', icon: <Clock className="w-3.5 h-3.5" /> },
@@ -231,7 +212,6 @@ export function App() {
     { tab: 'generator', label: 'Група А & Б', icon: <Printer className="w-3.5 h-3.5" /> },
     { tab: 'chat', label: 'AI Ментор', icon: <MessageSquare className="w-3.5 h-3.5" /> },
     { tab: 'catalog', label: 'Каталог', icon: <BookMarked className="w-3.5 h-3.5" /> },
-    { tab: 'curriculum', label: 'Програма МОН', icon: <Layers className="w-3.5 h-3.5" /> },
   ];
 
   return (
@@ -294,13 +274,6 @@ export function App() {
       {isFormulaModalOpen && (
         <MonFormulaSheetsModal onClose={() => setIsFormulaModalOpen(false)} />
       )}
-
-      {/* Floating Wayfinding & Quick Actions Dock */}
-      <WayfindingDock
-        portalMode={portalMode}
-        onTogglePortalMode={() => handleSelectPortalMode(portalMode === 'study' ? 'culture' : 'study')}
-        onOpenQuickLessonPicker={() => setIsQuickLessonModalOpen(true)}
-      />
 
       {/* Main Workspace with Modern Left Sidebar Layout */}
       <main id="workspace" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
@@ -421,15 +394,6 @@ export function App() {
                     />
                   )}
 
-                  {activeTab === 'diagnostic' && (
-                    <NotebookDiagnosticView
-                      diagnosis={currentDiagnosis}
-                      onProceedToHolyTrinity={() => handleNavigateStudyTab('summary')}
-                      onScanAnother={() => setIsScanModalOpen(true)}
-                      onNavigateTab={handleNavigateStudyTab}
-                    />
-                  )}
-
                   {activeTab === 'audit' && (
                     <NotebookAuditor
                       lesson={currentLesson}
@@ -510,14 +474,6 @@ export function App() {
                     </div>
                   )}
 
-                  {activeTab === 'curriculum' && (
-                    <Suspense fallback={<ViewLoadingSkeleton />}>
-                      <CurriculumTreeBrowser
-                        onSelectTopic={(l) => handleLessonSelected(l, 'summary')}
-                      />
-                    </Suspense>
-                  )}
-
                 </div>
               </div>
 
@@ -591,11 +547,6 @@ export function App() {
 
       </main>
 
-      {/* Features Deep Dive Showcase */}
-      <FeaturesShowcase
-        onNavigateTab={handleNavigateStudyTab}
-        onOpenScan={() => setIsScanModalOpen(true)}
-      />
 
       {/* Footer */}
       <Footer

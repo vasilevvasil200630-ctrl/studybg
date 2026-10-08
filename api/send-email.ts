@@ -40,7 +40,7 @@ export default async function handler(req: any, res: any) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          from: 'StudyBG <onboarding@resend.dev>',
+          from: process.env.RESEND_FROM_EMAIL || 'StudyBG <onboarding@resend.dev>',
           to: [targetEmail],
           subject: emailSubject,
           html: emailHtml

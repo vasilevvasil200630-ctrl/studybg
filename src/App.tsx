@@ -14,6 +14,8 @@ import { FeaturesShowcase } from './components/FeaturesShowcase';
 import { Footer } from './components/Footer';
 import { QuickLessonSwitcherModal } from './components/QuickLessonSwitcherModal';
 import { WayfindingDock } from './components/WayfindingDock';
+import { StudySidebar } from './components/StudySidebar';
+import { CultureSidebar } from './components/CultureSidebar';
 
 // Code-split heavy interactive modules for optimal bundle size and instant initial load
 const CultureHubView = lazy(() => import('./components/CultureHubView').then(m => ({ default: m.CultureHubView })));
@@ -41,22 +43,20 @@ import {
   AlertCircle,
   Clock,
   Printer,
-  FileText,
-  Compass,
-  Sparkles,
-  ArrowRight,
   Search,
-  Home
+  Home,
+  BookMarked,
+  Layers
 } from 'lucide-react';
 import './App.css';
 
 const STUDY_TABS: AppNavTab[] = [
   'scan', 'diagnostic', 'audit', 'summary', 'flashcards', 'quiz',
-  'chat', 'simulator', 'errorbank', 'generator'
+  'chat', 'simulator', 'errorbank', 'generator', 'catalog', 'curriculum'
 ];
 
 const ViewLoadingSkeleton = () => (
-  <div className="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse flex items-center justify-center min-h-[260px]">
+  <div className="p-8 rounded-2xl bg-slate-900/40 border border-slate-800/60 animate-pulse flex items-center justify-center min-h-[300px]">
     <div className="flex items-center gap-3 text-slate-400 text-xs sm:text-sm font-medium">
       <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
       <span>Зареждане на модула...</span>
@@ -80,6 +80,8 @@ export function App() {
   const [isFormulaModalOpen, setIsFormulaModalOpen] = useState(false);
   const [isQuickLessonModalOpen, setIsQuickLessonModalOpen] = useState(false);
   const [practiceQuestions, setPracticeQuestions] = useState<QuizQuestion[] | null>(null);
+
+  const unresolvedErrorCount = errorBankService.getUnresolvedCount();
 
   const handleSelectPortalMode = (mode: 'study' | 'culture') => {
     setPortalMode(mode);
@@ -167,7 +169,8 @@ export function App() {
         el?.scrollIntoView({ behavior: 'smooth' });
       } else if (hash === 'catalog') {
         setPortalMode('study');
-        const el = document.getElementById('catalog');
+        setActiveTab('catalog');
+        const el = document.getElementById('workspace');
         el?.scrollIntoView({ behavior: 'smooth' });
       } else if (hash.startsWith('lesson-')) {
         const lessonId = hash.replace('lesson-', '');
@@ -200,10 +203,11 @@ export function App() {
 
   const scrollToCatalog = () => {
     setPortalMode('study');
+    setActiveTab('catalog');
     if (window.location.hash !== '#catalog') {
       window.history.pushState(null, '', '#catalog');
     }
-    const el = document.getElementById('catalog');
+    const el = document.getElementById('workspace');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -216,10 +220,24 @@ export function App() {
     errorBankService.recordQuizError(q, currentLesson, chosenIndex);
   };
 
+  const mobileNavPills: { tab: AppNavTab; label: string; icon: React.ReactNode }[] = [
+    { tab: 'summary', label: 'Конспект', icon: <BookOpen className="w-3.5 h-3.5" /> },
+    { tab: 'audit', label: 'Одит 6.00', icon: <CheckSquare className="w-3.5 h-3.5" /> },
+    { tab: 'diagnostic', label: 'Диагноза', icon: <FileSearch className="w-3.5 h-3.5" /> },
+    { tab: 'flashcards', label: 'Флаш карти', icon: <Zap className="w-3.5 h-3.5" /> },
+    { tab: 'quiz', label: 'Тест', icon: <GraduationCap className="w-3.5 h-3.5" /> },
+    { tab: 'simulator', label: 'Симулатор', icon: <Clock className="w-3.5 h-3.5" /> },
+    { tab: 'errorbank', label: 'Грешки', icon: <AlertCircle className="w-3.5 h-3.5" /> },
+    { tab: 'generator', label: 'Група А & Б', icon: <Printer className="w-3.5 h-3.5" /> },
+    { tab: 'chat', label: 'AI Ментор', icon: <MessageSquare className="w-3.5 h-3.5" /> },
+    { tab: 'catalog', label: 'Каталог', icon: <BookMarked className="w-3.5 h-3.5" /> },
+    { tab: 'curriculum', label: 'Програма МОН', icon: <Layers className="w-3.5 h-3.5" /> },
+  ];
+
   return (
-    <div className="min-h-screen bg-[#0b0d17] text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30 selection:text-indigo-300">
+    <div className="min-h-screen bg-[#0d101d] text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30 selection:text-indigo-300">
       
-      {/* Sticky Navigation Bar with Portal Mode Switcher */}
+      {/* Sticky Clean Navigation Bar with Portal Switcher */}
       <Navbar
         portalMode={portalMode}
         onSelectPortalMode={handleSelectPortalMode}
@@ -232,7 +250,7 @@ export function App() {
         onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
       />
 
-      {/* Hero Section: Render Study Hero or Culture Hero based on portalMode */}
+      {/* Hero Section: Study Hero or Culture Hero based on portalMode */}
       {portalMode === 'study' ? (
         <Hero
           onScanClick={() => setIsScanModalOpen(true)}
@@ -284,7 +302,7 @@ export function App() {
         onOpenQuickLessonPicker={() => setIsQuickLessonModalOpen(true)}
       />
 
-      {/* Main Workspace */}
+      {/* Main Workspace with Modern Left Sidebar Layout */}
       <main id="workspace" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
         
         {/* ========================================================================= */}
@@ -292,10 +310,10 @@ export function App() {
         {/* ========================================================================= */}
         {portalMode === 'study' ? (
           <div>
-            {/* Workspace Wayfinding Header: Interactive Breadcrumbs & Current Subject */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-5 border-b border-slate-800/80">
-              <div className="space-y-1.5">
-                
+            
+            {/* Top Workspace Breadcrumbs & Topic Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800/60">
+              <div className="space-y-1">
                 {/* Breadcrumbs Trail */}
                 <nav aria-label="Хлябни трохи" className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-400">
                   <a
@@ -317,39 +335,31 @@ export function App() {
                   <span className="text-slate-300 font-medium">{currentLesson.grade}</span>
                 </nav>
 
-                {/* Lesson Title & Quick Switcher Button */}
+                {/* Lesson Title & Quick Switcher Pill */}
                 <div className="flex flex-wrap items-center gap-3 pt-1">
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex flex-wrap items-center gap-2.5">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white flex flex-wrap items-center gap-2">
                     <span>{currentLesson.title}</span>
-                    <span className="text-xs px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 border border-slate-700/80 font-medium">
+                    <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-800/80 text-slate-300 border border-slate-700/60 font-medium">
                       {currentLesson.grade}
                     </span>
                     {currentLesson.examType && (
-                      <span className="text-xs px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/25 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/20 font-semibold">
                         {currentLesson.examType}
                       </span>
                     )}
                   </h2>
-
-                  <button
-                    onClick={() => setIsQuickLessonModalOpen(true)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 hover:text-white border border-indigo-500/40 text-xs font-semibold shadow-sm transition-all cursor-pointer"
-                    title="Отвори бързо търсене и смяна на урок"
-                  >
-                    <Search className="w-3.5 h-3.5 text-indigo-400" />
-                    <span>Смени тема ({lessons.length})</span>
-                  </button>
                 </div>
               </div>
 
-              {/* Quick Action Tools Bar */}
+              {/* Action Buttons */}
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setIsFormulaModalOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 text-xs font-semibold shadow-sm transition-all"
+                  onClick={() => setIsQuickLessonModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/70 text-xs font-medium shadow-sm transition-all"
+                  title="Отвори списъка с уроци"
                 >
-                  <FileText className="w-4 h-4 text-indigo-400" />
-                  <span>Формули МОН</span>
+                  <Search className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>Смени тема</span>
                 </button>
 
                 <button
@@ -362,308 +372,165 @@ export function App() {
               </div>
             </div>
 
-            {/* 3-Phase Pedagogical Navigation Controls */}
-            <div className="mb-8 space-y-2">
-              <div className="flex items-center justify-between text-xs text-slate-400 px-1">
-                <span className="font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>Учебна пътека • 3 стъпки към отличен 6.00:</span>
-                </span>
-                <span className="text-[11px] text-slate-500 hidden sm:inline">
-                  Избери модул според текущия етап на твоята подготовка
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 p-2 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-md">
-                
-                {/* Фаза 1: Научи & Анализирай */}
-                <div className="p-1.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-indigo-400 px-2 py-0.5 flex items-center justify-between">
-                    <span>1. Научи & Анализирай</span>
-                    <span className="text-slate-500">Теория</span>
-                  </div>
-                  <div className="grid grid-cols-3 gap-1">
-                    <button
-                      onClick={() => handleNavigateStudyTab('summary')}
-                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
-                        activeTab === 'summary'
-                          ? 'bg-indigo-600 text-white font-semibold shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                      }`}
-                      title="Синтезиран конспект по темата"
-                    >
-                      <BookOpen className="w-3.5 h-3.5" />
-                      <span>Конспект</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleNavigateStudyTab('audit')}
-                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
-                        activeTab === 'audit'
-                          ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                      }`}
-                      title="Провери какво ти липсва в тетрадката за 6.00"
-                    >
-                      <CheckSquare className="w-3.5 h-3.5" />
-                      <span>Одит 6.00</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleNavigateStudyTab('diagnostic')}
-                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
-                        activeTab === 'diagnostic'
-                          ? 'bg-sky-600 text-white font-semibold shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                      }`}
-                      title="Диагностика на ръкописа от тетрадка"
-                    >
-                      <FileSearch className="w-3.5 h-3.5" />
-                      <span>Диагноза</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Фаза 2: Тествай се */}
-                <div className="p-1.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 px-2 py-0.5 flex items-center justify-between">
-                    <span>2. Тествай се</span>
-                    <span className="text-slate-500">Практика</span>
-                  </div>
-                  <div className="grid grid-cols-3 gap-1">
-                    <button
-                      onClick={() => handleNavigateStudyTab('flashcards')}
-                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
-                        activeTab === 'flashcards'
-                          ? 'bg-emerald-600 text-white font-semibold shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                      }`}
-                      title="Флаш карти за бързо запомняне"
-                    >
-                      <Zap className="w-3.5 h-3.5" />
-                      <span>Карти</span>
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        setPracticeQuestions(null);
-                        handleNavigateStudyTab('quiz');
-                      }}
-                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
-                        activeTab === 'quiz'
-                          ? 'bg-sky-600 text-white font-semibold shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                      }`}
-                      title="10-въпросен тест за контролна работа"
-                    >
-                      <GraduationCap className="w-3.5 h-3.5" />
-                      <span>Тест</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleNavigateStudyTab('simulator')}
-                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
-                        activeTab === 'simulator'
-                          ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                      }`}
-                      title="100-точков изпитен симулатор за НВО/ДЗИ"
-                    >
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>Симулатор</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Фаза 3: Инструменти & AI */}
-                <div className="p-1.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-rose-400 px-2 py-0.5 flex items-center justify-between">
-                    <span>3. Инструменти & AI</span>
-                    <span className="text-slate-500">Напредък</span>
-                  </div>
-                  <div className="grid grid-cols-3 gap-1">
-                    <button
-                      onClick={() => handleNavigateStudyTab('errorbank')}
-                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
-                        activeTab === 'errorbank'
-                          ? 'bg-rose-600 text-white font-semibold shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                      }`}
-                      title="Банка с грешки за поправителен тест"
-                    >
-                      <AlertCircle className="w-3.5 h-3.5" />
-                      <span>Грешки</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleNavigateStudyTab('generator')}
-                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
-                        activeTab === 'generator'
-                          ? 'bg-slate-700 text-white font-semibold shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                      }`}
-                      title="Генерирай изпитни листове Група А & Група Б"
-                    >
-                      <Printer className="w-3.5 h-3.5" />
-                      <span>Група А & Б</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleNavigateStudyTab('chat')}
-                      className={`flex items-center justify-center gap-1 py-2 px-1.5 rounded-lg text-xs font-medium transition-all ${
-                        activeTab === 'chat'
-                          ? 'bg-indigo-600 text-white font-semibold shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                      }`}
-                      title="Интелигентен ментор за въпроси към урока"
-                    >
-                      <MessageSquare className="w-3.5 h-3.5" />
-                      <span>Ментор</span>
-                    </button>
-                  </div>
-                </div>
-
-              </div>
+            {/* Mobile / Tablet Horizontal Quick Tab Strip (visible only on small viewports) */}
+            <div className="lg:hidden mb-6 p-1.5 rounded-xl bg-slate-900/80 border border-slate-800 overflow-x-auto no-scrollbar flex items-center gap-1">
+              {mobileNavPills.map((p) => {
+                const isActive = activeTab === p.tab;
+                return (
+                  <button
+                    key={p.tab}
+                    onClick={() => handleNavigateStudyTab(p.tab)}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+                      isActive
+                        ? 'bg-indigo-600 text-white shadow-sm font-semibold'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                    }`}
+                  >
+                    {p.icon}
+                    <span>{p.label}</span>
+                  </button>
+                );
+              })}
             </div>
 
-            {/* Academic Tab Content Rendering with Suspense */}
-            <div className="transition-all mb-12">
-              {activeTab === 'scan' && (
-                <SmartScan
-                  onScanComplete={handleScanCompleted}
-                  sampleLessons={lessons}
+            {/* Two-Column Responsive Workspace: LEFT SIDEBAR + RIGHT MAIN CONTENT */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+              
+              {/* Left Column: Vertical Study Sidebar */}
+              <div className="hidden lg:block lg:col-span-4 xl:col-span-3">
+                <StudySidebar
+                  currentLesson={currentLesson}
+                  activeTab={activeTab}
+                  onSelectTab={handleNavigateStudyTab}
+                  unresolvedErrorCount={unresolvedErrorCount}
+                  totalLessonsCount={lessons.length}
+                  onOpenQuickLessonPicker={() => setIsQuickLessonModalOpen(true)}
+                  onOpenScan={() => setIsScanModalOpen(true)}
+                  onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
                 />
-              )}
+              </div>
 
-              {activeTab === 'diagnostic' && (
-                <NotebookDiagnosticView
-                  diagnosis={currentDiagnosis}
-                  onProceedToHolyTrinity={() => handleNavigateStudyTab('summary')}
-                  onScanAnother={() => setIsScanModalOpen(true)}
-                  onNavigateTab={handleNavigateStudyTab}
-                />
-              )}
+              {/* Right Column: Clean Main Content Area Strictly Scoped to Active Tab */}
+              <div className="lg:col-span-8 xl:col-span-9 min-w-0">
+                <div className="rounded-2xl bg-slate-900/40 border border-slate-800/60 p-4 sm:p-6 lg:p-7 backdrop-blur-sm shadow-sm transition-all">
+                  
+                  {activeTab === 'scan' && (
+                    <SmartScan
+                      onScanComplete={handleScanCompleted}
+                      sampleLessons={lessons}
+                    />
+                  )}
 
-              {activeTab === 'audit' && (
-                <NotebookAuditor
-                  lesson={currentLesson}
-                  onProceedToHolyTrinity={() => handleNavigateStudyTab('summary')}
-                  onNavigateTab={handleNavigateStudyTab}
-                />
-              )}
+                  {activeTab === 'diagnostic' && (
+                    <NotebookDiagnosticView
+                      diagnosis={currentDiagnosis}
+                      onProceedToHolyTrinity={() => handleNavigateStudyTab('summary')}
+                      onScanAnother={() => setIsScanModalOpen(true)}
+                      onNavigateTab={handleNavigateStudyTab}
+                    />
+                  )}
 
-              {activeTab === 'summary' && (
-                <SummaryView
-                  lesson={currentLesson}
-                  onProceedToFlashcards={() => handleNavigateStudyTab('flashcards')}
-                  onNavigateTab={handleNavigateStudyTab}
-                />
-              )}
+                  {activeTab === 'audit' && (
+                    <NotebookAuditor
+                      lesson={currentLesson}
+                      onProceedToHolyTrinity={() => handleNavigateStudyTab('summary')}
+                      onNavigateTab={handleNavigateStudyTab}
+                    />
+                  )}
 
-              {activeTab === 'flashcards' && (
-                <FlashcardsView
-                  flashcards={currentLesson.flashcards}
-                  onProceedToQuiz={() => handleNavigateStudyTab('quiz')}
-                  onNavigateTab={handleNavigateStudyTab}
-                />
-              )}
+                  {activeTab === 'summary' && (
+                    <SummaryView
+                      lesson={currentLesson}
+                      onProceedToFlashcards={() => handleNavigateStudyTab('flashcards')}
+                      onNavigateTab={handleNavigateStudyTab}
+                    />
+                  )}
 
-              {activeTab === 'quiz' && (
-                <QuizView
-                  questions={practiceQuestions || currentLesson.quiz}
-                  onReviewFlashcards={() => handleNavigateStudyTab('flashcards')}
-                  onOpenChat={() => handleNavigateStudyTab('chat')}
-                  onNavigateTab={handleNavigateStudyTab}
-                  onRecordError={handleRecordError}
-                />
-              )}
+                  {activeTab === 'flashcards' && (
+                    <FlashcardsView
+                      flashcards={currentLesson.flashcards}
+                      onProceedToQuiz={() => handleNavigateStudyTab('quiz')}
+                      onNavigateTab={handleNavigateStudyTab}
+                    />
+                  )}
 
-              {activeTab === 'simulator' && (
-                <Suspense fallback={<ViewLoadingSkeleton />}>
-                  <ExamSimulatorView
-                    currentLesson={currentLesson}
-                    onOpenErrorBank={() => handleNavigateStudyTab('errorbank')}
-                    onRecordError={handleRecordError}
-                  />
-                </Suspense>
-              )}
+                  {activeTab === 'quiz' && (
+                    <QuizView
+                      questions={practiceQuestions || currentLesson.quiz}
+                      onReviewFlashcards={() => handleNavigateStudyTab('flashcards')}
+                      onOpenChat={() => handleNavigateStudyTab('chat')}
+                      onNavigateTab={handleNavigateStudyTab}
+                      onRecordError={handleRecordError}
+                    />
+                  )}
 
-              {activeTab === 'errorbank' && (
-                <Suspense fallback={<ViewLoadingSkeleton />}>
-                  <ErrorBankView
-                    onStartCustomQuiz={handleStartCustomQuizFromErrors}
-                    allLessons={lessons}
-                    onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
-                  />
-                </Suspense>
-              )}
+                  {activeTab === 'simulator' && (
+                    <Suspense fallback={<ViewLoadingSkeleton />}>
+                      <ExamSimulatorView
+                        currentLesson={currentLesson}
+                        onOpenErrorBank={() => handleNavigateStudyTab('errorbank')}
+                        onRecordError={handleRecordError}
+                      />
+                    </Suspense>
+                  )}
 
-              {activeTab === 'generator' && (
-                <Suspense fallback={<ViewLoadingSkeleton />}>
-                  <ExamTestPaperGenerator
-                    currentLesson={currentLesson}
-                    allLessons={lessons}
-                    onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
-                    onNavigateTab={handleNavigateStudyTab}
-                  />
-                </Suspense>
-              )}
+                  {activeTab === 'errorbank' && (
+                    <Suspense fallback={<ViewLoadingSkeleton />}>
+                      <ErrorBankView
+                        onStartCustomQuiz={handleStartCustomQuizFromErrors}
+                        allLessons={lessons}
+                        onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+                      />
+                    </Suspense>
+                  )}
 
-              {activeTab === 'chat' && (
-                <NotebookChat lesson={currentLesson} />
-              )}
-            </div>
+                  {activeTab === 'generator' && (
+                    <Suspense fallback={<ViewLoadingSkeleton />}>
+                      <ExamTestPaperGenerator
+                        currentLesson={currentLesson}
+                        allLessons={lessons}
+                        onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+                        onNavigateTab={handleNavigateStudyTab}
+                      />
+                    </Suspense>
+                  )}
 
-            {/* Cross-Portal Bridge Banner: Study -> General Knowledge */}
-            <div className="mb-12 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-950/30 via-slate-900 to-indigo-950/30 border border-amber-500/30 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center flex-shrink-0">
-                  <Compass className="w-6 h-6 text-amber-400" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <span>Любопитен си за историческите загадки и неизвестното?</span>
-                    <Sparkles className="w-4 h-4 text-amber-400" />
-                  </h3>
-                  <p className="text-xs text-slate-300 mt-0.5">
-                    Разгледай неразгаданите случки от историята (гроба на Левски, смъртта на Ботев, Варненското злато), интерактивния куиз и развенчаните митове.
-                  </p>
+                  {activeTab === 'chat' && (
+                    <NotebookChat lesson={currentLesson} />
+                  )}
+
+                  {activeTab === 'catalog' && (
+                    <div id="catalog">
+                      <SubjectCatalog
+                        lessons={lessons}
+                        currentLessonId={currentLesson.id}
+                        onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+                        onAddNewScan={() => setIsScanModalOpen(true)}
+                      />
+                    </div>
+                  )}
+
+                  {activeTab === 'curriculum' && (
+                    <Suspense fallback={<ViewLoadingSkeleton />}>
+                      <CurriculumTreeBrowser
+                        onSelectTopic={(l) => handleLessonSelected(l, 'summary')}
+                      />
+                    </Suspense>
+                  )}
+
                 </div>
               </div>
 
-              <button
-                onClick={() => handleSelectPortalMode('culture')}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm shadow-md transition-colors whitespace-nowrap self-stretch md:self-auto justify-center"
-              >
-                <span>Към раздел „Обща култура“</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
             </div>
 
-            {/* Interactive Curriculum Hierarchy Browser */}
-            <Suspense fallback={<ViewLoadingSkeleton />}>
-              <CurriculumTreeBrowser
-                onSelectTopic={(l) => handleLessonSelected(l, 'summary')}
-              />
-            </Suspense>
-
-            {/* Subject Catalog & Library Section */}
-            <div id="catalog">
-              <SubjectCatalog
-                lessons={lessons}
-                currentLessonId={currentLesson.id}
-                onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
-                onAddNewScan={() => setIsScanModalOpen(true)}
-              />
-            </div>
           </div>
         ) : (
           /* ========================================================================= */
-          /* PORTAL 2: ОБЩА КУЛТУРА & ЗАГАДКИ */
+          /* PORTAL 2: ОБЩА КУЛТУРА & ЗАГАДКИ (СЪС СТРАНИЧНО МЕНЮ) */
           /* ========================================================================= */
           <div>
             {/* Culture Wayfinding Header: Breadcrumbs Trail */}
-            <div className="mb-6 pb-4 border-b border-slate-800/80">
+            <div className="mb-6 pb-4 border-b border-slate-800/60">
               <nav aria-label="Хлябни трохи" className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-400">
                 <a
                   href="#culture"
@@ -681,51 +548,44 @@ export function App() {
                 <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
                 <span className="text-slate-300 font-medium">
                   {cultureSubTab === 'mysteries'
-                    ? '📜 Неразгадани случки от историята и географията'
+                    ? '📜 Неразгадани случки от историята'
                     : cultureSubTab === 'timeline'
                     ? '⏳ Интерактивна хронология (681–1908 г.)'
                     : cultureSubTab === 'trivia'
                     ? '🧠 Куиз за обща култура (15 въпроса)'
-                    : '⚖️ Факт или Мит? (Развенчаване)'}
+                    : '⚖️ Факт или Мит?'}
                 </span>
               </nav>
             </div>
 
-            <Suspense fallback={<ViewLoadingSkeleton />}>
-              <CultureHubView
-                activeSubTab={cultureSubTab}
-                onSelectSubTab={setCultureSubTab}
-                onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
-                onNavigateTab={handleNavigateStudyTab}
-                onSwitchToStudy={() => handleSelectPortalMode('study')}
-                lessons={lessons}
-              />
-            </Suspense>
-
-            {/* Cross-Portal Bridge Banner: General Knowledge -> Study */}
-            <div className="mt-14 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-indigo-950/40 via-slate-900 to-sky-950/30 border border-indigo-500/30 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center flex-shrink-0">
-                  <GraduationCap className="w-6 h-6 text-indigo-400" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <span>Готвиш се за училище, контролно или матура (НВО/ДЗИ)?</span>
-                  </h3>
-                  <p className="text-xs text-slate-300 mt-0.5">
-                    Качи снимка на тетрадката си за OCR одит за 6.00, синтезирани конспекти, флаш карти и 100-точков изпитен симулатор.
-                  </p>
-                </div>
+            {/* Culture Portal Layout: Left Sidebar + Right Content */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+              
+              {/* Left Column: Vertical Culture Sidebar */}
+              <div className="hidden lg:block lg:col-span-4 xl:col-span-3">
+                <CultureSidebar
+                  activeCultureTab={cultureSubTab}
+                  onSelectCultureTab={handleNavigateCultureTab}
+                  onSwitchToStudy={() => handleSelectPortalMode('study')}
+                />
               </div>
 
-              <button
-                onClick={() => handleSelectPortalMode('study')}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs sm:text-sm shadow-md transition-colors whitespace-nowrap self-stretch md:self-auto justify-center"
-              >
-                <span>Към „Учебна академия & Снимане“</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              {/* Right Column: Active Culture Sub-Module */}
+              <div className="lg:col-span-8 xl:col-span-9 min-w-0">
+                <Suspense fallback={<ViewLoadingSkeleton />}>
+                  <CultureHubView
+                    activeSubTab={cultureSubTab}
+                    onSelectSubTab={setCultureSubTab}
+                    onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+                    onNavigateTab={handleNavigateStudyTab}
+                    onSwitchToStudy={() => handleSelectPortalMode('study')}
+                    lessons={lessons}
+                  />
+                </Suspense>
+              </div>
+
             </div>
+
           </div>
         )}
 

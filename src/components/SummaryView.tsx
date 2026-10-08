@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Copy, Check, Calendar, AlertTriangle, Timer as TimerIcon, ArrowRight, ShieldCheck, CheckSquare, Zap, GraduationCap, Clock, Printer } from 'lucide-react';
+import { Copy, Check, Calendar, AlertTriangle, Timer as TimerIcon, ArrowRight, ShieldCheck, CheckSquare, Zap, GraduationCap, Clock, Printer, Mail } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import { AudioReader } from './AudioReader';
 import { FiveMinuteTimer } from './FiveMinuteTimer';
+import { EmailShareModal } from './EmailShareModal';
 
 interface SummaryViewProps {
   lesson: LessonData;
@@ -18,6 +19,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const { summary } = lesson;
 
   const handleCopy = () => {
@@ -85,6 +87,16 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
           >
             <Printer className="w-3.5 h-3.5 text-slate-500" />
             <span>Печат</span>
+          </button>
+
+          {/* Email Modal Button */}
+          <button
+            onClick={() => setIsEmailModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 transition-colors shadow-2xs"
+            title="Изпрати този конспект на имейл"
+          >
+            <Mail className="w-3.5 h-3.5 text-slate-500" />
+            <span>На имейл</span>
           </button>
 
           {/* Copy Button */}
@@ -245,6 +257,13 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
           <span className="font-mono text-slate-600">StudyBG OCR Engine • МОН Стандарт 2026</span>
         </div>
       </div>
+
+      {/* Email Share Modal */}
+      <EmailShareModal
+        isOpen={isEmailModalOpen}
+        onClose={() => setIsEmailModalOpen(false)}
+        lesson={lesson}
+      />
     </div>
   );
 };

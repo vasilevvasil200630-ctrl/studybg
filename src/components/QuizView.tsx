@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { RefreshCw, MessageSquare, ArrowRight, CheckSquare, HelpCircle } from 'lucide-react';
+import { RefreshCw, MessageSquare, ArrowRight, CheckSquare, HelpCircle, Mail } from 'lucide-react';
 import type { QuizQuestion } from '../types';
 import type { AppNavTab } from './Navbar';
 import confetti from 'canvas-confetti';
+import { EmailShareModal } from './EmailShareModal';
 
 interface QuizViewProps {
   questions: QuizQuestion[];
@@ -21,6 +22,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
 }) => {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
   const handleSelectOption = (questionId: number, optionIndex: number) => {
     if (isSubmitted) return;
@@ -104,6 +106,10 @@ export const QuizView: React.FC<QuizViewProps> = ({
 
   const correctScore = calculateScore();
   const gradeInfo = getBulgarianGrade(correctScore, questions.length);
+  const gradeBg = Math.max(2, Math.min(6, 2 + (correctScore / (questions.length || 1)) * 4));
+  const missedQuestions = questions
+    .filter((q) => selectedAnswers[q.id] !== undefined && selectedAnswers[q.id] !== q.correctIndex)
+    .map((q) => q.question);
 
   return (
     <div className="space-y-6">
@@ -197,6 +203,15 @@ export const QuizView: React.FC<QuizViewProps> = ({
                 <MessageSquare className="w-3.5 h-3.5" />
                 <span>Обяснение на грешките</span>
               </button>
+              <button
+                onClick={() => setIsEmailModalOpen(true)}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-white hover:bg-slate-50 text-slate-800 text-xs font-semibold border border-slate-300 transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
+                title="Изпрати този изпитен резултат по имейл"
+              >
+                <Mail className="w-3.5 h-3.5 text-blue-600" />
+                <span>Резултат на имейл</span>
+              </button>
+
               {onNavigateTab && (
                 <>
                   <button
@@ -322,6 +337,19 @@ export const QuizView: React.FC<QuizViewProps> = ({
           </button>
         </div>
       )}
+
+      {/* Email Share Modal for Quiz Results */}
+      <EmailShareModal
+        isOpen={isEmailModalOpen}
+        onClose={() => setIsEmailModalOpen(false)}
+        testResult={{
+          lessonTitle: `Тест за самопроверка (${questions.length} въпроса)`,
+          score: correctScore,
+          total: questions.length,
+          gradeBg,
+          missedQuestions
+        }}
+      />
     </div>
   );
 };

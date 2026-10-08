@@ -13,6 +13,7 @@ import { Footer } from './components/Footer';
 import { QuickLessonSwitcherModal } from './components/QuickLessonSwitcherModal';
 import { StudySidebar } from './components/StudySidebar';
 import { CultureSidebar } from './components/CultureSidebar';
+import { NewsletterSection } from './components/NewsletterSection';
 
 // Code-split heavy interactive modules for optimal bundle size and instant initial load
 const CultureHubView = lazy(() => import('./components/CultureHubView').then(m => ({ default: m.CultureHubView })));
@@ -547,6 +548,10 @@ export function App() {
 
       </main>
 
+      {/* Weekly Exam Prep Newsletter */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <NewsletterSection />
+      </div>
 
       {/* Footer */}
       <Footer

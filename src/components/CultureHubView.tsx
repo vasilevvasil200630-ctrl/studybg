@@ -470,11 +470,18 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {item.hypotheses.map((hyp, hIdx) => (
-                            <div key={hIdx} className="p-4 rounded-xl bg-white border border-slate-200 space-y-1.5 shadow-2xs">
-                              <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                                <span className="w-2 h-2 rounded-full bg-blue-600" />
-                                <span>{hyp.title}</span>
-                              </h4>
+                            <div key={hIdx} className="p-4 rounded-xl bg-white border border-slate-200 space-y-2 shadow-2xs">
+                              <div className="flex flex-wrap items-center justify-between gap-1.5">
+                                <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                                  <span className="w-2 h-2 rounded-full bg-blue-600" />
+                                  <span>{hyp.title}</span>
+                                </h4>
+                                {hyp.weight && (
+                                  <span className="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                                    {hyp.weight}
+                                  </span>
+                                )}
+                              </div>
                               <p className="text-xs text-slate-600 leading-relaxed">
                                 {hyp.description}
                               </p>
@@ -487,6 +494,24 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
                       <div className="p-4 rounded-xl bg-slate-100 border border-slate-200 text-xs text-slate-700 leading-relaxed italic">
                         <strong>Тема за размисъл:</strong> „{item.foodForThought}“
                       </div>
+
+                      {/* Academic Bibliography and Archival Sources */}
+                      {item.academicSources && item.academicSources.length > 0 && (
+                        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                          <div className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase tracking-wider">
+                            <BookOpen className="w-3.5 h-3.5 text-blue-600" />
+                            <span>Академични източници, монографии и архивни фондове:</span>
+                          </div>
+                          <ul className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
+                            {item.academicSources.map((src, sIdx) => (
+                              <li key={sIdx} className="text-[11px] text-slate-600 flex items-start gap-1.5 leading-normal">
+                                <span className="text-blue-500 font-bold">•</span>
+                                <span>{src}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
 
                       {/* Academic Topic Bridge */}
                       {relatedLesson && onSelectLesson && onNavigateTab && (

@@ -26,28 +26,14 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
   const startProcessing = (textToAnalyze: string, filename: string, lessonFallback?: LessonData) => {
     setSelectedFileName(filename);
     setIsScanning(true);
-    setProgressPercent(20);
-    setScanStep('Обработка на изображението и изчистване на фона...');
+    setProgressPercent(50);
+    setScanStep('Съпоставка на въведеното съдържание с изискванията на МОН...');
 
     setTimeout(() => {
-      setProgressPercent(45);
-      setScanStep('Оптично разпознаване на българския ръкопис...');
-    }, 700);
-
-    setTimeout(() => {
-      setProgressPercent(75);
-      setScanStep('Съпоставка с учебната програма на МОН (Предмет, Клас, Дял)...');
-    }, 1400);
-
-    setTimeout(() => {
-      setProgressPercent(95);
-      setScanStep('Изчисляване на покритието и генериране на одит за 6.00...');
-      setTimeout(() => {
-        setIsScanning(false);
-        const diagnosis = classifyAndDiagnoseNotebook(textToAnalyze, filename);
-        onScanComplete(lessonFallback || diagnosis.lessonData, diagnosis);
-      }, 500);
-    }, 2100);
+      setIsScanning(false);
+      const diagnosis = classifyAndDiagnoseNotebook(textToAnalyze, filename);
+      onScanComplete(lessonFallback || diagnosis.lessonData, diagnosis);
+    }, 400);
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

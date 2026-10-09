@@ -91,12 +91,11 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
   const basePercent = Math.min(100, Math.round(ratio * 70 + (matched.matchedKeywords.length * 5)));
   const qualityScore = Math.max(35, Math.min(98, basePercent));
 
-  let gradeEstimate = 'Добър 4.00';
-  if (qualityScore >= 88) gradeEstimate = 'Отличен 6.00 🏆';
-  else if (qualityScore >= 75) gradeEstimate = 'Отличен 5.50 🌟';
-  else if (qualityScore >= 60) gradeEstimate = 'Мн. добър 4.80 📚';
-  else if (qualityScore >= 45) gradeEstimate = 'Добър 3.90 💡';
-  else gradeEstimate = 'Среден 3.00 (Има риск!) ⚠️';
+  let gradeEstimate = 'Добро покритие на стандартите';
+  if (qualityScore >= 85) gradeEstimate = 'Високо покритие на стандартите';
+  else if (qualityScore >= 70) gradeEstimate = 'Много добро покритие на понятията';
+  else if (qualityScore >= 50) gradeEstimate = 'Частично покритие на темата';
+  else gradeEstimate = 'Начално ниво (Препоръчва се попълване на пропуските)';
 
   // Check if we have an existing rich lesson in curriculum database
   const existing = CURRICULUM_LESSONS.find(

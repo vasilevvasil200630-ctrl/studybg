@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, ShieldAlert, RefreshCw, ArrowRight } from 'lucide-react';
 import type { QuizQuestion, LessonData } from '../types';
-import confetti from 'canvas-confetti';
 
 interface ExamSimulatorViewProps {
   currentLesson: LessonData;
@@ -128,15 +127,6 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
         onRecordError(q, chosen ?? -1);
       }
     });
-
-    const pts = calculateTotalPoints();
-    if (pts >= 90) {
-      confetti({
-        particleCount: 120,
-        spread: 85,
-        origin: { y: 0.5 }
-      });
-    }
   };
 
   const formatTimer = (sec: number) => {

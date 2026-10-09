@@ -41,26 +41,26 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({
   const checkedCount = checkedIds.length;
   const coveragePercent = totalItems > 0 ? Math.round((checkedCount / totalItems) * 100) : 100;
 
-  // Grade prediction based on student's actual notebook content
+  // Self-assessment coverage status based on checked items
   const getAuditVerdict = () => {
     if (coveragePercent >= 90) {
       return {
-        verdict: 'Тетрадката покрива критериите за Отличен 6.00',
+        verdict: 'Пълно покритие на задължителните критерии по МОН',
         badge: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-        desc: 'Всички ключови акценти, дати и дефиниции по държавния стандарт на МОН са налични.'
+        desc: 'Всички ключови акценти, дати и дефиниции по държавния образователен стандарт са налични в записките.'
       };
     }
     if (coveragePercent >= 60) {
       return {
-        verdict: 'Частично покритие — очаквана оценка 4.50 – 5.00',
+        verdict: 'Частично покритие на учебния стандарт',
         badge: 'bg-amber-50 text-amber-800 border-amber-200',
-        desc: 'Налице са пропуски в задължителните формулировки. Препоръчва се нанасяне на липсващите бележки.'
+        desc: 'Налице са пропуски в задължителните формулировки. Препоръчва се нанасяне на липсващите акценти.'
       };
     }
     return {
-      verdict: 'Критични пропуски за изпит — оценка под 4.00',
+      verdict: 'Съществени пропуски в записките',
       badge: 'bg-rose-50 text-rose-800 border-rose-200',
-      desc: 'Липсват базови дефиниции и структурни елементи, които са обект на задължителна проверка.'
+      desc: 'Липсват базови дефиниции и структурни елементи, които са предмет на проверка на изпити.'
     };
   };
 

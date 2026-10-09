@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { RefreshCw, ArrowRight, CheckSquare, HelpCircle, Mail } from 'lucide-react';
 import type { QuizQuestion } from '../types';
 import type { AppNavTab } from './Navbar';
-import confetti from 'canvas-confetti';
 import { EmailShareModal } from './EmailShareModal';
 
 interface QuizViewProps {
@@ -79,14 +78,6 @@ export const QuizView: React.FC<QuizViewProps> = ({
 
   const handleSubmit = () => {
     setIsSubmitted(true);
-    const score = calculateScore();
-    if (score >= questions.length * 0.9) {
-      confetti({
-        particleCount: 100,
-        spread: 80,
-        origin: { y: 0.5 }
-      });
-    }
 
     // Automatically record any mistakes to the Error Bank
     questions.forEach((q) => {

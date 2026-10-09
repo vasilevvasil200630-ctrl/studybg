@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { RotateCw, CheckCircle2, RotateCcw, ArrowLeft, ArrowRight, Shuffle, HelpCircle, Layers, BookOpen, CheckSquare } from 'lucide-react';
 import type { Flashcard } from '../types';
 import type { AppNavTab } from './Navbar';
-import confetti from 'canvas-confetti';
 
 interface FlashcardsViewProps {
   flashcards: Flashcard[];
@@ -78,14 +77,6 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
       const updated = [...masteredIds, id];
       setMasteredIds(updated);
       setReviewIds(reviewIds.filter((item) => item !== id));
-
-      if (updated.length === cards.length) {
-        confetti({
-          particleCount: 80,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-      }
     }
     handleNext();
   };

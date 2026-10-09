@@ -233,10 +233,10 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
           </div>
         )}
 
-        {/* Original Excerpt Toggle info */}
+        {/* Curriculum Standard Attribution */}
         <div className="mt-6 pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
-          <span>Източник: Ръкописни бележки от ученическа тетрадка</span>
-          <span className="font-mono text-slate-600">StudyBG OCR Engine • МОН Стандарт 2026</span>
+          <span>Учебен конспект по държавните образователни стандарти</span>
+          <span className="font-medium text-slate-600">Официална учебна програма на МОН</span>
         </div>
       </div>
 

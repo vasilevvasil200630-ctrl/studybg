@@ -62,7 +62,7 @@ export const CultureSidebar: React.FC<CultureSidebarProps> = ({
     {
       tab: 'trivia',
       label: 'Куиз за ерудити',
-      sublabel: '20 въпроса с класация',
+      sublabel: '20 въпроса за самопроверка',
       icon: Sparkles,
       accentColor: 'text-sky-600'
     },

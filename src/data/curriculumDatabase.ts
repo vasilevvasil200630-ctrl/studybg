@@ -59,8 +59,8 @@ export const CURRICULUM_LESSONS: LessonData[] = [
     notebookChecklist: [
       {
         id: 'chk-1',
-        requirement: 'Таблица с четирите революционни окръга и имената на главните апостоли',
-        whyNeeded: 'В 90% от матурните тестове има въпрос за съпоставяне на окръг и апостол.',
+        requirement: 'Таблица с революционните окръзи и имената на главните апостоли',
+        whyNeeded: 'Стандартен въпрос от държавните изпити за съпоставяне на революционен окръг и главен апостол.',
         isEssentialForSix: true,
         suggestedNotes: 'I Търновски: Ст. Стамболов | II Сливенски: Ил. Драгостинов, Г. Икономов | III Врачански: Ст. Заимов | IV Панагюрски: П. Волов, Г. Бенковски'
       },
@@ -1080,7 +1080,7 @@ export const CURRICULUM_LESSONS: LessonData[] = [
     sourceType: 'notebook',
     originalNoteExcerpt: 'Подлог / сказуемно определение ➔ пълен член (-ът / -ят), заменя се с ТОЙ. Допълнение / обстоятелство ➔ кратък член (-а / -я), заменя се с НЕГО / ГО. След предлог (в, на, от, за, с) ВИНАГИ кратък член! Пунктуация: запетая пред че, да, защото, въпреки че, който.',
     summary: {
-      overview: 'Най-важните правописни и синтактични правила в българския книжовен език. Членуването на имената от мъжки род единствено число и пунктуацията в сложното изречение формират над 30% от тестовите задачи на Националното външно оценяване (НВО в 7. и 10. клас) и ДЗИ.',
+      overview: 'Най-важните правописни и синтактични правила в българския книжовен език. Членуването на имената от мъжки род единствено число и пунктуацията в сложното изречение формират съществена част от тестовите задачи на Националното външно оценяване (НВО в 7. и 10. клас) и ДЗИ.',
       keyPoints: [
         'Правилото за пълния член (-ът / -ят): Пише се, когато думата е подлог (вършител на действието) или сказуемно определение. Златна проба: замества се успешно с местоимението „той“.',
         'Правилото за краткия член (-а / -я): Пише се, когато думата е пряко или непряко допълнение, или обстоятелствено пояснение. Златна проба: замества се с „него / го“.',
@@ -1104,7 +1104,7 @@ export const CURRICULUM_LESSONS: LessonData[] = [
       {
         id: 'chk-bel-1',
         requirement: 'Формулата за заместване с „той“ и „него“',
-        whyNeeded: 'Позволява 100% безпогрешно определяне на подлога в секунди.',
+        whyNeeded: 'Позволява бързо и безпогрешно определяне на синтактичната служба на думата.',
         isEssentialForSix: true,
         suggestedNotes: 'ТОЙ = пълен член (-ът / -ят) | НЕГО / ГО = кратък член (-а / -я).'
       },
@@ -1688,7 +1688,7 @@ export const CURRICULUM_LESSONS: LessonData[] = [
         'Second Conditional: If + Past Simple, would + Bare Infinitive. Изразява въображаема, нереална ситуация в настоящето („If I had a million dollars, I would buy an island“; "If I were you, I would study harder").',
         'Third Conditional: If + Past Perfect (had + V3), would have + V3. Изразява съжаление за минало събитие, което не може да се промени („If I had known the truth, I would have told you“).'
       ],
-      examGoldenRule: 'Golden Rule: Никога не използвай Present Perfect, ако в изречението има дума като "yesterday", "ago", "last year" или точна дата — тогава на 100% избираш Past Simple!',
+      examGoldenRule: 'Golden Rule: Никога не използвай Present Perfect, ако в изречението има дума като "yesterday", "ago", "last year" или точна дата — тогава задължително избираш Past Simple!',
       commonTraps: [
         'Trap: „I have seen him yesterday.“ (ГРЕШКА! Правилно: „I saw him yesterday.“)',
         'Trap: Поставяне на "will" или "would" в условната част с "if": „If I will come, I will call you“ (ГРЕШКА! Правилно: „If I come, I will call you“).'
@@ -1704,7 +1704,7 @@ export const CURRICULUM_LESSONS: LessonData[] = [
       {
         id: 'chk-eng-1',
         requirement: 'Таблица с маркерите за Past Simple срещу Present Perfect',
-        whyNeeded: 'Позволява незабавен верен отговор на 95% от въпросите за времена.',
+        whyNeeded: 'Позволява бързо и сигурно ориентиране в изпитните задачи за глаголни времена.',
         isEssentialForSix: true,
         suggestedNotes: 'Past Simple: yesterday, ago, last, in 2010 | Present Perfect: already, just, yet, ever, never, since, for, recently.'
       },
@@ -2314,7 +2314,7 @@ export const CURRICULUM_LESSONS: LessonData[] = [
       {
         id: 'chk-pyt-3',
         requirement: 'Списък с основните питагорови тройки цели числа',
-        whyNeeded: 'Спестява до 80% от времето за пресмятане на тестове с избираем отговор.',
+        whyNeeded: 'Позволява мигновено намиране на липсваща страна при задачи с избираем отговор.',
         isEssentialForSix: true,
         suggestedNotes: '(3, 4, 5) ➔ 3² + 4² = 25 = 5² | (5, 12, 13) ➔ 25 + 144 = 169 = 13² | (8, 15, 17) ➔ 64 + 225 = 289 = 17².'
       },

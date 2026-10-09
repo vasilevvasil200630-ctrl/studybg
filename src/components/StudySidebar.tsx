@@ -101,7 +101,7 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
         {
           tab: 'simulator',
           label: 'Симулатор (100т.)',
-          sublabel: 'Изпитен формат МОН',
+          sublabel: '3 модула • Формат МОН',
           icon: Clock,
           accentColor: 'text-amber-600'
         }

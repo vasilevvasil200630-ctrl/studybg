@@ -138,11 +138,11 @@ export const Footer: React.FC<FooterProps> = ({
               </li>
               <li>
                 <button
-                  onClick={() => handleOpenStudyTab('chat')}
+                  onClick={() => handleOpenCultureTab('cases')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-                  <span>Интерактивен ментор за въпроси</span>
+                  <FileText className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Исторически казуси & теми за есе</span>
                 </button>
               </li>
             </ul>

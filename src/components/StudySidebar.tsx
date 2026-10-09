@@ -7,7 +7,6 @@ import {
   Clock,
   AlertCircle,
   Printer,
-  MessageSquare,
   BookMarked,
   Search,
   Camera,
@@ -118,13 +117,6 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           sublabel: 'Готови за печат',
           icon: Printer,
           accentColor: 'text-slate-600'
-        },
-        {
-          tab: 'chat',
-          label: 'AI Ментор',
-          sublabel: 'Въпроси към урока',
-          icon: MessageSquare,
-          accentColor: 'text-blue-600'
         }
       ]
     },

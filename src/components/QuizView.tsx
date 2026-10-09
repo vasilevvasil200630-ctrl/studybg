@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RefreshCw, MessageSquare, ArrowRight, CheckSquare, HelpCircle, Mail } from 'lucide-react';
+import { RefreshCw, ArrowRight, CheckSquare, HelpCircle, Mail } from 'lucide-react';
 import type { QuizQuestion } from '../types';
 import type { AppNavTab } from './Navbar';
 import confetti from 'canvas-confetti';
@@ -8,7 +8,6 @@ import { EmailShareModal } from './EmailShareModal';
 interface QuizViewProps {
   questions: QuizQuestion[];
   onReviewFlashcards: () => void;
-  onOpenChat: () => void;
   onNavigateTab?: (tab: AppNavTab) => void;
   onRecordError?: (q: QuizQuestion, chosenIndex: number) => void;
 }
@@ -16,7 +15,6 @@ interface QuizViewProps {
 export const QuizView: React.FC<QuizViewProps> = ({
   questions,
   onReviewFlashcards,
-  onOpenChat,
   onNavigateTab,
   onRecordError
 }) => {
@@ -195,13 +193,6 @@ export const QuizView: React.FC<QuizViewProps> = ({
               >
                 <span>Преговор с карти</span>
                 <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={onOpenChat}
-                className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 shadow-xs"
-              >
-                <MessageSquare className="w-3.5 h-3.5" />
-                <span>Обяснение на грешките</span>
               </button>
               <button
                 onClick={() => setIsEmailModalOpen(true)}

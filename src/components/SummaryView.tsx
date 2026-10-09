@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Copy, Check, Calendar, AlertTriangle, Timer as TimerIcon, ArrowRight, ShieldCheck, CheckSquare, Zap, GraduationCap, Clock, Printer, Mail } from 'lucide-react';
+import { Copy, Check, Calendar, AlertTriangle, ArrowRight, ShieldCheck, CheckSquare, Zap, GraduationCap, Clock, Printer, Mail } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import { AudioReader } from './AudioReader';
-import { FiveMinuteTimer } from './FiveMinuteTimer';
 import { EmailShareModal } from './EmailShareModal';
 
 interface SummaryViewProps {
@@ -18,7 +17,6 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
   onNavigateTab
 }) => {
   const [copied, setCopied] = useState(false);
-  const [showTimer, setShowTimer] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const { summary } = lesson;
 
@@ -37,9 +35,6 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* 5-minute Study Sprint Bar (Optional toggle) */}
-      {showTimer && <FiveMinuteTimer />}
-
       {/* Header bar with meta and actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-xl bg-slate-50 border border-slate-200">
         <div>
@@ -62,19 +57,6 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
 
         {/* Action Toolbar */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* Toggle Timer button */}
-          <button
-            onClick={() => setShowTimer(!showTimer)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-              showTimer
-                ? 'bg-blue-50 text-blue-700 border-blue-200 font-semibold'
-                : 'bg-white text-slate-700 hover:bg-slate-100 border-slate-300'
-            }`}
-            title="Превключване на 5-минутния таймер"
-          >
-            <TimerIcon className="w-3.5 h-3.5 text-blue-600" />
-            <span>{showTimer ? 'Скрий таймера' : '5 мин таймер'}</span>
-          </button>
 
           {/* Audio speech reader */}
           <AudioReader textToRead={fullSummaryAudioText} />

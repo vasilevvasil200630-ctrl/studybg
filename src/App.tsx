@@ -16,7 +16,6 @@ const ExamTestPaperGenerator = lazy(() => import('./components/ExamTestPaperGene
 const NotebookAuditor = lazy(() => import('./components/NotebookAuditor').then(m => ({ default: m.NotebookAuditor })));
 const FlashcardsView = lazy(() => import('./components/FlashcardsView').then(m => ({ default: m.FlashcardsView })));
 const QuizView = lazy(() => import('./components/QuizView').then(m => ({ default: m.QuizView })));
-const NotebookChat = lazy(() => import('./components/NotebookChat').then(m => ({ default: m.NotebookChat })));
 const SubjectCatalog = lazy(() => import('./components/SubjectCatalog').then(m => ({ default: m.SubjectCatalog })));
 const SmartScan = lazy(() => import('./components/SmartScan').then(m => ({ default: m.SmartScan })));
 const QuickLessonSwitcherModal = lazy(() => import('./components/QuickLessonSwitcherModal').then(m => ({ default: m.QuickLessonSwitcherModal })));
@@ -29,7 +28,6 @@ import {
   Camera,
   BookOpen,
   Zap,
-  MessageSquare,
   ChevronRight,
   CheckSquare,
   GraduationCap,
@@ -44,7 +42,7 @@ import './App.css';
 
 const STUDY_TABS: AppNavTab[] = [
   'scan', 'audit', 'summary', 'flashcards', 'quiz',
-  'chat', 'simulator', 'errorbank', 'generator', 'catalog'
+  'simulator', 'errorbank', 'generator', 'catalog'
 ];
 
 const ViewLoadingSkeleton = () => (
@@ -224,7 +222,6 @@ export function App() {
     { tab: 'simulator', label: 'Симулатор', icon: <Clock className="w-3.5 h-3.5" /> },
     { tab: 'errorbank', label: 'Грешки', icon: <AlertCircle className="w-3.5 h-3.5" /> },
     { tab: 'generator', label: 'Група А & Б', icon: <Printer className="w-3.5 h-3.5" /> },
-    { tab: 'chat', label: 'AI Ментор', icon: <MessageSquare className="w-3.5 h-3.5" /> },
     { tab: 'catalog', label: 'Каталог', icon: <BookMarked className="w-3.5 h-3.5" /> },
   ];
 
@@ -244,16 +241,18 @@ export function App() {
         onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
       />
 
-      {/* Hero Section: Study Hero or Culture Hero based on portalMode */}
+      {/* Hero Section: Study Hero (on summary tab) or Culture Hero based on portalMode */}
       {portalMode === 'study' ? (
-        <Hero
-          onScanClick={() => setIsScanModalOpen(true)}
-          onSelectSample={(l) => handleLessonSelected(l, 'summary')}
-          lessons={lessons}
-          currentLesson={currentLesson}
-          onNavigateTab={handleNavigateStudyTab}
-          onScrollToCatalog={scrollToCatalog}
-        />
+        activeTab === 'summary' && (
+          <Hero
+            onScanClick={() => setIsScanModalOpen(true)}
+            onSelectSample={(l) => handleLessonSelected(l, 'summary')}
+            lessons={lessons}
+            currentLesson={currentLesson}
+            onNavigateTab={handleNavigateStudyTab}
+            onScrollToCatalog={scrollToCatalog}
+          />
+        )
       ) : (
         <CultureHero
           activeCultureTab={cultureSubTab}
@@ -442,7 +441,6 @@ export function App() {
                       <QuizView
                         questions={practiceQuestions || currentLesson.quiz}
                         onReviewFlashcards={() => handleNavigateStudyTab('flashcards')}
-                        onOpenChat={() => handleNavigateStudyTab('chat')}
                         onNavigateTab={handleNavigateStudyTab}
                         onRecordError={handleRecordError}
                       />
@@ -471,10 +469,6 @@ export function App() {
                         onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
                         onNavigateTab={handleNavigateStudyTab}
                       />
-                    )}
-
-                    {activeTab === 'chat' && (
-                      <NotebookChat lesson={currentLesson} />
                     )}
 
                     {activeTab === 'catalog' && (

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   Camera,
   BookOpen,
-  MessageSquare,
   Zap,
   BookMarked,
   CheckSquare,
@@ -20,7 +19,6 @@ import {
   Quote,
   Scale
 } from 'lucide-react';
-import { StudentStats } from './StudentStats';
 import { errorBankService } from '../services/errorBankService';
 import type { CultureSubTab } from './CultureHero';
 
@@ -30,7 +28,6 @@ export type AppNavTab =
   | 'summary'
   | 'flashcards'
   | 'quiz'
-  | 'chat'
   | 'simulator'
   | 'errorbank'
   | 'timeline'
@@ -101,7 +98,6 @@ export const Navbar: React.FC<NavbarProps> = ({
       ) : null
     },
     { tab: 'generator', label: 'Група А & Б', icon: <Printer className="w-3.5 h-3.5 text-slate-600" /> },
-    { tab: 'chat', label: 'AI Ментор', icon: <MessageSquare className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'catalog', label: 'Каталог с теми', icon: <BookMarked className="w-3.5 h-3.5 text-emerald-600" /> }
   ];
 
@@ -186,8 +182,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Right Action Bar */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <StudentStats />
-
             {portalMode === 'study' ? (
               <>
                 {/* Official МОН Formula Sheets Modal Button */}

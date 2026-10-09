@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Clock, ShieldAlert, Award, MapPin, User, ChevronRight, BookOpen, GraduationCap, MessageSquare, ArrowRight } from 'lucide-react';
+import { Clock, ShieldAlert, Award, MapPin, User, ChevronRight, BookOpen, GraduationCap, Zap, ArrowRight } from 'lucide-react';
 import { BULGARIAN_HISTORY_TIMELINE } from '../data/bulgarianHistoryTimeline';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -235,11 +235,11 @@ export const HistoryTimelineView: React.FC<HistoryTimelineViewProps> = ({
                     <span>Реши тест</span>
                   </button>
                   <button
-                    onClick={() => onNavigateTab?.('chat')}
+                    onClick={() => onNavigateTab?.('flashcards')}
                     className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium border border-slate-300 shadow-2xs transition-colors"
                   >
-                    <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Питай ментора</span>
+                    <Zap className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Флаш карти</span>
                   </button>
                 </div>
               </div>

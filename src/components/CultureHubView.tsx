@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import {
   Compass,
   Search,
@@ -28,10 +28,21 @@ import {
   type UnsolvedMysteryItem,
   type TriviaQuestion
 } from '../data/generalKnowledgeData';
-import { HistoryTimelineView } from './HistoryTimelineView';
-import { CultureWondersView } from './CultureWondersView';
-import { CultureWisdomView } from './CultureWisdomView';
-import { HistoricalCasesView } from './HistoricalCasesView';
+
+const HistoryTimelineView = lazy(() => import('./HistoryTimelineView').then(m => ({ default: m.HistoryTimelineView })));
+const CultureWondersView = lazy(() => import('./CultureWondersView').then(m => ({ default: m.CultureWondersView })));
+const CultureWisdomView = lazy(() => import('./CultureWisdomView').then(m => ({ default: m.CultureWisdomView })));
+const HistoricalCasesView = lazy(() => import('./HistoricalCasesView').then(m => ({ default: m.HistoricalCasesView })));
+
+const SubViewLoadingSkeleton = () => (
+  <div className="p-8 rounded-2xl bg-white border border-slate-200 animate-pulse flex items-center justify-center min-h-[300px] shadow-xs">
+    <div className="flex items-center gap-3 text-slate-500 text-xs sm:text-sm font-medium">
+      <div className="w-5 h-5 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
+      <span>Зареждане на съдържанието...</span>
+    </div>
+  </div>
+);
+
 import { EmailShareModal } from './EmailShareModal';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -555,25 +566,31 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
       {/* 2. ИНТЕРАКТИВНА ХРОНОЛОГИЯ (681–1908 Г.) */}
       {/* ========================================================================= */}
       {activeSubTab === 'timeline' && (
-        <HistoryTimelineView
-          lessons={lessons}
-          onSelectLesson={onSelectLesson}
-          onNavigateTab={onNavigateTab}
-        />
+        <Suspense fallback={<SubViewLoadingSkeleton />}>
+          <HistoryTimelineView
+            lessons={lessons}
+            onSelectLesson={onSelectLesson}
+            onNavigateTab={onNavigateTab}
+          />
+        </Suspense>
       )}
 
       {/* ========================================================================= */}
       {/* ИСТОРИЧЕСКИ АНАЛИТИЧНИ КАЗУСИ & ОТВОРЕНИ ТЕМИ */}
       {/* ========================================================================= */}
       {activeSubTab === 'cases' && (
-        <HistoricalCasesView />
+        <Suspense fallback={<SubViewLoadingSkeleton />}>
+          <HistoricalCasesView />
+        </Suspense>
       )}
 
       {/* ========================================================================= */}
       {/* 3. ПРИРОДНИ ЧУДЕСА НА БЪЛГАРИЯ (12 ОБЕКТА) */}
       {/* ========================================================================= */}
       {activeSubTab === 'wonders' && (
-        <CultureWondersView />
+        <Suspense fallback={<SubViewLoadingSkeleton />}>
+          <CultureWondersView />
+        </Suspense>
       )}
 
       {/* ========================================================================= */}
@@ -926,11 +943,13 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
       {/* 6. ЗЛАТЕН ФОНД & МЪДРОСТ НА ЕПОХИТЕ */}
       {/* ========================================================================= */}
       {activeSubTab === 'wisdom' && (
-        <CultureWisdomView
-          lessons={lessons}
-          onSelectLesson={onSelectLesson}
-          onNavigateTab={onNavigateTab}
-        />
+        <Suspense fallback={<SubViewLoadingSkeleton />}>
+          <CultureWisdomView
+            lessons={lessons}
+            onSelectLesson={onSelectLesson}
+            onNavigateTab={onNavigateTab}
+          />
+        </Suspense>
       )}
 
     </div>

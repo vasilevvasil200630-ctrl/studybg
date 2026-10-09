@@ -2,15 +2,8 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { Navbar, type AppNavTab } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { CultureHero, type CultureSubTab } from './components/CultureHero';
-import { SmartScan } from './components/SmartScan';
-import { NotebookAuditor } from './components/NotebookAuditor';
 import { SummaryView } from './components/SummaryView';
-import { FlashcardsView } from './components/FlashcardsView';
-import { QuizView } from './components/QuizView';
-import { NotebookChat } from './components/NotebookChat';
-import { SubjectCatalog } from './components/SubjectCatalog';
 import { Footer } from './components/Footer';
-import { QuickLessonSwitcherModal } from './components/QuickLessonSwitcherModal';
 import { StudySidebar } from './components/StudySidebar';
 import { CultureSidebar } from './components/CultureSidebar';
 import { NewsletterSection } from './components/NewsletterSection';
@@ -20,9 +13,14 @@ const CultureHubView = lazy(() => import('./components/CultureHubView').then(m =
 const ExamSimulatorView = lazy(() => import('./components/ExamSimulatorView').then(m => ({ default: m.ExamSimulatorView })));
 const ErrorBankView = lazy(() => import('./components/ErrorBankView').then(m => ({ default: m.ErrorBankView })));
 const ExamTestPaperGenerator = lazy(() => import('./components/ExamTestPaperGenerator').then(m => ({ default: m.ExamTestPaperGenerator })));
-
-// МОН Thematic Modules
-import { MonFormulaSheetsModal } from './components/MonFormulaSheetsModal';
+const NotebookAuditor = lazy(() => import('./components/NotebookAuditor').then(m => ({ default: m.NotebookAuditor })));
+const FlashcardsView = lazy(() => import('./components/FlashcardsView').then(m => ({ default: m.FlashcardsView })));
+const QuizView = lazy(() => import('./components/QuizView').then(m => ({ default: m.QuizView })));
+const NotebookChat = lazy(() => import('./components/NotebookChat').then(m => ({ default: m.NotebookChat })));
+const SubjectCatalog = lazy(() => import('./components/SubjectCatalog').then(m => ({ default: m.SubjectCatalog })));
+const SmartScan = lazy(() => import('./components/SmartScan').then(m => ({ default: m.SmartScan })));
+const QuickLessonSwitcherModal = lazy(() => import('./components/QuickLessonSwitcherModal').then(m => ({ default: m.QuickLessonSwitcherModal })));
+const MonFormulaSheetsModal = lazy(() => import('./components/MonFormulaSheetsModal').then(m => ({ default: m.MonFormulaSheetsModal })));
 import { errorBankService } from './services/errorBankService';
 
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
@@ -264,32 +262,37 @@ export function App() {
         />
       )}
 
-      {/* Smart Scan Modal / Overlay */}
-      {isScanModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-            <SmartScan
-              onScanComplete={handleScanCompleted}
-              onClose={() => setIsScanModalOpen(false)}
-              sampleLessons={lessons}
-            />
+      {/* Lazy Modals wrapped in Suspense */}
+      <Suspense fallback={null}>
+        {/* Smart Scan Modal / Overlay */}
+        {isScanModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+              <SmartScan
+                onScanComplete={handleScanCompleted}
+                onClose={() => setIsScanModalOpen(false)}
+                sampleLessons={lessons}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Quick Lesson Switcher Modal */}
-      <QuickLessonSwitcherModal
-        isOpen={isQuickLessonModalOpen}
-        onClose={() => setIsQuickLessonModalOpen(false)}
-        lessons={lessons}
-        currentLessonId={currentLesson.id}
-        onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
-      />
+        {/* Quick Lesson Switcher Modal */}
+        {isQuickLessonModalOpen && (
+          <QuickLessonSwitcherModal
+            isOpen={isQuickLessonModalOpen}
+            onClose={() => setIsQuickLessonModalOpen(false)}
+            lessons={lessons}
+            currentLessonId={currentLesson.id}
+            onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+          />
+        )}
 
-      {/* Official МОН Formula Sheets Modal */}
-      {isFormulaModalOpen && (
-        <MonFormulaSheetsModal onClose={() => setIsFormulaModalOpen(false)} />
-      )}
+        {/* Official МОН Formula Sheets Modal */}
+        {isFormulaModalOpen && (
+          <MonFormulaSheetsModal onClose={() => setIsFormulaModalOpen(false)} />
+        )}
+      </Suspense>
 
       {/* Main Workspace with Modern Left Sidebar Layout */}
       <main id="workspace" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
@@ -403,92 +406,88 @@ export function App() {
               <div className="lg:col-span-8 xl:col-span-9 min-w-0">
                 <div className="rounded-2xl bg-white border border-slate-200 p-4 sm:p-6 lg:p-7 shadow-xs transition-all">
                   
-                  {activeTab === 'scan' && (
-                    <SmartScan
-                      onScanComplete={handleScanCompleted}
-                      sampleLessons={lessons}
-                    />
-                  )}
+                  <Suspense fallback={<ViewLoadingSkeleton />}>
+                    {activeTab === 'scan' && (
+                      <SmartScan
+                        onScanComplete={handleScanCompleted}
+                        sampleLessons={lessons}
+                      />
+                    )}
 
-                  {activeTab === 'audit' && (
-                    <NotebookAuditor
-                      lesson={currentLesson}
-                      onProceedToHolyTrinity={() => handleNavigateStudyTab('summary')}
-                      onNavigateTab={handleNavigateStudyTab}
-                    />
-                  )}
+                    {activeTab === 'audit' && (
+                      <NotebookAuditor
+                        lesson={currentLesson}
+                        onProceedToHolyTrinity={() => handleNavigateStudyTab('summary')}
+                        onNavigateTab={handleNavigateStudyTab}
+                      />
+                    )}
 
-                  {activeTab === 'summary' && (
-                    <SummaryView
-                      lesson={currentLesson}
-                      onProceedToFlashcards={() => handleNavigateStudyTab('flashcards')}
-                      onNavigateTab={handleNavigateStudyTab}
-                    />
-                  )}
+                    {activeTab === 'summary' && (
+                      <SummaryView
+                        lesson={currentLesson}
+                        onProceedToFlashcards={() => handleNavigateStudyTab('flashcards')}
+                        onNavigateTab={handleNavigateStudyTab}
+                      />
+                    )}
 
-                  {activeTab === 'flashcards' && (
-                    <FlashcardsView
-                      flashcards={currentLesson.flashcards}
-                      onProceedToQuiz={() => handleNavigateStudyTab('quiz')}
-                      onNavigateTab={handleNavigateStudyTab}
-                    />
-                  )}
+                    {activeTab === 'flashcards' && (
+                      <FlashcardsView
+                        flashcards={currentLesson.flashcards}
+                        onProceedToQuiz={() => handleNavigateStudyTab('quiz')}
+                        onNavigateTab={handleNavigateStudyTab}
+                      />
+                    )}
 
-                  {activeTab === 'quiz' && (
-                    <QuizView
-                      questions={practiceQuestions || currentLesson.quiz}
-                      onReviewFlashcards={() => handleNavigateStudyTab('flashcards')}
-                      onOpenChat={() => handleNavigateStudyTab('chat')}
-                      onNavigateTab={handleNavigateStudyTab}
-                      onRecordError={handleRecordError}
-                    />
-                  )}
+                    {activeTab === 'quiz' && (
+                      <QuizView
+                        questions={practiceQuestions || currentLesson.quiz}
+                        onReviewFlashcards={() => handleNavigateStudyTab('flashcards')}
+                        onOpenChat={() => handleNavigateStudyTab('chat')}
+                        onNavigateTab={handleNavigateStudyTab}
+                        onRecordError={handleRecordError}
+                      />
+                    )}
 
-                  {activeTab === 'simulator' && (
-                    <Suspense fallback={<ViewLoadingSkeleton />}>
+                    {activeTab === 'simulator' && (
                       <ExamSimulatorView
                         currentLesson={currentLesson}
                         onOpenErrorBank={() => handleNavigateStudyTab('errorbank')}
                         onRecordError={handleRecordError}
                       />
-                    </Suspense>
-                  )}
+                    )}
 
-                  {activeTab === 'errorbank' && (
-                    <Suspense fallback={<ViewLoadingSkeleton />}>
+                    {activeTab === 'errorbank' && (
                       <ErrorBankView
                         onStartCustomQuiz={handleStartCustomQuizFromErrors}
                         allLessons={lessons}
                         onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
                       />
-                    </Suspense>
-                  )}
+                    )}
 
-                  {activeTab === 'generator' && (
-                    <Suspense fallback={<ViewLoadingSkeleton />}>
+                    {activeTab === 'generator' && (
                       <ExamTestPaperGenerator
                         currentLesson={currentLesson}
                         allLessons={lessons}
                         onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
                         onNavigateTab={handleNavigateStudyTab}
                       />
-                    </Suspense>
-                  )}
+                    )}
 
-                  {activeTab === 'chat' && (
-                    <NotebookChat lesson={currentLesson} />
-                  )}
+                    {activeTab === 'chat' && (
+                      <NotebookChat lesson={currentLesson} />
+                    )}
 
-                  {activeTab === 'catalog' && (
-                    <div id="catalog">
-                      <SubjectCatalog
-                        lessons={lessons}
-                        currentLessonId={currentLesson.id}
-                        onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
-                        onAddNewScan={() => setIsScanModalOpen(true)}
-                      />
-                    </div>
-                  )}
+                    {activeTab === 'catalog' && (
+                      <div id="catalog">
+                        <SubjectCatalog
+                          lessons={lessons}
+                          currentLessonId={currentLesson.id}
+                          onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+                          onAddNewScan={() => setIsScanModalOpen(true)}
+                        />
+                      </div>
+                    )}
+                  </Suspense>
 
                 </div>
               </div>
@@ -534,6 +533,34 @@ export function App() {
                     : '🏛️ Златен фонд & Мъдрост на епохите'}
                 </span>
               </nav>
+            </div>
+
+            {/* Mobile / Tablet Horizontal Quick Tab Strip for Culture (visible only on small viewports) */}
+            <div className="lg:hidden mb-6 p-1.5 rounded-xl bg-white border border-slate-200 shadow-xs overflow-x-auto no-scrollbar flex items-center gap-1.5">
+              {[
+                { tab: 'mysteries', label: 'Загадки (14)' },
+                { tab: 'timeline', label: 'Хронология' },
+                { tab: 'cases', label: 'Казуси & Есета (8)' },
+                { tab: 'wonders', label: 'Природни чудеса' },
+                { tab: 'trivia', label: 'Куиз за ерудити' },
+                { tab: 'myths', label: 'Факт или Мит?' },
+                { tab: 'wisdom', label: 'Златен фонд' },
+              ].map((p) => {
+                const isActive = cultureSubTab === p.tab;
+                return (
+                  <button
+                    key={p.tab}
+                    onClick={() => handleNavigateCultureTab(p.tab as CultureSubTab)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                      isActive
+                        ? 'bg-amber-600 text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    }`}
+                  >
+                    <span>{p.label}</span>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Culture Portal Layout: Left Sidebar + Right Content */}

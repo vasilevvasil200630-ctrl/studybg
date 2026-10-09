@@ -47,10 +47,10 @@ export const CultureSidebar: React.FC<CultureSidebarProps> = ({
     },
     {
       tab: 'cases',
-      label: 'Отворени казуси & Есета',
-      sublabel: '8 исторически дебата',
+      label: 'Отворени казуси за ДЗИ',
+      sublabel: '10 академични дебата с извори',
       icon: Scale,
-      accentColor: 'text-amber-700'
+      accentColor: 'text-purple-600'
     },
     {
       tab: 'wonders',

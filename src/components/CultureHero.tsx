@@ -16,9 +16,9 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
         {/* Culture Portal Badge */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm font-medium mb-4 shadow-2xs">
           <Compass className="w-4 h-4 text-amber-600" />
-          <span>Раздел „Обща култура & Загадки“</span>
+          <span>Раздел „Обща култура & Любознателно четиво“</span>
           <span className="text-[11px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">
-            Факти • Чудеса • Митове • Мъдрост
+            Свободно четиво • Загадки • Природни чудеса • Мъдрост
           </span>
         </div>
 
@@ -33,7 +33,8 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
 
         {/* Subtitle */}
         <p className="mt-3 text-xs sm:text-sm md:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
-          Пространство за любопитство, критично мислене и автентични факти. Изследвай недоизказаните страници от миналото, геоложките феномени и се докосни до златния фонд на националната памет.
+          Пространство за любопитство, свободно четене и природно наследство извън строгия изпитен конспект.
+          За официална подготовка по учебната програма за НВО и ДЗИ, премини към Учебната академия.
         </p>
 
         {/* Quick Highlights Row - Replaces the clipped duplicate button row */}
@@ -43,9 +44,9 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
             <span>14 исторически загадки</span>
           </div>
 
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200/80 text-blue-900 text-xs font-semibold shadow-2xs">
-            <Scale className="w-3.5 h-3.5 text-blue-600" />
-            <span>8 аналитични казуса & есета</span>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 border border-purple-200/80 text-purple-900 text-xs font-semibold shadow-2xs">
+            <Scale className="w-3.5 h-3.5 text-purple-600" />
+            <span>10 казуса за ДЗИ (в Академията)</span>
           </div>
 
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-50 border border-teal-200/80 text-teal-900 text-xs font-semibold shadow-2xs">

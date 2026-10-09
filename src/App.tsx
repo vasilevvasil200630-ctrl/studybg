@@ -20,6 +20,7 @@ const SubjectCatalog = lazy(() => import('./components/SubjectCatalog').then(m =
 const SmartScan = lazy(() => import('./components/SmartScan').then(m => ({ default: m.SmartScan })));
 const QuickLessonSwitcherModal = lazy(() => import('./components/QuickLessonSwitcherModal').then(m => ({ default: m.QuickLessonSwitcherModal })));
 const MonFormulaSheetsModal = lazy(() => import('./components/MonFormulaSheetsModal').then(m => ({ default: m.MonFormulaSheetsModal })));
+const HistoricalCasesView = lazy(() => import('./components/HistoricalCasesView').then(m => ({ default: m.HistoricalCasesView })));
 import { errorBankService } from './services/errorBankService';
 
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
@@ -36,12 +37,13 @@ import {
   Printer,
   Search,
   Home,
-  BookMarked
+  BookMarked,
+  Scale
 } from 'lucide-react';
 import './App.css';
 
 const STUDY_TABS: AppNavTab[] = [
-  'scan', 'audit', 'summary', 'flashcards', 'quiz',
+  'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
   'simulator', 'errorbank', 'generator', 'catalog'
 ];
 
@@ -133,8 +135,8 @@ export function App() {
         const el = document.getElementById('workspace');
         el?.scrollIntoView({ behavior: 'smooth' });
       } else if (hash === 'cases' || hash === 'casestudies') {
-        setPortalMode('culture');
-        setCultureSubTab('cases');
+        setPortalMode('study');
+        setActiveTab('cases');
         const el = document.getElementById('workspace');
         el?.scrollIntoView({ behavior: 'smooth' });
       } else if (hash === 'trivia') {
@@ -216,6 +218,7 @@ export function App() {
 
   const mobileNavPills: { tab: AppNavTab; label: string; icon: React.ReactNode }[] = [
     { tab: 'summary', label: 'Конспект', icon: <BookOpen className="w-3.5 h-3.5" /> },
+    { tab: 'cases', label: 'Казуси ДЗИ', icon: <Scale className="w-3.5 h-3.5 text-purple-600" /> },
     { tab: 'audit', label: 'Одит 6.00', icon: <CheckSquare className="w-3.5 h-3.5" /> },
     { tab: 'flashcards', label: 'Флаш карти', icon: <Zap className="w-3.5 h-3.5" /> },
     { tab: 'quiz', label: 'Тест', icon: <GraduationCap className="w-3.5 h-3.5" /> },
@@ -425,6 +428,10 @@ export function App() {
                         onProceedToFlashcards={() => handleNavigateStudyTab('flashcards')}
                         onNavigateTab={handleNavigateStudyTab}
                       />
+                    )}
+
+                    {activeTab === 'cases' && (
+                      <HistoricalCasesView />
                     )}
 
                     {activeTab === 'flashcards' && (

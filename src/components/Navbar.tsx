@@ -26,6 +26,7 @@ export type AppNavTab =
   | 'scan'
   | 'audit'
   | 'summary'
+  | 'cases'
   | 'flashcards'
   | 'quiz'
   | 'simulator'
@@ -83,6 +84,16 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const studyNavItems: { tab: AppNavTab; label: string; icon: React.ReactNode; badge?: React.ReactNode }[] = [
     { tab: 'summary', label: 'Конспект', icon: <BookOpen className="w-3.5 h-3.5 text-blue-600" /> },
+    {
+      tab: 'cases',
+      label: 'Казуси за ДЗИ',
+      icon: <Scale className="w-3.5 h-3.5 text-purple-600" />,
+      badge: (
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 font-bold border border-purple-200">
+          11–12 кл
+        </span>
+      )
+    },
     { tab: 'audit', label: 'Одит 6.00', icon: <CheckSquare className="w-3.5 h-3.5 text-amber-600" /> },
     { tab: 'flashcards', label: 'Флаш карти', icon: <Zap className="w-3.5 h-3.5 text-emerald-600" /> },
     { tab: 'quiz', label: 'Тест', icon: <GraduationCap className="w-3.5 h-3.5 text-blue-600" /> },

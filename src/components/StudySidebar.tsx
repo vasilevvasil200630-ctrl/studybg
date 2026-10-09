@@ -60,6 +60,18 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           accentColor: 'text-blue-600'
         },
         {
+          tab: 'cases',
+          label: 'Казуси за ДЗИ',
+          sublabel: 'Анализ на извори и есе',
+          icon: Scale,
+          accentColor: 'text-purple-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 font-bold border border-purple-200">
+              11–12 кл
+            </span>
+          )
+        },
+        {
           tab: 'audit',
           label: 'Одит за 6.00',
           sublabel: 'Критерии по МОН',

@@ -17,7 +17,10 @@ import {
   ChevronRight,
   ArrowRight,
   ShieldCheck,
-  Save
+  Save,
+  Bookmark,
+  BookMarked,
+  Library
 } from 'lucide-react';
 
 interface HistoricalCasesViewProps {
@@ -153,20 +156,20 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
       <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="max-w-3xl space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 border border-amber-200 text-amber-900">
-              <Scale className="w-3.5 h-3.5 text-amber-700" />
-              <span>Исторически аналитични казуси & Отворени теми</span>
-              <span className="text-[10px] bg-amber-200/60 text-amber-950 font-bold px-1.5 py-0.5 rounded">
-                8 ключови дебата
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 border border-purple-200 text-purple-900">
+              <Scale className="w-3.5 h-3.5 text-purple-700" />
+              <span>Казуси за ДЗИ (11.–12. кл.) • Анализ на исторически извори & Есе</span>
+              <span className="text-[10px] bg-purple-200/70 text-purple-950 font-bold px-1.5 py-0.5 rounded">
+                10 академични казуса
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
               Научи се да мислиш като историк, а не просто да зубриш дати
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Историята не е сбор от готови отговори, а поле за аргументи, първични извори и критичен синтез.
-              Всеки казус съдържа сблъсък на тези, автентични документи, примерен композиционен план за есе
-              и интерактивен тренажор за писане.
+              Официална подготовка за трети модул на ДЗИ по история (анализ на исторически извор и есе/отговор на исторически въпрос).
+              Всеки казус съдържа автентични документи с точни научни сигнатури (ГИБИ, ЛИБИ, ЦДА), сблъсък на тези, композиционен план
+              и интерактивен тренажор за чернова с критериите на МОН.
             </p>
           </div>
 
@@ -369,6 +372,26 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
                     <span className="font-bold text-slate-800">Критичен анализ на извора: </span>
                     {source.sourceContext}
                   </div>
+
+                  {source.exactCitation && (
+                    <div className="text-[11px] font-sans text-amber-950 bg-amber-50/80 p-2.5 rounded-lg border border-amber-200/80 flex items-start gap-2">
+                      <Bookmark className="w-3.5 h-3.5 text-amber-700 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <span className="font-bold text-amber-900">Научна сигнатура: </span>
+                        <span className="font-mono text-[10.5px] text-amber-950">{source.exactCitation}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {source.bibliographyRef && (
+                    <div className="text-[11px] font-sans text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200 flex items-start gap-2">
+                      <BookMarked className="w-3.5 h-3.5 text-slate-500 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <span className="font-bold text-slate-800">Академично изследване: </span>
+                        <span className="italic text-slate-600">{source.bibliographyRef}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -515,6 +538,35 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
               </div>
             </div>
           </div>
+
+          {/* Academic Bibliography & Archival Records */}
+          {activeCase.academicBibliography && activeCase.academicBibliography.length > 0 && (
+            <div className="p-6 sm:p-7 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                <div className="flex items-center gap-2">
+                  <Library className="w-4 h-4 text-purple-700" />
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900">
+                    Академична библиография & Първични извори
+                  </h3>
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 w-fit">
+                  Препоръчана литература за ДЗИ & Олимпиада
+                </span>
+              </div>
+
+              <div className="space-y-2">
+                {activeCase.academicBibliography.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs text-slate-800 font-serif leading-relaxed"
+                  >
+                    <BookMarked className="w-3.5 h-3.5 text-purple-600 mt-0.5 flex-shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* 6. Interactive Essay Scratchpad & Self-Checker */}
           <div className="p-6 sm:p-7 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-5">

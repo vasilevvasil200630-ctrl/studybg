@@ -1,7 +1,6 @@
-import React from 'react';
-import { Compass, Sparkles, Clock, HelpCircle, ArrowRight, GraduationCap, MapPin, BookOpen } from 'lucide-react';
+import { Compass, Sparkles, Clock, HelpCircle, ArrowRight, GraduationCap, MapPin, BookOpen, Scale } from 'lucide-react';
 
-export type CultureSubTab = 'mysteries' | 'timeline' | 'wonders' | 'trivia' | 'myths' | 'wisdom';
+export type CultureSubTab = 'mysteries' | 'timeline' | 'cases' | 'wonders' | 'trivia' | 'myths' | 'wisdom';
 
 interface CultureHeroProps {
   activeCultureTab: CultureSubTab;
@@ -65,6 +64,18 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
           >
             <Clock className="w-4 h-4" />
             <span>Хронология (681–1908)</span>
+          </button>
+
+          <button
+            onClick={() => onSelectCultureTab('cases')}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+              activeCultureTab === 'cases'
+                ? 'bg-amber-700 text-white shadow-xs font-bold'
+                : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
+            }`}
+          >
+            <Scale className="w-4 h-4" />
+            <span>Отворени казуси & Есета (8)</span>
           </button>
 
           <button

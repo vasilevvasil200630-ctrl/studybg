@@ -136,6 +136,11 @@ export function App() {
         setCultureSubTab('timeline');
         const el = document.getElementById('workspace');
         el?.scrollIntoView({ behavior: 'smooth' });
+      } else if (hash === 'cases' || hash === 'casestudies') {
+        setPortalMode('culture');
+        setCultureSubTab('cases');
+        const el = document.getElementById('workspace');
+        el?.scrollIntoView({ behavior: 'smooth' });
       } else if (hash === 'trivia') {
         setPortalMode('culture');
         setCultureSubTab('trivia');
@@ -518,6 +523,8 @@ export function App() {
                     ? '📜 Неразгадани случки от историята (14)'
                     : cultureSubTab === 'timeline'
                     ? '⏳ Интерактивна хронология (681–1908 г.)'
+                    : cultureSubTab === 'cases'
+                    ? '⚖️ Отворени исторически казуси & Есета (8)'
                     : cultureSubTab === 'wonders'
                     ? '🗺️ Природни чудеса на България (12)'
                     : cultureSubTab === 'trivia'

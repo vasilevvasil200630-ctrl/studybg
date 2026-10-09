@@ -31,6 +31,7 @@ import {
 import { HistoryTimelineView } from './HistoryTimelineView';
 import { CultureWondersView } from './CultureWondersView';
 import { CultureWisdomView } from './CultureWisdomView';
+import { HistoricalCasesView } from './HistoricalCasesView';
 import { EmailShareModal } from './EmailShareModal';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -559,6 +560,13 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
           onSelectLesson={onSelectLesson}
           onNavigateTab={onNavigateTab}
         />
+      )}
+
+      {/* ========================================================================= */}
+      {/* ИСТОРИЧЕСКИ АНАЛИТИЧНИ КАЗУСИ & ОТВОРЕНИ ТЕМИ */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'cases' && (
+        <HistoricalCasesView />
       )}
 
       {/* ========================================================================= */}

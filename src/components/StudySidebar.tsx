@@ -12,7 +12,8 @@ import {
   Search,
   Camera,
   FileText,
-  ChevronRight
+  ChevronRight,
+  Scale
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -260,6 +261,20 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
               </div>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
             </button>
+          </div>
+
+          {/* Quick Link to Historical Case Studies & Open Topics */}
+          <div className="pt-2">
+            <a
+              href="#cases"
+              className="w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold text-amber-900 bg-amber-50 hover:bg-amber-100/80 border border-amber-200 transition-colors shadow-2xs group"
+            >
+              <div className="flex items-center gap-2">
+                <Scale className="w-4 h-4 text-amber-700" />
+                <span>Отворени казуси & Есета (8)</span>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 text-amber-700 group-hover:translate-x-0.5 transition-transform" />
+            </a>
           </div>
         </div>
 

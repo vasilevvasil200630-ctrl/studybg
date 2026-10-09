@@ -8,7 +8,8 @@ import {
   ArrowRight,
   BookOpen,
   MapPin,
-  Quote
+  Quote,
+  Scale
 } from 'lucide-react';
 import type { CultureSubTab } from './CultureHero';
 
@@ -43,6 +44,13 @@ export const CultureSidebar: React.FC<CultureSidebarProps> = ({
       sublabel: 'Ключови събития & епохи',
       icon: Clock,
       accentColor: 'text-emerald-600'
+    },
+    {
+      tab: 'cases',
+      label: 'Отворени казуси & Есета',
+      sublabel: '8 исторически дебата',
+      icon: Scale,
+      accentColor: 'text-amber-700'
     },
     {
       tab: 'wonders',

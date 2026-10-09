@@ -255,8 +255,6 @@ export function App() {
         )
       ) : (
         <CultureHero
-          activeCultureTab={cultureSubTab}
-          onSelectCultureTab={handleNavigateCultureTab}
           onSwitchToStudy={() => handleSelectPortalMode('study')}
         />
       )}

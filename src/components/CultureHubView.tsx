@@ -5,15 +5,12 @@ import {
   Sparkles,
   ChevronRight,
   HelpCircle,
-  Clock,
   BookOpen,
   ArrowRight,
   RotateCcw,
   Trophy,
   Check,
   X,
-  MapPin,
-  Quote,
   Volume2,
   VolumeX,
   Bookmark,
@@ -50,7 +47,7 @@ import type { CultureSubTab } from './CultureHero';
 
 interface CultureHubViewProps {
   activeSubTab: CultureSubTab;
-  onSelectSubTab: (tab: CultureSubTab) => void;
+  onSelectSubTab?: (tab: CultureSubTab) => void;
   onSelectLesson?: (lesson: LessonData) => void;
   onNavigateTab?: (tab: AppNavTab) => void;
   onSwitchToStudy?: () => void;
@@ -59,10 +56,8 @@ interface CultureHubViewProps {
 
 export const CultureHubView: React.FC<CultureHubViewProps> = ({
   activeSubTab,
-  onSelectSubTab,
   onSelectLesson,
   onNavigateTab,
-  onSwitchToStudy,
   lessons = []
 }) => {
   // =========================================================================
@@ -70,7 +65,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
   // =========================================================================
   const [selectedMysteryCategory, setSelectedMysteryCategory] = useState<string>('all');
   const [mysterySearchQuery, setMysterySearchQuery] = useState<string>('');
-  const [expandedMysteryId, setExpandedMysteryId] = useState<string | null>(UNSOLVED_MYSTERIES_DATA[0].id);
+  const [expandedMysteryId, setExpandedMysteryId] = useState<string | null>(null);
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
   const [bookmarkedMysteryIds, setBookmarkedMysteryIds] = useState<string[]>(() => {
     try {
@@ -239,94 +234,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
   return (
     <div className="space-y-8">
       
-      {/* 6-Part Responsive Navigation Tabs inside Culture Hub */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-1.5 rounded-2xl bg-white border border-slate-200 shadow-xs">
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto p-1 no-scrollbar">
-          <button
-            onClick={() => onSelectSubTab('mysteries')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
-              activeSubTab === 'mysteries'
-                ? 'bg-amber-600 text-white font-bold shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <Compass className="w-4 h-4" />
-            <span>📜 Неразгадани случки ({UNSOLVED_MYSTERIES_DATA.length})</span>
-          </button>
 
-          <button
-            onClick={() => onSelectSubTab('timeline')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
-              activeSubTab === 'timeline'
-                ? 'bg-emerald-600 text-white font-bold shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <Clock className="w-4 h-4" />
-            <span>⏳ Хронология</span>
-          </button>
-
-          <button
-            onClick={() => onSelectSubTab('wonders')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
-              activeSubTab === 'wonders'
-                ? 'bg-teal-600 text-white font-bold shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <MapPin className="w-4 h-4" />
-            <span>🗺️ Природни чудеса (12)</span>
-          </button>
-
-          <button
-            onClick={() => onSelectSubTab('trivia')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
-              activeSubTab === 'trivia'
-                ? 'bg-blue-600 text-white font-bold shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <Sparkles className="w-4 h-4" />
-            <span>🧠 Куиз за ерудити</span>
-          </button>
-
-          <button
-            onClick={() => onSelectSubTab('myths')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
-              activeSubTab === 'myths'
-                ? 'bg-rose-600 text-white font-bold shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <HelpCircle className="w-4 h-4" />
-            <span>⚖️ Факт или Мит? ({FACT_OR_MYTH_DATA.length})</span>
-          </button>
-
-          <button
-            onClick={() => onSelectSubTab('wisdom')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
-              activeSubTab === 'wisdom'
-                ? 'bg-indigo-600 text-white font-bold shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <Quote className="w-4 h-4" />
-            <span>🏛️ Златен фонд</span>
-          </button>
-        </div>
-
-        {/* Quick jump to study */}
-        {onSwitchToStudy && (
-          <button
-            onClick={onSwitchToStudy}
-            className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200 text-xs font-medium transition-all"
-          >
-            <BookOpen className="w-3.5 h-3.5 text-blue-600" />
-            <span>Към учебните конспекти</span>
-            <ArrowRight className="w-3 h-3 text-slate-400" />
-          </button>
-        )}
-      </div>
 
       {/* ========================================================================= */}
       {/* 1. НЕРАЗГАДАНИ СЛУЧКИ ОТ ИСТОРИЯТА И ГЕОГРАФИЯТА */}
@@ -396,8 +304,8 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
             )}
           </div>
 
-          {/* Mysteries List */}
-          <div className="grid grid-cols-1 gap-4">
+          {/* Mysteries Catalog Grid (2-Column Responsive Layout) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
             {filteredMysteries.map((item) => {
               const isExpanded = expandedMysteryId === item.id;
               const isBookmarked = bookmarkedMysteryIds.includes(item.id);
@@ -408,71 +316,118 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
                 <article
                   key={item.id}
                   id={`mystery-${item.id}`}
-                  className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                  className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
                     isExpanded
-                      ? 'bg-white border-amber-300 shadow-md ring-1 ring-amber-200'
-                      : 'bg-white border-slate-200 hover:border-slate-300 shadow-xs'
+                      ? 'col-span-1 md:col-span-2 bg-white border-amber-300 shadow-lg ring-2 ring-amber-200/60'
+                      : 'col-span-1 bg-white border-slate-200 hover:border-slate-300 hover:shadow-md'
                   }`}
                 >
-                  {/* Collapsed Header */}
+                  {/* Card Header & Preview */}
                   <div
-                    className="p-5 sm:p-6 cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 select-none"
-                    onClick={() => setExpandedMysteryId(isExpanded ? null : item.id)}
+                    className="p-5 sm:p-6 cursor-pointer select-none flex flex-col justify-between"
+                    onClick={() => {
+                      const willExpand = !isExpanded;
+                      setExpandedMysteryId(willExpand ? item.id : null);
+                      if (willExpand) {
+                        setTimeout(() => {
+                          const el = document.getElementById(`mystery-${item.id}`);
+                          el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }, 50);
+                      }
+                    }}
                   >
-                    <div className="space-y-1.5 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-amber-50 border border-amber-200 text-amber-800">
-                          {item.categoryLabel}
-                        </span>
-                        <span className="text-[11px] text-slate-500 font-medium">
-                          {item.unsolvedYearOrPeriod}
-                        </span>
-                        <span className="text-[10px] uppercase font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
+                    <div>
+                      {/* Top Badges Row */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-amber-50 border border-amber-200 text-amber-800">
+                            {item.categoryLabel}
+                          </span>
+                          <span className="text-[11px] text-slate-500 font-medium px-2 py-0.5 rounded bg-slate-100">
+                            {item.unsolvedYearOrPeriod}
+                          </span>
+                        </div>
+                        <span className="text-[10px] uppercase font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
                           {item.tag}
                         </span>
                       </div>
 
-                      <h3 className="text-lg sm:text-xl font-bold text-slate-900 group-hover:text-amber-700 transition-colors">
+                      {/* Title */}
+                      <h3 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-amber-700 transition-colors leading-snug">
                         {item.title}
                       </h3>
 
-                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl">
+                      {/* Subtitle / Question */}
+                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-1.5">
                         {item.subtitle}
                       </p>
+
+                      {/* Unsolved Riddle Teaser Snippet (shown when collapsed) */}
+                      {!isExpanded && (
+                        <div className="mt-3 p-3 rounded-xl bg-amber-50/60 border border-amber-100 text-xs text-amber-950 leading-relaxed">
+                          <span className="font-semibold text-amber-800 block text-[11px] uppercase tracking-wider mb-0.5">
+                            Въпросът без отговор:
+                          </span>
+                          <span className="line-clamp-2">{item.unsolvedMystery}</span>
+                        </div>
+                      )}
                     </div>
 
-                    {/* Action Controls */}
-                    <div className="flex items-center gap-2 self-end sm:self-center" onClick={(e) => e.stopPropagation()}>
-                      <button
-                        onClick={() => handleToggleMysteryAudio(item)}
-                        className={`p-2 rounded-xl text-xs font-medium border transition-colors shadow-2xs ${
-                          isAudioPlaying
-                            ? 'bg-amber-600 text-white border-amber-600'
-                            : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
-                        }`}
-                        title={isAudioPlaying ? 'Спри четенето' : 'Слушай загадката'}
-                      >
-                        {isAudioPlaying ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                      </button>
+                    {/* Bottom Action Strip */}
+                    <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleToggleMysteryAudio(item)}
+                          className={`p-2 rounded-xl text-xs font-medium border transition-colors shadow-2xs ${
+                            isAudioPlaying
+                              ? 'bg-amber-600 text-white border-amber-600'
+                              : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
+                          }`}
+                          title={isAudioPlaying ? 'Спри четенето' : 'Слушай загадката с аудио'}
+                        >
+                          {isAudioPlaying ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-slate-600" />}
+                        </button>
+
+                        <button
+                          onClick={() => toggleMysteryBookmark(item.id)}
+                          className={`p-2 rounded-xl text-xs font-medium border transition-colors shadow-2xs ${
+                            isBookmarked
+                              ? 'bg-amber-50 text-amber-700 border-amber-300'
+                              : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
+                          }`}
+                          title={isBookmarked ? 'Премахни от любими' : 'Запази в любими'}
+                        >
+                          <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-amber-600 text-amber-600' : ''}`} />
+                        </button>
+
+                        <button
+                          onClick={() => handleShareMystery(item)}
+                          className="p-2 rounded-xl bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 text-xs font-medium transition-colors shadow-2xs"
+                          title="Копирай за споделяне"
+                        >
+                          {copiedMysteryId === item.id ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5 text-slate-600" />}
+                        </button>
+                      </div>
 
                       <button
-                        onClick={() => toggleMysteryBookmark(item.id)}
-                        className={`p-2 rounded-xl text-xs font-medium border transition-colors shadow-2xs ${
-                          isBookmarked
-                            ? 'bg-amber-50 text-amber-700 border-amber-300'
-                            : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
+                        onClick={() => {
+                          const willExpand = !isExpanded;
+                          setExpandedMysteryId(willExpand ? item.id : null);
+                          if (willExpand) {
+                            setTimeout(() => {
+                              const el = document.getElementById(`mystery-${item.id}`);
+                              el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                            }, 50);
+                          }
+                        }}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-2xs ${
+                          isExpanded
+                            ? 'bg-slate-100 hover:bg-slate-200 text-slate-800'
+                            : 'bg-amber-600 hover:bg-amber-700 text-white'
                         }`}
-                        title={isBookmarked ? 'Премахни от любими' : 'Запази в любими'}
                       >
-                        <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-amber-600 text-amber-600' : ''}`} />
-                      </button>
-
-                      <button
-                        onClick={() => handleShareMystery(item)}
-                        className="p-2 rounded-xl bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 text-xs font-medium transition-colors shadow-2xs"
-                        title="Копирай за споделяне"
-                      >
-                        {copiedMysteryId === item.id ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
+                        <span>{isExpanded ? 'Свий досието' : 'Разгледай досието'}</span>
+                        <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
                       </button>
                     </div>
                   </div>

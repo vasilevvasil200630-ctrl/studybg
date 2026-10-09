@@ -146,6 +146,16 @@ export function App() {
         setCultureSubTab('myths');
         const el = document.getElementById('workspace');
         el?.scrollIntoView({ behavior: 'smooth' });
+      } else if (hash === 'wonders') {
+        setPortalMode('culture');
+        setCultureSubTab('wonders');
+        const el = document.getElementById('workspace');
+        el?.scrollIntoView({ behavior: 'smooth' });
+      } else if (hash === 'wisdom') {
+        setPortalMode('culture');
+        setCultureSubTab('wisdom');
+        const el = document.getElementById('workspace');
+        el?.scrollIntoView({ behavior: 'smooth' });
       } else if (hash === 'study') {
         setPortalMode('study');
         setActiveTab('summary');
@@ -505,12 +515,16 @@ export function App() {
                 <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                 <span className="text-slate-800 font-medium">
                   {cultureSubTab === 'mysteries'
-                    ? '📜 Неразгадани случки от историята'
+                    ? '📜 Неразгадани случки от историята (14)'
                     : cultureSubTab === 'timeline'
                     ? '⏳ Интерактивна хронология (681–1908 г.)'
+                    : cultureSubTab === 'wonders'
+                    ? '🗺️ Природни чудеса на България (12)'
                     : cultureSubTab === 'trivia'
-                    ? '🧠 Куиз за обща култура (15 въпроса)'
-                    : '⚖️ Факт или Мит?'}
+                    ? '🧠 Куиз за ерудити (20 въпроса)'
+                    : cultureSubTab === 'myths'
+                    ? '⚖️ Факт или Мит? (16)'
+                    : '🏛️ Златен фонд & Мъдрост на епохите'}
                 </span>
               </nav>
             </div>

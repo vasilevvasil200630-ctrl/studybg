@@ -15,7 +15,9 @@ import {
   Menu,
   X,
   Sparkles,
-  HelpCircle
+  HelpCircle,
+  MapPin,
+  Quote
 } from 'lucide-react';
 import { StudentStats } from './StudentStats';
 import { errorBankService } from '../services/errorBankService';
@@ -105,8 +107,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   const cultureNavItems: { subTab: CultureSubTab; label: string; icon: React.ReactNode }[] = [
     { subTab: 'mysteries', label: 'Неразгадани случки', icon: <Compass className="w-3.5 h-3.5 text-amber-600" /> },
     { subTab: 'timeline', label: 'Хронология (681–1908)', icon: <Clock className="w-3.5 h-3.5 text-emerald-600" /> },
-    { subTab: 'trivia', label: 'Куиз (15 въпроса)', icon: <Sparkles className="w-3.5 h-3.5 text-sky-600" /> },
-    { subTab: 'myths', label: 'Факт или Мит?', icon: <HelpCircle className="w-3.5 h-3.5 text-rose-600" /> }
+    { subTab: 'wonders', label: 'Природни чудеса', icon: <MapPin className="w-3.5 h-3.5 text-teal-600" /> },
+    { subTab: 'trivia', label: 'Куиз за ерудити', icon: <Sparkles className="w-3.5 h-3.5 text-sky-600" /> },
+    { subTab: 'myths', label: 'Факт или Мит?', icon: <HelpCircle className="w-3.5 h-3.5 text-rose-600" /> },
+    { subTab: 'wisdom', label: 'Златен фонд & Мъдрост', icon: <Quote className="w-3.5 h-3.5 text-indigo-600" /> }
   ];
 
   return (

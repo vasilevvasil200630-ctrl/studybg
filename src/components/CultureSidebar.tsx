@@ -6,7 +6,9 @@ import {
   HelpCircle,
   GraduationCap,
   ArrowRight,
-  BookOpen
+  BookOpen,
+  MapPin,
+  Quote
 } from 'lucide-react';
 import type { CultureSubTab } from './CultureHero';
 
@@ -31,30 +33,44 @@ export const CultureSidebar: React.FC<CultureSidebarProps> = ({
     {
       tab: 'mysteries',
       label: 'Неразгадани случки',
-      sublabel: 'Исторически загадки',
+      sublabel: '14 исторически загадки',
       icon: Compass,
       accentColor: 'text-amber-600'
     },
     {
       tab: 'timeline',
       label: 'Хронология (681–1908)',
-      sublabel: 'Ключови събития',
+      sublabel: 'Ключови събития & епохи',
       icon: Clock,
       accentColor: 'text-emerald-600'
     },
     {
+      tab: 'wonders',
+      label: 'Природни чудеса',
+      sublabel: '12 феномена на България',
+      icon: MapPin,
+      accentColor: 'text-teal-600'
+    },
+    {
       tab: 'trivia',
-      label: 'Куиз обща култура',
-      sublabel: '15 въпроса с точки',
+      label: 'Куиз за ерудити',
+      sublabel: '20 въпроса с класация',
       icon: Sparkles,
       accentColor: 'text-sky-600'
     },
     {
       tab: 'myths',
       label: 'Факт или Мит?',
-      sublabel: 'Развенчаване на митове',
+      sublabel: '16 развенчани мита',
       icon: HelpCircle,
       accentColor: 'text-rose-600'
+    },
+    {
+      tab: 'wisdom',
+      label: 'Златен фонд & Мъдрост',
+      sublabel: '10 вечни национални урока',
+      icon: Quote,
+      accentColor: 'text-indigo-600'
     }
   ];
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Compass, Sparkles, Clock, HelpCircle, ArrowRight, GraduationCap } from 'lucide-react';
+import { Compass, Sparkles, Clock, HelpCircle, ArrowRight, GraduationCap, MapPin, BookOpen } from 'lucide-react';
 
-export type CultureSubTab = 'mysteries' | 'timeline' | 'trivia' | 'myths';
+export type CultureSubTab = 'mysteries' | 'timeline' | 'wonders' | 'trivia' | 'myths' | 'wisdom';
 
 interface CultureHeroProps {
   activeCultureTab: CultureSubTab;
@@ -23,7 +23,7 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
           <Compass className="w-4 h-4 text-amber-600" />
           <span>Раздел „Обща култура & Загадки“</span>
           <span className="text-[11px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">
-            Факти • Мистерии • Митове
+            Факти • Чудеса • Митове • Мъдрост
           </span>
         </div>
 
@@ -31,21 +31,21 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
         <h1 className="text-3xl sm:text-5xl lg:text-5xl font-extrabold tracking-tight text-slate-900 max-w-4xl mx-auto leading-[1.2]">
           Неразгадани тайни от{' '}
           <span className="text-amber-600">
-            древността, историята
+            древността, природата
           </span>{' '}
-          и природата.
+          и българския дух.
         </h1>
 
         {/* Subtitle */}
         <p className="mt-4 text-sm sm:text-base text-slate-600 max-w-3xl mx-auto leading-relaxed">
-          Пространство за любопитство, критично мислене и факти. Изследвай недоизказаните страници от миналото, природните аномалии на България, провери знанията си в куиза за обща култура и развенчай популярните митове.
+          Пространство за любопитство, критично мислене и факти. Изследвай недоизказаните страници от миналото, геоложките чудеса на България, провери знанията си в куиза за ерудити и се докосни до златния фонд на националната памет.
         </p>
 
         {/* High-Level Feature Modules Switcher */}
-        <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5 max-w-3xl mx-auto">
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-2 max-w-4xl mx-auto">
           <button
             onClick={() => onSelectCultureTab('mysteries')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
               activeCultureTab === 'mysteries'
                 ? 'bg-amber-600 text-white shadow-xs font-bold'
                 : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -57,7 +57,7 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
 
           <button
             onClick={() => onSelectCultureTab('timeline')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
               activeCultureTab === 'timeline'
                 ? 'bg-emerald-600 text-white shadow-xs font-bold'
                 : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -68,27 +68,51 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
           </button>
 
           <button
+            onClick={() => onSelectCultureTab('wonders')}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+              activeCultureTab === 'wonders'
+                ? 'bg-teal-600 text-white shadow-xs font-bold'
+                : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
+            }`}
+          >
+            <MapPin className="w-4 h-4 text-teal-500" />
+            <span>Природни чудеса (12)</span>
+          </button>
+
+          <button
             onClick={() => onSelectCultureTab('trivia')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
               activeCultureTab === 'trivia'
                 ? 'bg-blue-600 text-white shadow-xs font-bold'
                 : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
             }`}
           >
             <Sparkles className="w-4 h-4" />
-            <span>Тест за обща култура (15 въпроса)</span>
+            <span>Куиз за ерудити (20 в.)</span>
           </button>
 
           <button
             onClick={() => onSelectCultureTab('myths')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
               activeCultureTab === 'myths'
                 ? 'bg-rose-600 text-white shadow-xs font-bold'
                 : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
             }`}
           >
             <HelpCircle className="w-4 h-4" />
-            <span>Факт или Мит?</span>
+            <span>Факт или Мит? (16)</span>
+          </button>
+
+          <button
+            onClick={() => onSelectCultureTab('wisdom')}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+              activeCultureTab === 'wisdom'
+                ? 'bg-indigo-600 text-white shadow-xs font-bold'
+                : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
+            }`}
+          >
+            <BookOpen className="w-4 h-4 text-indigo-500" />
+            <span>Златен фонд & Мъдрост</span>
           </button>
         </div>
 

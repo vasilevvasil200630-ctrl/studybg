@@ -4,12 +4,13 @@ import { generateLessonFromInput } from './aiGenerator';
 import { CURRICULUM_LESSONS } from '../data/curriculumDatabase';
 
 export interface NotebookDiagnosis {
+  isMatched: boolean;
   subject: string;
   grade: string;
   domainName: string;
   subDomainName: string;
   qualityScore: number; // 0 - 100
-  gradeEstimate: string; // напр. 'Отличен 5.75', 'Мн. добър 4.80'
+  gradeEstimate: string;
   matchedKeywords: string[];
   missingCrucialPoints: string[];
   detectedTraps: string[];
@@ -18,8 +19,25 @@ export interface NotebookDiagnosis {
 }
 
 export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): NotebookDiagnosis {
-  const combined = `${fileName} ${inputText}`.toLowerCase();
+  const combined = `${fileName} ${inputText}`.toLowerCase().trim();
   
+  if (!combined || combined.length < 3) {
+    return {
+      isMatched: false,
+      subject: 'Неразпознат предмет',
+      grade: 'Всички класове',
+      domainName: 'Няма въведено съдържание',
+      subDomainName: 'Няма тема',
+      qualityScore: 0,
+      gradeEstimate: 'Липсва текст за анализ',
+      matchedKeywords: [],
+      missingCrucialPoints: ['Моля въведете текст от вашите записки или изберете тема от каталога.'],
+      detectedTraps: [],
+      teacherAdvice: 'За да извършим точен одит, са необходими ключови понятия или заглавие на урок.',
+      lessonData: CURRICULUM_LESSONS[0]
+    };
+  }
+
   let bestMatch: {
     subject: string;
     grade: string;
@@ -29,7 +47,7 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
     matchedKeywords: string[];
   } | null = null;
 
-  // Search across the entire Bulgarian Curriculum Tree
+  // 1. Search across the Bulgarian Curriculum Tree
   for (const subjectTree of BULGARIAN_CURRICULUM_TREE) {
     for (const gradeItem of subjectTree.grades) {
       for (const domain of gradeItem.domains) {
@@ -44,7 +62,7 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
             }
           }
 
-          // Check domain name match
+          // Check topic name match
           if (combined.includes(sub.name.toLowerCase())) {
             score += 5;
           }
@@ -64,16 +82,67 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
     }
   }
 
-  // Fallback to first lesson if very short/unclear text
-  const matched = bestMatch && bestMatch.score > 0 ? bestMatch : {
-    subject: 'История и цивилизации',
-    grade: '11. клас',
-    domain: BULGARIAN_CURRICULUM_TREE[1].grades[1].domains[0],
-    subDomain: BULGARIAN_CURRICULUM_TREE[1].grades[1].domains[0].subDomains[0],
-    score: 1,
-    matchedKeywords: ['априлско въстание', 'история']
-  };
+  // 2. If no strong match in tree, search CURRICULUM_LESSONS database directly
+  if (!bestMatch || bestMatch.score < 2) {
+    for (const lesson of CURRICULUM_LESSONS) {
+      let lessonScore = 0;
+      const matched: string[] = [];
+      const titleClean = lesson.title.toLowerCase();
 
+      // Check title keywords
+      const titleWords = titleClean.split(/[\s,–—()]+/).filter(w => w.length > 3);
+      titleWords.forEach(w => {
+        if (combined.includes(w)) {
+          lessonScore += 3;
+          matched.push(w);
+        }
+      });
+
+      // Check subject match
+      if (combined.includes(lesson.subject.toLowerCase())) {
+        lessonScore += 2;
+        matched.push(lesson.subject);
+      }
+
+      if (lessonScore >= 3 && (!bestMatch || lessonScore > bestMatch.score)) {
+        bestMatch = {
+          subject: lesson.subject,
+          grade: lesson.grade,
+          domain: { id: lesson.id, name: lesson.subject, subDomains: [] },
+          subDomain: {
+            id: lesson.id,
+            name: lesson.title,
+            keywords: matched,
+            gradeRequirement6: lesson.notebookChecklist?.map(c => c.requirement) || lesson.summary.keyPoints,
+            commonPitfalls: lesson.summary.commonTraps,
+            advice: lesson.summary.examGoldenRule
+          },
+          score: lessonScore,
+          matchedKeywords: matched
+        };
+      }
+    }
+  }
+
+  // 3. Honest unmatched handling: DO NOT falsely default to April Uprising!
+  if (!bestMatch || bestMatch.score === 0) {
+    return {
+      isMatched: false,
+      subject: 'Неразпознат предмет',
+      grade: 'Всички класове',
+      domainName: 'Извън текущите стандарти',
+      subDomainName: 'Неразпозната тема',
+      qualityScore: 0,
+      gradeEstimate: 'Няма разпозната тема',
+      matchedKeywords: [],
+      missingCrucialPoints: ['Не са открити съвпадения с държавните образователни стандарти на МОН в предоставения текст.'],
+      detectedTraps: ['Въведете конкретни термини, формули или исторически личности от учебника.'],
+      teacherAdvice: 'Препоръчва се да изберете конкретен предмет и тема от каталога на МОН за провеждане на структуриран одит.',
+      lessonData: CURRICULUM_LESSONS[0]
+    };
+  }
+
+  const matched = bestMatch;
   const reqs = matched.subDomain.gradeRequirement6;
   const missingPoints: string[] = [];
 
@@ -85,7 +154,7 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
     }
   });
 
-  // Calculate Quality & Grade
+  // Calculate Quality Score
   const matchedReqsCount = reqs.length - missingPoints.length;
   const ratio = reqs.length > 0 ? matchedReqsCount / reqs.length : 0.7;
   const basePercent = Math.min(100, Math.round(ratio * 70 + (matched.matchedKeywords.length * 5)));
@@ -110,6 +179,7 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
   );
 
   return {
+    isMatched: true,
     subject: matched.subject,
     grade: matched.grade,
     domainName: matched.domain.name,

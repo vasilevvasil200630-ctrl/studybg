@@ -49,20 +49,20 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
 }) => {
   const sections: { title: string; category: string; items: NavSectionItem[] }[] = [
     {
-      title: '1. Научи & Анализирай',
-      category: 'Теория',
+      title: '1. Учебна подготовка',
+      category: 'Учи & Анализирай',
       items: [
         {
           tab: 'summary',
           label: 'Конспект',
-          sublabel: 'Синтезирана теория',
+          sublabel: 'Синтезирана теория и правила',
           icon: BookOpen,
           accentColor: 'text-blue-600'
         },
         {
           tab: 'cases',
           label: 'Казуси за ДЗИ',
-          sublabel: 'Анализ на извори и есе',
+          sublabel: 'Извори и есе (11.–12. кл.)',
           icon: Scale,
           accentColor: 'text-purple-600',
           badge: (
@@ -73,28 +73,28 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
         },
         {
           tab: 'audit',
-          label: 'Одит за 6.00',
-          sublabel: 'Критерии по МОН',
+          label: 'Одит на тетрадката',
+          sublabel: 'МОН чек-лист за 6.00',
           icon: CheckSquare,
           accentColor: 'text-amber-600'
         }
       ]
     },
     {
-      title: '2. Тествай се',
+      title: '2. Проверка на знанията',
       category: 'Практика',
       items: [
         {
           tab: 'flashcards',
           label: 'Флаш карти',
-          sublabel: 'Активно припомняне',
+          sublabel: 'Бързо припомняне на факти',
           icon: Zap,
           accentColor: 'text-emerald-600'
         },
         {
           tab: 'quiz',
-          label: 'Тест за самопроверка',
-          sublabel: '10 въпроса за оценка',
+          label: 'Бърз тест',
+          sublabel: '10 тестови въпроса',
           icon: GraduationCap,
           accentColor: 'text-blue-600'
         },
@@ -108,13 +108,13 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
       ]
     },
     {
-      title: '3. Инструменти & Помощ',
-      category: 'Напредък',
+      title: '3. Инструменти & Каталог',
+      category: 'Помощ & Ресурси',
       items: [
         {
           tab: 'errorbank',
           label: 'Банка с грешки',
-          sublabel: 'Поправителен тест',
+          sublabel: 'Поправителен преговор',
           icon: AlertCircle,
           accentColor: 'text-rose-600',
           badge: unresolvedErrorCount > 0 ? (
@@ -125,20 +125,14 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
         },
         {
           tab: 'generator',
-          label: 'Контролни А & Б',
-          sublabel: 'Готови за печат',
+          label: 'Контролни за печат',
+          sublabel: 'Варианти А & Б',
           icon: Printer,
           accentColor: 'text-slate-600'
-        }
-      ]
-    },
-    {
-      title: '4. Учебен каталог',
-      category: 'Библиотека',
-      items: [
+        },
         {
           tab: 'catalog',
-          label: 'Каталог с теми',
+          label: 'Учебна програма',
           sublabel: `Всички ${totalLessonsCount} урока по МОН`,
           icon: BookMarked,
           accentColor: 'text-blue-600'

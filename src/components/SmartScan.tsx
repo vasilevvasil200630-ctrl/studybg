@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UploadCloud, FileText, Loader2, X, Edit3, Image as ImageIcon, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
+import { FileText, X, Edit3, Image as ImageIcon, CheckCircle2, ShieldCheck, Sparkles, BookOpen, AlertCircle } from 'lucide-react';
 import type { LessonData } from '../types';
 import { classifyAndDiagnoseNotebook, type NotebookDiagnosis } from '../services/curriculumClassifier';
 import { extractNotebookTextWithGemini, isGeminiConfigured } from '../services/geminiService';
@@ -11,60 +11,76 @@ interface SmartScanProps {
 }
 
 export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, sampleLessons }) => {
-  const [activeMode, setActiveMode] = useState<'upload' | 'paste'>('upload');
+  const hasGemini = isGeminiConfigured();
+  const [activeMode, setActiveMode] = useState<'upload' | 'paste' | 'samples'>(hasGemini ? 'upload' : 'paste');
   const [isScanning, setIsScanning] = useState(false);
   const [scanStep, setScanStep] = useState<string>('');
-  const [progressPercent, setProgressPercent] = useState<number>(10);
-  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [unmatchedError, setUnmatchedError] = useState<string | null>(null);
 
   // Manual paste state
   const [customTitle, setCustomTitle] = useState('');
   const [customSubject, setCustomSubject] = useState('История и цивилизации');
   const [customText, setCustomText] = useState('');
 
-  const startProcessing = (textToAnalyze: string, filename: string, lessonFallback?: LessonData) => {
-    setSelectedFileName(filename);
+  const processText = (textToAnalyze: string, filename: string, lessonFallback?: LessonData) => {
+    setUnmatchedError(null);
     setIsScanning(true);
-    setProgressPercent(50);
-    setScanStep('Съпоставка на въведеното съдържание с изискванията на МОН...');
+    setScanStep('Анализ на понятията спрямо стандартите на МОН...');
 
-    setTimeout(() => {
-      setIsScanning(false);
+    try {
       const diagnosis = classifyAndDiagnoseNotebook(textToAnalyze, filename);
-      onScanComplete(lessonFallback || diagnosis.lessonData, diagnosis);
-    }, 400);
+      setIsScanning(false);
+
+      if (diagnosis.isMatched || lessonFallback) {
+        onScanComplete(lessonFallback || diagnosis.lessonData, diagnosis);
+      } else {
+        setUnmatchedError(`Не открихме конкретна тема от учебната програма за въведения текст („${filename}“). Моля изберете тема от образците по-долу.`);
+      }
+    } catch (e) {
+      setIsScanning(false);
+      setUnmatchedError('Възникна грешка при обработката на текста. Моля опитайте отново.');
+    }
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+    if (!file) return;
 
-      if (isGeminiConfigured() && file.type.startsWith('image/')) {
-        setSelectedFileName(file.name);
-        setIsScanning(true);
-        setProgressPercent(25);
-        setScanStep('Google Gemini сканира изображението...');
-        try {
-          setProgressPercent(60);
-          const geminiExtracted = await extractNotebookTextWithGemini(file);
-          setProgressPercent(90);
-          setScanStep('Съпоставка на разчетения текст с изискванията на МОН...');
-          setTimeout(() => {
-            setIsScanning(false);
-            const diagnosis = classifyAndDiagnoseNotebook(geminiExtracted, file.name);
-            onScanComplete(diagnosis.lessonData, diagnosis);
-          }, 600);
-          return;
-        } catch (err) {
-          console.warn('Gemini vision fallback:', err);
-        }
+    setUnmatchedError(null);
+
+    // If file is text or markdown, read directly
+    if (file.type.includes('text') || file.name.endsWith('.txt') || file.name.endsWith('.md')) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const content = ev.target?.result as string;
+        processText(content, file.name);
+      };
+      reader.readAsText(file);
+      return;
+    }
+
+    // If image and Gemini is configured
+    if (hasGemini && file.type.startsWith('image/')) {
+      setIsScanning(true);
+      setScanStep('Google Gemini OCR разпознава ръкописа от снимката...');
+      try {
+        const geminiExtracted = await extractNotebookTextWithGemini(file);
+        setScanStep('Съпоставка с учебната програма на МОН...');
+        const diagnosis = classifyAndDiagnoseNotebook(geminiExtracted, file.name);
+        setIsScanning(false);
+        onScanComplete(diagnosis.lessonData, diagnosis);
+      } catch (err) {
+        setIsScanning(false);
+        setUnmatchedError('Неуспешно разпознаване на изображението. Моля въведете текста ръчно.');
       }
+      return;
+    }
 
-      const inferredText = `${file.name} Записки от тетрадката. Разпознати понятия и дефиниции.`;
-      startProcessing(inferredText, file.name);
+    // If image without Gemini API key, prompt user honestly
+    if (file.type.startsWith('image/') || file.type.includes('pdf')) {
+      setUnmatchedError('За живо разпознаване на снимка от камера е необходим Gemini API ключ. Можете веднага да въведете текста от записките си в таб „Въвеждане на текст“ или да изберете тема от готовите образци.');
+      setActiveMode('paste');
+      setCustomTitle(file.name.replace(/\.[^/.]+$/, ''));
     }
   };
 
@@ -73,10 +89,10 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
     if (!customText.trim()) return;
 
     const fullContent = `${customTitle} ${customSubject}\n${customText}`;
-    startProcessing(fullContent, customTitle || 'Въведени записки');
+    processText(fullContent, customTitle || 'Въведени записки');
   };
 
-  const featuredSamples = sampleLessons.slice(0, 4);
+  const featuredSamples = sampleLessons.slice(0, 6);
 
   return (
     <div className="relative p-6 sm:p-8 rounded-2xl bg-white border border-slate-200 shadow-xl overflow-hidden">
@@ -84,6 +100,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 transition-all z-10"
+          aria-label="Затвори"
         >
           <X className="w-5 h-5" />
         </button>
@@ -94,9 +111,9 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
         <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>МОН Детектор & Анализ на записки</span>
+            <span>Одит на записки по стандартите на МОН</span>
           </div>
-          {isGeminiConfigured() && (
+          {hasGemini && (
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-200">
               <Sparkles className="w-3.5 h-3.5 text-blue-600" />
               <span>Google Gemini Vision активен</span>
@@ -104,28 +121,26 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
           )}
         </div>
         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-          Качи снимка на своите записки
+          Сравнете записките си с програмата на МОН
         </h2>
         <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
-          Системата анализира ръкописа, определя точния <strong>предмет</strong> и <strong>клас</strong> по МОН и проверява покритието на задължителните термини за отлична оценка.
+          Въведете текст от вашата тетрадка или изберете готова тема, за да проверите дали записките ви съдържат задължителните термини за пълно отличие.
         </p>
       </div>
 
+      {/* Unmatched Alert Banner */}
+      {unmatchedError && (
+        <div className="mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-3">
+          <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="font-semibold">{unmatchedError}</p>
+          </div>
+        </div>
+      )}
+
       {/* Mode Switcher */}
       {!isScanning && (
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <button
-            onClick={() => setActiveMode('upload')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-              activeMode === 'upload'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
-            }`}
-          >
-            <ImageIcon className="w-4 h-4 text-blue-600" />
-            <span>Снимка / PDF документ</span>
-          </button>
-
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
           <button
             onClick={() => setActiveMode('paste')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
@@ -134,157 +149,172 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
                 : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
             }`}
           >
-            <Edit3 className="w-4 h-4 text-slate-500" />
+            <Edit3 className="w-4 h-4" />
             <span>Въвеждане на текст</span>
+          </button>
+
+          <button
+            onClick={() => setActiveMode('samples')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+              activeMode === 'samples'
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
+            }`}
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>Готови образци на МОН</span>
+          </button>
+
+          <button
+            onClick={() => setActiveMode('upload')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+              activeMode === 'upload'
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
+            }`}
+          >
+            <ImageIcon className="w-4 h-4" />
+            <span>Качване на файл / снимка</span>
           </button>
         </div>
       )}
 
-      {isScanning ? (
-        /* Processing Animation */
+      {/* Scanning State */}
+      {isScanning && (
         <div className="py-12 flex flex-col items-center justify-center text-center">
-          {previewUrl && (
-            <div className="relative w-44 h-28 rounded-xl overflow-hidden border border-slate-200 mb-6 shadow-md bg-slate-50">
-              <img src={previewUrl} alt="Преглед на документа" className="w-full h-full object-cover" />
-            </div>
-          )}
-
-          <div className="relative flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-50 border border-blue-200 mb-5 text-blue-600">
-            <Loader2 className="w-8 h-8 animate-spin" />
+          <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 mb-4 animate-pulse">
+            <ShieldCheck className="w-6 h-6" />
           </div>
-
-          <div className="text-base font-bold text-slate-900 mb-1.5">{scanStep}</div>
-          <p className="text-xs text-slate-500 font-mono">
-            {selectedFileName ? `Файл: ${selectedFileName}` : 'Обработка на документа...'}
-          </p>
-
-          {/* Clean Progress Bar */}
-          <div className="w-72 bg-slate-100 rounded-full h-2 mt-6 overflow-hidden border border-slate-200">
-            <div
-              className="h-full bg-blue-600 rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
-          <span className="text-[11px] font-mono text-slate-500 mt-2">{progressPercent}% завършено</span>
+          <div className="text-sm font-bold text-slate-900 mb-1">{scanStep}</div>
+          <p className="text-xs text-slate-500">Моля изчакайте секунда...</p>
         </div>
-      ) : activeMode === 'upload' ? (
-        /* Upload & Presets Area */
-        <div>
-          {/* Dropzone */}
-          <label className="group relative block cursor-pointer rounded-2xl border-2 border-dashed border-slate-300 hover:border-blue-600 bg-slate-50/60 hover:bg-blue-50/20 p-8 sm:p-10 text-center transition-all">
-            <input
-              type="file"
-              accept="image/*,application/pdf"
-              className="hidden"
-              onChange={handleFileUpload}
-            />
+      )}
 
-            <div className="w-14 h-14 mx-auto mb-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-center text-blue-600 group-hover:scale-105 transition-all">
-              <UploadCloud className="w-7 h-7" />
-            </div>
-
-            <div className="text-sm font-semibold text-slate-900 mb-1">
-              Качи снимка на тетрадката тук или <span className="text-blue-600 underline underline-offset-4">избери файл от устройството</span>
-            </div>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
-              Поддържа: JPG, PNG, HEIC (снимка от камера), както и PDF лекции или сканирани листове.
-            </p>
-          </label>
-
-          {/* Quick Demo Previews */}
-          <div className="mt-6 pt-5 border-t border-slate-100">
-            <div className="text-xs font-semibold text-slate-600 mb-3 flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Или тествай веднага с готови примерни записки:</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {featuredSamples.map((sample) => (
-                <button
-                  key={sample.id}
-                  onClick={() => startProcessing(sample.summary.overview + ' ' + sample.originalNoteExcerpt, sample.title, sample)}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 hover:bg-white border border-slate-200 hover:border-slate-300 text-left transition-all shadow-2xs group"
-                >
-                  <div className="p-2 rounded-lg bg-white border border-slate-200 text-blue-600 group-hover:bg-blue-50 transition-all flex-shrink-0">
-                    <FileText className="w-4 h-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-xs font-semibold text-slate-900 truncate">
-                      {sample.title}
-                    </div>
-                    <div className="text-[10px] text-emerald-700 font-medium">
-                      {sample.subject} • {sample.grade}
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-        </div>
-      ) : (
-        /* Manual Paste Form */
-        <form onSubmit={handlePasteSubmit} className="space-y-4">
+      {/* Mode 1: Paste Text */}
+      {!isScanning && activeMode === 'paste' && (
+        <form onSubmit={handlePasteSubmit} className="space-y-4 max-w-xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Заглавие на темата / урока
+                Заглавие на урока
               </label>
               <input
                 type="text"
-                required
                 value={customTitle}
                 onChange={(e) => setCustomTitle(e.target.value)}
-                placeholder="напр. Априлско въстание или Квадратни уравнения"
-                className="w-full bg-slate-50 text-slate-900 px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-blue-600 focus:bg-white"
+                placeholder="напр. Априлско въстание, Една българка..."
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
               />
             </div>
-
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Ориентировъчен предмет
+                Учебен предмет
               </label>
               <select
                 value={customSubject}
                 onChange={(e) => setCustomSubject(e.target.value)}
-                className="w-full bg-slate-50 text-slate-900 px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-blue-600 focus:bg-white"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white"
               >
                 <option value="История и цивилизации">История и цивилизации</option>
                 <option value="Български език и литература">Български език и литература</option>
                 <option value="Математика">Математика</option>
                 <option value="Биология и ЗО">Биология и ЗО</option>
                 <option value="Химия и ООС">Химия и ООС</option>
-                <option value="География и икономика">География и икономика</option>
                 <option value="Физика и астрономия">Физика и астрономия</option>
-                <option value="Английски език">Английски език</option>
-                <option value="Гражданско образование и философия">Гражданско образование и философия</option>
+                <option value="География и икономика">География и икономика</option>
               </select>
             </div>
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Записки от тетрадката / план на урока
+              Текст от тетрадката / бележките
             </label>
             <textarea
-              required
-              rows={5}
               value={customText}
               onChange={(e) => setCustomText(e.target.value)}
-              placeholder="Постави тук записаното в тетрадката... Системата автоматично ще намери дяла и ще изготви одит."
-              className="w-full bg-slate-50 text-slate-900 p-3.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-blue-600 focus:bg-white resize-none font-mono"
+              placeholder="Поставете или въведете записките си тук (дати, имена, дефиниции, събития)..."
+              rows={6}
+              required
+              className="w-full p-3.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             />
           </div>
 
-          <button
-            type="submit"
-            className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm shadow-xs transition-all flex items-center justify-center gap-2"
-          >
-            <CheckCircle2 className="w-4 h-4 text-blue-200" />
-            <span>Анализирай съдържанието и намери дяла по МОН</span>
-          </button>
+          <div className="flex justify-end pt-2">
+            <button
+              type="submit"
+              disabled={!customText.trim()}
+              className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors shadow-xs disabled:opacity-50"
+            >
+              Сравни със стандартите на МОН
+            </button>
+          </div>
         </form>
       )}
+
+      {/* Mode 2: Sample Lessons */}
+      {!isScanning && activeMode === 'samples' && (
+        <div className="max-w-2xl mx-auto">
+          <div className="text-xs font-semibold text-slate-600 mb-3 flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Изберете официална тема от каталога за незабавен одит:</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {featuredSamples.map((sample) => (
+              <button
+                key={sample.id}
+                onClick={() => processText(sample.summary.overview + ' ' + sample.originalNoteExcerpt, sample.title, sample)}
+                className="flex items-center gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-white border border-slate-200 hover:border-slate-300 text-left transition-all shadow-2xs group"
+              >
+                <div className="p-2 rounded-lg bg-white border border-slate-200 text-blue-600 group-hover:bg-blue-50 transition-all flex-shrink-0">
+                  <FileText className="w-4 h-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-semibold text-slate-900 truncate">
+                    {sample.title}
+                  </div>
+                  <div className="text-[10px] text-emerald-700 font-medium">
+                    {sample.subject} • {sample.grade}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Mode 3: Upload File */}
+      {!isScanning && activeMode === 'upload' && (
+        <div className="max-w-xl mx-auto">
+          <label className="group relative block cursor-pointer rounded-2xl border-2 border-dashed border-slate-300 hover:border-blue-600 bg-slate-50/60 hover:bg-blue-50/20 p-8 sm:p-10 text-center transition-all">
+            <input
+              type="file"
+              accept="image/*,application/pdf,text/*"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
+
+            <div className="w-14 h-14 mx-auto mb-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-center text-blue-600 group-hover:scale-105 transition-all">
+              <ImageIcon className="w-7 h-7" />
+            </div>
+
+            <div className="text-sm font-semibold text-slate-900 mb-1">
+              Изберете файл от устройството или <span className="text-blue-600 underline underline-offset-4">качете документ</span>
+            </div>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
+              Поддържа: TXT, Markdown, снимки (JPG, PNG) и сканирани документи.
+            </p>
+          </label>
+
+          {!hasGemini && (
+            <div className="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 text-[11px] leading-relaxed">
+              <strong>Бележка:</strong> За моментално разпознаване на български ръкопис директно от снимка е необходим свързан Google Gemini ключ в настройките. Можете да въведете текста на бележките си веднага в раздел „Въвеждане на текст“.
+            </div>
+          )}
+        </div>
+      )}
+
     </div>
   );
 };

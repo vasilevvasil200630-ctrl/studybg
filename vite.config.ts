@@ -20,6 +20,18 @@ export default defineConfig({
           if (id.includes('node_modules/lucide-react/')) {
             return 'vendor-icons';
           }
+          if (id.includes('src/data/curriculumDatabase')) {
+            return 'data-curriculum';
+          }
+          if (id.includes('src/data/bulgarianCurriculumTree')) {
+            return 'data-curriculum-tree';
+          }
+          if (id.includes('src/data/generalKnowledgeData')) {
+            return 'data-culture';
+          }
+          if (id.includes('src/data/historicalCasesData')) {
+            return 'data-cases';
+          }
         }
       }
     }

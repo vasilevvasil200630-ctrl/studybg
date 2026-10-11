@@ -1,17 +1,77 @@
 import type { LessonData } from '../types';
 
-const GEMINI_API_KEY =
-  import.meta.env.VITE_GEMINI_API_KEY ||
-  import.meta.env.NEXT_PUBLIC_GEMINI_API_KEY ||
-  import.meta.env.GEMINI_API_KEY ||
-  '';
+export const getActiveGeminiApiKey = (): string => {
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem('studybg_gemini_api_key');
+    if (stored && stored.trim().length > 10) {
+      return stored.trim();
+    }
+  }
+  return (
+    import.meta.env.VITE_GEMINI_API_KEY ||
+    import.meta.env.NEXT_PUBLIC_GEMINI_API_KEY ||
+    import.meta.env.GEMINI_API_KEY ||
+    ''
+  ).trim();
+};
+
+export const setStoredGeminiApiKey = (key: string): void => {
+  if (typeof window !== 'undefined') {
+    const trimmed = key.trim();
+    if (trimmed) {
+      localStorage.setItem('studybg_gemini_api_key', trimmed);
+    } else {
+      localStorage.removeItem('studybg_gemini_api_key');
+    }
+  }
+};
+
+export const removeStoredGeminiApiKey = (): void => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('studybg_gemini_api_key');
+  }
+};
 
 export const isGeminiConfigured = (): boolean => {
-  return Boolean(GEMINI_API_KEY && GEMINI_API_KEY.trim().length > 10);
+  return getActiveGeminiApiKey().length > 10;
 };
 
 const GEMINI_MODEL = 'gemini-1.5-flash';
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+
+export const getGeminiApiUrl = (): string => {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${getActiveGeminiApiKey()}`;
+};
+
+/**
+ * Verifies connectivity and validity of a Gemini API key
+ */
+export const testGeminiApiKey = async (customKey?: string): Promise<{ success: boolean; message: string }> => {
+  const keyToTest = (customKey || getActiveGeminiApiKey()).trim();
+  if (!keyToTest || keyToTest.length < 10) {
+    return { success: false, message: 'Моля въведете валиден API ключ (поне 10 символа).' };
+  }
+
+  try {
+    const testUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${keyToTest}`;
+    const res = await fetch(testUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: 'Отговори с точно една дума: „Готов“.' }] }],
+        generationConfig: { maxOutputTokens: 10 }
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      return { success: false, message: `Грешка при връзка с Google Gemini: ${err.slice(0, 100)}` };
+    }
+
+    return { success: true, message: 'Google Gemini Vision е успешно свързан и готов за работа!' };
+  } catch (err: any) {
+    return { success: false, message: `Мрежова грешка при свързване с Gemini: ${err?.message || 'Опитайте отново'}` };
+  }
+};
 
 /**
  * Convert browser File to Base64 string
@@ -67,7 +127,7 @@ export const extractNotebookTextWithGemini = async (file: File): Promise<string>
     }
   };
 
-  const response = await fetch(GEMINI_API_URL, {
+  const response = await fetch(getGeminiApiUrl(), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -142,7 +202,7 @@ export const askGeminiMentor = async (
     }
   };
 
-  const response = await fetch(GEMINI_API_URL, {
+  const response = await fetch(getGeminiApiUrl(), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

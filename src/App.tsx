@@ -7,6 +7,7 @@ import { Footer } from './components/Footer';
 import { StudySidebar } from './components/StudySidebar';
 import { CultureSidebar } from './components/CultureSidebar';
 import { NewsletterSection } from './components/NewsletterSection';
+import { OfflineStatusBanner } from './components/OfflineStatusBanner';
 
 // Code-split heavy interactive modules for optimal bundle size and instant initial load
 const CultureHubView = lazy(() => import('./components/CultureHubView').then(m => ({ default: m.CultureHubView })));
@@ -236,6 +237,9 @@ export function App() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900">
       
+      {/* Offline Status & PWA Install Banner */}
+      <OfflineStatusBanner />
+
       {/* Sticky Clean Navigation Bar with Portal Switcher */}
       <Navbar
         portalMode={portalMode}

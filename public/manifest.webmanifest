@@ -1,0 +1,57 @@
+{
+  "name": "StudyBG — Учебна академия & Обща култура",
+  "short_name": "StudyBG",
+  "description": "Българска образователна платформа: Учебна академия за подготовка по МОН (НВО и ДЗИ), 100-точков изпитен симулатор, конспекти за 6.00 и раздел за българска история и обща култура.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "lang": "bg",
+  "categories": ["education", "books", "reference"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Учебна академия",
+      "short_name": "Уроци",
+      "description": "Конспекти, чеклисти и одит за 6.00 по програмата на МОН",
+      "url": "/#study",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Обща култура & Загадки",
+      "short_name": "Култура",
+      "description": "ЮНЕСКО, български принос, исторически загадки и куизове",
+      "url": "/#culture",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "100-точков изпитен симулатор",
+      "short_name": "Симулатор",
+      "description": "3-модулна матура и НВО симулация с официален таймер",
+      "url": "/#simulator",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Формули на МОН",
+      "short_name": "Формули",
+      "description": "Официални математически и физични формули за НВО и ДЗИ",
+      "url": "/#formulas",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    }
+  ]
+}

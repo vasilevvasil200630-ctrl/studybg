@@ -257,8 +257,12 @@ export const Footer: React.FC<FooterProps> = ({
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
             <span>Съобразено с държавните образователни изисквания на МОН и научни исторически извори</span>
           </div>
-          <div className="text-slate-500 text-[11px]">
-            © {new Date().getFullYear()} StudyBG. Всички права запазени.
+          <div className="flex items-center gap-3 text-slate-500 text-[11px]">
+            <span className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              PWA Офлайн режим активен
+            </span>
+            <span>© {new Date().getFullYear()} StudyBG. Всички права запазени.</span>
           </div>
         </div>
 

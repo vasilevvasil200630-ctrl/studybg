@@ -30,6 +30,7 @@ const HistoryTimelineView = lazy(() => import('./HistoryTimelineView').then(m =>
 const CultureWondersView = lazy(() => import('./CultureWondersView').then(m => ({ default: m.CultureWondersView })));
 const CultureWisdomView = lazy(() => import('./CultureWisdomView').then(m => ({ default: m.CultureWisdomView })));
 const HistoricalCasesView = lazy(() => import('./HistoricalCasesView').then(m => ({ default: m.HistoricalCasesView })));
+const CultureHeritageView = lazy(() => import('./CultureHeritageView').then(m => ({ default: m.CultureHeritageView })));
 
 const SubViewLoadingSkeleton = () => (
   <div className="p-8 rounded-2xl bg-white border border-slate-200 animate-pulse flex items-center justify-center min-h-[300px] shadow-xs">
@@ -540,6 +541,15 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
             })}
           </div>
         </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* БЪЛГАРСКИ ПРИНОС КЪМ СВЕТА & ЮНЕСКО НАСЛЕДСТВО */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'heritage' && (
+        <Suspense fallback={<SubViewLoadingSkeleton />}>
+          <CultureHeritageView />
+        </Suspense>
       )}
 
       {/* ========================================================================= */}

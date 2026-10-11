@@ -1,7 +1,8 @@
 import React from 'react';
-import { Camera, BookOpen, ArrowRight, ShieldCheck, CheckSquare, GraduationCap } from 'lucide-react';
+import { Camera, BookOpen, ArrowRight, ShieldCheck, CheckSquare, GraduationCap, Compass } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
+import type { CultureSubTab } from './CultureHero';
 
 interface HeroProps {
   onScanClick: () => void;
@@ -10,6 +11,7 @@ interface HeroProps {
   currentLesson: LessonData;
   onNavigateTab: (tab: AppNavTab) => void;
   onScrollToCatalog: () => void;
+  onNavigateCultureTab?: (tab: CultureSubTab) => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({
@@ -18,7 +20,8 @@ export const Hero: React.FC<HeroProps> = ({
   lessons,
   currentLesson,
   onNavigateTab,
-  onScrollToCatalog
+  onScrollToCatalog,
+  onNavigateCultureTab
 }) => {
   // Curate 4 high-yield featured lessons for quick testing
   const featuredLessons = lessons.slice(0, 4);
@@ -118,6 +121,41 @@ export const Hero: React.FC<HeroProps> = ({
           <div className="inline-flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
             <span className="font-medium text-slate-800">Разчитане на почерк & PDF (OCR)</span>
+          </div>
+        </div>
+
+        {/* Bridge to General Knowledge & Culture */}
+        <div className="mt-8 max-w-4xl mx-auto p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-amber-50/60 to-orange-500/10 border border-amber-200/90 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4 text-left">
+          <div className="flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+              <Compass className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-amber-900 bg-amber-200/80 px-2 py-0.5 rounded">
+                  Обща култура & Ерудиция
+                </span>
+                <span className="text-xs text-slate-500 font-medium hidden sm:inline">
+                  Широк кръгозор отвъд матурите
+                </span>
+              </div>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 mt-1">
+                Български световен принос, ЮНЕСКО паметници & 14 исторически загадки
+              </h3>
+              <p className="text-xs text-slate-600 mt-0.5">
+                Компютърът на Атанасов, кирилицата в ЕС, бактерията на киселото мляко, Мадарският конник и куиз за ерудити.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0 w-full md:w-auto justify-end">
+            <button
+              onClick={() => onNavigateCultureTab?.('heritage')}
+              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs sm:text-sm font-semibold shadow-xs transition-all whitespace-nowrap"
+            >
+              <span>Отвори портала</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
 

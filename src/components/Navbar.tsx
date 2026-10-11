@@ -17,7 +17,8 @@ import {
   HelpCircle,
   MapPin,
   Quote,
-  Scale
+  Scale,
+  Award
 } from 'lucide-react';
 import { errorBankService } from '../services/errorBankService';
 import type { CultureSubTab } from './CultureHero';
@@ -114,6 +115,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const cultureNavItems: { subTab: CultureSubTab; label: string; icon: React.ReactNode }[] = [
     { subTab: 'mysteries', label: 'Неразгадани случки', icon: <Compass className="w-3.5 h-3.5 text-amber-600" /> },
+    { subTab: 'heritage', label: 'Принос & ЮНЕСКО', icon: <Award className="w-3.5 h-3.5 text-orange-600" /> },
     { subTab: 'timeline', label: 'Хронология (681–1908)', icon: <Clock className="w-3.5 h-3.5 text-emerald-600" /> },
     { subTab: 'cases', label: 'Отворени казуси', icon: <Scale className="w-3.5 h-3.5 text-amber-700" /> },
     { subTab: 'wonders', label: 'Природни чудеса', icon: <MapPin className="w-3.5 h-3.5 text-teal-600" /> },

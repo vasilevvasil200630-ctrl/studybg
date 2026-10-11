@@ -124,6 +124,11 @@ export function App() {
         setCultureSubTab('mysteries');
         const el = document.getElementById('workspace');
         el?.scrollIntoView({ behavior: 'smooth' });
+      } else if (hash === 'heritage' || hash === 'unesco' || hash === 'inventions') {
+        setPortalMode('culture');
+        setCultureSubTab('heritage');
+        const el = document.getElementById('workspace');
+        el?.scrollIntoView({ behavior: 'smooth' });
       } else if (hash === 'mysteries' || hash === 'knowledge') {
         setPortalMode('culture');
         setCultureSubTab('mysteries');
@@ -254,11 +259,13 @@ export function App() {
             currentLesson={currentLesson}
             onNavigateTab={handleNavigateStudyTab}
             onScrollToCatalog={scrollToCatalog}
+            onNavigateCultureTab={handleNavigateCultureTab}
           />
         )
       ) : (
         <CultureHero
           onSwitchToStudy={() => handleSelectPortalMode('study')}
+          onSelectSubTab={handleNavigateCultureTab}
         />
       )}
 
@@ -517,7 +524,9 @@ export function App() {
                 <span className="text-amber-800 font-bold">Обща култура & Загадки</span>
                 <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                 <span className="text-slate-800 font-medium">
-                  {cultureSubTab === 'mysteries'
+                  {cultureSubTab === 'heritage'
+                    ? '🏆 Български принос & ЮНЕСКО (10)'
+                    : cultureSubTab === 'mysteries'
                     ? '📜 Неразгадани случки от историята (14)'
                     : cultureSubTab === 'timeline'
                     ? '⏳ Интерактивна хронология (681–1908 г.)'
@@ -537,6 +546,7 @@ export function App() {
             {/* Mobile / Tablet Horizontal Quick Tab Strip for Culture (visible only on small viewports) */}
             <div className="lg:hidden mb-6 p-1.5 rounded-xl bg-white border border-slate-200 shadow-xs overflow-x-auto no-scrollbar flex items-center gap-1.5">
               {[
+                { tab: 'heritage', label: 'Принос & ЮНЕСКО (10)' },
                 { tab: 'mysteries', label: 'Загадки (14)' },
                 { tab: 'timeline', label: 'Хронология' },
                 { tab: 'cases', label: 'Казуси & Есета (8)' },

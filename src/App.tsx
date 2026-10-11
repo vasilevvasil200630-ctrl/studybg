@@ -8,6 +8,8 @@ import { StudySidebar } from './components/StudySidebar';
 import { CultureSidebar } from './components/CultureSidebar';
 import { NewsletterSection } from './components/NewsletterSection';
 import { OfflineStatusBanner } from './components/OfflineStatusBanner';
+import { CookieConsentBanner } from './components/CookieConsentBanner';
+import { LegalPoliciesModal, type LegalPolicyTab } from './components/LegalPoliciesModal';
 
 // Code-split heavy interactive modules for optimal bundle size and instant initial load
 const CultureHubView = lazy(() => import('./components/CultureHubView').then(m => ({ default: m.CultureHubView })));
@@ -70,6 +72,16 @@ export function App() {
   const [isFormulaModalOpen, setIsFormulaModalOpen] = useState(false);
   const [isQuickLessonModalOpen, setIsQuickLessonModalOpen] = useState(false);
   const [practiceQuestions, setPracticeQuestions] = useState<QuizQuestion[] | null>(null);
+
+  // Legal Policies and Cookie Consent State
+  const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
+  const [activePolicyTab, setActivePolicyTab] = useState<LegalPolicyTab>('privacy');
+  const [forceOpenCookieSettings, setForceOpenCookieSettings] = useState(false);
+
+  const handleOpenPolicy = (tab: LegalPolicyTab) => {
+    setActivePolicyTab(tab);
+    setIsPolicyModalOpen(true);
+  };
 
   const unresolvedErrorCount = errorBankService.getUnresolvedCount();
 
@@ -616,7 +628,7 @@ export function App() {
         <NewsletterSection />
       </div>
 
-      {/* Footer */}
+      {/* Footer with Legal Policies */}
       <Footer
         onNavigateTab={handleNavigateStudyTab}
         onSelectCultureTab={handleNavigateCultureTab}
@@ -624,6 +636,22 @@ export function App() {
         onOpenScan={() => setIsScanModalOpen(true)}
         onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
         onScrollToCatalog={scrollToCatalog}
+        onOpenPolicyModal={handleOpenPolicy}
+        onOpenCookieSettings={() => setForceOpenCookieSettings(true)}
+      />
+
+      {/* GDPR Cookie Consent Banner */}
+      <CookieConsentBanner
+        onOpenPolicy={handleOpenPolicy}
+        forceOpen={forceOpenCookieSettings}
+        onCloseForceOpen={() => setForceOpenCookieSettings(false)}
+      />
+
+      {/* GDPR Legal Policies Modal (Privacy, Cookies, Terms) */}
+      <LegalPoliciesModal
+        isOpen={isPolicyModalOpen}
+        onClose={() => setIsPolicyModalOpen(false)}
+        initialTab={activePolicyTab}
       />
 
     </div>

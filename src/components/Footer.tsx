@@ -24,6 +24,8 @@ interface FooterProps {
   onOpenScan: () => void;
   onOpenFormulaModal: () => void;
   onScrollToCatalog: () => void;
+  onOpenPolicyModal?: (tab: 'privacy' | 'terms' | 'cookies') => void;
+  onOpenCookieSettings?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -32,7 +34,9 @@ export const Footer: React.FC<FooterProps> = ({
   onSelectPortalMode,
   onOpenScan,
   onOpenFormulaModal,
-  onScrollToCatalog
+  onScrollToCatalog,
+  onOpenPolicyModal,
+  onOpenCookieSettings
 }) => {
   const handleOpenCultureTab = (subTab: CultureSubTab) => {
     onSelectPortalMode?.('culture');
@@ -251,8 +255,46 @@ export const Footer: React.FC<FooterProps> = ({
 
         </div>
 
+        {/* Legal Policies & Cookie Settings Strip */}
+        <div className="pt-6 pb-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <button
+              onClick={() => onOpenPolicyModal?.('privacy')}
+              className="hover:text-blue-600 transition-colors font-medium"
+            >
+              Политика за поверителност (GDPR)
+            </button>
+            <span>•</span>
+            <button
+              onClick={() => onOpenPolicyModal?.('cookies')}
+              className="hover:text-blue-600 transition-colors font-medium"
+            >
+              Политика за бисквитките
+            </button>
+            <span>•</span>
+            <button
+              onClick={() => onOpenPolicyModal?.('terms')}
+              className="hover:text-blue-600 transition-colors font-medium"
+            >
+              Условия за ползване
+            </button>
+            <span>•</span>
+            <button
+              onClick={() => onOpenCookieSettings?.()}
+              className="text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1"
+            >
+              🍪 Настройки на бисквитките
+            </button>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-slate-500 text-[11px]">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Защитено образователно пространство без реклами</span>
+          </div>
+        </div>
+
         {/* Bottom Bar: Copyright & Compliance */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-600">
+        <div className="pt-4 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-600">
           <div className="flex items-center gap-2 text-slate-700 font-medium">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
             <span>Съобразено с държавните образователни изисквания на МОН и научни исторически извори</span>

@@ -42,6 +42,8 @@ const SubViewLoadingSkeleton = () => (
 );
 
 import { EmailShareModal } from './EmailShareModal';
+import { ExamBridgeCard } from './ExamBridgeCard';
+import { findLessonForMystery } from '../services/curriculumBridge';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import type { CultureSubTab } from './CultureHero';
@@ -49,7 +51,7 @@ import type { CultureSubTab } from './CultureHero';
 interface CultureHubViewProps {
   activeSubTab: CultureSubTab;
   onSelectSubTab?: (tab: CultureSubTab) => void;
-  onSelectLesson?: (lesson: LessonData) => void;
+  onSelectLesson?: (lesson: LessonData, preferredTab?: AppNavTab) => void;
   onNavigateTab?: (tab: AppNavTab) => void;
   onSwitchToStudy?: () => void;
   lessons?: LessonData[];
@@ -59,6 +61,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
   activeSubTab,
   onSelectLesson,
   onNavigateTab,
+  onSwitchToStudy,
   lessons = []
 }) => {
   // =========================================================================
@@ -148,15 +151,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
   };
 
   const getRelatedLesson = (item: UnsolvedMysteryItem) => {
-    return lessons.find((l) => {
-      const lTitle = l.title.toLowerCase();
-      const iTitle = item.title.toLowerCase();
-      if (item.id === 'mystery-levski-grave' && (lTitle.includes('априлск') || lTitle.includes('възраждане') || lTitle.includes('левски'))) return true;
-      if (item.id === 'mystery-botev-death' && (lTitle.includes('априлск') || lTitle.includes('ботев'))) return true;
-      if (item.id === 'mystery-madara-rider' && (lTitle.includes('аспарух') || lTitle.includes('първо българско') || lTitle.includes('тервел'))) return true;
-      if (item.id === 'ancient-varna-civilization' && (lTitle.includes('траки') || lTitle.includes('елада') || lTitle.includes('древн'))) return true;
-      return lTitle.includes(iTitle.slice(0, 8)) || iTitle.includes(lTitle.slice(0, 8));
-    });
+    return findLessonForMystery(item, lessons);
   };
 
   // =========================================================================
@@ -365,12 +360,38 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
 
                       {/* Unsolved Riddle Teaser Snippet (shown when collapsed) */}
                       {!isExpanded && (
-                        <div className="mt-3 p-3 rounded-xl bg-amber-50/60 border border-amber-100 text-xs text-amber-950 leading-relaxed">
-                          <span className="font-semibold text-amber-800 block text-[11px] uppercase tracking-wider mb-0.5">
-                            Въпросът без отговор:
-                          </span>
-                          <span className="line-clamp-2">{item.unsolvedMystery}</span>
-                        </div>
+                        <>
+                          <div className="mt-3 p-3 rounded-xl bg-amber-50/60 border border-amber-100 text-xs text-amber-950 leading-relaxed">
+                            <span className="font-semibold text-amber-800 block text-[11px] uppercase tracking-wider mb-0.5">
+                              Въпросът без отговор:
+                            </span>
+                            <span className="line-clamp-2">{item.unsolvedMystery}</span>
+                          </div>
+
+                          {relatedLesson && (
+                            <div
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (onSelectLesson) {
+                                  onSelectLesson(relatedLesson, 'simulator');
+                                } else {
+                                  onSwitchToStudy?.();
+                                  onNavigateTab?.('simulator');
+                                }
+                              }}
+                              className="mt-2 flex items-center justify-between p-2.5 rounded-xl bg-gradient-to-r from-amber-50 to-blue-50 hover:from-amber-100 hover:to-blue-100 border border-amber-200/80 text-[11px] text-slate-800 transition-colors shadow-2xs group/pill cursor-pointer"
+                            >
+                              <span className="flex items-center gap-1.5 font-bold text-amber-900">
+                                <Sparkles className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
+                                <span>МОН Изпит: {relatedLesson.grade} • {relatedLesson.subject}</span>
+                              </span>
+                              <span className="inline-flex items-center gap-1 font-bold text-blue-700 group-hover/pill:text-blue-800">
+                                <span>100 т. симулатор</span>
+                                <ChevronRight className="w-3 h-3 group-hover/pill:translate-x-0.5 transition-transform" />
+                              </span>
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
 
@@ -514,23 +535,29 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
                         </div>
                       )}
 
-                      {/* Academic Topic Bridge */}
-                      {relatedLesson && onSelectLesson && onNavigateTab && (
-                        <div className="flex items-center justify-between p-3.5 rounded-xl bg-blue-50/70 border border-blue-200 text-xs">
-                          <div className="flex items-center gap-2 text-blue-900 font-medium">
-                            <BookOpen className="w-4 h-4 text-blue-600" />
-                            <span>Искате ли да научите официалната учебна програма за тази епоха?</span>
-                          </div>
-                          <button
-                            onClick={() => {
-                              onSelectLesson(relatedLesson);
-                              onNavigateTab('summary');
+                      {/* High-Impact 100-Point Exam Simulator Bridge */}
+                      {relatedLesson && (
+                        <div className="pt-2">
+                          <ExamBridgeCard
+                            lesson={relatedLesson}
+                            sourceContextTitle={item.title}
+                            onLaunchSimulator={() => {
+                              if (onSelectLesson) {
+                                onSelectLesson(relatedLesson, 'simulator');
+                              } else {
+                                onSwitchToStudy?.();
+                                onNavigateTab?.('simulator');
+                              }
                             }}
-                            className="inline-flex items-center gap-1 text-blue-700 hover:text-blue-800 font-bold"
-                          >
-                            <span>Към урока „{relatedLesson.title}“</span>
-                            <ChevronRight className="w-3.5 h-3.5" />
-                          </button>
+                            onOpenSummary={() => {
+                              if (onSelectLesson) {
+                                onSelectLesson(relatedLesson, 'summary');
+                              } else {
+                                onSwitchToStudy?.();
+                                onNavigateTab?.('summary');
+                              }
+                            }}
+                          />
                         </div>
                       )}
 
@@ -548,7 +575,12 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
       {/* ========================================================================= */}
       {activeSubTab === 'heritage' && (
         <Suspense fallback={<SubViewLoadingSkeleton />}>
-          <CultureHeritageView />
+          <CultureHeritageView
+            lessons={lessons}
+            onSelectLesson={onSelectLesson}
+            onNavigateTab={onNavigateTab}
+            onSwitchToStudy={onSwitchToStudy}
+          />
         </Suspense>
       )}
 
@@ -561,6 +593,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
             lessons={lessons}
             onSelectLesson={onSelectLesson}
             onNavigateTab={onNavigateTab}
+            onSwitchToStudy={onSwitchToStudy}
           />
         </Suspense>
       )}

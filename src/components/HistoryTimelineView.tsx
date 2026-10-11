@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
-import { Clock, ShieldAlert, Award, MapPin, User, ChevronRight, BookOpen, GraduationCap, Zap, ArrowRight } from 'lucide-react';
+import { Clock, ShieldAlert, Award, MapPin, User, ChevronRight, GraduationCap, Zap } from 'lucide-react';
 import { BULGARIAN_HISTORY_TIMELINE } from '../data/bulgarianHistoryTimeline';
+import { ExamBridgeCard } from './ExamBridgeCard';
+import { findLessonForTimelineEvent } from '../services/curriculumBridge';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 
 interface HistoryTimelineViewProps {
   lessons?: LessonData[];
-  onSelectLesson?: (lesson: LessonData) => void;
+  onSelectLesson?: (lesson: LessonData, preferredTab?: AppNavTab) => void;
   onNavigateTab?: (tab: AppNavTab) => void;
+  onSwitchToStudy?: () => void;
 }
 
 export const HistoryTimelineView: React.FC<HistoryTimelineViewProps> = ({
   lessons = [],
   onSelectLesson,
-  onNavigateTab
+  onNavigateTab,
+  onSwitchToStudy
 }) => {
   const [selectedPeriod, setSelectedPeriod] = useState<string>('Всички епохи');
   const [activeEventId, setActiveEventId] = useState<string>(BULGARIAN_HISTORY_TIMELINE[0].id);
@@ -32,14 +36,8 @@ export const HistoryTimelineView: React.FC<HistoryTimelineViewProps> = ({
 
   const activeEvent = BULGARIAN_HISTORY_TIMELINE.find(e => e.id === activeEventId) || filteredEvents[0];
 
-  // Look for a corresponding lesson in the catalog
-  const matchingLesson = lessons.find(l => {
-    if (activeEvent.year === 1876 && l.id === 'history-april-uprising') return true;
-    const lTitle = l.title.toLowerCase();
-    const eTitle = activeEvent.title.toLowerCase();
-    return lTitle.includes(eTitle.slice(0, 10)) || eTitle.includes(lTitle.slice(0, 10)) ||
-      (l.subject === 'История и цивилизации' && (lTitle.includes(activeEvent.rulerOrLeader.toLowerCase()) || eTitle.includes(l.title.slice(0, 8))));
-  });
+  // Look for a corresponding lesson in the catalog using intelligent curriculum bridge
+  const matchingLesson = findLessonForTimelineEvent(activeEvent, lessons);
 
   return (
     <div className="space-y-6">
@@ -211,20 +209,31 @@ export const HistoryTimelineView: React.FC<HistoryTimelineViewProps> = ({
                 </div>
               </div>
 
-              {/* Interactive Cause-and-Effect Action Buttons */}
-              <div className="pt-3 border-t border-slate-100 space-y-2">
-                {matchingLesson && onSelectLesson ? (
-                  <button
-                    onClick={() => onSelectLesson(matchingLesson)}
-                    className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors shadow-xs"
-                  >
-                    <span className="flex items-center gap-2">
-                      <BookOpen className="w-4 h-4" />
-                      <span>Отвори пълния конспект: {matchingLesson.title}</span>
-                    </span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                ) : null}
+              {/* Interactive Cause-and-Effect Action Buttons & 100-Point Exam Bridge */}
+              <div className="pt-3 border-t border-slate-100 space-y-3">
+                {matchingLesson && (
+                  <ExamBridgeCard
+                    lesson={matchingLesson}
+                    variant="compact"
+                    contextTag="🏛️ ИЗПИТЕН МОСТ МОН"
+                    onLaunchSimulator={() => {
+                      if (onSelectLesson) {
+                        onSelectLesson(matchingLesson, 'simulator');
+                      } else {
+                        onSwitchToStudy?.();
+                        onNavigateTab?.('simulator');
+                      }
+                    }}
+                    onOpenSummary={() => {
+                      if (onSelectLesson) {
+                        onSelectLesson(matchingLesson, 'summary');
+                      } else {
+                        onSwitchToStudy?.();
+                        onNavigateTab?.('summary');
+                      }
+                    }}
+                  />
+                )}
 
                 <div className="grid grid-cols-2 gap-2">
                   <button

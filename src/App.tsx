@@ -608,7 +608,7 @@ export function App() {
                   <CultureHubView
                     activeSubTab={cultureSubTab}
                     onSelectSubTab={setCultureSubTab}
-                    onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+                    onSelectLesson={(l, preferredTab = 'summary') => handleLessonSelected(l, preferredTab)}
                     onNavigateTab={handleNavigateStudyTab}
                     onSwitchToStudy={() => handleSelectPortalMode('study')}
                     lessons={lessons}

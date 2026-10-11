@@ -12,8 +12,24 @@ import {
   Award
 } from 'lucide-react';
 import { BULGARIAN_HERITAGE_DATA, type HeritageItem } from '../data/generalKnowledgeData';
+import { ExamBridgeCard } from './ExamBridgeCard';
+import { findLessonForHeritageItem } from '../services/curriculumBridge';
+import type { LessonData } from '../types';
+import type { AppNavTab } from './Navbar';
 
-export const CultureHeritageView: React.FC = () => {
+interface CultureHeritageViewProps {
+  lessons?: LessonData[];
+  onSelectLesson?: (lesson: LessonData, preferredTab?: AppNavTab) => void;
+  onNavigateTab?: (tab: AppNavTab) => void;
+  onSwitchToStudy?: () => void;
+}
+
+export const CultureHeritageView: React.FC<CultureHeritageViewProps> = ({
+  lessons = [],
+  onSelectLesson,
+  onNavigateTab,
+  onSwitchToStudy
+}) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -148,6 +164,7 @@ export const CultureHeritageView: React.FC = () => {
           const isBookmarked = bookmarkedIds.includes(item.id);
           const isPlaying = playingAudioId === item.id;
           const isCopied = copiedId === item.id;
+          const matchingLesson = findLessonForHeritageItem(item, lessons);
 
           return (
             <div
@@ -243,6 +260,33 @@ export const CultureHeritageView: React.FC = () => {
                 {isExpanded && (
                   <div className="mt-2 p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-700 leading-relaxed animate-fadeIn">
                     {item.fascinatingFact}
+                  </div>
+                )}
+
+                {/* 100-Point Exam Simulator Bridge */}
+                {matchingLesson && isExpanded && (
+                  <div className="mt-3">
+                    <ExamBridgeCard
+                      lesson={matchingLesson}
+                      variant="compact"
+                      contextTag="🏆 ИЗПИТЕН МОСТ ЮНЕСКО"
+                      onLaunchSimulator={() => {
+                        if (onSelectLesson) {
+                          onSelectLesson(matchingLesson, 'simulator');
+                        } else {
+                          onSwitchToStudy?.();
+                          onNavigateTab?.('simulator');
+                        }
+                      }}
+                      onOpenSummary={() => {
+                        if (onSelectLesson) {
+                          onSelectLesson(matchingLesson, 'summary');
+                        } else {
+                          onSwitchToStudy?.();
+                          onNavigateTab?.('summary');
+                        }
+                      }}
+                    />
                   </div>
                 )}
               </div>

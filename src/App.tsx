@@ -461,6 +461,8 @@ export function App() {
                     {activeTab === 'simulator' && (
                       <ExamSimulatorView
                         currentLesson={currentLesson}
+                        allLessons={lessons}
+                        onSelectLesson={(l) => handleLessonSelected(l, 'simulator')}
                         onOpenErrorBank={() => handleNavigateStudyTab('errorbank')}
                         onRecordError={handleRecordError}
                       />

@@ -9,19 +9,26 @@ import {
   FileText,
   BookOpen,
   Scale,
-  Calendar
+  Calendar,
+  Award,
+  Printer,
+  X
 } from 'lucide-react';
 import type { QuizQuestion, LessonData } from '../types';
 import { getExamModulesForLesson } from '../data/examModulesData';
 
 interface ExamSimulatorViewProps {
   currentLesson: LessonData;
+  allLessons?: LessonData[];
+  onSelectLesson?: (lesson: LessonData) => void;
   onOpenErrorBank?: () => void;
   onRecordError?: (q: QuizQuestion, optIdx: number) => void;
 }
 
 export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
   currentLesson,
+  allLessons,
+  onSelectLesson,
   onOpenErrorBank,
   onRecordError
 }) => {
@@ -30,6 +37,9 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
   const [isExamRunning, setIsExamRunning] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [activeModuleTab, setActiveModuleTab] = useState<1 | 2 | 3>(1);
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState<boolean>(false);
+  const [activePreset, setActivePreset] = useState<string>('lesson');
+  const [studentName, setStudentName] = useState<string>('Ученик StudyBG');
 
   // Load lesson exam data (Module 1, 2, 3)
   const examData = useMemo(() => getExamModulesForLesson(currentLesson), [currentLesson]);
@@ -48,32 +58,71 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
   // Module 3 Scores: criterionId -> awarded points
   const [rubricScores, setRubricScores] = useState<Record<string, number>>({});
 
-  // Dynamic Exam Countdown: Always calculates upcoming May (ДЗИ) and June (НВО)
+  // Dynamic Exam Countdown: Always calculates upcoming May (ДЗИ 12. кл.) and June (НВО 7. и 10. кл.)
   const examCountdowns = useMemo(() => {
     const now = new Date();
     const currentYear = now.getFullYear();
 
-    // DZI is usually around May 20
+    // DZI 12th grade is usually May 21
     let dziYear = currentYear;
-    let dziDate = new Date(`${dziYear}-05-20T08:00:00`);
+    let dziDate = new Date(`${dziYear}-05-21T08:00:00`);
     if (now.getTime() > dziDate.getTime()) {
       dziYear += 1;
-      dziDate = new Date(`${dziYear}-05-20T08:00:00`);
+      dziDate = new Date(`${dziYear}-05-21T08:00:00`);
     }
 
-    // NVO 7th grade is usually around June 17
-    let nvoYear = currentYear;
-    let nvoDate = new Date(`${nvoYear}-06-17T09:00:00`);
-    if (now.getTime() > nvoDate.getTime()) {
-      nvoYear += 1;
-      nvoDate = new Date(`${nvoYear}-06-17T09:00:00`);
+    // NVO 10th grade is usually June 10
+    let nvo10Year = currentYear;
+    let nvo10Date = new Date(`${nvo10Year}-06-10T09:00:00`);
+    if (now.getTime() > nvo10Date.getTime()) {
+      nvo10Year += 1;
+      nvo10Date = new Date(`${nvo10Year}-06-10T09:00:00`);
+    }
+
+    // NVO 7th grade is usually June 17
+    let nvo7Year = currentYear;
+    let nvo7Date = new Date(`${nvo7Year}-06-17T09:00:00`);
+    if (now.getTime() > nvo7Date.getTime()) {
+      nvo7Year += 1;
+      nvo7Date = new Date(`${nvo7Year}-06-17T09:00:00`);
     }
 
     const diffDzi = Math.max(1, Math.ceil((dziDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
-    const diffNvo = Math.max(1, Math.ceil((nvoDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+    const diffNvo10 = Math.max(1, Math.ceil((nvo10Date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+    const diffNvo7 = Math.max(1, Math.ceil((nvo7Date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
 
-    return { diffDzi, diffNvo, dziYear, nvoYear };
+    return { diffDzi, diffNvo10, diffNvo7, dziYear, nvo10Year, nvo7Year };
   }, []);
+
+  const handleSelectExamPreset = (preset: string) => {
+    setActivePreset(preset);
+    setIsExamRunning(false);
+    setIsSubmitted(false);
+    setSelectedAnswers({});
+    setModule2Answers({});
+    setModule2Scores({});
+    setEssayText('');
+    setRubricScores({});
+
+    if (!allLessons || !onSelectLesson) return;
+
+    if (preset === 'nvo7-bel') {
+      const l = allLessons.find(x => x.id === 'bel-7-edna-balgarka');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'nvo7-math') {
+      const l = allLessons.find(x => x.id === 'math-7-linear-equations');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'nvo10-history') {
+      const l = allLessons.find(x => x.id === 'history-simeon-golden-age');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'dzi12-bel') {
+      const l = allLessons.find(x => x.id === 'literature-tyutyun');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'dzi12-history') {
+      const l = allLessons.find(x => x.id === 'history-april-uprising');
+      if (l) onSelectLesson(l);
+    }
+  };
 
   // Timer Effect
   useEffect(() => {
@@ -232,67 +281,172 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
   return (
     <div className="space-y-6">
       
-      {/* Official МОН Countdown Dashboard */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        
+      {/* Official МОН Countdown Dashboard: 3 National Exam Levels */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4">
         {/* NVO 7th Grade Card */}
-        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between">
+        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200">
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200">
                 7. клас • НВО
               </span>
-              <span className="text-xs text-slate-500 inline-flex items-center gap-1">
+              <span className="text-[11px] text-slate-500 inline-flex items-center gap-1">
                 <Calendar className="w-3 h-3 text-slate-400" />
-                17 – 19 юни {examCountdowns.nvoYear} г.
+                17 – 19 юни {examCountdowns.nvo7Year} г.
               </span>
             </div>
-            <h4 className="text-sm font-bold text-slate-900">
-              Национално външно оценяване
+            <h4 className="text-xs sm:text-sm font-bold text-slate-900">
+              Външно оценяване 7. кл.
             </h4>
-            <p className="text-xs text-slate-600 mt-0.5">
-              Български език и литература & Математика
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              БЕЛ и Математика (Прием в гимназии)
             </p>
           </div>
-          <div className="text-right">
-            <div className="text-3xl font-extrabold text-slate-900 font-mono">
-              {examCountdowns.diffNvo}
+          <div className="text-right pl-2 shrink-0">
+            <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">
+              {examCountdowns.diffNvo7}
             </div>
-            <span className="text-[11px] text-slate-500 uppercase tracking-wider">
+            <span className="text-[10px] text-slate-500 uppercase tracking-wider block">
+              дни до изпита
+            </span>
+          </div>
+        </div>
+
+        {/* NVO 10th Grade Card */}
+        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-teal-50 text-teal-800 border border-teal-200">
+                10. клас • НВО
+              </span>
+              <span className="text-[11px] text-slate-500 inline-flex items-center gap-1">
+                <Calendar className="w-3 h-3 text-slate-400" />
+                10 – 12 юни {examCountdowns.nvo10Year} г.
+              </span>
+            </div>
+            <h4 className="text-xs sm:text-sm font-bold text-slate-900">
+              Първи гимназиален етап
+            </h4>
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              БЕЛ и Математика (Стандарт МОН)
+            </p>
+          </div>
+          <div className="text-right pl-2 shrink-0">
+            <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">
+              {examCountdowns.diffNvo10}
+            </div>
+            <span className="text-[10px] text-slate-500 uppercase tracking-wider block">
               дни до изпита
             </span>
           </div>
         </div>
 
         {/* DZI 12th Grade Card */}
-        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between">
+        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
                 12. клас • ДЗИ
               </span>
-              <span className="text-xs text-slate-500 inline-flex items-center gap-1">
+              <span className="text-[11px] text-slate-500 inline-flex items-center gap-1">
                 <Calendar className="w-3 h-3 text-slate-400" />
                 20 – 22 май {examCountdowns.dziYear} г.
               </span>
             </div>
-            <h4 className="text-sm font-bold text-slate-900">
-              Държавни зрелостни изпити (Матури)
+            <h4 className="text-xs sm:text-sm font-bold text-slate-900">
+              Държавни зрелостни изпити
             </h4>
-            <p className="text-xs text-slate-600 mt-0.5">
-              Задължителна матура по БЕЛ и профилиран предмет
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              Задължителна матура БЕЛ & профил
             </p>
           </div>
-          <div className="text-right">
-            <div className="text-3xl font-extrabold text-slate-900 font-mono">
+          <div className="text-right pl-2 shrink-0">
+            <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">
               {examCountdowns.diffDzi}
             </div>
-            <span className="text-[11px] text-slate-500 uppercase tracking-wider">
+            <span className="text-[10px] text-slate-500 uppercase tracking-wider block">
               дни до изпита
             </span>
           </div>
         </div>
+      </div>
 
+      {/* Official Exam Presets & Track Selector */}
+      <div className="p-3.5 bg-white rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Award className="w-4 h-4 text-blue-600 ml-1 shrink-0" />
+          <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+            Изпитна симулация:
+          </span>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-1.5">
+          <button
+            onClick={() => handleSelectExamPreset('lesson')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              activePreset === 'lesson'
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            Текущ урок: {currentLesson.title.split(':')[0].slice(0, 16)}...
+          </button>
+
+          <button
+            onClick={() => handleSelectExamPreset('nvo7-bel')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              activePreset === 'nvo7-bel'
+                ? 'bg-sky-600 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            7. кл. БЕЛ (Вазов)
+          </button>
+
+          <button
+            onClick={() => handleSelectExamPreset('nvo7-math')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              activePreset === 'nvo7-math'
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            7. кл. Математика (Движение)
+          </button>
+
+          <button
+            onClick={() => handleSelectExamPreset('nvo10-history')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              activePreset === 'nvo10-history'
+                ? 'bg-teal-600 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            10. кл. История (Симеон)
+          </button>
+
+          <button
+            onClick={() => handleSelectExamPreset('dzi12-bel')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              activePreset === 'dzi12-bel'
+                ? 'bg-amber-600 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            12. кл. ДЗИ БЕЛ („Тютюн“)
+          </button>
+
+          <button
+            onClick={() => handleSelectExamPreset('dzi12-history')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              activePreset === 'dzi12-history'
+                ? 'bg-rose-600 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+            }`}
+          >
+            12. кл. ДЗИ История (1876)
+          </button>
+        </div>
       </div>
 
       {/* Main Exam Simulator Container */}
@@ -378,6 +532,14 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
               </div>
 
               <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  onClick={() => setIsPrintModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-black text-white text-xs font-semibold transition-colors shadow-xs"
+                >
+                  <Printer className="w-3.5 h-3.5" />
+                  <span>Протокол от изпита (Печат / PDF)</span>
+                </button>
+
                 <button
                   onClick={() => handleStartExam(examDurationMinutes)}
                   className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium border border-slate-300 transition-colors shadow-2xs"
@@ -832,30 +994,295 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
           </div>
         )}
 
-        {/* Initial Empty State before starting */}
+        {/* Initial Empty State before starting: Comprehensive МОН 100-Point Blueprint */}
         {!isExamRunning && !isSubmitted && (
-          <div className="py-12 text-center max-w-lg mx-auto space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto border border-blue-200">
-              <Clock className="w-6 h-6" />
+          <div className="py-8 space-y-8">
+            {/* Header info */}
+            <div className="text-center max-w-2xl mx-auto space-y-2">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto border border-blue-200 shadow-2xs">
+                <ShieldAlert className="w-6 h-6" />
+              </div>
+              <h4 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+                Официален регламент и модел на изпита (100 точки)
+              </h4>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Симулацията пресъздава точната структура на държавните зрелостни изпити (ДЗИ) и НВО на МОН за <strong className="text-slate-900">{currentLesson.subject}</strong> ({currentLesson.grade}).
+              </p>
             </div>
-            <h4 className="text-lg font-bold text-slate-900">
-              Готови ли сте за пълна симулация?
-            </h4>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Симулаторът пресъздава официалната структура на държавните зрелостни изпити (ДЗИ) и НВО на МОН: затворени тестови въпроси (40 т.), анализ на автентичен извор (30 т.) и разширен аргументиран отговор (30 т.).
-            </p>
-            <div className="pt-2">
-              <button
-                onClick={() => handleStartExam(60)}
-                className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors shadow-xs"
-              >
-                Започни изпит (60 минути)
-              </button>
+
+            {/* 3 Modules Blueprint Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 bg-blue-100 px-2 py-0.5 rounded">
+                    Модул 1
+                  </span>
+                  <span className="text-xs font-mono font-bold text-slate-700">
+                    40 точки
+                  </span>
+                </div>
+                <h5 className="text-sm font-bold text-slate-900">
+                  Тестова част с избираем отговор
+                </h5>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  10 затворени въпроса по 4 т. Проверява фундаменталната фактология, понятия и правила. Минималният праг за оценка Среден 3.00 е 30 точки.
+                </p>
+              </div>
+
+              <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 bg-purple-100 px-2 py-0.5 rounded">
+                    Модул 2
+                  </span>
+                  <span className="text-xs font-mono font-bold text-slate-700">
+                    30 точки
+                  </span>
+                </div>
+                <h5 className="text-sm font-bold text-slate-900">
+                  Анализ на извор / приложни задачи
+                </h5>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  3 въпроса със свободен кратък отговор по 10 т. Работа с автентичен исторически документ, художествен откъс или математически модел.
+                </p>
+              </div>
+
+              <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
+                    Модул 3
+                  </span>
+                  <span className="text-xs font-mono font-bold text-slate-700">
+                    30 точки
+                  </span>
+                </div>
+                <h5 className="text-sm font-bold text-slate-900">
+                  Разширен писмен отговор / Есе
+                </h5>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Създаване на цялостен аргументиран текст или пълно алгебрично решение. Оценява се по официалната 4-критерийна матрица на МОН.
+                </p>
+              </div>
             </div>
+
+            {/* Official МОН Grading Scale Bar */}
+            <div className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-3">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                  <Scale className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Държавна скала на МОН за преобразуване на точките в оценка:</span>
+                </span>
+                <span className="text-slate-500 font-mono text-[11px]">ДЗИ / НВО 100-точкова система</span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs">
+                <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200">
+                  <span className="block font-bold text-rose-900 font-mono">0 – 29 т.</span>
+                  <span className="text-[11px] text-rose-700 font-medium">Слаб 2.00</span>
+                </div>
+                <div className="p-2.5 rounded-lg bg-orange-50 border border-orange-200">
+                  <span className="block font-bold text-orange-900 font-mono">30 – 58 т.</span>
+                  <span className="text-[11px] text-orange-700 font-medium">Среден 3.00 (Праг)</span>
+                </div>
+                <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-200">
+                  <span className="block font-bold text-amber-900 font-mono">59 – 74 т.</span>
+                  <span className="text-[11px] text-amber-700 font-medium">Добър 4.00</span>
+                </div>
+                <div className="p-2.5 rounded-lg bg-sky-50 border border-sky-200">
+                  <span className="block font-bold text-sky-900 font-mono">75 – 89 т.</span>
+                  <span className="text-[11px] text-sky-700 font-medium">Мн. добър 5.00</span>
+                </div>
+                <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 col-span-2 sm:col-span-1">
+                  <span className="block font-bold text-emerald-900 font-mono">90 – 100 т.</span>
+                  <span className="text-[11px] text-emerald-700 font-medium">Отличен 6.00</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Duration Selector & Launch Call-to-action */}
+            <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-50/50 via-white to-indigo-50/50 border border-blue-200 text-center space-y-4 max-w-xl mx-auto">
+              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                Изберете времеви регламент за изпита:
+              </span>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {[
+                  { mins: 30, label: '30 мин (Експресен)' },
+                  { mins: 60, label: '60 мин (Стандартен)' },
+                  { mins: 90, label: '90 мин (Удължен)' },
+                  { mins: 150, label: '150 мин (Регламент НВО МОН)' }
+                ].map(item => (
+                  <button
+                    key={item.mins}
+                    onClick={() => setExamDurationMinutes(item.mins)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                      examDurationMinutes === item.mins
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={() => handleStartExam(examDurationMinutes)}
+                  className="w-full sm:w-auto px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-sm font-bold transition-all shadow-xs flex items-center justify-center gap-2 mx-auto"
+                >
+                  <Clock className="w-4 h-4 text-white" />
+                  <span>Стартирай пълна симулация ({examDurationMinutes} мин)</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
           </div>
         )}
 
       </div>
+
+      {/* Official МОН Exam Protocol Print Modal */}
+      {isPrintModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm print:p-0 print:bg-white">
+          <div className="w-full max-w-2xl bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden print:border-none print:shadow-none">
+            {/* Modal Top Bar */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50 print:hidden">
+              <div className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase tracking-wider">
+                <Printer className="w-4 h-4 text-blue-600" />
+                <span>Официален протокол за провеждане на изпит</span>
+              </div>
+              <button
+                onClick={() => setIsPrintModalOpen(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Protocol Sheet Content (Printable) */}
+            <div className="p-6 sm:p-8 space-y-6 text-slate-900 font-serif">
+              {/* Official Header */}
+              <div className="text-center border-b-2 border-slate-900 pb-5 space-y-1">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-700 font-sans">
+                  Република България • Министерство на образованието и науката
+                </h3>
+                <h2 className="text-lg sm:text-xl font-extrabold uppercase text-slate-900 tracking-wide font-sans">
+                  Протокол от симулационно изпитно оценяване
+                </h2>
+                <div className="text-[11px] font-sans text-slate-500 flex items-center justify-center gap-4 pt-1">
+                  <span>Рег. № BG-MON-{Math.floor(100000 + Math.random() * 900000)}</span>
+                  <span>•</span>
+                  <span>Дата: {new Date().toLocaleDateString('bg-BG')} г.</span>
+                </div>
+              </div>
+
+              {/* Student & Exam Metadata Grid */}
+              <div className="grid grid-cols-2 gap-3 text-xs font-sans pb-4 border-b border-slate-200">
+                <div>
+                  <span className="text-slate-500 block">Изпитвано лице:</span>
+                  <input
+                    type="text"
+                    value={studentName}
+                    onChange={(e) => setStudentName(e.target.value)}
+                    className="font-bold text-slate-900 bg-transparent border-b border-dashed border-slate-300 focus:outline-none focus:border-blue-600 w-full"
+                  />
+                </div>
+                <div>
+                  <span className="text-slate-500 block">Учебен предмет & Клас:</span>
+                  <span className="font-bold text-slate-900">{currentLesson.subject} ({currentLesson.grade})</span>
+                </div>
+                <div className="col-span-2">
+                  <span className="text-slate-500 block">Изпитна тема:</span>
+                  <span className="font-bold text-slate-900">{currentLesson.title}</span>
+                </div>
+              </div>
+
+              {/* Detailed Points Table */}
+              <div className="space-y-2 font-sans">
+                <h5 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                  Резултати по изпитни модули (Максимум 100 точки):
+                </h5>
+                <div className="border border-slate-300 rounded-lg overflow-hidden text-xs">
+                  <div className="grid grid-cols-12 bg-slate-100 font-bold p-2.5 border-b border-slate-300 text-slate-800">
+                    <span className="col-span-6">Модул / Компонент</span>
+                    <span className="col-span-3 text-center">Макс. точки</span>
+                    <span className="col-span-3 text-right">Постигнат резултат</span>
+                  </div>
+                  <div className="grid grid-cols-12 p-2.5 border-b border-slate-200">
+                    <span className="col-span-6 font-medium">Модул 1: Тестова част (Избираем отговор)</span>
+                    <span className="col-span-3 text-center font-mono">40 т.</span>
+                    <span className="col-span-3 text-right font-mono font-bold">{module1Points} т.</span>
+                  </div>
+                  <div className="grid grid-cols-12 p-2.5 border-b border-slate-200">
+                    <span className="col-span-6 font-medium">Модул 2: Анализ на извор / Приложни задачи</span>
+                    <span className="col-span-3 text-center font-mono">30 т.</span>
+                    <span className="col-span-3 text-right font-mono font-bold">{module2Points} т.</span>
+                  </div>
+                  <div className="grid grid-cols-12 p-2.5 border-b border-slate-200">
+                    <span className="col-span-6 font-medium">Модул 3: Разширен аргументиран отговор / Есе</span>
+                    <span className="col-span-3 text-center font-mono">30 т.</span>
+                    <span className="col-span-3 text-right font-mono font-bold">{module3Points} т.</span>
+                  </div>
+                  <div className="grid grid-cols-12 p-3 bg-slate-50 font-bold text-sm">
+                    <span className="col-span-6 uppercase">Общ резултат:</span>
+                    <span className="col-span-3 text-center font-mono">100 т.</span>
+                    <span className="col-span-3 text-right font-mono text-blue-700">{totalPoints} т.</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Official Grade Summary Box */}
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 font-sans flex items-center justify-between">
+                <div>
+                  <span className="text-[11px] text-slate-500 uppercase tracking-wider block">
+                    Окончателна държавна оценка по скалата на МОН:
+                  </span>
+                  <div className="text-xl font-extrabold text-slate-900 mt-0.5">
+                    {gradeInfo.grade}
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    {gradeInfo.status}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <span className="inline-block px-3 py-1 rounded text-xs font-bold font-mono bg-white border border-slate-300">
+                    {totalPoints} / 100 точки
+                  </span>
+                </div>
+              </div>
+
+              {/* Signature Lines */}
+              <div className="grid grid-cols-2 gap-8 pt-6 font-sans text-xs text-slate-600 border-t border-slate-200">
+                <div>
+                  <span className="block mb-6">Подпис на изпитвания:</span>
+                  <div className="border-b border-slate-400 w-44" />
+                </div>
+                <div className="text-right">
+                  <span className="block mb-6">Печат на StudyBG и Изпитна комисия:</span>
+                  <div className="border-b border-slate-400 w-44 ml-auto" />
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Bottom Actions */}
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50 print:hidden">
+              <button
+                onClick={() => setIsPrintModalOpen(false)}
+                className="px-4 py-2 rounded-xl text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 transition-colors"
+              >
+                Затвори
+              </button>
+              <button
+                onClick={() => window.print()}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors shadow-xs"
+              >
+                <Printer className="w-4 h-4" />
+                <span>Разпечатай протокола</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

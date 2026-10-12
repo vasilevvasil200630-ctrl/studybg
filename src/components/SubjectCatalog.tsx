@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search, BookOpen, ChevronRight, Layers, GraduationCap, Clock } from 'lucide-react';
 import type { LessonData, GradeLevel, SubjectName } from '../types';
 import { GRADES_LIST, SUBJECTS_LIST } from '../data/curriculumDatabase';
+import { MaturaPlusBridgeBanner } from './MaturaPlusBridgeBanner';
 
 interface SubjectCatalogProps {
   lessons: LessonData[];
@@ -19,10 +20,22 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
   const [selectedSubject, setSelectedSubject] = useState<SubjectName>('Всички предмети');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  const isJuniorHigh =
+    selectedGrade.includes('5.') ||
+    selectedGrade.includes('6.') ||
+    selectedGrade.includes('7.');
+
   const filteredLessons = lessons.filter((lesson) => {
-    const matchesGrade = selectedGrade === 'Всички класове' || lesson.grade.includes(selectedGrade.replace(' (НВО)', '').replace(' (ДЗИ / Матура)', ''));
-    const matchesSubject = selectedSubject === 'Всички предмети' || lesson.subject === selectedSubject;
-    const matchesQuery = lesson.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const matchesGrade =
+      selectedGrade === 'Всички класове'
+        ? true
+        : lesson.grade.includes(
+            selectedGrade.replace(' (НВО)', '').replace(' (ДЗИ / Матура)', '')
+          );
+    const matchesSubject =
+      selectedSubject === 'Всички предмети' || lesson.subject === selectedSubject;
+    const matchesQuery =
+      lesson.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       lesson.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
       lesson.summary.overview.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesGrade && matchesSubject && matchesQuery;
@@ -35,13 +48,13 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
         <div>
           <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 uppercase tracking-wider mb-1">
             <BookOpen className="w-3.5 h-3.5" />
-            <span>Държавни образователни стандарти (МОН)</span>
+            <span>Държавни образователни стандарти на МОН (8.–12. клас)</span>
           </div>
           <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-            Учебен каталог по класове и дисциплини
+            Гимназиален каталог: НВО 10 и ДЗИ 12
           </h3>
           <p className="text-xs text-slate-600 mt-1">
-            Изберете клас и предмет за достъп до структурирания конспект, изискванията за пълно отличие и тестовете.
+            Избери клас и предмет за достъп до официалния конспект, изискванията за пълно отличие (6.00), историческите казуси и симулатора.
           </p>
         </div>
 
@@ -65,19 +78,34 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
           <span>Образователен етап и клас:</span>
         </div>
         <div className="flex items-center gap-1.5 overflow-x-auto pb-2 no-scrollbar">
-          {GRADES_LIST.map((grade) => (
-            <button
-              key={grade}
-              onClick={() => setSelectedGrade(grade)}
-              className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                selectedGrade === grade
-                  ? 'bg-blue-600 text-white shadow-xs font-semibold'
-                  : 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200/80 border border-slate-200'
-              }`}
-            >
-              {grade}
-            </button>
-          ))}
+          {GRADES_LIST.map((grade) => {
+            const isJunior = grade.includes('5.') || grade.includes('6.') || grade.includes('7.');
+            const isSelected = selectedGrade === grade;
+            return (
+              <button
+                key={grade}
+                onClick={() => setSelectedGrade(grade)}
+                className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 ${
+                  isSelected
+                    ? isJunior
+                      ? 'bg-emerald-600 text-white shadow-xs font-semibold'
+                      : 'bg-blue-600 text-white shadow-xs font-semibold'
+                    : isJunior
+                    ? 'bg-emerald-50/70 text-emerald-800 hover:bg-emerald-100/80 border border-emerald-200'
+                    : 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200/80 border border-slate-200'
+                }`}
+              >
+                <span>{grade}</span>
+                {isJunior && (
+                  <span className={`text-[9px] px-1 py-0.2 rounded font-bold uppercase ${
+                    isSelected ? 'bg-emerald-700 text-white' : 'bg-emerald-200 text-emerald-900'
+                  }`}>
+                    Matura+
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -104,10 +132,22 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
         </div>
       </div>
 
+      {/* Matura+ Direct Synergy Banner if Junior High (5.–7. grade) selected */}
+      {isJuniorHigh && (
+        <div className="mb-6">
+          <MaturaPlusBridgeBanner compact={false} source="catalog-junior-filter" />
+        </div>
+      )}
+
       {/* Lessons Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
         {filteredLessons.map((lesson) => {
           const isCurrent = lesson.id === currentLessonId;
+          const isJuniorLesson =
+            lesson.grade.includes('7.') ||
+            lesson.grade.includes('6.') ||
+            lesson.grade.includes('5.');
+
           return (
             <div
               key={lesson.id}
@@ -115,12 +155,14 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
               className={`p-4 sm:p-5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between group ${
                 isCurrent
                   ? 'bg-blue-50/70 border-blue-400 shadow-xs ring-1 ring-blue-400/40'
+                  : isJuniorLesson
+                  ? 'bg-emerald-50/30 border-emerald-200/80 hover:border-emerald-300 hover:bg-emerald-50/50 shadow-2xs'
                   : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/70 shadow-2xs'
               }`}
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-xs font-semibold text-emerald-700">
+                  <span className={`text-xs font-semibold ${isJuniorLesson ? 'text-emerald-800' : 'text-emerald-700'}`}>
                     {lesson.subject}
                   </span>
                   <div className="flex items-center gap-1.5">
@@ -129,7 +171,11 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                         {lesson.examType}
                       </span>
                     )}
-                    <span className="text-[10px] text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                    <span className={`text-[10px] px-2 py-0.5 rounded border ${
+                      isJuniorLesson
+                        ? 'text-emerald-800 bg-emerald-100/70 border-emerald-200 font-semibold'
+                        : 'text-slate-600 bg-slate-100 border-slate-200'
+                    }`}>
                       {lesson.grade}
                     </span>
                   </div>

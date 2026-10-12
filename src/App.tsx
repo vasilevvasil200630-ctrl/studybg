@@ -10,6 +10,7 @@ import { NewsletterSection } from './components/NewsletterSection';
 import { OfflineStatusBanner } from './components/OfflineStatusBanner';
 import { CookieConsentBanner } from './components/CookieConsentBanner';
 import { LegalPoliciesModal, type LegalPolicyTab } from './components/LegalPoliciesModal';
+import { MaturaPlusBridgeBanner } from './components/MaturaPlusBridgeBanner';
 
 // Code-split heavy interactive modules for optimal bundle size and instant initial load
 const CultureHubView = lazy(() => import('./components/CultureHubView').then(m => ({ default: m.CultureHubView })));
@@ -343,7 +344,7 @@ export function App() {
                     <span>StudyBG</span>
                   </a>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="text-blue-700 font-semibold">Учебна академия</span>
+                  <span className="text-blue-700 font-semibold">Гимназиална академия (8.–12. кл)</span>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   <span className="text-emerald-700 font-medium">{currentLesson.subject}</span>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
@@ -364,6 +365,13 @@ export function App() {
                     )}
                   </h2>
                 </div>
+
+                {/* Direct Referral to Matura+ if user browses a 5-7th grade lesson */}
+                {(currentLesson.grade.includes('7.') || currentLesson.grade.includes('6.') || currentLesson.grade.includes('5.')) && (
+                  <div className="pt-2">
+                    <MaturaPlusBridgeBanner compact={true} source="lesson-breadcrumb" />
+                  </div>
+                )}
               </div>
 
               {/* Action Buttons */}

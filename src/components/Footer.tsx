@@ -11,8 +11,9 @@ import {
   Camera,
   AlertCircle,
   Sparkles,
-  HelpCircle,
-  Printer
+  Printer,
+  ArrowUpRight,
+  Scale
 } from 'lucide-react';
 import type { AppNavTab } from './Navbar';
 import type { CultureSubTab } from './CultureHero';
@@ -48,6 +49,8 @@ export const Footer: React.FC<FooterProps> = ({
   const handleOpenStudyTab = (tab: AppNavTab) => {
     onSelectPortalMode?.('study');
     onNavigateTab(tab);
+    const el = document.getElementById('workspace');
+    el?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -57,7 +60,7 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Top 4-Column Navigation Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-12 border-b border-slate-200">
           
-          {/* Col 1: Brand Info */}
+          {/* Col 1: Brand Info & High-School Focus */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-600 text-white font-bold shadow-xs">
@@ -65,17 +68,19 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-slate-900 text-base tracking-tight">StudyBG</span>
-                  <span className="text-[10px] uppercase font-semibold text-slate-600 bg-slate-200 px-2 py-0.5 rounded border border-slate-300">
-                    2 Портала в 1
+                  <span className="font-extrabold text-slate-900 text-base tracking-tight">StudyBG</span>
+                  <span className="text-[10px] uppercase font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded border border-blue-200">
+                    8.–12. клас
                   </span>
                 </div>
               </div>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Платформа за качествено образование: Учебна академия за дигитализация на тетрадки и изпити по МОН, съчетана с богат раздел за Обща култура, неразгадани загадки и историческа хронология.
+              Специализирана учебна академия за гимназиален етап. Подготовка за НВО 10 и ДЗИ 12 по стандартите на МОН: 100-точкови симулации, 4-критерийна рубрика за есе и исторически контекст за Отличен 6.00.
             </p>
-            <div className="pt-2 flex flex-wrap gap-2">
+            
+            {/* Quick Actions */}
+            <div className="pt-1 flex flex-wrap gap-2">
               <button
                 onClick={() => {
                   onSelectPortalMode?.('study');
@@ -87,23 +92,44 @@ export const Footer: React.FC<FooterProps> = ({
                 <span>Снимай записки</span>
               </button>
 
-              <button
-                onClick={() => handleOpenCultureTab('mysteries')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-semibold shadow-2xs transition-colors"
+              <a
+                href="https://matura-plus.bg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-semibold shadow-2xs transition-colors"
               >
-                <Compass className="w-3.5 h-3.5 text-amber-700" />
-                <span>Разгледай загадките</span>
-              </button>
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>Matura+ (5.–7. клас)</span>
+                <ArrowUpRight className="w-3 h-3 text-emerald-700" />
+              </a>
             </div>
           </div>
 
-          {/* Col 2: Инструменти за подготовка (Част 1) */}
+          {/* Col 2: Гимназиална академия */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-blue-700 mb-3.5 flex items-center gap-1.5">
               <BookOpen className="w-3.5 h-3.5" />
-              <span>Част 1: Учебна академия</span>
+              <span>Гимназиална подготовка</span>
             </h4>
             <ul className="space-y-2 text-xs text-slate-600">
+              <li>
+                <button
+                  onClick={() => handleOpenStudyTab('simulator')}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
+                >
+                  <Clock className="w-3.5 h-3.5 text-amber-600" />
+                  <span>100т. Симулатор МОН (НВО 10 & ДЗИ)</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleOpenStudyTab('cases')}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
+                >
+                  <Scale className="w-3.5 h-3.5 text-purple-600" />
+                  <span>Казуси за ДЗИ (11.–12. клас)</span>
+                </button>
+              </li>
               <li>
                 <button
                   onClick={() => handleOpenStudyTab('summary')}
@@ -137,35 +163,26 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
                   <GraduationCap className="w-3.5 h-3.5 text-slate-400" />
-                  <span>10-въпросен тест с оценка</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleOpenCultureTab('cases')}
-                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
-                >
-                  <FileText className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Исторически казуси & теми за есе</span>
+                  <span>Тест с незабавна оценка</span>
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Col 3: МОН Изпити & Ресурси */}
+          {/* Col 3: МОН Изпити & Инструменти */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 mb-3.5 flex items-center gap-1.5">
               <FileText className="w-3.5 h-3.5 text-blue-600" />
-              <span>МОН Изпитни модули</span>
+              <span>Ресурси по стандарта на МОН</span>
             </h4>
             <ul className="space-y-2 text-xs text-slate-600">
               <li>
                 <button
-                  onClick={() => handleOpenStudyTab('simulator')}
+                  onClick={onOpenFormulaModal}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
-                  <Clock className="w-3.5 h-3.5 text-slate-400" />
-                  <span>100-точков изпитен симулатор (НВО/ДЗИ)</span>
+                  <FileText className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Официални формули и свитъци МОН</span>
                 </button>
               </li>
               <li>
@@ -183,16 +200,7 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
                   <Printer className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Генератор на контролни (Група А & Б)</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={onOpenFormulaModal}
-                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
-                >
-                  <FileText className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Официални формули и матрици на МОН</span>
+                  <span>Генератор за контролни (Група А & Б)</span>
                 </button>
               </li>
               <li>
@@ -201,17 +209,17 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
                   <BookOpen className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Пълен учебен каталог по предмети</span>
+                  <span>Гимназиален каталог (8.–12. клас)</span>
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: Обща култура & Загадки (Част 2) */}
+          {/* Col 4: Исторически контекст & Първични извори */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-amber-800 mb-3.5 flex items-center gap-1.5">
               <Compass className="w-3.5 h-3.5 text-amber-700" />
-              <span>Част 2: Обща култура</span>
+              <span>Исторически контекст (за ДЗИ)</span>
             </h4>
             <ul className="space-y-2 text-xs text-slate-600">
               <li>
@@ -220,7 +228,7 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-amber-800 transition-colors flex items-center gap-2"
                 >
                   <Compass className="w-3.5 h-3.5 text-amber-700" />
-                  <span>Неразгадани случки от историята</span>
+                  <span>Неразгадани исторически казуси</span>
                 </button>
               </li>
               <li>
@@ -229,7 +237,16 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-emerald-700 transition-colors flex items-center gap-2"
                 >
                   <Clock className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Хронология (681 – 1908 г.)</span>
+                  <span>Хронология на събитията (681–1908)</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleOpenCultureTab('heritage')}
+                  className="hover:text-orange-700 transition-colors flex items-center gap-2"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-orange-600" />
+                  <span>Български принос & ЮНЕСКО</span>
                 </button>
               </li>
               <li>
@@ -238,16 +255,7 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Тест за обща култура (15 въпроса)</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleOpenCultureTab('myths')}
-                  className="hover:text-rose-700 transition-colors flex items-center gap-2"
-                >
-                  <HelpCircle className="w-3.5 h-3.5 text-rose-600" />
-                  <span>Факт или Мит? (Развенчаване)</span>
+                  <span>Куиз за ерудиция и широк кръгозор</span>
                 </button>
               </li>
             </ul>
@@ -297,7 +305,7 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="pt-4 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-600">
           <div className="flex items-center gap-2 text-slate-700 font-medium">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>Съобразено с държавните образователни изисквания на МОН и научни исторически извори</span>
+            <span>Съобразено с държавните образователни изисквания на МОН за гимназиален етап (8.–12. клас)</span>
           </div>
           <div className="flex items-center gap-3 text-slate-500 text-[11px]">
             <span className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 font-medium">

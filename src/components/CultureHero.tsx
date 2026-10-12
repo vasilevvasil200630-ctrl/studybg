@@ -1,5 +1,5 @@
 import React from 'react';
-import { Compass, ArrowRight, GraduationCap, MapPin, Award, Sparkles, HelpCircle } from 'lucide-react';
+import { Compass, ArrowRight, GraduationCap, Award, Sparkles, HelpCircle, Clock } from 'lucide-react';
 
 export type CultureSubTab = 'mysteries' | 'heritage' | 'wonders' | 'trivia' | 'myths' | 'timeline' | 'cases' | 'wisdom';
 
@@ -16,27 +16,27 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
     <section className="relative overflow-hidden pt-8 pb-9 md:pt-10 md:pb-12 border-b border-slate-200 bg-gradient-to-b from-amber-500/5 via-white to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         
-        {/* Culture Portal Badge */}
+        {/* Academic Context Badge */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm font-medium mb-4 shadow-2xs">
           <Compass className="w-4 h-4 text-amber-600" />
-          <span>Национална съкровищница: Обща култура & Загадки</span>
-          <span className="text-[11px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">
-            Български гений • Тайни • Природа • Ерудиция
+          <span>Исторически контекст & Първични извори (30т. на ДЗИ)</span>
+          <span className="text-[11px] bg-amber-200/80 text-amber-900 px-2 py-0.5 rounded font-bold uppercase tracking-wide">
+            Модул 2 & 3 на МОН
           </span>
         </div>
 
         {/* Main Title */}
         <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 max-w-4xl mx-auto leading-tight">
-          Широкият кръгозор е истинската сила на ума.{' '}
+          Дълбочината на познанието носи{' '}
           <span className="text-amber-600">
-            Опознай съкровищата
+            Отличен 6.00
           </span>{' '}
-          на България и света.
+          на матурата.
         </h1>
 
         {/* Subtitle */}
         <p className="mt-3 text-xs sm:text-sm md:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
-          Пространство за любознателни умове: 14 исторически разследвания с академични източници, ЮНЕСКО паметници, български световни изобретения, природни чудеса и интерактивен куиз за ерудити.
+          Академичен контекстен модул към историята и литературата за 8.–12. клас. 14 исторически разследвания с академични източници, хронология (681–1908 г.), ЮНЕСКО паметници и първични извори за аргументация в изпитните теми на МОН.
         </p>
 
         {/* Quick Highlights Row */}
@@ -46,7 +46,15 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100/80 border border-amber-200 text-amber-900 text-xs font-semibold shadow-2xs transition-colors"
           >
             <Compass className="w-3.5 h-3.5 text-amber-600" />
-            <span>14 исторически загадки</span>
+            <span>14 исторически казуса</span>
+          </button>
+
+          <button
+            onClick={() => onSelectSubTab?.('timeline')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 text-emerald-900 text-xs font-semibold shadow-2xs transition-colors"
+          >
+            <Clock className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Хронология (681–1908)</span>
           </button>
 
           <button
@@ -54,15 +62,7 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-50 hover:bg-orange-100/80 border border-orange-200 text-orange-900 text-xs font-semibold shadow-2xs transition-colors"
           >
             <Award className="w-3.5 h-3.5 text-orange-600" />
-            <span>10 ЮНЕСКО съкровища & изобретения</span>
-          </button>
-
-          <button
-            onClick={() => onSelectSubTab?.('wonders')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-50 hover:bg-teal-100/80 border border-teal-200 text-teal-900 text-xs font-semibold shadow-2xs transition-colors"
-          >
-            <MapPin className="w-3.5 h-3.5 text-teal-600" />
-            <span>12 природни феномена</span>
+            <span>10 ЮНЕСКО обекта & световен принос</span>
           </button>
 
           <button
@@ -78,16 +78,16 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100/80 border border-rose-200 text-rose-900 text-xs font-semibold shadow-2xs transition-colors"
           >
             <HelpCircle className="w-3.5 h-3.5 text-rose-600" />
-            <span>16 мита: Факт или лъжа?</span>
+            <span>Факт или Мит в историята</span>
           </button>
 
           <button
             onClick={onSwitchToStudy}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 text-xs font-semibold border border-blue-200 transition-colors shadow-2xs ml-1"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-2xs ml-1"
           >
-            <GraduationCap className="w-3.5 h-3.5 text-blue-600" />
-            <span>Към Учебна академия</span>
-            <ArrowRight className="w-3 h-3 text-blue-500" />
+            <GraduationCap className="w-3.5 h-3.5 text-white" />
+            <span>Към 100т. симулатор на МОН</span>
+            <ArrowRight className="w-3 h-3 text-white" />
           </button>
         </div>
 

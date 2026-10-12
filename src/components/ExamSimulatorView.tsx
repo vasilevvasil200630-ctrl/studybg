@@ -16,11 +16,14 @@ import {
   Sparkles,
   Lightbulb,
   Check,
-  AlertTriangle
+  AlertTriangle,
+  TrendingUp
 } from 'lucide-react';
 import type { QuizQuestion, LessonData } from '../types';
 import { getExamModulesForLesson } from '../data/examModulesData';
 import { evaluateEssayWithGemini, type EssayEvaluationResult } from '../services/geminiService';
+import { examHistoryService } from '../services/examHistoryService';
+import { ExamHistoryModal } from './ExamHistoryModal';
 
 interface ExamSimulatorViewProps {
   currentLesson: LessonData;
@@ -67,6 +70,10 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
   const [isEvaluatingEssay, setIsEvaluatingEssay] = useState<boolean>(false);
   const [aiEssayEvaluation, setAiEssayEvaluation] = useState<EssayEvaluationResult | null>(null);
   const [evaluationError, setEvaluationError] = useState<string | null>(null);
+
+  // Exam History & Progress Modal State
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState<boolean>(false);
+  const [historyCount, setHistoryCount] = useState<number>(() => examHistoryService.getAllAttempts().length);
 
   // Dynamic Exam Countdown: Always calculates upcoming May (ДЗИ 12. кл.) and June (НВО 7. и 10. кл.)
   const examCountdowns = useMemo(() => {
@@ -313,6 +320,35 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
 
   const gradeInfo = getMonGradeInfo(totalPoints);
 
+  // Auto-record completed attempt to examHistoryService (LocalStorage & Supabase)
+  useEffect(() => {
+    if (isSubmitted) {
+      const timeSpent = Math.max(1, (examDurationMinutes === 0 ? 3600 : examDurationMinutes * 60) - secondsLeft);
+      const match = gradeInfo.grade.match(/(\d+\.\d+)/);
+      const gradeNum = match ? parseFloat(match[1]) : (totalPoints >= 30 ? 3.00 : 2.00);
+
+      examHistoryService.recordAttempt({
+        lessonId: currentLesson.id,
+        lessonTitle: currentLesson.title,
+        subject: currentLesson.subject,
+        grade: currentLesson.grade,
+        examPreset: activePreset,
+        durationMinutes: examDurationMinutes,
+        timeSpentSeconds: timeSpent,
+        module1Points,
+        module2Points,
+        module3Points,
+        totalPoints,
+        gradeEquivalent: gradeInfo.grade,
+        gradeNumeric: gradeNum,
+        passed: totalPoints >= 30,
+        hasAiEvaluation: Boolean(aiEssayEvaluation)
+      }).then(() => {
+        setHistoryCount(examHistoryService.getAllAttempts().length);
+      });
+    }
+  }, [isSubmitted]);
+
   const formatTimer = (sec: number) => {
     if (sec >= 900000) return 'Без ограничение';
     const hrs = Math.floor(sec / 3600);
@@ -483,9 +519,24 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
 
         <div className="flex items-center gap-2">
           <span className="text-[11px] text-slate-500 hidden sm:inline">Текущо:</span>
-          <span className="text-xs font-bold text-slate-800 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200 max-w-[220px] truncate">
+          <span className="text-xs font-bold text-slate-800 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200 max-w-[200px] truncate">
             {currentLesson.title.split(':')[0]} ({currentLesson.grade})
           </span>
+          <button
+            type="button"
+            onClick={() => setIsHistoryModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 text-xs font-semibold shadow-2xs transition-colors shrink-0"
+            title="Отвори графиката на напредъка и резултатите от миналите изпити"
+          >
+            <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
+            <span className="hidden sm:inline">Моят прогрес & История</span>
+            <span className="sm:hidden">История</span>
+            {historyCount > 0 && (
+              <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-blue-600 text-white font-bold">
+                {historyCount}
+              </span>
+            )}
+          </button>
         </div>
       </div>
 
@@ -603,6 +654,15 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   <span>Повтори симулацията</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsHistoryModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-800 text-xs font-semibold border border-blue-200 transition-colors shadow-2xs"
+                >
+                  <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Виж прогрес & история</span>
                 </button>
 
                 {onOpenErrorBank && (
@@ -1489,6 +1549,13 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* Exam History & Academic Progress Modal */}
+      <ExamHistoryModal
+        isOpen={isHistoryModalOpen}
+        onClose={() => setIsHistoryModalOpen(false)}
+        onRefresh={() => setHistoryCount(examHistoryService.getAllAttempts().length)}
+      />
 
     </div>
   );

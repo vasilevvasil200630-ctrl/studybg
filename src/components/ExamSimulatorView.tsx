@@ -12,7 +12,8 @@ import {
   Calendar,
   Award,
   Printer,
-  X
+  X,
+  GraduationCap
 } from 'lucide-react';
 import type { QuizQuestion, LessonData } from '../types';
 import { getExamModulesForLesson } from '../data/examModulesData';
@@ -106,20 +107,29 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
 
     if (!allLessons || !onSelectLesson) return;
 
-    if (preset === 'nvo7-bel') {
+    if (preset === 'dzi12-bel' || preset === 'dzi12-bel-tyutyun') {
+      const l = allLessons.find(x => x.id === 'literature-tyutyun');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'dzi12-bel-geratsite') {
+      const l = allLessons.find(x => x.id === 'literature-geratsite');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'dzi12-history' || preset === 'dzi12-history-april') {
+      const l = allLessons.find(x => x.id === 'history-april-uprising');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'nvo10-history' || preset === 'nvo10-history-simeon') {
+      const l = allLessons.find(x => x.id === 'history-simeon-golden-age');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'nvo10-bel-debelyanov') {
+      const l = allLessons.find(x => x.id === 'bel-10-dimcho-debelianov');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'nvo10-math-vieta') {
+      const l = allLessons.find(x => x.id === 'math-10-quadratic-equations-vieta');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'nvo7-bel') {
       const l = allLessons.find(x => x.id === 'bel-7-edna-balgarka');
       if (l) onSelectLesson(l);
     } else if (preset === 'nvo7-math') {
       const l = allLessons.find(x => x.id === 'math-7-linear-equations');
-      if (l) onSelectLesson(l);
-    } else if (preset === 'nvo10-history') {
-      const l = allLessons.find(x => x.id === 'history-simeon-golden-age');
-      if (l) onSelectLesson(l);
-    } else if (preset === 'dzi12-bel') {
-      const l = allLessons.find(x => x.id === 'literature-tyutyun');
-      if (l) onSelectLesson(l);
-    } else if (preset === 'dzi12-history') {
-      const l = allLessons.find(x => x.id === 'history-april-uprising');
       if (l) onSelectLesson(l);
     }
   };
@@ -137,10 +147,10 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
     return () => clearInterval(timer);
   }, [isExamRunning, secondsLeft, isSubmitted]);
 
-  // Start Exam
+  // Start Exam (Supports official МОН times: 240m DZI, 90m NVO 10, 60m express, 0 untimed)
   const handleStartExam = (mins: number) => {
     setExamDurationMinutes(mins);
-    setSecondsLeft(mins * 60);
+    setSecondsLeft(mins === 0 ? 999999 : mins * 60);
     setIsExamRunning(true);
     setIsSubmitted(false);
     setSelectedAnswers({});
@@ -268,8 +278,13 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
   const gradeInfo = getMonGradeInfo(totalPoints);
 
   const formatTimer = (sec: number) => {
-    const m = Math.floor(sec / 60);
+    if (sec >= 900000) return 'Без ограничение';
+    const hrs = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
     const s = sec % 60;
+    if (hrs > 0) {
+      return `${hrs}ч ${String(m).padStart(2, '0')}м ${String(s).padStart(2, '0')}с`;
+    }
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   };
 
@@ -283,12 +298,12 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
       
       {/* Official МОН Countdown Dashboard: 3 National Exam Levels */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4">
-        {/* NVO 7th Grade Card */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between">
+        {/* Matura+ 7th Grade Synergy Card */}
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-emerald-50 via-teal-50/50 to-white border border-emerald-300 shadow-xs flex items-center justify-between">
           <div>
             <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200">
-                7. клас • НВО
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">
+                7. клас • Matura+
               </span>
               <span className="text-[11px] text-slate-500 inline-flex items-center gap-1">
                 <Calendar className="w-3 h-3 text-slate-400" />
@@ -296,14 +311,20 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
               </span>
             </div>
             <h4 className="text-xs sm:text-sm font-bold text-slate-900">
-              Външно оценяване 7. кл.
+              Прием в елитни гимназии
             </h4>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              БЕЛ и Математика (Прием в гимназии)
-            </p>
+            <a
+              href="https://matura-plus.bg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] text-emerald-800 font-semibold hover:underline inline-flex items-center gap-1 mt-0.5"
+            >
+              <span>Специализирана платформа Matura+</span>
+              <ArrowRight className="w-3 h-3 text-emerald-700" />
+            </a>
           </div>
           <div className="text-right pl-2 shrink-0">
-            <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">
+            <div className="text-2xl sm:text-3xl font-extrabold text-emerald-950 font-mono">
               {examCountdowns.diffNvo7}
             </div>
             <span className="text-[10px] text-slate-500 uppercase tracking-wider block">
@@ -327,9 +348,16 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
             <h4 className="text-xs sm:text-sm font-bold text-slate-900">
               Първи гимназиален етап
             </h4>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              БЕЛ и Математика (Стандарт МОН)
-            </p>
+            <button
+              onClick={() => {
+                handleSelectExamPreset('nvo10-history-simeon');
+                handleStartExam(90);
+              }}
+              className="text-[11px] text-teal-700 font-semibold hover:underline inline-flex items-center gap-1 mt-0.5"
+            >
+              <span>Стартирай НВО 10 (90 мин)</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
           </div>
           <div className="text-right pl-2 shrink-0">
             <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">
@@ -356,9 +384,16 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
             <h4 className="text-xs sm:text-sm font-bold text-slate-900">
               Държавни зрелостни изпити
             </h4>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              Задължителна матура БЕЛ & профил
-            </p>
+            <button
+              onClick={() => {
+                handleSelectExamPreset('dzi12-bel-tyutyun');
+                handleStartExam(240);
+              }}
+              className="text-[11px] text-amber-700 font-semibold hover:underline inline-flex items-center gap-1 mt-0.5"
+            >
+              <span>Стартирай ДЗИ 12 (240 мин)</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
           </div>
           <div className="text-right pl-2 shrink-0">
             <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">
@@ -371,81 +406,136 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
         </div>
       </div>
 
-      {/* Official Exam Presets & Track Selector */}
-      <div className="p-3.5 bg-white rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <Award className="w-4 h-4 text-blue-600 ml-1 shrink-0" />
-          <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-            Изпитна симулация:
+      {/* Official Exam Presets & High-School Tracks */}
+      <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
+          <div className="flex items-center gap-2">
+            <Award className="w-4 h-4 text-blue-600 shrink-0" />
+            <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              Официални изпитни формати на МОН:
+            </span>
+          </div>
+          <span className="text-[11px] text-slate-500 font-medium">
+            100 точки • 3 Модула с официална рубрика
           </span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Track 1: DZI 12th Grade */}
+          <div className="p-3 rounded-xl bg-amber-50/50 border border-amber-200/80 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-amber-950 flex items-center gap-1.5">
+                <GraduationCap className="w-4 h-4 text-amber-600" />
+                <span>ДЗИ 12. клас (Матура)</span>
+              </span>
+              <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-200/80 text-amber-900">
+                240 мин регламент
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              <button
+                onClick={() => handleSelectExamPreset('dzi12-bel-tyutyun')}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activePreset === 'dzi12-bel-tyutyun' || activePreset === 'dzi12-bel'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'bg-white text-slate-700 hover:bg-amber-100/70 border border-slate-200'
+                }`}
+              >
+                БЕЛ: Д. Димов („Тютюн“)
+              </button>
+              <button
+                onClick={() => handleSelectExamPreset('dzi12-bel-geratsite')}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activePreset === 'dzi12-bel-geratsite'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'bg-white text-slate-700 hover:bg-amber-100/70 border border-slate-200'
+                }`}
+              >
+                БЕЛ: Елин Пелин („Гераците“)
+              </button>
+              <button
+                onClick={() => handleSelectExamPreset('dzi12-history-april')}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activePreset === 'dzi12-history-april' || activePreset === 'dzi12-history'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'bg-white text-slate-700 hover:bg-amber-100/70 border border-slate-200'
+                }`}
+              >
+                История: Априлско въстание
+              </button>
+            </div>
+          </div>
+
+          {/* Track 2: NVO 10th Grade */}
+          <div className="p-3 rounded-xl bg-teal-50/50 border border-teal-200/80 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-teal-950 flex items-center gap-1.5">
+                <Clock className="w-4 h-4 text-teal-600" />
+                <span>НВО 10. клас (Гимназиален етап)</span>
+              </span>
+              <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-teal-200/80 text-teal-900">
+                90 мин регламент
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              <button
+                onClick={() => handleSelectExamPreset('nvo10-history-simeon')}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activePreset === 'nvo10-history-simeon' || activePreset === 'nvo10-history'
+                    ? 'bg-teal-600 text-white shadow-xs'
+                    : 'bg-white text-slate-700 hover:bg-teal-100/70 border border-slate-200'
+                }`}
+              >
+                История: Златен век (Симеон)
+              </button>
+              <button
+                onClick={() => handleSelectExamPreset('nvo10-bel-debelyanov')}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activePreset === 'nvo10-bel-debelyanov'
+                    ? 'bg-teal-600 text-white shadow-xs'
+                    : 'bg-white text-slate-700 hover:bg-teal-100/70 border border-slate-200'
+                }`}
+              >
+                БЕЛ: Д. Дебелянов
+              </button>
+              <button
+                onClick={() => handleSelectExamPreset('nvo10-math-vieta')}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activePreset === 'nvo10-math-vieta'
+                    ? 'bg-teal-600 text-white shadow-xs'
+                    : 'bg-white text-slate-700 hover:bg-teal-100/70 border border-slate-200'
+                }`}
+              >
+                Математика: Квадратни уравнения
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Active Lesson & Matura+ Row */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs">
           <button
             onClick={() => handleSelectExamPreset('lesson')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
               activePreset === 'lesson'
                 ? 'bg-blue-600 text-white shadow-xs'
                 : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
-            Текущ урок: {currentLesson.title.split(':')[0].slice(0, 16)}...
+            Текущ урок: {currentLesson.title.split(':')[0]} ({currentLesson.grade})
           </button>
 
-          <button
-            onClick={() => handleSelectExamPreset('nvo7-bel')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              activePreset === 'nvo7-bel'
-                ? 'bg-sky-600 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
+          <a
+            href="https://matura-plus.bg"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 font-semibold transition-colors shadow-2xs"
+            title="Специализирани изпитни симулации за 7. клас"
           >
-            7. кл. БЕЛ (Вазов)
-          </button>
-
-          <button
-            onClick={() => handleSelectExamPreset('nvo7-math')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              activePreset === 'nvo7-math'
-                ? 'bg-indigo-600 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            7. кл. Математика (Движение)
-          </button>
-
-          <button
-            onClick={() => handleSelectExamPreset('nvo10-history')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              activePreset === 'nvo10-history'
-                ? 'bg-teal-600 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            10. кл. История (Симеон)
-          </button>
-
-          <button
-            onClick={() => handleSelectExamPreset('dzi12-bel')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              activePreset === 'dzi12-bel'
-                ? 'bg-amber-600 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            12. кл. ДЗИ БЕЛ („Тютюн“)
-          </button>
-
-          <button
-            onClick={() => handleSelectExamPreset('dzi12-history')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              activePreset === 'dzi12-history'
-                ? 'bg-rose-600 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            12. кл. ДЗИ История (1876)
-          </button>
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Готвиш се за 7. клас? Отвори Matura+</span>
+            <ArrowRight className="w-3 h-3 text-emerald-700" />
+          </a>
         </div>
       </div>
 
@@ -479,18 +569,35 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
             )}
 
             {!isExamRunning && !isSubmitted && (
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-1.5">
                 <button
-                  onClick={() => handleStartExam(30)}
-                  className="px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium border border-slate-200 transition-colors"
+                  onClick={() => handleStartExam(240)}
+                  className="px-3 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
+                  title="Официален изпитен регламент на МОН за ДЗИ 12. клас: 240 минути"
                 >
-                  30 мин (Експресен)
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  <span>240 мин (ДЗИ)</span>
+                </button>
+                <button
+                  onClick={() => handleStartExam(90)}
+                  className="px-3 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
+                  title="Официален изпитен регламент на МОН за НВО 10. клас: 90 минути"
+                >
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>90 мин (НВО 10)</span>
                 </button>
                 <button
                   onClick={() => handleStartExam(60)}
-                  className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-xs"
+                  className="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs font-semibold transition-all shadow-xs"
                 >
-                  Старт симулация (60 мин)
+                  60 мин (Експресен)
+                </button>
+                <button
+                  onClick={() => handleStartExam(0)}
+                  className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium border border-slate-200 transition-colors"
+                  title="Учебно темпо без таймер за спокойна самоподготовка"
+                >
+                  Без таймер
                 </button>
               </div>
             )}

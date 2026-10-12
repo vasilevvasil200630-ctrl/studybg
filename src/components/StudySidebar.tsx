@@ -13,7 +13,8 @@ import {
   FileText,
   ChevronRight,
   Scale,
-  Compass
+  Compass,
+  Calculator
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -158,6 +159,18 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           badge: (
             <span className="text-[10px] text-slate-500 font-mono">
               {totalLessonsCount}
+            </span>
+          )
+        },
+        {
+          tab: 'calculator',
+          label: 'МОН Калкулатор оценка',
+          sublabel: '',
+          icon: Calculator,
+          accentColor: 'text-indigo-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-700 font-bold border border-indigo-200">
+              0–100т.
             </span>
           )
         }

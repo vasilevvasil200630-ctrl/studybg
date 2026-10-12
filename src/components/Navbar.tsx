@@ -36,7 +36,8 @@ export type AppNavTab =
   | 'timeline'
   | 'generator'
   | 'catalog'
-  | 'knowledge';
+  | 'knowledge'
+  | 'calculator';
 
 interface NavbarProps {
   portalMode: 'study' | 'culture';

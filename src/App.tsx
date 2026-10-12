@@ -25,6 +25,7 @@ const SmartScan = lazy(() => import('./components/SmartScan').then(m => ({ defau
 const QuickLessonSwitcherModal = lazy(() => import('./components/QuickLessonSwitcherModal').then(m => ({ default: m.QuickLessonSwitcherModal })));
 const MonFormulaSheetsModal = lazy(() => import('./components/MonFormulaSheetsModal').then(m => ({ default: m.MonFormulaSheetsModal })));
 const HistoricalCasesView = lazy(() => import('./components/HistoricalCasesView').then(m => ({ default: m.HistoricalCasesView })));
+const MonGradeCalculatorView = lazy(() => import('./components/MonGradeCalculatorView').then(m => ({ default: m.MonGradeCalculatorView })));
 import { errorBankService } from './services/errorBankService';
 
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
@@ -42,13 +43,14 @@ import {
   Search,
   Home,
   BookMarked,
-  Scale
+  Scale,
+  Calculator
 } from 'lucide-react';
 import './App.css';
 
 const STUDY_TABS: AppNavTab[] = [
   'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
-  'simulator', 'errorbank', 'generator', 'catalog'
+  'simulator', 'errorbank', 'generator', 'catalog', 'calculator'
 ];
 
 const ViewLoadingSkeleton = () => (
@@ -244,6 +246,7 @@ export function App() {
     { tab: 'simulator', label: 'Симулатор', icon: <Clock className="w-3.5 h-3.5" /> },
     { tab: 'errorbank', label: 'Грешки', icon: <AlertCircle className="w-3.5 h-3.5" /> },
     { tab: 'generator', label: 'Група А & Б', icon: <Printer className="w-3.5 h-3.5" /> },
+    { tab: 'calculator', label: 'Калкулатор', icon: <Calculator className="w-3.5 h-3.5" /> },
     { tab: 'catalog', label: 'Каталог', icon: <BookMarked className="w-3.5 h-3.5" /> },
   ];
 
@@ -519,6 +522,10 @@ export function App() {
                           onAddNewScan={() => setIsScanModalOpen(true)}
                         />
                       </div>
+                    )}
+
+                    {activeTab === 'calculator' && (
+                      <MonGradeCalculatorView onNavigateTab={handleNavigateStudyTab} />
                     )}
                   </Suspense>
 

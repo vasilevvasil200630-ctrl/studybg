@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Printer, FileText, ShieldCheck, Eye, EyeOff, GraduationCap, BookOpen } from 'lucide-react';
+import { Printer, FileText, ShieldCheck, Eye, EyeOff, GraduationCap, BookOpen, CheckSquare, Award } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 
@@ -18,6 +18,8 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
 }) => {
   const [activeGroup, setActiveGroup] = useState<'A' | 'B'>('A');
   const [showAnswerKey, setShowAnswerKey] = useState<boolean>(false);
+  const [includeAnswerSheet, setIncludeAnswerSheet] = useState<boolean>(true);
+  const [includeModule3, setIncludeModule3] = useState<boolean>(true);
 
   const handlePrint = () => {
     window.print();
@@ -111,54 +113,116 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
         </div>
       </div>
 
-      {/* Group Switcher Bar (Hidden when printing) */}
-      <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200 shadow-2xs print:hidden">
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs font-medium text-slate-500 pl-2">Избери вариант:</span>
+      {/* Group & Options Switcher Bar (Hidden when printing) */}
+      <div className="flex flex-wrap items-center justify-between gap-3 p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs print:hidden">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs font-medium text-slate-500 pl-1">Вариант:</span>
           <button
             onClick={() => setActiveGroup('A')}
-            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors ${
               activeGroup === 'A'
                 ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                : 'text-slate-600 hover:text-slate-900 bg-slate-100'
             }`}
           >
             Вариант А (Група 1)
           </button>
           <button
             onClick={() => setActiveGroup('B')}
-            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors ${
               activeGroup === 'B'
                 ? 'bg-blue-600 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                : 'text-slate-600 hover:text-slate-900 bg-slate-100'
             }`}
           >
             Вариант Б (Група 2)
           </button>
         </div>
 
-        <div className="text-xs text-slate-500 pr-2">
-          Общ брой точки: <strong className="text-slate-800">100 т.</strong>
+        {/* Paper Component Toggles */}
+        <div className="flex flex-wrap items-center gap-3 text-xs">
+          <label className="inline-flex items-center gap-1.5 text-slate-700 cursor-pointer font-medium select-none">
+            <input
+              type="checkbox"
+              checked={includeAnswerSheet}
+              onChange={(e) => setIncludeAnswerSheet(e.target.checked)}
+              className="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5"
+            />
+            <span className="flex items-center gap-1">
+              <CheckSquare className="w-3.5 h-3.5 text-blue-600" />
+              МОН Бланка за отговори
+            </span>
+          </label>
+
+          <label className="inline-flex items-center gap-1.5 text-slate-700 cursor-pointer font-medium select-none">
+            <input
+              type="checkbox"
+              checked={includeModule3}
+              onChange={(e) => setIncludeModule3(e.target.checked)}
+              className="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5"
+            />
+            <span className="flex items-center gap-1">
+              <Award className="w-3.5 h-3.5 text-blue-600" />
+              Модул 3 (Есе / Аналитични задачи)
+            </span>
+          </label>
+
+          <div className="text-xs text-slate-500 pl-2 border-l border-slate-200">
+            Общ сбор: <strong className="text-slate-800">100 т.</strong>
+          </div>
         </div>
       </div>
 
       {/* Printable Test Paper Sheet */}
       <div className="p-8 sm:p-10 rounded-2xl bg-white text-black shadow-lg border border-slate-200 space-y-6 print:shadow-none print:border-none print:p-0">
         
-        {/* Paper Header */}
-        <div className="border-b-2 border-black pb-4 space-y-3">
+        {/* Official МОН Barcode & Anonymity Strip */}
+        <div className="border-2 border-black p-3.5 space-y-2.5 bg-slate-50/50 print:bg-white text-xs">
+          <div className="flex items-start justify-between">
+            <div className="space-y-0.5">
+              <span className="font-mono text-[10px] tracking-widest block text-slate-600 font-bold uppercase">
+                РЕПУБЛИКА БЪЛГАРИЯ • МИНИСТЕРСТВО НА ОБРАЗОВАНИЕТО И НАУКАТА
+              </span>
+              <h2 className="font-black uppercase text-sm tracking-tight text-slate-900">
+                ДЪРЖАВЕН ЗРЕЛОСТЕН ИЗПИТ (ДЗИ) / НАЦИОНАЛНО ВЪНШНО ОЦЕНЯВАНЕ (НВО)
+              </h2>
+            </div>
+            <div className="text-right">
+              <div className="font-mono text-sm tracking-widest font-black leading-none">
+                ||| | |||| | ||| || ||||| |||
+              </div>
+              <span className="font-mono text-[9px] text-slate-600 block mt-1">
+                ФИШ № МОН-{currentLesson.id.slice(0, 4).toUpperCase()}-{activeGroup}-2026
+              </span>
+            </div>
+          </div>
+
+          <div className="border-t border-dashed border-black/60 pt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+            <div><strong>Училище:</strong> .....................................</div>
+            <div><strong>Населено място:</strong> ..........................</div>
+            <div><strong>Квестор 1:</strong> ...................................</div>
+            <div><strong>Квестор 2:</strong> ...................................</div>
+          </div>
+
+          <div className="text-[9px] text-slate-500 text-center uppercase tracking-wider border-t border-dotted border-black/40 pt-1">
+            - - - - - - - - - - - - Отрязък за запечатване в малък плик за анонимност - - - - - - - - - - - -
+          </div>
+        </div>
+
+        {/* Paper Title Header */}
+        <div className="border-b-2 border-black pb-4 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              Министерство на образованието и науката • Формат за контролна работа
+              Официален изпитен формат съгласно ДОС на МОН
             </span>
-            <span className="text-sm font-black uppercase px-2 py-0.5 border-2 border-black">
+            <span className="text-sm font-black uppercase px-2.5 py-0.5 border-2 border-black bg-slate-100 print:bg-transparent">
               Вариант {activeGroup}
             </span>
           </div>
 
-          <div className="text-center py-2">
+          <div className="text-center py-1">
             <h1 className="text-xl sm:text-2xl font-black uppercase">
-              Контролна работа по {currentLesson.subject}
+              Изпитна работа по {currentLesson.subject}
             </h1>
             <p className="text-sm font-bold mt-1 text-slate-800">
               Тема: {currentLesson.title} ({currentLesson.grade})
@@ -166,7 +230,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
           </div>
 
           {/* Student Fill-in Info Bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-xs font-medium">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-xs font-medium border-t border-black/30">
             <div>Ученик: .......................................</div>
             <div>Клас: ............ Номер: ......</div>
             <div>Дата: ........................</div>
@@ -174,11 +238,61 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
           </div>
         </div>
 
+        {/* Official МОН Answer Matrix Sheet (Бланка за отговори) */}
+        {includeAnswerSheet && (
+          <div className="border-2 border-black p-4 space-y-3 bg-white print:break-before-page">
+            <div className="flex items-center justify-between border-b-2 border-black pb-2">
+              <div>
+                <h3 className="text-xs font-black uppercase tracking-wider">
+                  ЛИСТ ЗА ОТГОВОРИ • МИНИСТЕРСТВО НА ОБРАЗОВАНИЕТО И НАУКАТА
+                </h3>
+                <p className="text-[10px] text-slate-600 mt-0.5">
+                  Попълва се само със <strong>син химикал</strong>. Верен отговор се отбелязва със знак <strong>Х</strong>.
+                </p>
+              </div>
+              <div className="text-right">
+                <span className="text-xs font-black uppercase px-2 py-0.5 border border-black">
+                  ВАРИАНТ {activeGroup}
+                </span>
+              </div>
+            </div>
+
+            {/* Bubble Matrix Table */}
+            <div className="space-y-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider block text-slate-800">
+                Модул 1: Задачи със структуриран отговор
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                {currentQuestions.map((q, qIdx) => (
+                  <div key={q.id} className="flex items-center justify-between border border-black/40 px-2 py-1.5 text-xs">
+                    <span className="font-bold w-6">{qIdx + 1}.</span>
+                    <div className="flex items-center gap-2">
+                      {['А', 'Б', 'В', 'Г'].map((letter) => (
+                        <div key={letter} className="flex items-center gap-0.5">
+                          <span className="w-5 h-5 border border-black flex items-center justify-center font-bold text-[10px]">
+                            {letter}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Correction Protocol */}
+            <div className="border-t border-black/30 pt-2 flex flex-wrap items-center justify-between text-[9px] text-slate-600 gap-2">
+              <span>Ако сгрешите, зачертайте грешния отговор плътно и отбележете новия със знак Х.</span>
+              <span className="font-bold text-slate-900">Точки от Модул 1: ....... / {currentQuestions.length * 10} т.</span>
+            </div>
+          </div>
+        )}
+
         {/* Section 1: Multiple Choice Questions */}
-        <div className="space-y-5">
+        <div className="space-y-5 pt-2">
           <div className="flex items-center justify-between border-b border-black/40 pb-1">
             <h3 className="text-xs font-bold uppercase tracking-wider">
-              I. Въпроси със структуриран отговор (10 т. за всеки верен отговор)
+              I. МОДУЛ 1: Въпроси със структуриран отговор (10 т. за всеки верен отговор)
             </h3>
             <span className="text-xs text-slate-600 font-medium">Общо: {currentQuestions.length * 10} т.</span>
           </div>
@@ -214,7 +328,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
           <div className="space-y-3 pt-3">
             <div className="flex items-center justify-between border-b border-black/40 pb-1">
               <h3 className="text-xs font-bold uppercase tracking-wider">
-                II. Въпроси със свободен отговор и дефиниране на понятия
+                II. МОДУЛ 2: Въпроси със свободен отговор и дефиниране на понятия
               </h3>
               <span className="text-xs text-slate-600 font-medium">Общо: 30 т.</span>
             </div>
@@ -243,7 +357,57 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
           </div>
         )}
 
-        {/* Section 3: Teacher / Parent Answer Key (Optional display) */}
+        {/* Section 3: Module 3 Extended Analytic Task (ДЗИ 41. задача / НВО разширен отговор) */}
+        {includeModule3 && (
+          <div className="space-y-3 pt-4 border-t-2 border-black">
+            <div className="flex items-center justify-between border-b border-black/40 pb-1">
+              <div>
+                <h3 className="text-xs font-black uppercase tracking-wider">
+                  {currentLesson.subject.includes('литература') || currentLesson.subject.includes('БЕЛ')
+                    ? 'III. МОДУЛ 3: Аргументативен текст (Интерпретативно съчинение или есе) — 30 т.'
+                    : currentLesson.subject.includes('Математика')
+                    ? 'III. МОДУЛ 3: Задачи с пълно аналитично и геометрично решение — 30 т.'
+                    : 'III. МОДУЛ 3: Разширен анализ на исторически казус и извори — 30 т.'}
+                </h3>
+                <p className="text-[10px] text-slate-600">
+                  {currentLesson.subject.includes('литература') || currentLesson.subject.includes('БЕЛ')
+                    ? 'Създайте текст в обем до 4 страници. Формулирайте ясна теза, подкрепена с аргументи и коментар върху текста.'
+                    : currentLesson.subject.includes('Математика')
+                    ? 'Опишете подробно всички етапи на решението, дефиниционните области и чертежи.'
+                    : 'Анализирайте историческия контекст, причинно-следствените връзки и цитираните извори.'}
+                </p>
+              </div>
+              <span className="text-xs font-bold text-slate-800">30 точки</span>
+            </div>
+
+            {/* Formatted ruled writing lines or calculation area */}
+            <div className="border border-black p-3.5 space-y-3 bg-white min-h-[170px]">
+              <div className="text-[11px] font-bold text-slate-900">
+                {currentLesson.subject.includes('литература') || currentLesson.subject.includes('БЕЛ')
+                  ? `Тема за съчинение / есе: „Моралните дилеми и цената на компромиса в «${currentLesson.title}»“`
+                  : currentLesson.subject.includes('Математика')
+                  ? `Задача с пълно доказателство по темата: „${currentLesson.title}“ (Чертожна и изчислителна площ)`
+                  : `Исторически казус: „Последици и историческо значение на събитията около «${currentLesson.title}»“`}
+              </div>
+
+              {/* Lined writing guide */}
+              <div className="space-y-4 pt-1">
+                <div className="border-b border-dotted border-slate-400 h-5" />
+                <div className="border-b border-dotted border-slate-400 h-5" />
+                <div className="border-b border-dotted border-slate-400 h-5" />
+                <div className="border-b border-dotted border-slate-400 h-5" />
+                <div className="border-b border-dotted border-slate-400 h-5" />
+              </div>
+
+              <div className="flex justify-between items-center text-[10px] text-slate-500 pt-2 border-t border-dashed border-slate-300">
+                <span>Оценка на Модул 3 (критерии на МОН за теза, аргументация и езикова норма):</span>
+                <span className="font-bold text-slate-900">Точки: ...... / 30 т.</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Section 4: Teacher / Parent Answer Key (Optional display) */}
         {showAnswerKey && (
           <div className="mt-8 pt-4 border-t-2 border-dashed border-black/60 bg-amber-50 p-4 rounded text-xs print:bg-white print:border-black">
             <div className="flex items-center gap-2 mb-2 font-bold text-amber-900 print:text-black">

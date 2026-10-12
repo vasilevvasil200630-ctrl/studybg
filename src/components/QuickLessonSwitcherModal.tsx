@@ -1,6 +1,15 @@
 import React, { useState, useMemo } from 'react';
-import { Search, X, BookOpen, GraduationCap, ChevronRight, Check } from 'lucide-react';
+import { Search, X, BookOpen, GraduationCap, ChevronRight, Check, ExternalLink } from 'lucide-react';
 import type { LessonData } from '../types';
+
+type StageFilter = 'all' | 'dzi12' | 'nvo10' | 'gymnasium89';
+
+const STAGE_OPTIONS: { id: StageFilter; label: string; badge?: string }[] = [
+  { id: 'all', label: 'Всички (8.–12. кл.)' },
+  { id: 'dzi12', label: 'ДЗИ 12 (Матура)', badge: '11.–12. кл.' },
+  { id: 'nvo10', label: 'НВО 10. клас', badge: '10. кл.' },
+  { id: 'gymnasium89', label: '8.–9. клас', badge: 'Преговор' },
+];
 
 interface QuickLessonSwitcherModalProps {
   isOpen: boolean;
@@ -18,6 +27,7 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
   onSelectLesson
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedStage, setSelectedStage] = useState<StageFilter>('all');
   const [selectedSubject, setSelectedSubject] = useState<string>('Всички');
 
   const subjects = useMemo(() => {
@@ -28,6 +38,16 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
   const filteredLessons = useMemo(() => {
     return lessons.filter((l) => {
       const matchesSubject = selectedSubject === 'Всички' || l.subject === selectedSubject;
+      
+      let matchesStage = true;
+      if (selectedStage === 'dzi12') {
+        matchesStage = l.grade.includes('12') || l.grade.includes('11') || (Boolean(l.examType) && l.examType!.includes('ДЗИ'));
+      } else if (selectedStage === 'nvo10') {
+        matchesStage = l.grade.includes('10') || (Boolean(l.examType) && l.examType!.includes('10'));
+      } else if (selectedStage === 'gymnasium89') {
+        matchesStage = l.grade.includes('8') || l.grade.includes('9');
+      }
+
       const query = searchQuery.toLowerCase().trim();
       const matchesQuery =
         !query ||
@@ -35,9 +55,9 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
         l.subject.toLowerCase().includes(query) ||
         l.grade.toLowerCase().includes(query) ||
         l.summary.overview.toLowerCase().includes(query);
-      return matchesSubject && matchesQuery;
+      return matchesSubject && matchesStage && matchesQuery;
     });
-  }, [lessons, selectedSubject, searchQuery]);
+  }, [lessons, selectedSubject, selectedStage, searchQuery]);
 
   if (!isOpen) return null;
 
@@ -53,7 +73,7 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-900">Бърза смяна на урок</h3>
-              <p className="text-xs text-slate-500">Избери измежду всички {lessons.length} налични теми в платформата</p>
+              <p className="text-xs text-slate-500">Гимназиален каталог: избери тема за НВО 10 и ДЗИ 12 ({lessons.length} теми)</p>
             </div>
           </div>
 
@@ -65,7 +85,7 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
           </button>
         </div>
 
-        {/* Search Bar */}
+        {/* Search Bar & Filters */}
         <div className="p-4 border-b border-slate-200 bg-slate-50/50 space-y-3">
           <div className="relative">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -74,13 +94,51 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
               autoFocus
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Търси по заглавие, предмет (напр. 'квадратни', 'ботев', 'клетки')..."
+              placeholder="Търси по заглавие, предмет (напр. 'квадратни', 'ботев', 'тютюн')..."
               className="w-full bg-white text-slate-900 placeholder-slate-400 pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm focus:outline-none focus:border-blue-600 transition-all"
             />
           </div>
 
+          {/* Exam Stage Filter Strip */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0 mr-0.5">Етап:</span>
+            {STAGE_OPTIONS.map((opt) => (
+              <button
+                key={opt.id}
+                onClick={() => setSelectedStage(opt.id)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+                  selectedStage === opt.id
+                    ? 'bg-slate-900 text-white font-semibold shadow-xs'
+                    : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200 hover:bg-slate-100'
+                }`}
+              >
+                <span>{opt.label}</span>
+                {opt.badge && (
+                  <span className={`text-[9px] px-1 py-0.2 rounded font-semibold ${
+                    selectedStage === opt.id ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-500'
+                  }`}>
+                    {opt.badge}
+                  </span>
+                )}
+              </button>
+            ))}
+
+            {/* Matura+ Referral Pill */}
+            <a
+              href="https://maturaplus.bg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-all shrink-0 shadow-2xs"
+              title="Специализирана подготовка за 5.–7. клас в нашата академия Matura+"
+            >
+              <span>7. кл. (НВО) ↗ Matura+</span>
+              <ExternalLink className="w-3 h-3 text-emerald-600" />
+            </a>
+          </div>
+
           {/* Subject Filter Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0 mr-0.5">Предмет:</span>
             {subjects.map((subj) => (
               <button
                 key={subj}
@@ -125,6 +183,11 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
                       {lesson.examType && (
                         <span className="text-[10px] text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 font-semibold">
                           {lesson.examType}
+                        </span>
+                      )}
+                      {lesson.grade.includes('7') && (
+                        <span className="text-[10px] text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 font-bold">
+                          Matura+ фокус
                         </span>
                       )}
                     </div>

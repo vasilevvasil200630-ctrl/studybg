@@ -47,26 +47,25 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
   onOpenScan,
   onOpenFormulaModal
 }) => {
-  const sections: { title: string; category: string; items: NavSectionItem[] }[] = [
+  const sections: { title: string; items: NavSectionItem[] }[] = [
     {
-      title: '1. Учебна подготовка',
-      category: 'Учи & Анализирай',
+      title: 'Учебна подготовка',
       items: [
         {
           tab: 'summary',
           label: 'Конспект',
-          sublabel: 'Синтезирана теория и правила',
+          sublabel: '',
           icon: BookOpen,
           accentColor: 'text-blue-600'
         },
         {
           tab: 'cases',
           label: 'Казуси за ДЗИ',
-          sublabel: 'Извори и есе (11.–12. кл.)',
+          sublabel: '',
           icon: Scale,
           accentColor: 'text-purple-600',
           badge: (
-            <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 font-bold border border-purple-200">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-purple-100 text-purple-700 font-bold border border-purple-200">
               11–12 кл
             </span>
           )
@@ -74,51 +73,54 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
         {
           tab: 'audit',
           label: 'Одит на тетрадката',
-          sublabel: 'МОН чек-лист за 6.00',
+          sublabel: '',
           icon: CheckSquare,
           accentColor: 'text-amber-600'
         }
       ]
     },
     {
-      title: '2. Проверка на знанията',
-      category: 'Практика',
+      title: 'Проверка на знанията',
       items: [
         {
           tab: 'flashcards',
           label: 'Флаш карти',
-          sublabel: 'Бързо припомняне на факти',
+          sublabel: '',
           icon: Zap,
           accentColor: 'text-emerald-600'
         },
         {
           tab: 'quiz',
-          label: 'Бърз тест',
-          sublabel: '10 тестови въпроса',
+          label: 'Бърз тест (10 в.)',
+          sublabel: '',
           icon: GraduationCap,
           accentColor: 'text-blue-600'
         },
         {
           tab: 'simulator',
-          label: 'Симулатор (100т.)',
-          sublabel: '3 модула • Формат МОН',
+          label: '100т. Симулатор',
+          sublabel: '',
           icon: Clock,
-          accentColor: 'text-amber-600'
+          accentColor: 'text-amber-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
+              МОН
+            </span>
+          )
         }
       ]
     },
     {
-      title: '3. Инструменти & Каталог',
-      category: 'Помощ & Ресурси',
+      title: 'Инструменти & Каталог',
       items: [
         {
           tab: 'errorbank',
           label: 'Банка с грешки',
-          sublabel: 'Поправителен преговор',
+          sublabel: '',
           icon: AlertCircle,
           accentColor: 'text-rose-600',
           badge: unresolvedErrorCount > 0 ? (
-            <span className="font-mono text-[10px] px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-bold border border-rose-200">
+            <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-rose-100 text-rose-700 font-bold border border-rose-200">
               {unresolvedErrorCount}
             </span>
           ) : null
@@ -126,16 +128,21 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
         {
           tab: 'generator',
           label: 'Контролни за печат',
-          sublabel: 'Варианти А & Б',
+          sublabel: '',
           icon: Printer,
           accentColor: 'text-slate-600'
         },
         {
           tab: 'catalog',
           label: 'Учебна програма',
-          sublabel: `Всички ${totalLessonsCount} урока по МОН`,
+          sublabel: '',
           icon: BookMarked,
-          accentColor: 'text-blue-600'
+          accentColor: 'text-blue-600',
+          badge: (
+            <span className="text-[10px] text-slate-500 font-mono">
+              {totalLessonsCount}
+            </span>
+          )
         }
       ]
     }
@@ -144,61 +151,54 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
   return (
     <aside
       aria-label="Странично меню на Учебната академия"
-      className="w-full lg:w-72 xl:w-80 flex-shrink-0"
+      className="w-full lg:w-64 xl:w-72 flex-shrink-0"
     >
-      <div className="lg:sticky lg:top-20 space-y-3.5">
+      <div className="lg:sticky lg:top-20 space-y-3">
         
-        {/* Current Lesson Preview & Quick Switch Card */}
-        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-              Текущ урок
+        {/* Compact Current Lesson Indicator */}
+        <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-2xs">
+          <div className="flex items-center justify-between gap-1 mb-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Текуща тема
             </span>
-            <span className="text-[11px] px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200 font-semibold">
+            <span className="text-[10px] px-1.5 py-0.2 rounded bg-blue-50 text-blue-700 border border-blue-200 font-semibold truncate max-w-[120px]">
               {currentLesson.subject}
             </span>
           </div>
 
-          <h3 className="text-sm font-bold text-slate-900 line-clamp-2 leading-snug mb-1">
+          <h3 className="text-xs font-bold text-slate-900 line-clamp-2 leading-snug">
             {currentLesson.title}
           </h3>
 
-          <div className="flex items-center gap-2 text-xs text-slate-500 mb-3">
+          <div className="flex items-center justify-between pt-2 mt-2 border-t border-slate-100 text-[11px] text-slate-500">
             <span>{currentLesson.grade}</span>
-            {currentLesson.examType && (
-              <>
-                <span>•</span>
-                <span className="text-amber-700 font-semibold">{currentLesson.examType}</span>
-              </>
-            )}
-          </div>
-
-          <div className="pt-2.5 border-t border-slate-100 flex items-center gap-2">
-            <button
-              onClick={onOpenQuickLessonPicker}
-              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 text-xs font-medium border border-slate-200 transition-colors shadow-2xs"
-            >
-              <Search className="w-3.5 h-3.5 text-blue-600" />
-              <span>Смени тема</span>
-            </button>
-            <button
-              onClick={onOpenScan}
-              className="flex items-center justify-center gap-1 py-1.5 px-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors"
-              title="Качи снимка на записки от тетрадка"
-            >
-              <Camera className="w-3.5 h-3.5" />
-              <span>Сканирай</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={onOpenScan}
+                className="text-slate-600 hover:text-blue-700 font-medium inline-flex items-center gap-1"
+                title="Сканирай записки от тетрадка"
+              >
+                <Camera className="w-3 h-3 text-blue-600" />
+                <span>Сканирай</span>
+              </button>
+              <span>•</span>
+              <button
+                onClick={onOpenQuickLessonPicker}
+                className="text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center gap-1 hover:underline"
+              >
+                <Search className="w-3 h-3" />
+                <span>Смени</span>
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Navigation Sections */}
-        <div className="p-3 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-4">
+        <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-3">
           {sections.map((section, sIdx) => (
-            <div key={sIdx} className="space-y-1">
-              <div className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center justify-between">
-                <span>{section.title}</span>
-                <span className="text-[10px] text-slate-400 font-normal">{section.category}</span>
+            <div key={sIdx} className="space-y-0.5">
+              <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                {section.title}
               </div>
 
               <div className="space-y-0.5">
@@ -210,31 +210,20 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
                     <button
                       key={item.tab}
                       onClick={() => onSelectTab(item.tab)}
-                      className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-all ${
+                      className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-left transition-all ${
                         isActive
-                          ? 'bg-blue-50 text-blue-900 font-semibold border border-blue-200 shadow-2xs'
-                          : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 border border-transparent'
+                          ? 'bg-blue-50 text-blue-900 font-bold border border-blue-200/80 shadow-2xs'
+                          : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 border border-transparent font-medium'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <div className={`p-1.5 rounded-lg ${
-                          isActive
-                            ? 'bg-blue-600 text-white shadow-2xs'
-                            : 'bg-slate-100 text-slate-600'
-                        }`}>
-                          <Icon className="w-4 h-4" />
-                        </div>
-                        <div className="min-w-0">
-                          <div className="text-xs font-bold leading-tight truncate">
-                            {item.label}
-                          </div>
-                          <div className="text-[10px] text-slate-500 leading-tight truncate mt-0.5">
-                            {item.sublabel}
-                          </div>
-                        </div>
+                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-blue-600' : 'text-slate-400'}`} />
+                        <span className="text-xs truncate">
+                          {item.label}
+                        </span>
                       </div>
 
-                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                      <div className="flex items-center gap-1.5 shrink-0">
                         {item.badge}
                         {isActive && (
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
@@ -247,11 +236,11 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
             </div>
           ))}
 
-          {/* Quick Action: Formula Sheets Modal */}
+          {/* Quick Helper Button */}
           <div className="pt-2 border-t border-slate-100">
             <button
               onClick={onOpenFormulaModal}
-              className="w-full flex items-center justify-between p-2 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-slate-200 transition-colors shadow-2xs"
+              className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
             >
               <div className="flex items-center gap-2">
                 <FileText className="w-3.5 h-3.5 text-blue-600" />
@@ -259,20 +248,6 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
               </div>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
             </button>
-          </div>
-
-          {/* Quick Link to Historical Case Studies & Open Topics */}
-          <div className="pt-2">
-            <a
-              href="#cases"
-              className="w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold text-amber-900 bg-amber-50 hover:bg-amber-100/80 border border-amber-200 transition-colors shadow-2xs group"
-            >
-              <div className="flex items-center gap-2">
-                <Scale className="w-4 h-4 text-amber-700" />
-                <span>Отворени казуси & Есета (8)</span>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-amber-700 group-hover:translate-x-0.5 transition-transform" />
-            </a>
           </div>
         </div>
 

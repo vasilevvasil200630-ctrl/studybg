@@ -10,7 +10,6 @@ import {
   BookOpen,
   Scale,
   Calendar,
-  Award,
   Printer,
   X,
   GraduationCap
@@ -296,246 +295,160 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
   return (
     <div className="space-y-6">
       
-      {/* Official МОН Countdown Dashboard: 3 National Exam Levels */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4">
-        {/* Matura+ 7th Grade Synergy Card */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-emerald-50 via-teal-50/50 to-white border border-emerald-300 shadow-xs flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">
-                7. клас • Matura+
-              </span>
-              <span className="text-[11px] text-slate-500 inline-flex items-center gap-1">
-                <Calendar className="w-3 h-3 text-slate-400" />
-                17 – 19 юни {examCountdowns.nvo7Year} г.
-              </span>
-            </div>
-            <h4 className="text-xs sm:text-sm font-bold text-slate-900">
-              Прием в елитни гимназии
-            </h4>
-            <a
-              href="https://matura-plus.bg"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[11px] text-emerald-800 font-semibold hover:underline inline-flex items-center gap-1 mt-0.5"
-            >
-              <span>Специализирана платформа Matura+</span>
-              <ArrowRight className="w-3 h-3 text-emerald-700" />
-            </a>
-          </div>
-          <div className="text-right pl-2 shrink-0">
-            <div className="text-2xl sm:text-3xl font-extrabold text-emerald-950 font-mono">
-              {examCountdowns.diffNvo7}
-            </div>
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider block">
-              дни до изпита
-            </span>
-          </div>
+      {/* Sleek Horizontal МОН Exam Countdown Strip */}
+      <div className="flex flex-wrap items-center justify-between gap-2.5 px-4 py-2.5 rounded-xl bg-slate-100/90 border border-slate-200 text-xs">
+        <div className="flex items-center gap-2">
+          <Calendar className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+          <span className="font-bold text-slate-700">Официален изпитен календар на МОН:</span>
         </div>
-
-        {/* NVO 10th Grade Card */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-teal-50 text-teal-800 border border-teal-200">
-                10. клас • НВО
-              </span>
-              <span className="text-[11px] text-slate-500 inline-flex items-center gap-1">
-                <Calendar className="w-3 h-3 text-slate-400" />
-                10 – 12 юни {examCountdowns.nvo10Year} г.
-              </span>
-            </div>
-            <h4 className="text-xs sm:text-sm font-bold text-slate-900">
-              Първи гимназиален етап
-            </h4>
-            <button
-              onClick={() => {
-                handleSelectExamPreset('nvo10-history-simeon');
-                handleStartExam(90);
-              }}
-              className="text-[11px] text-teal-700 font-semibold hover:underline inline-flex items-center gap-1 mt-0.5"
-            >
-              <span>Стартирай НВО 10 (90 мин)</span>
-              <ArrowRight className="w-3 h-3" />
-            </button>
-          </div>
-          <div className="text-right pl-2 shrink-0">
-            <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">
-              {examCountdowns.diffNvo10}
-            </div>
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider block">
-              дни до изпита
-            </span>
-          </div>
-        </div>
-
-        {/* DZI 12th Grade Card */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
-                12. клас • ДЗИ
-              </span>
-              <span className="text-[11px] text-slate-500 inline-flex items-center gap-1">
-                <Calendar className="w-3 h-3 text-slate-400" />
-                20 – 22 май {examCountdowns.dziYear} г.
-              </span>
-            </div>
-            <h4 className="text-xs sm:text-sm font-bold text-slate-900">
-              Държавни зрелостни изпити
-            </h4>
-            <button
-              onClick={() => {
-                handleSelectExamPreset('dzi12-bel-tyutyun');
-                handleStartExam(240);
-              }}
-              className="text-[11px] text-amber-700 font-semibold hover:underline inline-flex items-center gap-1 mt-0.5"
-            >
-              <span>Стартирай ДЗИ 12 (240 мин)</span>
-              <ArrowRight className="w-3 h-3" />
-            </button>
-          </div>
-          <div className="text-right pl-2 shrink-0">
-            <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">
-              {examCountdowns.diffDzi}
-            </div>
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider block">
-              дни до изпита
-            </span>
-          </div>
+        <div className="flex flex-wrap items-center gap-2 text-[11px]">
+          <span className="px-2.5 py-1 rounded-lg bg-white border border-amber-200 text-amber-900 font-semibold shadow-2xs">
+            🎓 ДЗИ 12. кл: <strong className="font-mono text-xs">{examCountdowns.diffDzi}</strong> дни ({examCountdowns.dziYear} г.)
+          </span>
+          <span className="px-2.5 py-1 rounded-lg bg-white border border-teal-200 text-teal-900 font-semibold shadow-2xs">
+            ⏱️ НВО 10. кл: <strong className="font-mono text-xs">{examCountdowns.diffNvo10}</strong> дни ({examCountdowns.nvo10Year} г.)
+          </span>
+          <a
+            href="https://matura-plus.bg"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-medium inline-flex items-center gap-1 transition-all shadow-2xs"
+            title="Специализирана академия за кандидатстване след 7. клас"
+          >
+            <span>7. кл. ({examCountdowns.diffNvo7} дни) ↗ Matura+</span>
+          </a>
         </div>
       </div>
 
-      {/* Official Exam Presets & High-School Tracks */}
-      <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
-          <div className="flex items-center gap-2">
-            <Award className="w-4 h-4 text-blue-600 shrink-0" />
-            <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-              Официални изпитни формати на МОН:
-            </span>
-          </div>
-          <span className="text-[11px] text-slate-500 font-medium">
-            100 точки • 3 Модула с официална рубрика
+      {/* Quick Track & Topic Preset Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl bg-white border border-slate-200 shadow-2xs">
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider pl-1">
+            Изпитен формат:
           </span>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {/* Track 1: DZI 12th Grade */}
-          <div className="p-3 rounded-xl bg-amber-50/50 border border-amber-200/80 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-amber-950 flex items-center gap-1.5">
-                <GraduationCap className="w-4 h-4 text-amber-600" />
-                <span>ДЗИ 12. клас (Матура)</span>
-              </span>
-              <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-200/80 text-amber-900">
-                240 мин регламент
-              </span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
+          {/* Track Buttons */}
+          <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 gap-1">
+            <button
+              type="button"
+              onClick={() => handleSelectExamPreset('lesson')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activePreset === 'lesson'
+                  ? 'bg-white text-blue-700 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Текущ урок
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSelectExamPreset('dzi12-bel-tyutyun')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activePreset.startsWith('dzi12')
+                  ? 'bg-amber-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              ДЗИ 12 (Матура)
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSelectExamPreset('nvo10-history-simeon')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activePreset.startsWith('nvo10')
+                  ? 'bg-teal-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              НВО 10. клас
+            </button>
+          </div>
+
+          {/* Quick Sub-Topic Chips */}
+          {activePreset.startsWith('dzi12') && (
+            <div className="flex items-center gap-1.5 pl-1 flex-wrap">
               <button
+                type="button"
                 onClick={() => handleSelectExamPreset('dzi12-bel-tyutyun')}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
                   activePreset === 'dzi12-bel-tyutyun' || activePreset === 'dzi12-bel'
-                    ? 'bg-amber-600 text-white shadow-xs'
-                    : 'bg-white text-slate-700 hover:bg-amber-100/70 border border-slate-200'
+                    ? 'bg-amber-100 text-amber-900 border-amber-300 font-bold'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
-                БЕЛ: Д. Димов („Тютюн“)
+                БЕЛ: Тютюн
               </button>
               <button
+                type="button"
                 onClick={() => handleSelectExamPreset('dzi12-bel-geratsite')}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
                   activePreset === 'dzi12-bel-geratsite'
-                    ? 'bg-amber-600 text-white shadow-xs'
-                    : 'bg-white text-slate-700 hover:bg-amber-100/70 border border-slate-200'
+                    ? 'bg-amber-100 text-amber-900 border-amber-300 font-bold'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
-                БЕЛ: Елин Пелин („Гераците“)
+                БЕЛ: Гераците
               </button>
               <button
+                type="button"
                 onClick={() => handleSelectExamPreset('dzi12-history-april')}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
                   activePreset === 'dzi12-history-april' || activePreset === 'dzi12-history'
-                    ? 'bg-amber-600 text-white shadow-xs'
-                    : 'bg-white text-slate-700 hover:bg-amber-100/70 border border-slate-200'
+                    ? 'bg-amber-100 text-amber-900 border-amber-300 font-bold'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
                 История: Априлско въстание
               </button>
             </div>
-          </div>
+          )}
 
-          {/* Track 2: NVO 10th Grade */}
-          <div className="p-3 rounded-xl bg-teal-50/50 border border-teal-200/80 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-teal-950 flex items-center gap-1.5">
-                <Clock className="w-4 h-4 text-teal-600" />
-                <span>НВО 10. клас (Гимназиален етап)</span>
-              </span>
-              <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-teal-200/80 text-teal-900">
-                90 мин регламент
-              </span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
+          {activePreset.startsWith('nvo10') && (
+            <div className="flex items-center gap-1.5 pl-1 flex-wrap">
               <button
+                type="button"
                 onClick={() => handleSelectExamPreset('nvo10-history-simeon')}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
                   activePreset === 'nvo10-history-simeon' || activePreset === 'nvo10-history'
-                    ? 'bg-teal-600 text-white shadow-xs'
-                    : 'bg-white text-slate-700 hover:bg-teal-100/70 border border-slate-200'
+                    ? 'bg-teal-100 text-teal-900 border-teal-300 font-bold'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
-                История: Златен век (Симеон)
+                История: Симеон Велики
               </button>
               <button
+                type="button"
                 onClick={() => handleSelectExamPreset('nvo10-bel-debelyanov')}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
                   activePreset === 'nvo10-bel-debelyanov'
-                    ? 'bg-teal-600 text-white shadow-xs'
-                    : 'bg-white text-slate-700 hover:bg-teal-100/70 border border-slate-200'
+                    ? 'bg-teal-100 text-teal-900 border-teal-300 font-bold'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
                 БЕЛ: Д. Дебелянов
               </button>
               <button
+                type="button"
                 onClick={() => handleSelectExamPreset('nvo10-math-vieta')}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
                   activePreset === 'nvo10-math-vieta'
-                    ? 'bg-teal-600 text-white shadow-xs'
-                    : 'bg-white text-slate-700 hover:bg-teal-100/70 border border-slate-200'
+                    ? 'bg-teal-100 text-teal-900 border-teal-300 font-bold'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
-                Математика: Квадратни уравнения
+                Мат: Квадратни уравнения
               </button>
             </div>
-          </div>
+          )}
         </div>
 
-        {/* Active Lesson & Matura+ Row */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs">
-          <button
-            onClick={() => handleSelectExamPreset('lesson')}
-            className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
-              activePreset === 'lesson'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            Текущ урок: {currentLesson.title.split(':')[0]} ({currentLesson.grade})
-          </button>
-
-          <a
-            href="https://matura-plus.bg"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 font-semibold transition-colors shadow-2xs"
-            title="Специализирани изпитни симулации за 7. клас"
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Готвиш се за 7. клас? Отвори Matura+</span>
-            <ArrowRight className="w-3 h-3 text-emerald-700" />
-          </a>
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] text-slate-500 hidden sm:inline">Текущо:</span>
+          <span className="text-xs font-bold text-slate-800 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200 max-w-[220px] truncate">
+            {currentLesson.title.split(':')[0]} ({currentLesson.grade})
+          </span>
         </div>
       </div>
 

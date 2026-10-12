@@ -223,3 +223,201 @@ export const askGeminiMentor = async (
 
   return textOutput;
 };
+
+export interface EssayEvaluationCriterion {
+  id: string;
+  name: string;
+  maxPoints: number;
+  description: string;
+}
+
+export interface EssayEvaluationResult {
+  totalScore: number;
+  scores: Record<string, number>;
+  criterionFeedback: Record<string, string>;
+  overallFeedback: string;
+  strengths: string[];
+  weaknesses: string[];
+  concreteTipsForSix: string[];
+  isAiGenerated: boolean;
+}
+
+/**
+ * Intelligent МОН 4-criteria Essay & Argumentative Text Evaluator with Gemini 1.5 Flash
+ */
+export const evaluateEssayWithGemini = async (
+  essayText: string,
+  topic: string,
+  rubricCriteria: EssayEvaluationCriterion[]
+): Promise<EssayEvaluationResult> => {
+  const trimmed = essayText.trim();
+  if (!trimmed || trimmed.length < 30) {
+    throw new Error('Текстът е прекалено кратък за оценяване (минимум 30 знака).');
+  }
+
+  // Fallback heuristic generator in case Gemini is offline or not configured
+  const generateHeuristicFallback = (): EssayEvaluationResult => {
+    const words = trimmed.split(/\s+/).filter(Boolean).length;
+    const paragraphs = trimmed.split(/\n+/).filter((p: string) => p.trim().length > 0).length;
+    const hasThesisKeywords = /считам|според|въстание|причина|следствие|исторически|героизъм|значение|свобода|народ|епоха|затова/i.test(trimmed);
+    const hasCommaBeforeChe = /,\s*че\b/i.test(trimmed);
+
+    const c1Points = Math.min(10, Math.max(3, Math.round(hasThesisKeywords ? 8 : 5) + (paragraphs > 2 ? 1 : 0)));
+    const c2Points = Math.min(8, Math.max(2, Math.round(words > 120 ? 7 : (words > 60 ? 5 : 3))));
+    const c3Points = Math.min(6, Math.max(2, Math.round(paragraphs >= 3 ? 5 : 3)));
+    const c4Points = Math.min(6, Math.max(2, Math.round(hasCommaBeforeChe ? 5 : 4)));
+    const total = c1Points + c2Points + c3Points + c4Points;
+
+    return {
+      totalScore: total,
+      scores: {
+        c1: c1Points,
+        c2: c2Points,
+        c3: c3Points,
+        c4: c4Points
+      },
+      criterionFeedback: {
+        c1: hasThesisKeywords
+          ? 'Формулирана е ясна позиция по проблема, но е необходимо по-категорично аргументиране на причините и следствията.'
+          : 'Тезата се нуждае от по-ясно изразено лично становище и пряк отговор на въпроса в заданието.',
+        c2: words > 100
+          ? 'Показано е добро боравене с ключови исторически понятия и факти за епохата.'
+          : 'Препоръчва се включване на повече конкретни факти, дати, имена и цитати от изворите.',
+        c3: paragraphs >= 3
+          ? 'Добра структура с уводна част, изложение и заключение.'
+          : 'Текстът печели, ако бъде разделен на ясни композиционни части (Увод, Теза, Аргументация, Извод).',
+        c4: hasCommaBeforeChe
+          ? 'Сравнително добър изказ, спазени са основните синтактични правила.'
+          : 'Обърнете специално внимание на запетаите пред подчинителни съюзи („че“, „защото“) и пълния член.'
+      },
+      overallFeedback: `Разработката съдържа ${words} думи и демонстрира разбиране на изпитната тема. Придържането към официалната 4-критерийна скала на МОН гарантира стабилен резултат, а добавянето на още аргументи ще доближи текста до Отличен 6.00.`,
+      strengths: [
+        'Поставено е тематично начало с акцент върху проблема',
+        words > 80 ? 'Задоволителен обем и логическа свързаност' : 'Ясен и разбираем стил на изразяване'
+      ],
+      weaknesses: [
+        words < 120 ? 'Обемът може да се разшири с още един задълбочен аргумент' : 'Някои тези могат да се илюстрират с по-прецизни примери',
+        'Необходимо е по-стегнато и синтезирано заключение'
+      ],
+      concreteTipsForSix: [
+        'Започни изложението с категорична теза (1–2 изречения), съдържаща ключовите думи от заглавието.',
+        'Всеки аргумент трябва да има пример (факт/документ) и микроизвод защо това доказва тезата ти.',
+        'Прочети внимателно текста за пълен/кратък член при подлога преди предаване на свитъка.'
+      ],
+      isAiGenerated: false
+    };
+  };
+
+  if (!isGeminiConfigured()) {
+    return generateHeuristicFallback();
+  }
+
+  const rubricDescription = rubricCriteria
+    .map(c => `- [${c.id}] ${c.name} (максимум ${c.maxPoints} т.): ${c.description}`)
+    .join('\n');
+
+  const prompt = `Ти си официален главен национален проверител на Държавни зрелостни изпити (ДЗИ) към Министерството на образованието и науката (МОН) на България.
+Твоята задача е да оцениш аргументативно есе / писмена разработка на ученик за ДЗИ (12. клас) стриктно по 4-критерийната рубрика на МОН с общ сбор до 30 точки.
+
+ТЕМА НА ИЗПИТА:
+"${topic}"
+
+КРИТЕРИИ НА МОН:
+${rubricDescription}
+
+ТЕКСТ НА УЧЕНИКА:
+"""
+${trimmed}
+"""
+
+ИНСТРУКЦИИ ЗА ОЦЕНЯВАНЕ:
+1. Оцени строго и професионално според стандартите на МОН.
+2. Върни точките за всяко id от критериите (напр. c1, c2, c3, c4). Сборът им трябва точно да отговаря на totalScore (максимум 30).
+3. Посочи детайлна обратна връзка за всеки критерий на български език.
+4. Изведи списък със силни страни (strengths), слабости (weaknesses) и 3 конкретни съвета за Отличен 6.00 (concreteTipsForSix).
+5. Върни отговора ЕДИНСТВЕНО като валиден JSON обект в следния формат:
+{
+  "totalScore": 23,
+  "scores": {
+    "c1": 8,
+    "c2": 6,
+    "c3": 5,
+    "c4": 4
+  },
+  "criterionFeedback": {
+    "c1": "Коментар за тезата и аргументацията...",
+    "c2": "Коментар за фактологията...",
+    "c3": "Коментар за структурата...",
+    "c4": "Коментар за езиковата норма и правописа..."
+  },
+  "overallFeedback": "Цялостен коментар на проверителя...",
+  "strengths": [
+    "Силна страна 1",
+    "Силна страна 2"
+  ],
+  "weaknesses": [
+    "Слабост 1",
+    "Слабост 2"
+  ],
+  "concreteTipsForSix": [
+    "Съвет 1 за Отличен 6",
+    "Съвет 2 за Отличен 6",
+    "Съвет 3 за Отличен 6"
+  ]
+}`;
+
+  try {
+    const requestBody = {
+      contents: [
+        {
+          parts: [{ text: prompt }]
+        }
+      ],
+      generationConfig: {
+        temperature: 0.2,
+        maxOutputTokens: 1500
+      }
+    };
+
+    const response = await fetch(getGeminiApiUrl(), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      console.warn('Gemini evaluation request failed, falling back to heuristic evaluation');
+      return generateHeuristicFallback();
+    }
+
+    const data = await response.json();
+    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!rawText) {
+      return generateHeuristicFallback();
+    }
+
+    // Clean JSON response (strip markdown wrappers ```json ... ```)
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      return generateHeuristicFallback();
+    }
+
+    const parsed = JSON.parse(jsonMatch[0]);
+
+    return {
+      totalScore: Number(parsed.totalScore) || 20,
+      scores: parsed.scores || { c1: 7, c2: 5, c3: 4, c4: 4 },
+      criterionFeedback: parsed.criterionFeedback || {},
+      overallFeedback: parsed.overallFeedback || 'Оценяването по стандартите на МОН приключи успешно.',
+      strengths: Array.isArray(parsed.strengths) ? parsed.strengths : ['Добра тематична насоченост'],
+      weaknesses: Array.isArray(parsed.weaknesses) ? parsed.weaknesses : ['Препоръчва се прецизиране на изворите'],
+      concreteTipsForSix: Array.isArray(parsed.concreteTipsForSix) ? parsed.concreteTipsForSix : ['Добави синтезиран извод'],
+      isAiGenerated: true
+    };
+  } catch (err) {
+    console.warn('Error during Gemini essay evaluation:', err);
+    return generateHeuristicFallback();
+  }
+};

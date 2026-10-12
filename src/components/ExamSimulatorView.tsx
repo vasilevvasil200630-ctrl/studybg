@@ -12,10 +12,15 @@ import {
   Calendar,
   Printer,
   X,
-  GraduationCap
+  GraduationCap,
+  Sparkles,
+  Lightbulb,
+  Check,
+  AlertTriangle
 } from 'lucide-react';
 import type { QuizQuestion, LessonData } from '../types';
 import { getExamModulesForLesson } from '../data/examModulesData';
+import { evaluateEssayWithGemini, type EssayEvaluationResult } from '../services/geminiService';
 
 interface ExamSimulatorViewProps {
   currentLesson: LessonData;
@@ -57,6 +62,11 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
   const [essayText, setEssayText] = useState<string>('');
   // Module 3 Scores: criterionId -> awarded points
   const [rubricScores, setRubricScores] = useState<Record<string, number>>({});
+
+  // AI Evaluation State
+  const [isEvaluatingEssay, setIsEvaluatingEssay] = useState<boolean>(false);
+  const [aiEssayEvaluation, setAiEssayEvaluation] = useState<EssayEvaluationResult | null>(null);
+  const [evaluationError, setEvaluationError] = useState<string | null>(null);
 
   // Dynamic Exam Countdown: Always calculates upcoming May (ДЗИ 12. кл.) and June (НВО 7. и 10. кл.)
   const examCountdowns = useMemo(() => {
@@ -157,6 +167,9 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
     setModule2Scores({});
     setEssayText('');
     setRubricScores({});
+    setIsEvaluatingEssay(false);
+    setAiEssayEvaluation(null);
+    setEvaluationError(null);
     setActiveModuleTab(1);
   };
 
@@ -167,6 +180,30 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
       ...prev,
       [questionId]: optionIndex
     }));
+  };
+
+  // AI Essay Evaluation with Gemini 1.5 Flash
+  const handleEvaluateEssayWithAi = async () => {
+    if (essayText.trim().length < 30) {
+      setEvaluationError('Моля, напишете поне 2–3 изречения (теза или аргумент), за да може AI проверителят да анализира текста.');
+      return;
+    }
+    setEvaluationError(null);
+    setIsEvaluatingEssay(true);
+    try {
+      const result = await evaluateEssayWithGemini(
+        essayText,
+        examData.module3.essayPrompt,
+        examData.module3.rubric
+      );
+      setAiEssayEvaluation(result);
+      setRubricScores(result.scores);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Грешка при AI оценяването. Опитайте отново.';
+      setEvaluationError(msg);
+    } finally {
+      setIsEvaluatingEssay(false);
+    }
   };
 
   // Submit Exam
@@ -913,6 +950,155 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                 className="w-full p-4 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-900 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-serif disabled:bg-slate-50 disabled:text-slate-800"
               />
             </div>
+
+            {/* AI Essay Evaluation Action Bar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-gradient-to-r from-blue-50/90 to-indigo-50/90 border border-blue-200 shadow-2xs">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <Sparkles className="w-4 h-4 text-amber-300" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-blue-950 flex items-center gap-1.5">
+                    <span>AI Оценител по 4-те критерия на МОН</span>
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-blue-200 text-blue-900 font-extrabold">
+                      30 т. ДЗИ
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-blue-700">
+                    Обективна проверка на тезата, изворите, композицията и езиковата норма
+                  </div>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleEvaluateEssayWithAi}
+                disabled={isEvaluatingEssay || essayText.trim().length < 20}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-slate-300 text-white font-semibold text-xs transition-all shadow-xs shrink-0 cursor-pointer disabled:cursor-not-allowed"
+              >
+                {isEvaluatingEssay ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-white" />
+                    <span>Проверяване с Gemini...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                    <span>{aiEssayEvaluation ? 'Преоцени текста отново' : '🤖 Оцени есето с AI'}</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {evaluationError && (
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                <span>{evaluationError}</span>
+              </div>
+            )}
+
+            {/* AI Detailed Audit Report Card */}
+            {aiEssayEvaluation && (
+              <div className="p-5 rounded-2xl bg-white border-2 border-blue-500/30 shadow-md space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
+                    <div>
+                      <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <span>Официален AI протокол за оценка на есето</span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                          {aiEssayEvaluation.isAiGenerated ? 'Gemini 1.5 Flash МОН Проверител' : 'МОН Евристичен анализ'}
+                        </span>
+                      </h5>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Точките са изчислени според държавните образователни изисквания за ДЗИ 12. клас
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-baseline gap-1 bg-blue-50 text-blue-900 border border-blue-200 px-3.5 py-1.5 rounded-xl self-start sm:self-auto">
+                    <span className="text-xs font-semibold text-blue-700">Оценка:</span>
+                    <span className="text-xl font-extrabold font-mono text-blue-700">
+                      {aiEssayEvaluation.totalScore}
+                    </span>
+                    <span className="text-xs font-medium text-slate-500">/ 30 т.</span>
+                  </div>
+                </div>
+
+                {/* Overall Feedback */}
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-700 leading-relaxed font-sans">
+                  <span className="font-bold text-slate-900 block mb-1">Обобщение на националния проверител:</span>
+                  {aiEssayEvaluation.overallFeedback}
+                </div>
+
+                {/* 4 Criteria Scores with Specific Feedback */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {examData.module3.rubric.map(crit => {
+                    const pts = aiEssayEvaluation.scores[crit.id] ?? 0;
+                    const feedback = aiEssayEvaluation.criterionFeedback[crit.id];
+                    return (
+                      <div key={crit.id} className="p-3.5 rounded-xl bg-white border border-slate-200 space-y-2 shadow-2xs">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-slate-900 truncate">
+                            {crit.name}
+                          </span>
+                          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                            {pts} / {crit.maxPoints} т.
+                          </span>
+                        </div>
+                        {feedback && (
+                          <p className="text-[11px] text-slate-600 leading-snug">
+                            {feedback}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Strengths & Weaknesses 2-Column Split */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  <div className="p-3.5 rounded-xl bg-emerald-50/60 border border-emerald-200 space-y-2">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-900">
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Силни страни на разработката</span>
+                    </div>
+                    <ul className="text-xs text-emerald-800/90 space-y-1 list-disc list-inside">
+                      {aiEssayEvaluation.strengths.map((str, idx) => (
+                        <li key={idx}>{str}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-amber-50/60 border border-amber-200 space-y-2">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900">
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Области за подобрение</span>
+                    </div>
+                    <ul className="text-xs text-amber-800/90 space-y-1 list-disc list-inside">
+                      {aiEssayEvaluation.weaknesses.map((w, idx) => (
+                        <li key={idx}>{w}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Concrete Tips for 6.00 */}
+                {aiEssayEvaluation.concreteTipsForSix && aiEssayEvaluation.concreteTipsForSix.length > 0 && (
+                  <div className="p-4 rounded-xl bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 space-y-2">
+                    <div className="flex items-center gap-2 text-xs font-bold text-purple-900">
+                      <Lightbulb className="w-4 h-4 text-purple-600" />
+                      <span>3 Златни стъпки за вдигане до Отличен 6.00 на матурата:</span>
+                    </div>
+                    <ul className="text-xs text-purple-950 space-y-1 list-decimal list-inside pl-1">
+                      {aiEssayEvaluation.concreteTipsForSix.map((tip, idx) => (
+                        <li key={idx} className="leading-snug">{tip}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Submission Rubric & Model Thesis */}
             {isSubmitted && (

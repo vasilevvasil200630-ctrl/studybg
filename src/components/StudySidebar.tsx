@@ -12,7 +12,8 @@ import {
   Camera,
   FileText,
   ChevronRight,
-  Scale
+  Scale,
+  Compass
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -26,15 +27,17 @@ interface StudySidebarProps {
   onOpenQuickLessonPicker: () => void;
   onOpenScan: () => void;
   onOpenFormulaModal: () => void;
+  onOpenCultureContext?: () => void;
 }
 
 interface NavSectionItem {
-  tab: AppNavTab;
+  tab: AppNavTab | 'culture-context';
   label: string;
   sublabel: string;
   icon: React.ComponentType<{ className?: string }>;
   accentColor: string;
   badge?: React.ReactNode;
+  onClick?: () => void;
 }
 
 export const StudySidebar: React.FC<StudySidebarProps> = ({
@@ -45,7 +48,8 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
   totalLessonsCount,
   onOpenQuickLessonPicker,
   onOpenScan,
-  onOpenFormulaModal
+  onOpenFormulaModal,
+  onOpenCultureContext
 }) => {
   const sections: { title: string; items: NavSectionItem[] }[] = [
     {
@@ -69,6 +73,19 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
               11–12 кл
             </span>
           )
+        },
+        {
+          tab: 'culture-context',
+          label: 'Исторически контекст',
+          sublabel: '',
+          icon: Compass,
+          accentColor: 'text-amber-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
+              Извори
+            </span>
+          ),
+          onClick: onOpenCultureContext
         },
         {
           tab: 'audit',
@@ -203,13 +220,19 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
 
               <div className="space-y-0.5">
                 {section.items.map((item) => {
-                  const isActive = activeTab === item.tab;
+                  const isActive = item.tab !== 'culture-context' && activeTab === item.tab;
                   const Icon = item.icon;
 
                   return (
                     <button
                       key={item.tab}
-                      onClick={() => onSelectTab(item.tab)}
+                      onClick={() => {
+                        if (item.onClick) {
+                          item.onClick();
+                        } else {
+                          onSelectTab(item.tab as AppNavTab);
+                        }
+                      }}
                       className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-left transition-all ${
                         isActive
                           ? 'bg-blue-50 text-blue-900 font-bold border border-blue-200/80 shadow-2xs'

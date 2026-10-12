@@ -430,6 +430,7 @@ export function App() {
                   onOpenQuickLessonPicker={() => setIsQuickLessonModalOpen(true)}
                   onOpenScan={() => setIsScanModalOpen(true)}
                   onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
+                  onOpenCultureContext={() => handleNavigateCultureTab('mysteries')}
                 />
               </div>
 

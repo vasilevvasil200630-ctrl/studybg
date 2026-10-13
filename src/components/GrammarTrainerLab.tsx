@@ -18,6 +18,7 @@ import {
   type GrammarQuestion,
   type GrammarRule
 } from '../data/grammarDatabase';
+import { studyProgressService } from '../services/studyProgressService';
 
 export const GrammarTrainerLab: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -42,10 +43,13 @@ export const GrammarTrainerLab: React.FC = () => {
     setIsAnswerSubmitted(true);
 
     if (currentQ && index === currentQ.correctIndex) {
+      const nextStreak = streak + 1;
       setScore(prev => prev + 1);
-      setStreak(prev => prev + 1);
+      setStreak(nextStreak);
+      studyProgressService.recordGrammarAttempt(true, nextStreak);
     } else {
       setStreak(0);
+      studyProgressService.recordGrammarAttempt(false, 0);
     }
   };
 

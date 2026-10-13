@@ -28,6 +28,7 @@ const HistoricalCasesView = lazy(() => import('./components/HistoricalCasesView'
 const MonGradeCalculatorView = lazy(() => import('./components/MonGradeCalculatorView').then(m => ({ default: m.MonGradeCalculatorView })));
 const GrammarTrainerLab = lazy(() => import('./components/GrammarTrainerLab').then(m => ({ default: m.GrammarTrainerLab })));
 const LiteratureCanonView = lazy(() => import('./components/LiteratureCanonView').then(m => ({ default: m.LiteratureCanonView })));
+const StudyPlannerDashboard = lazy(() => import('./components/StudyPlannerDashboard').then(m => ({ default: m.StudyPlannerDashboard })));
 import { errorBankService } from './services/errorBankService';
 
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
@@ -47,12 +48,13 @@ import {
   BookMarked,
   Scale,
   Calculator,
-  PenTool
+  PenTool,
+  Calendar
 } from 'lucide-react';
 import './App.css';
 
 const STUDY_TABS: AppNavTab[] = [
-  'home', 'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
+  'home', 'planner', 'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
   'simulator', 'errorbank', 'generator', 'catalog', 'calculator',
   'grammar', 'literature'
 ];
@@ -256,6 +258,7 @@ export function App() {
 
   const mobileNavPills: { tab: AppNavTab; label: string; icon: React.ReactNode }[] = [
     { tab: 'home', label: 'Начало', icon: <Home className="w-3.5 h-3.5 text-blue-600" /> },
+    { tab: 'planner', label: 'План за 6.00', icon: <Calendar className="w-3.5 h-3.5 text-emerald-600" /> },
     { tab: 'summary', label: 'Конспект', icon: <BookOpen className="w-3.5 h-3.5" /> },
     { tab: 'cases', label: 'Казуси ДЗИ', icon: <Scale className="w-3.5 h-3.5 text-purple-600" /> },
     { tab: 'grammar', label: 'Тренажор БЕЛ', icon: <PenTool className="w-3.5 h-3.5 text-blue-600" /> },
@@ -367,7 +370,9 @@ export function App() {
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   <span className="text-blue-700 font-semibold">Гимназиална академия (8.–12. кл)</span>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                  {activeTab === 'grammar' ? (
+                  {activeTab === 'planner' ? (
+                    <span className="text-emerald-700 font-semibold">Моят План за 6.00 (Хронометър & Седмичен график)</span>
+                  ) : activeTab === 'grammar' ? (
                     <span className="text-indigo-700 font-semibold">Тренажор БЕЛ (Модул 1 • Норми на БАН)</span>
                   ) : activeTab === 'literature' ? (
                     <span className="text-purple-700 font-semibold">Литературен Канон & Тези (41. задача ДЗИ)</span>
@@ -390,7 +395,14 @@ export function App() {
 
                 {/* Lesson or Specialized Module Title */}
                 <div className="flex flex-wrap items-center gap-3 pt-1">
-                  {activeTab === 'grammar' ? (
+                  {activeTab === 'planner' ? (
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                      <span>Моят План за Отличен 6.00 & Изпитен Календар</span>
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
+                        ДЗИ 12 & НВО 10 • На живо
+                      </span>
+                    </h2>
+                  ) : activeTab === 'grammar' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Тренажор по Граматика, Правопис и Пунктуация</span>
                       <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
@@ -434,7 +446,7 @@ export function App() {
                 </div>
 
                 {/* Direct Referral to Matura+ if user browses a 5-7th grade lesson */}
-                {!['grammar', 'literature', 'cases', 'calculator'].includes(activeTab) &&
+                {!['planner', 'grammar', 'literature', 'cases', 'calculator'].includes(activeTab) &&
                   (currentLesson.grade.includes('7.') || currentLesson.grade.includes('6.') || currentLesson.grade.includes('5.')) && (
                   <div className="pt-2">
                     <MaturaPlusBridgeBanner compact={true} source="lesson-breadcrumb" />
@@ -599,6 +611,14 @@ export function App() {
 
                     {activeTab === 'literature' && (
                       <LiteratureCanonView />
+                    )}
+
+                    {activeTab === 'planner' && (
+                      <StudyPlannerDashboard
+                        lessons={lessons}
+                        onNavigateTab={handleNavigateStudyTab}
+                        onSelectLesson={handleLessonSelected}
+                      />
                     )}
                   </Suspense>
 

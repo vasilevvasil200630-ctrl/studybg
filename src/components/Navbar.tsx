@@ -22,13 +22,15 @@ import {
   ArrowUpRight,
   Home,
   Calculator,
-  PenTool
+  PenTool,
+  Calendar
 } from 'lucide-react';
 import { errorBankService } from '../services/errorBankService';
 import type { CultureSubTab } from './CultureHero';
 
 export type AppNavTab =
   | 'home'
+  | 'planner'
   | 'scan'
   | 'audit'
   | 'summary'
@@ -93,6 +95,16 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const highSchoolNavItems: { tab: AppNavTab; label: string; icon: React.ReactNode; badge?: React.ReactNode }[] = [
     { tab: 'home', label: 'Начална страница', icon: <Home className="w-3.5 h-3.5 text-blue-600" /> },
+    {
+      tab: 'planner',
+      label: 'Моят План за 6.00',
+      icon: <Calendar className="w-3.5 h-3.5 text-emerald-600" />,
+      badge: (
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
+          Таймер & План
+        </span>
+      )
+    },
     {
       tab: 'simulator',
       label: '100т. Симулатор',
@@ -244,7 +256,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all cursor-pointer"
               >
                 <Home className="w-4 h-4 text-slate-600" />
-                <span>Начална страница</span>
+                <span>Начало</span>
+              </button>
+
+              <button
+                onClick={() => handleStudyNavClick('planner')}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
+                  portalMode === 'study' && activeTab === 'planner'
+                    ? 'bg-emerald-50 text-emerald-900 font-bold shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <Calendar className="w-4 h-4 text-emerald-600" />
+                <span>План за 6.00</span>
               </button>
 
               <button

@@ -16,7 +16,8 @@ import {
   Compass,
   Calculator,
   Home,
-  PenTool
+  PenTool,
+  Calendar
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -58,6 +59,18 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
     {
       title: 'Учебна подготовка',
       items: [
+        {
+          tab: 'planner',
+          label: 'Моят План за 6.00',
+          sublabel: '',
+          icon: Calendar,
+          accentColor: 'text-emerald-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
+              Таймер
+            </span>
+          )
+        },
         {
           tab: 'summary',
           label: 'Конспект',

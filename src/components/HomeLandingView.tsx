@@ -180,6 +180,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
           <div className="pt-4 max-w-3xl mx-auto">
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs text-slate-600 flex flex-wrap items-center justify-center gap-2">
               <span className="font-bold text-slate-800">Обхванати модули:</span>
+              <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">План за 6.00 & Таймер до ДЗИ</span>
               <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">Тренажор правопис (Модул 1)</span>
               <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">Литературен канон & тези (41. в-с)</span>
               <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">БЕЛ за ДЗИ (11.–12. кл.)</span>

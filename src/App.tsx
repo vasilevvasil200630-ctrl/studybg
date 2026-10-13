@@ -34,6 +34,7 @@ const ModuleTwoBelLab = lazy(() => import('./components/ModuleTwoBelLab').then(m
 const MathStemLab = lazy(() => import('./components/MathStemLab').then(m => ({ default: m.MathStemLab })));
 const HistoryGeoAtlasLab = lazy(() => import('./components/HistoryGeoAtlasLab').then(m => ({ default: m.HistoryGeoAtlasLab })));
 const EnglishDziLab = lazy(() => import('./components/EnglishDziLab').then(m => ({ default: m.EnglishDziLab })));
+const CivicsEuLab = lazy(() => import('./components/CivicsEuLab').then(m => ({ default: m.CivicsEuLab })));
 import { errorBankService } from './services/errorBankService';
 
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
@@ -65,7 +66,7 @@ import './App.css';
 const STUDY_TABS: AppNavTab[] = [
   'home', 'planner', 'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
   'simulator', 'errorbank', 'generator', 'catalog', 'calculator',
-  'grammar', 'moduletwo', 'literature', 'mathlab', 'atlas', 'english'
+  'grammar', 'moduletwo', 'literature', 'mathlab', 'atlas', 'english', 'civics'
 ];
 
 const ViewLoadingSkeleton = () => (
@@ -276,6 +277,7 @@ export function App() {
     { tab: 'mathlab', label: 'Математика & STEM', icon: <Compass className="w-3.5 h-3.5 text-cyan-600" /> },
     { tab: 'atlas', label: 'Атлас Ист. & Гео.', icon: <MapPin className="w-3.5 h-3.5 text-amber-600" /> },
     { tab: 'english', label: 'Английски ДЗИ', icon: <Globe className="w-3.5 h-3.5 text-sky-600" /> },
+    { tab: 'civics', label: 'Конституция & ЕС', icon: <Scale className="w-3.5 h-3.5 text-indigo-600" /> },
     { tab: 'audit', label: 'Одит 6.00', icon: <CheckSquare className="w-3.5 h-3.5" /> },
     { tab: 'flashcards', label: 'Флаш карти', icon: <Zap className="w-3.5 h-3.5" /> },
     { tab: 'quiz', label: 'Тест', icon: <GraduationCap className="w-3.5 h-3.5" /> },
@@ -397,6 +399,8 @@ export function App() {
                     <span className="text-amber-700 font-semibold">Атлас История & География (Договори & NUTS 2)</span>
                   ) : activeTab === 'english' ? (
                     <span className="text-sky-700 font-semibold">Английски език ДЗИ & НВО (CEFR B1.1 & B2)</span>
+                  ) : activeTab === 'civics' ? (
+                    <span className="text-indigo-700 font-semibold">Конституция на РБ, Власти & Европейски съюз (ГО & ДЗИ)</span>
                   ) : activeTab === 'cases' ? (
                     <span className="text-purple-700 font-semibold">Казуси за ДЗИ (11.–12. клас)</span>
                   ) : activeTab === 'calculator' ? (
@@ -465,6 +469,13 @@ export function App() {
                         CEFR B1.1 & B2 • Use of English & Writing
                       </span>
                     </h2>
+                  ) : activeTab === 'civics' ? (
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                      <span>Конституция на РБ, Разделение на властите и Европейски съюз</span>
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                        Гражданско образование & ДЗИ Философия
+                      </span>
+                    </h2>
                   ) : activeTab === 'cases' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Академични Казуси с Архивни Извори</span>
@@ -495,7 +506,7 @@ export function App() {
                 </div>
 
                 {/* Direct Referral to Matura+ if user browses a 5-7th grade lesson */}
-                {!['planner', 'grammar', 'moduletwo', 'literature', 'mathlab', 'atlas', 'english', 'cases', 'calculator'].includes(activeTab) &&
+                {!['planner', 'grammar', 'moduletwo', 'literature', 'mathlab', 'atlas', 'english', 'civics', 'cases', 'calculator'].includes(activeTab) &&
                   (currentLesson.grade.includes('7.') || currentLesson.grade.includes('6.') || currentLesson.grade.includes('5.')) && (
                   <div className="pt-2">
                     <MaturaPlusBridgeBanner compact={true} source="lesson-breadcrumb" />
@@ -676,6 +687,10 @@ export function App() {
 
                     {activeTab === 'english' && (
                       <EnglishDziLab />
+                    )}
+
+                    {activeTab === 'civics' && (
+                      <CivicsEuLab />
                     )}
 
                     {activeTab === 'planner' && (

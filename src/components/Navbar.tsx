@@ -51,7 +51,8 @@ export type AppNavTab =
   | 'literature'
   | 'mathlab'
   | 'atlas'
-  | 'english';
+  | 'english'
+  | 'civics';
 
 interface NavbarProps {
   portalMode: 'study' | 'culture';
@@ -198,6 +199,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       badge: (
         <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 font-bold border border-sky-200">
           B1.1 & B2
+        </span>
+      )
+    },
+    {
+      tab: 'civics',
+      label: 'Конституция & ЕС',
+      icon: <Scale className="w-3.5 h-3.5 text-indigo-600" />,
+      badge: (
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+          ГО & ДЗИ
         </span>
       )
     },

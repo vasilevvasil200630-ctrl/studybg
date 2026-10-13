@@ -232,6 +232,13 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               >
                 Английски език ДЗИ (B1.1 & B2)
               </button>
+              <button
+                type="button"
+                onClick={() => onNavigateTab('civics')}
+                className="px-2.5 py-1 rounded-lg bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 text-slate-700 hover:text-indigo-800 font-medium transition-colors cursor-pointer"
+              >
+                Конституция & ЕС (ГО / ДЗИ)
+              </button>
             </div>
           </div>
 

@@ -55,6 +55,9 @@ export default defineConfig({
           if (id.includes('src/data/englishDziDatabase')) {
             return 'data-english-dzi';
           }
+          if (id.includes('src/data/civicsEuDatabase')) {
+            return 'data-civics-eu';
+          }
         }
       }
     }

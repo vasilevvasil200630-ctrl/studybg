@@ -189,6 +189,18 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
               B1.1 & B2
             </span>
           )
+        },
+        {
+          tab: 'civics',
+          label: 'Конституция & ЕС (ГО)',
+          sublabel: '',
+          icon: Scale,
+          accentColor: 'text-indigo-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+              Власти & ЕС
+            </span>
+          )
         }
       ]
     },

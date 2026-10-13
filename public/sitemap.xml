@@ -55,6 +55,12 @@
     <priority>0.90</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/#civics</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/#calculator</loc>
     <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>

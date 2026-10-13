@@ -191,6 +191,15 @@ export const Footer: React.FC<FooterProps> = ({
                   <span>Английски език ДЗИ (B1.1 & B2)</span>
                 </button>
               </li>
+              <li>
+                <button
+                  onClick={() => handleOpenStudyTab('civics')}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
+                >
+                  <Scale className="w-3.5 h-3.5 text-indigo-600" />
+                  <span>Конституция на РБ & ЕС (ГО / ДЗИ)</span>
+                </button>
+              </li>
             </ul>
           </div>
 

@@ -13,7 +13,12 @@ import {
   Sparkles,
   Printer,
   ArrowUpRight,
-  Scale
+  Scale,
+  Calendar,
+  PenTool,
+  Feather,
+  Calculator,
+  MapPin
 } from 'lucide-react';
 import type { AppNavTab } from './Navbar';
 import type { CultureSubTab } from './CultureHero';
@@ -106,13 +111,22 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
           </div>
 
-          {/* Col 2: Гимназиална академия */}
+          {/* Col 2: Гимназиална академия & Лаборатории */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-blue-700 mb-3.5 flex items-center gap-1.5">
               <BookOpen className="w-3.5 h-3.5" />
               <span>Гимназиална подготовка</span>
             </h4>
             <ul className="space-y-2 text-xs text-slate-600">
+              <li>
+                <button
+                  onClick={() => handleOpenStudyTab('planner')}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2 font-semibold text-slate-800"
+                >
+                  <Calendar className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Моят План за 6.00 & Таймер ДЗИ</span>
+                </button>
+              </li>
               <li>
                 <button
                   onClick={() => handleOpenStudyTab('simulator')}
@@ -124,20 +138,84 @@ export const Footer: React.FC<FooterProps> = ({
               </li>
               <li>
                 <button
+                  onClick={() => handleOpenStudyTab('grammar')}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
+                >
+                  <PenTool className="w-3.5 h-3.5 text-indigo-600" />
+                  <span>Тренажор Правопис (Модул 1 БЕЛ)</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleOpenStudyTab('moduletwo')}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
+                >
+                  <Feather className="w-3.5 h-3.5 text-violet-600" />
+                  <span>Тропи, Пароними & Резюме (Модул 2)</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleOpenStudyTab('literature')}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
+                >
+                  <BookOpen className="w-3.5 h-3.5 text-rose-600" />
+                  <span>Литературен канон & Тези (Задача 41)</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleOpenStudyTab('mathlab')}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
+                >
+                  <Calculator className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Математика & STEM Лаборатория</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleOpenStudyTab('atlas')}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
+                >
+                  <MapPin className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Атлас История & География (NUTS 2)</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 3: МОН Изпити & Инструменти */}
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 mb-3.5 flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5 text-blue-600" />
+              <span>Ресурси по стандарта на МОН</span>
+            </h4>
+            <ul className="space-y-2 text-xs text-slate-600">
+              <li>
+                <button
+                  onClick={() => handleOpenStudyTab('calculator')}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2 font-semibold text-slate-800"
+                >
+                  <Calculator className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Калкулатор ДЗИ / НВО & Бал за ВУЗ</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={onOpenFormulaModal}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
+                >
+                  <FileText className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Официални формули и свитъци МОН</span>
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => handleOpenStudyTab('cases')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
                   <Scale className="w-3.5 h-3.5 text-purple-600" />
                   <span>Казуси за ДЗИ (11.–12. клас)</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleOpenStudyTab('summary')}
-                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
-                >
-                  <BookOpen className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Учебен конспект (Синтез)</span>
                 </button>
               </li>
               <li>
@@ -156,34 +234,6 @@ export const Footer: React.FC<FooterProps> = ({
                 >
                   <Zap className="w-3.5 h-3.5 text-slate-400" />
                   <span>Флаш карти с интервално повторение</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleOpenStudyTab('quiz')}
-                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
-                >
-                  <GraduationCap className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Тест с незабавна оценка</span>
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Col 3: МОН Изпити & Инструменти */}
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 mb-3.5 flex items-center gap-1.5">
-              <FileText className="w-3.5 h-3.5 text-blue-600" />
-              <span>Ресурси по стандарта на МОН</span>
-            </h4>
-            <ul className="space-y-2 text-xs text-slate-600">
-              <li>
-                <button
-                  onClick={onOpenFormulaModal}
-                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
-                >
-                  <FileText className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Официални формули и свитъци МОН</span>
                 </button>
               </li>
               <li>

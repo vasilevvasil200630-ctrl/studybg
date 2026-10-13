@@ -20,7 +20,6 @@ import {
   Scale,
   Award,
   ArrowUpRight,
-  ArrowRight,
   Home,
   Calculator
 } from 'lucide-react';
@@ -188,82 +187,107 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Center: Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5">
-            <button
-              onClick={() => handleStudyNavClick('home')}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-semibold transition-all cursor-pointer ${
-                portalMode === 'study' && activeTab === 'home'
-                  ? 'bg-blue-50 text-blue-700 shadow-2xs font-bold'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
-            >
-              <Home className="w-4 h-4 text-blue-600" />
-              <span>Начало</span>
-            </button>
+          {activeTab === 'home' ? (
+            <nav className="hidden lg:flex items-center gap-6">
+              <a
+                href="#pillars"
+                className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+              >
+                Четирите стълба
+              </a>
+              <a
+                href="#curriculum"
+                className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+              >
+                Учебни конспекти
+              </a>
+              <a
+                href="#smartscan"
+                className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+              >
+                SmartScan OCR
+              </a>
+              <a
+                href="#culture-preview"
+                className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+              >
+                Обща култура
+              </a>
+            </nav>
+          ) : (
+            <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5">
+              <button
+                onClick={() => handleStudyNavClick('home')}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all cursor-pointer"
+              >
+                <Home className="w-4 h-4 text-slate-600" />
+                <span>Начална страница</span>
+              </button>
 
-            <button
-              onClick={() => handleStudyNavClick('simulator')}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
-                portalMode === 'study' && activeTab === 'simulator'
-                  ? 'bg-amber-50 text-amber-900 font-bold shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
-            >
-              <Clock className="w-4 h-4 text-amber-600" />
-              <span>100т. Симулатор</span>
-              <span className="font-mono text-[9px] px-1 py-0.2 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
-                МОН
-              </span>
-            </button>
+              <button
+                onClick={() => handleStudyNavClick('simulator')}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
+                  portalMode === 'study' && activeTab === 'simulator'
+                    ? 'bg-amber-50 text-amber-900 font-bold shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <Clock className="w-4 h-4 text-amber-600" />
+                <span>100т. Симулатор</span>
+                <span className="font-mono text-[9px] px-1 py-0.2 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
+                  МОН
+                </span>
+              </button>
 
-            <button
-              onClick={() => handleStudyNavClick('calculator')}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
-                portalMode === 'study' && activeTab === 'calculator'
-                  ? 'bg-indigo-50 text-indigo-900 font-bold shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
-            >
-              <Calculator className="w-4 h-4 text-indigo-600" />
-              <span>МОН Калкулатор</span>
-            </button>
+              <button
+                onClick={() => handleStudyNavClick('calculator')}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
+                  portalMode === 'study' && activeTab === 'calculator'
+                    ? 'bg-indigo-50 text-indigo-900 font-bold shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <Calculator className="w-4 h-4 text-indigo-600" />
+                <span>МОН Калкулатор</span>
+              </button>
 
-            <button
-              onClick={() => handleStudyNavClick('cases')}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
-                portalMode === 'study' && activeTab === 'cases'
-                  ? 'bg-purple-50 text-purple-900 font-bold shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
-            >
-              <Scale className="w-4 h-4 text-purple-600" />
-              <span>Казуси за ДЗИ</span>
-            </button>
+              <button
+                onClick={() => handleStudyNavClick('cases')}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
+                  portalMode === 'study' && activeTab === 'cases'
+                    ? 'bg-purple-50 text-purple-900 font-bold shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <Scale className="w-4 h-4 text-purple-600" />
+                <span>Казуси за ДЗИ</span>
+              </button>
 
-            <button
-              onClick={() => handleStudyNavClick('catalog')}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
-                portalMode === 'study' && activeTab === 'catalog'
-                  ? 'bg-slate-200/80 text-slate-900 font-bold shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
-            >
-              <BookMarked className="w-4 h-4 text-slate-500" />
-              <span>Каталог</span>
-            </button>
+              <button
+                onClick={() => handleStudyNavClick('catalog')}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
+                  portalMode === 'study' && activeTab === 'catalog'
+                    ? 'bg-slate-200/80 text-slate-900 font-bold shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <BookMarked className="w-4 h-4 text-slate-500" />
+                <span>Каталог</span>
+              </button>
 
-            <button
-              onClick={() => handleCultureNavClick('mysteries')}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
-                portalMode === 'culture'
-                  ? 'bg-amber-50 text-amber-900 font-bold shadow-2xs border border-amber-200'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
-            >
-              <Compass className="w-4 h-4 text-amber-600" />
-              <span>Обща култура</span>
-            </button>
-          </nav>
+              <button
+                onClick={() => handleCultureNavClick('mysteries')}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
+                  portalMode === 'culture'
+                    ? 'bg-amber-50 text-amber-900 font-bold shadow-2xs border border-amber-200'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <Compass className="w-4 h-4 text-amber-600" />
+                <span>Обща култура</span>
+              </button>
+            </nav>
+          )}
 
           {/* Right Action Bar */}
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
@@ -281,50 +305,40 @@ export const Navbar: React.FC<NavbarProps> = ({
               <ArrowUpRight className="w-3.5 h-3.5 text-emerald-700" />
             </a>
 
-            {/* Official МОН Formula Sheets Modal Button */}
-            <button
-              onClick={onOpenFormulaModal}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium border border-slate-300 transition-colors shadow-2xs"
-              title="Официални свитъци и формуляри на МОН"
-            >
-              <FileText className="w-3.5 h-3.5 text-blue-600" />
-              <span className="hidden xl:inline">Справочник МОН</span>
-              <span className="xl:hidden">Справочник</span>
-            </button>
+            {/* In-app action buttons: Only visible once inside the platform */}
+            {activeTab !== 'home' && (
+              <>
+                <button
+                  onClick={() => handleStudyNavClick('home')}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap"
+                  title="Върни се на началната страница"
+                >
+                  <Home className="w-4 h-4 text-slate-600" />
+                  <span className="hidden sm:inline">Начална страница</span>
+                  <span className="sm:hidden">Начало</span>
+                </button>
 
-            {/* Dynamic Gateway Button: Enter Academy on Home, Back to Home inside Academy */}
-            {activeTab === 'home' ? (
-              <button
-                onClick={() => handleStudyNavClick('summary')}
-                className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs sm:text-sm font-bold shadow-xs transition-all cursor-pointer whitespace-nowrap"
-                title="Влез в учебната академия за 8.–12. клас"
-              >
-                <GraduationCap className="w-4 h-4 text-white" />
-                <span>Влез в Академията</span>
-                <ArrowRight className="w-3.5 h-3.5 text-blue-200 hidden sm:inline" />
-              </button>
-            ) : (
-              <button
-                onClick={() => handleStudyNavClick('home')}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap"
-                title="Върни се на началната страница"
-              >
-                <Home className="w-4 h-4 text-slate-600" />
-                <span className="hidden sm:inline">Начална страница</span>
-                <span className="sm:hidden">Начало</span>
-              </button>
+                <button
+                  onClick={onOpenFormulaModal}
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium border border-slate-300 transition-colors shadow-2xs"
+                  title="Официални свитъци и формуляри на МОН"
+                >
+                  <FileText className="w-3.5 h-3.5 text-blue-600" />
+                  <span className="hidden xl:inline">Справочник МОН</span>
+                  <span className="xl:hidden">Справочник</span>
+                </button>
+
+                <button
+                  onClick={onOpenScan}
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition-all whitespace-nowrap cursor-pointer"
+                  title="Сканирай своя тетрадка с камера или качи PDF"
+                >
+                  <Camera className="w-4 h-4 text-slate-600" />
+                  <span className="hidden xl:inline">Сканирай записки</span>
+                  <span className="xl:hidden">Сканирай</span>
+                </button>
+              </>
             )}
-
-            {/* Camera / Scan Notebook */}
-            <button
-              onClick={onOpenScan}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition-all whitespace-nowrap cursor-pointer"
-              title="Сканирай своя тетрадка с камера или качи PDF"
-            >
-              <Camera className="w-4 h-4 text-slate-600" />
-              <span className="hidden xl:inline">Сканирай записки</span>
-              <span className="xl:hidden">Сканирай</span>
-            </button>
 
             {/* Mobile Navigation Drawer Toggle */}
             <button
@@ -342,26 +356,6 @@ export const Navbar: React.FC<NavbarProps> = ({
         {isMobileMenuOpen && (
           <div className="lg:hidden py-4 border-t border-slate-200 space-y-4 bg-white px-2 rounded-b-2xl shadow-lg">
             
-            {/* Primary Mobile Gateway Action */}
-            {activeTab === 'home' ? (
-              <button
-                onClick={() => handleStudyNavClick('summary')}
-                className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold flex items-center justify-center gap-2 shadow-sm"
-              >
-                <GraduationCap className="w-4 h-4 text-white" />
-                <span>Влез в Учебната академия</span>
-                <ArrowRight className="w-4 h-4 text-blue-200" />
-              </button>
-            ) : (
-              <button
-                onClick={() => handleStudyNavClick('home')}
-                className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-2 border border-slate-200"
-              >
-                <Home className="w-4 h-4 text-blue-600" />
-                <span>← Към началната страница</span>
-              </button>
-            )}
-
             {/* Matura+ Referral Bar in Mobile Drawer */}
             <a
               href="https://matura-plus.bg"
@@ -376,82 +370,122 @@ export const Navbar: React.FC<NavbarProps> = ({
               <ArrowUpRight className="w-4 h-4 text-emerald-700 shrink-0" />
             </a>
 
-            {/* Section 1: High School Core Tools (8.–12. grade) */}
-            <div>
-              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1 mb-2">
-                Гимназиална академия (8.–12. клас)
+            {activeTab === 'home' ? (
+              /* On Homepage: Show only informative presentation navigation anchors */
+              <div className="space-y-1">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-2 mb-2">
+                  За платформата
+                </div>
+                <a
+                  href="#pillars"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block p-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100"
+                >
+                  Четирите стълба за отличен
+                </a>
+                <a
+                  href="#curriculum"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block p-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100"
+                >
+                  Учебни конспекти & програми
+                </a>
+                <a
+                  href="#smartscan"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block p-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100"
+                >
+                  SmartScan OCR за записки
+                </a>
+                <a
+                  href="#culture-preview"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block p-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100"
+                >
+                  Обща култура & Загадки
+                </a>
               </div>
-              <div className="grid grid-cols-2 gap-1.5">
-                {highSchoolNavItems.map((item) => (
+            ) : (
+              /* Inside Academy: Show full tools & tabs */
+              <>
+                {/* Section 1: High School Core Tools (8.–12. grade) */}
+                <div>
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1 mb-2">
+                    Гимназиална академия (8.–12. клас)
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {highSchoolNavItems.map((item) => (
+                      <button
+                        key={item.tab}
+                        onClick={() => handleStudyNavClick(item.tab)}
+                        className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-medium transition-all text-left ${
+                          portalMode === 'study' && activeTab === item.tab
+                            ? 'bg-blue-50 text-blue-700 border border-blue-200 font-semibold'
+                            : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 truncate">
+                          {item.icon}
+                          <span className="truncate">{item.label}</span>
+                        </div>
+                        {item.badge}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Section 2: Contextual History Engine for DZI */}
+                <div>
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-amber-800/80 px-1 mb-2 flex items-center justify-between">
+                    <span>Исторически контекст & Първични извори</span>
+                    <span className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded font-bold">
+                      30т. ДЗИ
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {contextCultureNavItems.slice(0, 6).map((item) => (
+                      <button
+                        key={item.subTab}
+                        onClick={() => handleCultureNavClick(item.subTab)}
+                        className={`flex items-center gap-2 p-2.5 rounded-xl text-xs font-medium transition-all text-left ${
+                          portalMode === 'culture' && activeCultureTab === item.subTab
+                            ? 'bg-amber-50 text-amber-800 border border-amber-200 font-bold'
+                            : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        {item.icon}
+                        <span className="truncate">{item.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Mobile Actions Bottom */}
+                <div className="pt-2 border-t border-slate-200 flex flex-col gap-2">
                   <button
-                    key={item.tab}
-                    onClick={() => handleStudyNavClick(item.tab)}
-                    className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-medium transition-all text-left ${
-                      portalMode === 'study' && activeTab === item.tab
-                        ? 'bg-blue-50 text-blue-700 border border-blue-200 font-semibold'
-                        : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
-                    }`}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      onOpenFormulaModal();
+                    }}
+                    className="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-medium border border-slate-200 flex items-center justify-center gap-2"
                   >
-                    <div className="flex items-center gap-2 truncate">
-                      {item.icon}
-                      <span className="truncate">{item.label}</span>
-                    </div>
-                    {item.badge}
+                    <FileText className="w-4 h-4 text-blue-600" />
+                    <span>Официални формули и свитъци МОН</span>
                   </button>
-                ))}
-              </div>
-            </div>
 
-            {/* Section 2: Contextual History Engine for DZI */}
-            <div>
-              <div className="text-[11px] font-bold uppercase tracking-wider text-amber-800/80 px-1 mb-2 flex items-center justify-between">
-                <span>Исторически контекст & Първични извори</span>
-                <span className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded font-bold">
-                  30т. ДЗИ
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-1.5">
-                {contextCultureNavItems.slice(0, 6).map((item) => (
                   <button
-                    key={item.subTab}
-                    onClick={() => handleCultureNavClick(item.subTab)}
-                    className={`flex items-center gap-2 p-2.5 rounded-xl text-xs font-medium transition-all text-left ${
-                      portalMode === 'culture' && activeCultureTab === item.subTab
-                        ? 'bg-amber-50 text-amber-800 border border-amber-200 font-bold'
-                        : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
-                    }`}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      onOpenScan();
+                    }}
+                    className="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-2"
                   >
-                    {item.icon}
-                    <span className="truncate">{item.label}</span>
+                    <Camera className="w-4 h-4 text-white" />
+                    <span>Сканирай нова тетрадка / PDF</span>
                   </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Mobile Actions Bottom */}
-            <div className="pt-2 border-t border-slate-200 flex flex-col gap-2">
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  onOpenFormulaModal();
-                }}
-                className="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-medium border border-slate-200 flex items-center justify-center gap-2"
-              >
-                <FileText className="w-4 h-4 text-blue-600" />
-                <span>Официални формули и свитъци МОН</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  onOpenScan();
-                }}
-                className="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-2"
-              >
-                <Camera className="w-4 h-4 text-white" />
-                <span>Сканирай нова тетрадка / PDF</span>
-              </button>
-            </div>
+                </div>
+              </>
+            )}
 
           </div>
         )}

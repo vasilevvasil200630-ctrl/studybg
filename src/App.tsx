@@ -495,7 +495,7 @@ export function App() {
                 </div>
 
                 {/* Direct Referral to Matura+ if user browses a 5-7th grade lesson */}
-                {!['planner', 'grammar', 'moduletwo', 'literature', 'mathlab', 'atlas', 'cases', 'calculator'].includes(activeTab) &&
+                {!['planner', 'grammar', 'moduletwo', 'literature', 'mathlab', 'atlas', 'english', 'cases', 'calculator'].includes(activeTab) &&
                   (currentLesson.grade.includes('7.') || currentLesson.grade.includes('6.') || currentLesson.grade.includes('5.')) && (
                   <div className="pt-2">
                     <MaturaPlusBridgeBanner compact={true} source="lesson-breadcrumb" />

@@ -18,7 +18,8 @@ import {
   PenTool,
   Feather,
   Calculator,
-  MapPin
+  MapPin,
+  Globe
 } from 'lucide-react';
 import type { AppNavTab } from './Navbar';
 import type { CultureSubTab } from './CultureHero';
@@ -179,6 +180,15 @@ export const Footer: React.FC<FooterProps> = ({
                 >
                   <MapPin className="w-3.5 h-3.5 text-amber-600" />
                   <span>Атлас История & География (NUTS 2)</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleOpenStudyTab('english')}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
+                >
+                  <Globe className="w-3.5 h-3.5 text-sky-600" />
+                  <span>Английски език ДЗИ (B1.1 & B2)</span>
                 </button>
               </li>
             </ul>

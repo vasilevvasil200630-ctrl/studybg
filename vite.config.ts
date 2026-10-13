@@ -52,6 +52,9 @@ export default defineConfig({
           if (id.includes('src/data/historyGeoDatabase')) {
             return 'data-history-geo';
           }
+          if (id.includes('src/data/englishDziDatabase')) {
+            return 'data-english-dzi';
+          }
         }
       }
     }

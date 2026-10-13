@@ -33,6 +33,7 @@ const StudyPlannerDashboard = lazy(() => import('./components/StudyPlannerDashbo
 const ModuleTwoBelLab = lazy(() => import('./components/ModuleTwoBelLab').then(m => ({ default: m.ModuleTwoBelLab })));
 const MathStemLab = lazy(() => import('./components/MathStemLab').then(m => ({ default: m.MathStemLab })));
 const HistoryGeoAtlasLab = lazy(() => import('./components/HistoryGeoAtlasLab').then(m => ({ default: m.HistoryGeoAtlasLab })));
+const EnglishDziLab = lazy(() => import('./components/EnglishDziLab').then(m => ({ default: m.EnglishDziLab })));
 import { errorBankService } from './services/errorBankService';
 
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
@@ -56,14 +57,15 @@ import {
   Calendar,
   Feather,
   Compass,
-  MapPin
+  MapPin,
+  Globe
 } from 'lucide-react';
 import './App.css';
 
 const STUDY_TABS: AppNavTab[] = [
   'home', 'planner', 'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
   'simulator', 'errorbank', 'generator', 'catalog', 'calculator',
-  'grammar', 'moduletwo', 'literature', 'mathlab', 'atlas'
+  'grammar', 'moduletwo', 'literature', 'mathlab', 'atlas', 'english'
 ];
 
 const ViewLoadingSkeleton = () => (
@@ -273,6 +275,7 @@ export function App() {
     { tab: 'literature', label: 'Литературен Канон', icon: <BookMarked className="w-3.5 h-3.5 text-purple-600" /> },
     { tab: 'mathlab', label: 'Математика & STEM', icon: <Compass className="w-3.5 h-3.5 text-cyan-600" /> },
     { tab: 'atlas', label: 'Атлас Ист. & Гео.', icon: <MapPin className="w-3.5 h-3.5 text-amber-600" /> },
+    { tab: 'english', label: 'Английски ДЗИ', icon: <Globe className="w-3.5 h-3.5 text-sky-600" /> },
     { tab: 'audit', label: 'Одит 6.00', icon: <CheckSquare className="w-3.5 h-3.5" /> },
     { tab: 'flashcards', label: 'Флаш карти', icon: <Zap className="w-3.5 h-3.5" /> },
     { tab: 'quiz', label: 'Тест', icon: <GraduationCap className="w-3.5 h-3.5" /> },
@@ -392,6 +395,8 @@ export function App() {
                     <span className="text-cyan-700 font-semibold">Математика & STEM Лаб (НВО 10 & ДЗИ)</span>
                   ) : activeTab === 'atlas' ? (
                     <span className="text-amber-700 font-semibold">Атлас История & География (Договори & NUTS 2)</span>
+                  ) : activeTab === 'english' ? (
+                    <span className="text-sky-700 font-semibold">Английски език ДЗИ & НВО (CEFR B1.1 & B2)</span>
                   ) : activeTab === 'cases' ? (
                     <span className="text-purple-700 font-semibold">Казуси за ДЗИ (11.–12. клас)</span>
                   ) : activeTab === 'calculator' ? (
@@ -451,6 +456,13 @@ export function App() {
                       <span>Интерактивен Атлас по История и География</span>
                       <span className="text-xs px-2.5 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
                         Договори (681–1940) & Райони NUTS 2
+                      </span>
+                    </h2>
+                  ) : activeTab === 'english' ? (
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                      <span>Лаборатория по Английски език за ДЗИ и НВО</span>
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-sky-50 text-sky-800 border border-sky-200 font-semibold">
+                        CEFR B1.1 & B2 • Use of English & Writing
                       </span>
                     </h2>
                   ) : activeTab === 'cases' ? (
@@ -660,6 +672,10 @@ export function App() {
 
                     {activeTab === 'atlas' && (
                       <HistoryGeoAtlasLab />
+                    )}
+
+                    {activeTab === 'english' && (
+                      <EnglishDziLab />
                     )}
 
                     {activeTab === 'planner' && (

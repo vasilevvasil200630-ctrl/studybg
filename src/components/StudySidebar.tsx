@@ -19,7 +19,8 @@ import {
   PenTool,
   Calendar,
   Feather,
-  MapPin
+  MapPin,
+  Globe
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -174,6 +175,18 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           badge: (
             <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
               Карти & NUTS 2
+            </span>
+          )
+        },
+        {
+          tab: 'english',
+          label: 'Английски език (ДЗИ)',
+          sublabel: '',
+          icon: Globe,
+          accentColor: 'text-sky-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-sky-100 text-sky-800 font-bold border border-sky-200">
+              B1.1 & B2
             </span>
           )
         }

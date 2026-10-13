@@ -23,7 +23,8 @@ import {
   Home,
   Calculator,
   PenTool,
-  Calendar
+  Calendar,
+  Feather
 } from 'lucide-react';
 import { errorBankService } from '../services/errorBankService';
 import type { CultureSubTab } from './CultureHero';
@@ -45,6 +46,7 @@ export type AppNavTab =
   | 'knowledge'
   | 'calculator'
   | 'grammar'
+  | 'moduletwo'
   | 'literature';
 
 interface NavbarProps {
@@ -142,6 +144,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       badge: (
         <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold border border-blue-200">
           Модул 1
+        </span>
+      )
+    },
+    {
+      tab: 'moduletwo',
+      label: 'Тропи, Пароними & Резюме',
+      icon: <Feather className="w-3.5 h-3.5 text-purple-600" />,
+      badge: (
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-bold border border-purple-200">
+          Модул 2
         </span>
       )
     },

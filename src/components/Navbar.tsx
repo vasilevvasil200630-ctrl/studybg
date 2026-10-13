@@ -47,7 +47,8 @@ export type AppNavTab =
   | 'calculator'
   | 'grammar'
   | 'moduletwo'
-  | 'literature';
+  | 'literature'
+  | 'mathlab';
 
 interface NavbarProps {
   portalMode: 'study' | 'culture';
@@ -164,6 +165,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       badge: (
         <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-bold border border-purple-200">
           41. въпрос
+        </span>
+      )
+    },
+    {
+      tab: 'mathlab',
+      label: 'Математика & STEM',
+      icon: <Compass className="w-3.5 h-3.5 text-cyan-600" />,
+      badge: (
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-cyan-100 text-cyan-800 font-bold border border-cyan-200">
+          НВО 10 & ДЗИ
         </span>
       )
     },

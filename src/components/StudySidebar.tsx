@@ -114,7 +114,7 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
       ]
     },
     {
-      title: 'Матура & БЕЛ модули',
+      title: 'Матура, БЕЛ & STEM модули',
       items: [
         {
           tab: 'grammar',
@@ -149,6 +149,18 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           badge: (
             <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-purple-100 text-purple-700 font-bold border border-purple-200">
               41. в-с
+            </span>
+          )
+        },
+        {
+          tab: 'mathlab',
+          label: 'Математика & STEM Лаб',
+          sublabel: '',
+          icon: Compass,
+          accentColor: 'text-cyan-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-cyan-100 text-cyan-800 font-bold border border-cyan-200">
+              НВО & ДЗИ
             </span>
           )
         }

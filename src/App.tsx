@@ -30,6 +30,7 @@ const GrammarTrainerLab = lazy(() => import('./components/GrammarTrainerLab').th
 const LiteratureCanonView = lazy(() => import('./components/LiteratureCanonView').then(m => ({ default: m.LiteratureCanonView })));
 const StudyPlannerDashboard = lazy(() => import('./components/StudyPlannerDashboard').then(m => ({ default: m.StudyPlannerDashboard })));
 const ModuleTwoBelLab = lazy(() => import('./components/ModuleTwoBelLab').then(m => ({ default: m.ModuleTwoBelLab })));
+const MathStemLab = lazy(() => import('./components/MathStemLab').then(m => ({ default: m.MathStemLab })));
 import { errorBankService } from './services/errorBankService';
 
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
@@ -51,14 +52,15 @@ import {
   Calculator,
   PenTool,
   Calendar,
-  Feather
+  Feather,
+  Compass
 } from 'lucide-react';
 import './App.css';
 
 const STUDY_TABS: AppNavTab[] = [
   'home', 'planner', 'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
   'simulator', 'errorbank', 'generator', 'catalog', 'calculator',
-  'grammar', 'moduletwo', 'literature'
+  'grammar', 'moduletwo', 'literature', 'mathlab'
 ];
 
 const ViewLoadingSkeleton = () => (
@@ -266,6 +268,7 @@ export function App() {
     { tab: 'grammar', label: 'Тренажор БЕЛ', icon: <PenTool className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'moduletwo', label: 'Модул 2 БЕЛ', icon: <Feather className="w-3.5 h-3.5 text-purple-600" /> },
     { tab: 'literature', label: 'Литературен Канон', icon: <BookMarked className="w-3.5 h-3.5 text-purple-600" /> },
+    { tab: 'mathlab', label: 'Математика & STEM', icon: <Compass className="w-3.5 h-3.5 text-cyan-600" /> },
     { tab: 'audit', label: 'Одит 6.00', icon: <CheckSquare className="w-3.5 h-3.5" /> },
     { tab: 'flashcards', label: 'Флаш карти', icon: <Zap className="w-3.5 h-3.5" /> },
     { tab: 'quiz', label: 'Тест', icon: <GraduationCap className="w-3.5 h-3.5" /> },
@@ -381,6 +384,8 @@ export function App() {
                     <span className="text-purple-700 font-semibold">Модул 2 БЕЛ (Тропи, Пароними & Резюме)</span>
                   ) : activeTab === 'literature' ? (
                     <span className="text-purple-700 font-semibold">Литературен Канон & Тези (41. задача ДЗИ)</span>
+                  ) : activeTab === 'mathlab' ? (
+                    <span className="text-cyan-700 font-semibold">Математика & STEM Лаб (НВО 10 & ДЗИ)</span>
                   ) : activeTab === 'cases' ? (
                     <span className="text-purple-700 font-semibold">Казуси за ДЗИ (11.–12. клас)</span>
                   ) : activeTab === 'calculator' ? (
@@ -428,6 +433,13 @@ export function App() {
                         41. задача • ЕСЕ & ЛИС
                       </span>
                     </h2>
+                  ) : activeTab === 'mathlab' ? (
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                      <span>Интерактивна STEM & Математическа Лаборатория</span>
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-cyan-50 text-cyan-800 border border-cyan-200 font-semibold">
+                        Задачи 16–17 НВО & 26–28 ДЗИ
+                      </span>
+                    </h2>
                   ) : activeTab === 'cases' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Академични Казуси с Архивни Извори</span>
@@ -458,7 +470,7 @@ export function App() {
                 </div>
 
                 {/* Direct Referral to Matura+ if user browses a 5-7th grade lesson */}
-                {!['planner', 'grammar', 'moduletwo', 'literature', 'cases', 'calculator'].includes(activeTab) &&
+                {!['planner', 'grammar', 'moduletwo', 'literature', 'mathlab', 'cases', 'calculator'].includes(activeTab) &&
                   (currentLesson.grade.includes('7.') || currentLesson.grade.includes('6.') || currentLesson.grade.includes('5.')) && (
                   <div className="pt-2">
                     <MaturaPlusBridgeBanner compact={true} source="lesson-breadcrumb" />
@@ -627,6 +639,10 @@ export function App() {
 
                     {activeTab === 'literature' && (
                       <LiteratureCanonView />
+                    )}
+
+                    {activeTab === 'mathlab' && (
+                      <MathStemLab onOpenFormulaModal={() => setIsFormulaModalOpen(true)} />
                     )}
 
                     {activeTab === 'planner' && (

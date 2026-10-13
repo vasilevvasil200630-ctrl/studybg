@@ -1,4 +1,3 @@
-import { supabase, isSupabaseConfigured } from './supabaseClient';
 import type { LessonData } from '../types';
 
 export interface EmailSendParams {
@@ -92,15 +91,16 @@ export const mailingService = {
       console.warn('LocalStorage save error:', e);
     }
 
-    // 2. Supabase Cloud Sync (if configured)
-    if (isSupabaseConfigured()) {
-      try {
+    // 2. Supabase Cloud Sync (dynamically imported only when user submits)
+    try {
+      const { supabase, isSupabaseConfigured } = await import('./supabaseClient');
+      if (isSupabaseConfigured()) {
         await supabase
           .from('newsletter_subscribers')
           .upsert({ email: cleanEmail, grade, created_at: newSub.subscribedAt }, { onConflict: 'email' });
-      } catch (err) {
-        console.warn('Supabase newsletter table notice:', err);
       }
+    } catch (err) {
+      console.warn('Supabase newsletter table notice:', err);
     }
 
     // 3. Dispatch welcome notification via API endpoint (if deployed on Vercel)

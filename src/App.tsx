@@ -1,18 +1,19 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { Navbar, type AppNavTab } from './components/Navbar';
 import { CultureHero, type CultureSubTab } from './components/CultureHero';
-import { SummaryView } from './components/SummaryView';
 import { Footer } from './components/Footer';
 import { StudySidebar } from './components/StudySidebar';
 import { CultureSidebar } from './components/CultureSidebar';
 import { NewsletterSection } from './components/NewsletterSection';
 import { OfflineStatusBanner } from './components/OfflineStatusBanner';
 import { CookieConsentBanner } from './components/CookieConsentBanner';
-import { LegalPoliciesModal, type LegalPolicyTab } from './components/LegalPoliciesModal';
+import type { LegalPolicyTab } from './components/LegalPoliciesModal';
 import { MaturaPlusBridgeBanner } from './components/MaturaPlusBridgeBanner';
 
 // Code-split heavy interactive modules for optimal bundle size and instant initial load
 const HomeLandingView = lazy(() => import('./components/HomeLandingView').then(m => ({ default: m.HomeLandingView })));
+const SummaryView = lazy(() => import('./components/SummaryView').then(m => ({ default: m.SummaryView })));
+const LegalPoliciesModal = lazy(() => import('./components/LegalPoliciesModal').then(m => ({ default: m.LegalPoliciesModal })));
 const CultureHubView = lazy(() => import('./components/CultureHubView').then(m => ({ default: m.CultureHubView })));
 const ExamSimulatorView = lazy(() => import('./components/ExamSimulatorView').then(m => ({ default: m.ExamSimulatorView })));
 const ErrorBankView = lazy(() => import('./components/ErrorBankView').then(m => ({ default: m.ErrorBankView })));
@@ -781,22 +782,24 @@ export function App() {
       </main>
       )}
 
-      {/* Weekly Exam Prep Newsletter */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      {/* Weekly Exam Prep Newsletter (deferred offscreen rendering via content-visibility) */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full cv-auto">
         <NewsletterSection />
       </div>
 
       {/* Footer with Legal Policies */}
-      <Footer
-        onNavigateTab={handleNavigateStudyTab}
-        onSelectCultureTab={handleNavigateCultureTab}
-        onSelectPortalMode={handleSelectPortalMode}
-        onOpenScan={() => setIsScanModalOpen(true)}
-        onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
-        onScrollToCatalog={scrollToCatalog}
-        onOpenPolicyModal={handleOpenPolicy}
-        onOpenCookieSettings={() => setForceOpenCookieSettings(true)}
-      />
+      <div className="cv-auto">
+        <Footer
+          onNavigateTab={handleNavigateStudyTab}
+          onSelectCultureTab={handleNavigateCultureTab}
+          onSelectPortalMode={handleSelectPortalMode}
+          onOpenScan={() => setIsScanModalOpen(true)}
+          onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
+          onScrollToCatalog={scrollToCatalog}
+          onOpenPolicyModal={handleOpenPolicy}
+          onOpenCookieSettings={() => setForceOpenCookieSettings(true)}
+        />
+      </div>
 
       {/* GDPR Cookie Consent Banner */}
       <CookieConsentBanner
@@ -806,11 +809,15 @@ export function App() {
       />
 
       {/* GDPR Legal Policies Modal (Privacy, Cookies, Terms) */}
-      <LegalPoliciesModal
-        isOpen={isPolicyModalOpen}
-        onClose={() => setIsPolicyModalOpen(false)}
-        initialTab={activePolicyTab}
-      />
+      {isPolicyModalOpen && (
+        <Suspense fallback={null}>
+          <LegalPoliciesModal
+            isOpen={isPolicyModalOpen}
+            onClose={() => setIsPolicyModalOpen(false)}
+            initialTab={activePolicyTab}
+          />
+        </Suspense>
+      )}
 
     </div>
   );

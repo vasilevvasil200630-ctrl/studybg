@@ -25,11 +25,17 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
   onClose,
   onRefresh
 }) => {
-  if (!isOpen) return null;
-
   const [analytics, setAnalytics] = React.useState<ExamAnalyticsSummary>(() =>
     examHistoryService.getAnalytics()
   );
+
+  React.useEffect(() => {
+    if (isOpen) {
+      setAnalytics(examHistoryService.getAnalytics());
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   const handleClearHistory = () => {
     if (window.confirm('Сигурни ли сте, че искате да изчистите историята на изпитните симулации?')) {

@@ -153,19 +153,6 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
     }
   };
 
-  // Timer Effect
-  useEffect(() => {
-    let timer: any = null;
-    if (isExamRunning && secondsLeft > 0 && !isSubmitted) {
-      timer = setInterval(() => {
-        setSecondsLeft(prev => prev - 1);
-      }, 1000);
-    } else if (secondsLeft === 0 && isExamRunning && !isSubmitted) {
-      handleSubmitExam();
-    }
-    return () => clearInterval(timer);
-  }, [isExamRunning, secondsLeft, isSubmitted]);
-
   // Start Exam (Supports official МОН times: 240m DZI, 90m NVO 10, 60m express, 0 untimed)
   const handleStartExam = (mins: number) => {
     setExamDurationMinutes(mins);
@@ -248,6 +235,19 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
     // Stay or set to tab 1 for review
     setActiveModuleTab(1);
   };
+
+  // Timer Effect
+  useEffect(() => {
+    let timer: any = null;
+    if (isExamRunning && secondsLeft > 0 && !isSubmitted) {
+      timer = setInterval(() => {
+        setSecondsLeft(prev => prev - 1);
+      }, 1000);
+    } else if (secondsLeft === 0 && isExamRunning && !isSubmitted) {
+      handleSubmitExam();
+    }
+    return () => clearInterval(timer);
+  }, [isExamRunning, secondsLeft, isSubmitted]);
 
   // Score Calculations
   const module1Points = useMemo(() => {
@@ -1447,7 +1447,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                   Протокол от симулационно изпитно оценяване
                 </h2>
                 <div className="text-[11px] font-sans text-slate-500 flex items-center justify-center gap-4 pt-1">
-                  <span>Рег. № BG-MON-{Math.floor(100000 + Math.random() * 900000)}</span>
+                  <span>Рег. № BG-MON-{100000 + ((currentLesson.id.length * 7919 + totalPoints * 313) % 899999)}</span>
                   <span>•</span>
                   <span>Дата: {new Date().toLocaleDateString('bg-BG')} г.</span>
                 </div>

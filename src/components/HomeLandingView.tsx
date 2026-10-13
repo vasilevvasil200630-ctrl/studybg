@@ -184,9 +184,8 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">Тренажор правопис (Модул 1)</span>
               <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">Тропи, пароними & резюме (Модул 2)</span>
               <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">Литературен канон & тези (41. в-с)</span>
-              <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">История и цивилизации</span>
-              <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">НВО 10. клас</span>
-              <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">Математика & STEM</span>
+              <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">Математика & STEM Лаб</span>
+              <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">Атлас История & География (NUTS 2)</span>
             </div>
           </div>
 

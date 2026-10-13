@@ -48,7 +48,8 @@ export type AppNavTab =
   | 'grammar'
   | 'moduletwo'
   | 'literature'
-  | 'mathlab';
+  | 'mathlab'
+  | 'atlas';
 
 interface NavbarProps {
   portalMode: 'study' | 'culture';
@@ -175,6 +176,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       badge: (
         <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-cyan-100 text-cyan-800 font-bold border border-cyan-200">
           НВО 10 & ДЗИ
+        </span>
+      )
+    },
+    {
+      tab: 'atlas',
+      label: 'Атлас История & География',
+      icon: <MapPin className="w-3.5 h-3.5 text-amber-600" />,
+      badge: (
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
+          Карти & NUTS 2
         </span>
       )
     },

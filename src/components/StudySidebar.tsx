@@ -18,7 +18,8 @@ import {
   Home,
   PenTool,
   Calendar,
-  Feather
+  Feather,
+  MapPin
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -114,7 +115,7 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
       ]
     },
     {
-      title: 'Матура, БЕЛ & STEM модули',
+      title: 'Матура, БЕЛ, STEM & Атлас',
       items: [
         {
           tab: 'grammar',
@@ -161,6 +162,18 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           badge: (
             <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-cyan-100 text-cyan-800 font-bold border border-cyan-200">
               НВО & ДЗИ
+            </span>
+          )
+        },
+        {
+          tab: 'atlas',
+          label: 'Атлас История & География',
+          sublabel: '',
+          icon: MapPin,
+          accentColor: 'text-amber-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
+              Карти & NUTS 2
             </span>
           )
         }

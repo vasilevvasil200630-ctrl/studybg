@@ -21,7 +21,6 @@ import {
   ACADEMIC_LINKING_WORDS
 } from '../data/englishDziDatabase';
 import { studyProgressService } from '../services/studyProgressService';
-import { errorBankService } from '../services/errorBankService';
 
 type EnglishLabTab = 'transformations' | 'phrasal' | 'writing';
 
@@ -82,22 +81,7 @@ export const EnglishDziLab: React.FC = () => {
     if (!item) return;
 
     const isCorrect = optionIdx === item.correctIndex;
-    studyProgressService.recordQuizCompletion(isCorrect ? 10 : 0, 10);
-
-    if (!isCorrect) {
-      errorBankService.addError(
-        'dzi-eng-transformations',
-        'Английски език (ДЗИ B1.1 / B2)',
-        {
-          id: item.id,
-          question: `[${item.keyWord}] "${item.originalSentence}" ➔ ${item.promptPrefix} ________ ${item.promptSuffix}`,
-          options: item.options,
-          correctAnswerIndex: item.correctIndex,
-          explanation: `${item.explanationBg} (${item.grammarRule})`
-        },
-        optionIdx
-      );
-    }
+    studyProgressService.recordGrammarAttempt(isCorrect, isCorrect ? 1 : 0);
   };
 
   const handleSelectPhrasal = (pvId: string, optionIdx: number) => {
@@ -108,7 +92,7 @@ export const EnglishDziLab: React.FC = () => {
     if (!item) return;
 
     const isCorrect = optionIdx === item.correctIndex;
-    studyProgressService.recordQuizCompletion(isCorrect ? 10 : 0, 10);
+    studyProgressService.recordGrammarAttempt(isCorrect, isCorrect ? 1 : 0);
   };
 
   const activeBlueprint = useMemo(

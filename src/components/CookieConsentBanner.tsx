@@ -174,27 +174,41 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
         )}
 
         {/* Links to Full Legal Policies */}
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500">
+        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500">
           <span>Научете повече:</span>
           <button
             onClick={() => onOpenPolicy('privacy')}
             className="text-blue-600 hover:underline font-medium"
           >
-            Политика за поверителност (GDPR)
+            Поверителност (GDPR)
+          </button>
+          <span>•</span>
+          <button
+            onClick={() => onOpenPolicy('ai_act')}
+            className="text-indigo-600 hover:underline font-medium"
+          >
+            Прозрачност за ИИ (EU AI Act)
+          </button>
+          <span>•</span>
+          <button
+            onClick={() => onOpenPolicy('accessibility')}
+            className="text-emerald-600 hover:underline font-medium"
+          >
+            Достъпност (EAA)
           </button>
           <span>•</span>
           <button
             onClick={() => onOpenPolicy('cookies')}
             className="text-blue-600 hover:underline font-medium"
           >
-            Политика за бисквитките
+            Бисквитки
           </button>
           <span>•</span>
           <button
             onClick={() => onOpenPolicy('terms')}
             className="text-blue-600 hover:underline font-medium"
           >
-            Условия за ползване
+            Условия & DSA
           </button>
         </div>
 

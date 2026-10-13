@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, Check, Sparkles, Send, ShieldCheck, BellRing } from 'lucide-react';
 import { mailingService, type NewsletterSubscription } from '../services/mailingService';
+import type { LegalPolicyTab } from './LegalPoliciesModal';
 
-export const NewsletterSection: React.FC = () => {
+interface NewsletterSectionProps {
+  onOpenPolicyModal?: (tab: LegalPolicyTab) => void;
+}
+
+export const NewsletterSection: React.FC<NewsletterSectionProps> = ({ onOpenPolicyModal }) => {
   const [email, setEmail] = useState('');
   const [grade, setGrade] = useState('7. клас (НВО)');
+  const [gdprConsent, setGdprConsent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [currentSub, setCurrentSub] = useState<NewsletterSubscription | undefined>(undefined);
@@ -23,6 +29,14 @@ export const NewsletterSection: React.FC = () => {
       return;
     }
 
+    if (!gdprConsent) {
+      setStatusMessage({
+        type: 'error',
+        text: 'Моля, потвърдете съгласието си с Политиката за поверителност (GDPR) и условието за възраст (14+ г. или съгласие на родител).'
+      });
+      return;
+    }
+
     setIsLoading(true);
     setStatusMessage(null);
 
@@ -37,16 +51,17 @@ export const NewsletterSection: React.FC = () => {
         subscribedAt: new Date().toISOString()
       });
       setEmail('');
+      setGdprConsent(false);
     } else {
       setStatusMessage({ type: 'error', text: res.message });
     }
   };
 
-  const handleUnsubscribe = () => {
+  const handleUnsubscribe = async () => {
     if (currentSub?.email) {
-      mailingService.unsubscribe(currentSub.email);
+      await mailingService.unsubscribe(currentSub.email);
       setCurrentSub(undefined);
-      setStatusMessage({ type: 'success', text: 'Успешно се отписахте от бюлетина.' });
+      setStatusMessage({ type: 'success', text: 'Успешно се отписахте от бюлетина (данните ви са заличени съгласно чл. 17 от GDPR).' });
     }
   };
 
@@ -77,7 +92,7 @@ export const NewsletterSection: React.FC = () => {
             <div className="pt-1 flex flex-wrap items-center justify-center md:justify-start gap-4 text-xs text-slate-500 font-medium">
               <span className="flex items-center gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Без спам • 100% безплатно</span>
+                <span>Без спам • Отписване с 1 клик (GDPR)</span>
               </span>
               <span className="flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-blue-600" />
@@ -103,10 +118,11 @@ export const NewsletterSection: React.FC = () => {
                 </div>
                 <div className="pt-1 flex justify-center md:justify-start">
                   <button
+                    type="button"
                     onClick={handleUnsubscribe}
                     className="text-[11px] text-slate-500 hover:text-rose-600 underline transition-colors"
                   >
-                    Отпиши се от бюлетина
+                    Отпиши се и изтрий имейла (Чл. 17 GDPR)
                   </button>
                 </div>
               </div>
@@ -116,6 +132,7 @@ export const NewsletterSection: React.FC = () => {
                   {/* Grade Selector */}
                   <div className="sm:col-span-5">
                     <select
+                      aria-label="Избери клас за бюлетина"
                       value={grade}
                       onChange={(e) => setGrade(e.target.value)}
                       className="w-full h-10 px-3 rounded-xl border border-slate-300 text-xs font-medium text-slate-800 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600"
@@ -135,6 +152,7 @@ export const NewsletterSection: React.FC = () => {
                     <input
                       type="email"
                       required
+                      aria-label="Имейл адрес за абонамент"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="твоят@email.com"
@@ -142,6 +160,26 @@ export const NewsletterSection: React.FC = () => {
                     />
                   </div>
                 </div>
+
+                {/* Mandatory GDPR & Age Consent Checkbox (Art. 6(1)(a) & Art. 8 GDPR / Art. 25v ZZLD) */}
+                <label className="flex items-start gap-2 text-[11px] text-slate-600 leading-snug cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={gdprConsent}
+                    onChange={(e) => setGdprConsent(e.target.checked)}
+                    className="mt-0.5 w-3.5 h-3.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 flex-shrink-0"
+                  />
+                  <span>
+                    Съгласен/на съм да получавам седмичния учебен бюлетин и потвърждавам, че имам <strong>навършени 14 г.</strong> (или съгласие на родител/настойник по чл. 25в от ЗЗЛД) съгласно{' '}
+                    <button
+                      type="button"
+                      onClick={() => onOpenPolicyModal?.('privacy')}
+                      className="text-blue-600 hover:underline font-semibold"
+                    >
+                      Политиката за поверителност (GDPR)
+                    </button>.
+                  </span>
+                </label>
 
                 {/* Submit Button */}
                 <button

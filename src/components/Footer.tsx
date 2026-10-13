@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import type { AppNavTab } from './Navbar';
 import type { CultureSubTab } from './CultureHero';
+import type { LegalPolicyTab } from './LegalPoliciesModal';
 
 interface FooterProps {
   onNavigateTab: (tab: AppNavTab) => void;
@@ -25,7 +26,7 @@ interface FooterProps {
   onOpenScan: () => void;
   onOpenFormulaModal: () => void;
   onScrollToCatalog: () => void;
-  onOpenPolicyModal?: (tab: 'privacy' | 'terms' | 'cookies') => void;
+  onOpenPolicyModal?: (tab: LegalPolicyTab) => void;
   onOpenCookieSettings?: () => void;
 }
 
@@ -265,12 +266,26 @@ export const Footer: React.FC<FooterProps> = ({
 
         {/* Legal Policies & Cookie Settings Strip */}
         <div className="pt-6 pb-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="flex flex-wrap items-center gap-x-3.5 gap-y-2">
             <button
               onClick={() => onOpenPolicyModal?.('privacy')}
               className="hover:text-blue-600 transition-colors font-medium"
             >
               Политика за поверителност (GDPR)
+            </button>
+            <span>•</span>
+            <button
+              onClick={() => onOpenPolicyModal?.('ai_act')}
+              className="hover:text-indigo-600 transition-colors font-medium"
+            >
+              Прозрачност за ИИ (EU AI Act)
+            </button>
+            <span>•</span>
+            <button
+              onClick={() => onOpenPolicyModal?.('accessibility')}
+              className="hover:text-emerald-600 transition-colors font-medium"
+            >
+              Достъпност (EAA / WCAG)
             </button>
             <span>•</span>
             <button
@@ -284,7 +299,7 @@ export const Footer: React.FC<FooterProps> = ({
               onClick={() => onOpenPolicyModal?.('terms')}
               className="hover:text-blue-600 transition-colors font-medium"
             >
-              Условия за ползване
+              Условия & DSA
             </button>
             <span>•</span>
             <button
@@ -297,7 +312,7 @@ export const Footer: React.FC<FooterProps> = ({
 
           <div className="flex items-center gap-1.5 text-slate-500 text-[11px]">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Защитено образователно пространство без реклами</span>
+            <span>Съобразено с регламентите на ЕС (GDPR • EU AI Act • EAA • DSA)</span>
           </div>
         </div>
 

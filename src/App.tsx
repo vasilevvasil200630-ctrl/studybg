@@ -784,7 +784,7 @@ export function App() {
 
       {/* Weekly Exam Prep Newsletter (deferred offscreen rendering via content-visibility) */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full cv-auto">
-        <NewsletterSection />
+        <NewsletterSection onOpenPolicyModal={handleOpenPolicy} />
       </div>
 
       {/* Footer with Legal Policies */}

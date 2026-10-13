@@ -125,17 +125,35 @@ export const mailingService = {
   },
 
   /**
-   * Unsubscribe from weekly newsletter
+   * Unsubscribe from weekly newsletter (local + cloud deletion per Art. 7(3) & Art. 17 GDPR)
    */
-  unsubscribe(email: string): void {
+  async unsubscribe(email: string): Promise<void> {
+    const cleanEmail = email.trim().toLowerCase();
     try {
       const raw = localStorage.getItem(LOCAL_STORAGE_SUBSCRIBERS_KEY);
-      if (!raw) return;
-      const existing: NewsletterSubscription[] = JSON.parse(raw);
-      const filtered = existing.filter(s => s.email.toLowerCase() !== email.trim().toLowerCase());
-      localStorage.setItem(LOCAL_STORAGE_SUBSCRIBERS_KEY, JSON.stringify(filtered));
+      if (raw) {
+        const existing: NewsletterSubscription[] = JSON.parse(raw);
+        const filtered = existing.filter(s => s.email.toLowerCase() !== cleanEmail);
+        localStorage.setItem(LOCAL_STORAGE_SUBSCRIBERS_KEY, JSON.stringify(filtered));
+      }
+      const lastUsed = localStorage.getItem(LOCAL_STORAGE_RECENT_EMAIL_KEY);
+      if (lastUsed && lastUsed.toLowerCase() === cleanEmail) {
+        localStorage.removeItem(LOCAL_STORAGE_RECENT_EMAIL_KEY);
+      }
     } catch (e) {
-      console.warn('Unsubscribe error:', e);
+      console.warn('Unsubscribe local error:', e);
+    }
+
+    try {
+      const { supabase, isSupabaseConfigured } = await import('./supabaseClient');
+      if (isSupabaseConfigured()) {
+        await supabase
+          .from('newsletter_subscribers')
+          .delete()
+          .eq('email', cleanEmail);
+      }
+    } catch (err) {
+      console.warn('Supabase unsubscribe notice:', err);
     }
   },
 

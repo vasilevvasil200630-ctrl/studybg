@@ -159,11 +159,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Left: Brand Identity */}
           <div className="flex items-center gap-3 sm:gap-4 shrink-0">
             <a
-              href="#study"
+              href="/"
               className="flex items-center gap-2.5 cursor-pointer group"
               onClick={(e) => {
                 e.preventDefault();
-                onSelectPortalMode('study');
                 handleStudyNavClick('home');
               }}
             >

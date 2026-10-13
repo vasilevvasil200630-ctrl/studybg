@@ -90,19 +90,26 @@ export function App() {
 
   const handleSelectPortalMode = (mode: 'study' | 'culture') => {
     setPortalMode(mode);
-    const targetHash = mode === 'study' ? '#study' : '#culture';
-    if (window.location.hash !== targetHash) {
-      window.history.pushState(null, '', targetHash);
+    if (mode === 'study') {
+      setActiveTab('home');
+      if (window.location.hash) {
+        window.history.pushState(null, '', window.location.pathname);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      if (window.location.hash !== '#culture') {
+        window.history.pushState(null, '', '#culture');
+      }
+      const el = document.getElementById('workspace');
+      el?.scrollIntoView({ behavior: 'smooth' });
     }
-    const el = document.getElementById('workspace');
-    el?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleNavigateStudyTab = (tab: AppNavTab) => {
     setPortalMode('study');
     setActiveTab(tab);
     if (tab === 'home') {
-      if (window.location.hash && window.location.hash !== '#home') {
+      if (window.location.hash) {
         window.history.pushState(null, '', window.location.pathname);
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -140,7 +147,7 @@ export function App() {
   useEffect(() => {
     const syncFromHash = () => {
       const hash = window.location.hash.replace('#', '').trim();
-      if (!hash || hash === 'home') {
+      if (!hash || hash === 'home' || hash === 'study') {
         setPortalMode('study');
         setActiveTab('home');
         return;
@@ -189,11 +196,6 @@ export function App() {
       } else if (hash === 'wisdom') {
         setPortalMode('culture');
         setCultureSubTab('wisdom');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'study') {
-        setPortalMode('study');
-        setActiveTab('summary');
         const el = document.getElementById('workspace');
         el?.scrollIntoView({ behavior: 'smooth' });
       } else if (STUDY_TABS.includes(hash as AppNavTab)) {
@@ -321,25 +323,23 @@ export function App() {
         )}
       </Suspense>
 
-      {/* Main Workspace with Modern Left Sidebar Layout */}
-      <main id="workspace" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
-        
-        {/* ========================================================================= */}
-        {/* PORTAL 1: УЧЕБНА АКАДЕМИЯ (СНИМАНЕ И ПОДГОТОВКА) */}
-        {/* ========================================================================= */}
-        {portalMode === 'study' ? (
-          activeTab === 'home' ? (
-            <Suspense fallback={<ViewLoadingSkeleton />}>
-              <HomeLandingView
-                lessons={lessons}
-                onSelectLesson={handleLessonSelected}
-                onNavigateTab={handleNavigateStudyTab}
-                onOpenScan={() => setIsScanModalOpen(true)}
-                onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
-                onNavigateCultureTab={handleNavigateCultureTab}
-              />
-            </Suspense>
-          ) : (
+      {/* Main Content Area: Spacious Full-Width Homepage vs Focused Workspace */}
+      {portalMode === 'study' && activeTab === 'home' ? (
+        <main className="flex-1 w-full bg-slate-50">
+          <Suspense fallback={<ViewLoadingSkeleton />}>
+            <HomeLandingView
+              lessons={lessons}
+              onSelectLesson={handleLessonSelected}
+              onNavigateTab={handleNavigateStudyTab}
+              onOpenScan={() => setIsScanModalOpen(true)}
+              onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
+              onNavigateCultureTab={handleNavigateCultureTab}
+            />
+          </Suspense>
+        </main>
+      ) : (
+        <main id="workspace" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
+          {portalMode === 'study' ? (
             <div>
             
             {/* Top Workspace Breadcrumbs & Topic Header */}
@@ -547,8 +547,7 @@ export function App() {
             </div>
 
           </div>
-        )
-      ) : (
+        ) : (
           /* ========================================================================= */
           /* PORTAL 2: ОБЩА КУЛТУРА & ЗАГАДКИ (СЪС СТРАНИЧНО МЕНЮ) */
           /* ========================================================================= */
@@ -651,6 +650,7 @@ export function App() {
         )}
 
       </main>
+      )}
 
       {/* Weekly Exam Prep Newsletter */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">

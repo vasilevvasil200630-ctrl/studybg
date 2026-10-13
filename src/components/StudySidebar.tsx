@@ -14,7 +14,8 @@ import {
   ChevronRight,
   Scale,
   Compass,
-  Calculator
+  Calculator,
+  Home
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -185,6 +186,18 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
     >
       <div className="lg:sticky lg:top-20 space-y-3">
         
+        {/* Quick Link back to Homepage */}
+        <button
+          onClick={() => onSelectTab('home')}
+          className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 hover:text-blue-700 border border-slate-200 shadow-2xs text-xs font-semibold transition-all group cursor-pointer"
+        >
+          <div className="flex items-center gap-2">
+            <Home className="w-3.5 h-3.5 text-blue-600 group-hover:scale-110 transition-transform" />
+            <span>Към начална страница</span>
+          </div>
+          <span className="text-[10px] text-slate-400 group-hover:text-blue-600 font-mono">StudyBG</span>
+        </button>
+
         {/* Compact Current Lesson Indicator */}
         <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-2xs">
           <div className="flex items-center justify-between gap-1 mb-1">

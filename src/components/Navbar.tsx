@@ -19,12 +19,15 @@ import {
   Quote,
   Scale,
   Award,
-  ArrowUpRight
+  ArrowUpRight,
+  Home,
+  Calculator
 } from 'lucide-react';
 import { errorBankService } from '../services/errorBankService';
 import type { CultureSubTab } from './CultureHero';
 
 export type AppNavTab =
+  | 'home'
   | 'scan'
   | 'audit'
   | 'summary'
@@ -86,6 +89,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const highSchoolNavItems: { tab: AppNavTab; label: string; icon: React.ReactNode; badge?: React.ReactNode }[] = [
+    { tab: 'home', label: 'Начална страница', icon: <Home className="w-3.5 h-3.5 text-blue-600" /> },
     {
       tab: 'simulator',
       label: '100т. Симулатор',
@@ -93,6 +97,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       badge: (
         <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
           МОН
+        </span>
+      )
+    },
+    {
+      tab: 'calculator',
+      label: 'МОН Калкулатор',
+      icon: <Calculator className="w-3.5 h-3.5 text-indigo-600" />,
+      badge: (
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 font-bold border border-indigo-200">
+          Оценка & бал
         </span>
       )
     },
@@ -150,7 +164,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={(e) => {
                 e.preventDefault();
                 onSelectPortalMode('study');
-                handleStudyNavClick('summary');
+                handleStudyNavClick('home');
               }}
             >
               <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-600 text-white shadow-xs group-hover:bg-blue-700 transition-colors">
@@ -173,7 +187,83 @@ export const Navbar: React.FC<NavbarProps> = ({
             </a>
           </div>
 
+          {/* Center: Desktop Navigation Links */}
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5">
+            <button
+              onClick={() => handleStudyNavClick('home')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-semibold transition-all cursor-pointer ${
+                portalMode === 'study' && activeTab === 'home'
+                  ? 'bg-blue-50 text-blue-700 shadow-2xs font-bold'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              <Home className="w-4 h-4 text-blue-600" />
+              <span>Начало</span>
+            </button>
 
+            <button
+              onClick={() => handleStudyNavClick('simulator')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
+                portalMode === 'study' && activeTab === 'simulator'
+                  ? 'bg-amber-50 text-amber-900 font-bold shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              <Clock className="w-4 h-4 text-amber-600" />
+              <span>100т. Симулатор</span>
+              <span className="font-mono text-[9px] px-1 py-0.2 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
+                МОН
+              </span>
+            </button>
+
+            <button
+              onClick={() => handleStudyNavClick('calculator')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
+                portalMode === 'study' && activeTab === 'calculator'
+                  ? 'bg-indigo-50 text-indigo-900 font-bold shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              <Calculator className="w-4 h-4 text-indigo-600" />
+              <span>МОН Калкулатор</span>
+            </button>
+
+            <button
+              onClick={() => handleStudyNavClick('cases')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
+                portalMode === 'study' && activeTab === 'cases'
+                  ? 'bg-purple-50 text-purple-900 font-bold shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              <Scale className="w-4 h-4 text-purple-600" />
+              <span>Казуси за ДЗИ</span>
+            </button>
+
+            <button
+              onClick={() => handleStudyNavClick('catalog')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
+                portalMode === 'study' && activeTab === 'catalog'
+                  ? 'bg-slate-200/80 text-slate-900 font-bold shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              <BookMarked className="w-4 h-4 text-slate-500" />
+              <span>Каталог</span>
+            </button>
+
+            <button
+              onClick={() => handleCultureNavClick('mysteries')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
+                portalMode === 'culture'
+                  ? 'bg-amber-50 text-amber-900 font-bold shadow-2xs border border-amber-200'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              <Compass className="w-4 h-4 text-amber-600" />
+              <span>Обща култура</span>
+            </button>
+          </nav>
 
           {/* Right Action Bar */}
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">

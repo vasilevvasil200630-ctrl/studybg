@@ -1,6 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { Navbar, type AppNavTab } from './components/Navbar';
-import { Hero } from './components/Hero';
 import { CultureHero, type CultureSubTab } from './components/CultureHero';
 import { SummaryView } from './components/SummaryView';
 import { Footer } from './components/Footer';
@@ -13,6 +12,7 @@ import { LegalPoliciesModal, type LegalPolicyTab } from './components/LegalPolic
 import { MaturaPlusBridgeBanner } from './components/MaturaPlusBridgeBanner';
 
 // Code-split heavy interactive modules for optimal bundle size and instant initial load
+const HomeLandingView = lazy(() => import('./components/HomeLandingView').then(m => ({ default: m.HomeLandingView })));
 const CultureHubView = lazy(() => import('./components/CultureHubView').then(m => ({ default: m.CultureHubView })));
 const ExamSimulatorView = lazy(() => import('./components/ExamSimulatorView').then(m => ({ default: m.ExamSimulatorView })));
 const ErrorBankView = lazy(() => import('./components/ErrorBankView').then(m => ({ default: m.ErrorBankView })));
@@ -49,7 +49,7 @@ import {
 import './App.css';
 
 const STUDY_TABS: AppNavTab[] = [
-  'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
+  'home', 'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
   'simulator', 'errorbank', 'generator', 'catalog', 'calculator'
 ];
 
@@ -70,7 +70,7 @@ export function App() {
   const [lessons, setLessons] = useState<LessonData[]>(CURRICULUM_LESSONS);
   const [currentLesson, setCurrentLesson] = useState<LessonData>(CURRICULUM_LESSONS[0]);
 
-  const [activeTab, setActiveTab] = useState<AppNavTab>('summary');
+  const [activeTab, setActiveTab] = useState<AppNavTab>('home');
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
   const [isFormulaModalOpen, setIsFormulaModalOpen] = useState(false);
   const [isQuickLessonModalOpen, setIsQuickLessonModalOpen] = useState(false);
@@ -101,11 +101,18 @@ export function App() {
   const handleNavigateStudyTab = (tab: AppNavTab) => {
     setPortalMode('study');
     setActiveTab(tab);
-    if (window.location.hash !== `#${tab}`) {
-      window.history.pushState(null, '', `#${tab}`);
+    if (tab === 'home') {
+      if (window.location.hash && window.location.hash !== '#home') {
+        window.history.pushState(null, '', window.location.pathname);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      if (window.location.hash !== `#${tab}`) {
+        window.history.pushState(null, '', `#${tab}`);
+      }
+      const el = document.getElementById('workspace');
+      el?.scrollIntoView({ behavior: 'smooth' });
     }
-    const el = document.getElementById('workspace');
-    el?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleNavigateCultureTab = (subTab: CultureSubTab) => {
@@ -133,7 +140,11 @@ export function App() {
   useEffect(() => {
     const syncFromHash = () => {
       const hash = window.location.hash.replace('#', '').trim();
-      if (!hash) return;
+      if (!hash || hash === 'home') {
+        setPortalMode('study');
+        setActiveTab('home');
+        return;
+      }
 
       if (hash === 'culture') {
         setPortalMode('culture');
@@ -238,6 +249,7 @@ export function App() {
   };
 
   const mobileNavPills: { tab: AppNavTab; label: string; icon: React.ReactNode }[] = [
+    { tab: 'home', label: 'Начало', icon: <Home className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'summary', label: 'Конспект', icon: <BookOpen className="w-3.5 h-3.5" /> },
     { tab: 'cases', label: 'Казуси ДЗИ', icon: <Scale className="w-3.5 h-3.5 text-purple-600" /> },
     { tab: 'audit', label: 'Одит 6.00', icon: <CheckSquare className="w-3.5 h-3.5" /> },
@@ -269,20 +281,8 @@ export function App() {
         onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
       />
 
-      {/* Hero Section: Study Hero (on summary tab) or Culture Hero based on portalMode */}
-      {portalMode === 'study' ? (
-        activeTab === 'summary' && (
-          <Hero
-            onScanClick={() => setIsScanModalOpen(true)}
-            onSelectSample={(l) => handleLessonSelected(l, 'summary')}
-            lessons={lessons}
-            currentLesson={currentLesson}
-            onNavigateTab={handleNavigateStudyTab}
-            onScrollToCatalog={scrollToCatalog}
-            onNavigateCultureTab={handleNavigateCultureTab}
-          />
-        )
-      ) : (
+      {/* Culture Portal Hero (shown only when in Culture mode) */}
+      {portalMode === 'culture' && (
         <CultureHero
           onSwitchToStudy={() => handleSelectPortalMode('study')}
           onSelectSubTab={handleNavigateCultureTab}
@@ -328,7 +328,19 @@ export function App() {
         {/* PORTAL 1: УЧЕБНА АКАДЕМИЯ (СНИМАНЕ И ПОДГОТОВКА) */}
         {/* ========================================================================= */}
         {portalMode === 'study' ? (
-          <div>
+          activeTab === 'home' ? (
+            <Suspense fallback={<ViewLoadingSkeleton />}>
+              <HomeLandingView
+                lessons={lessons}
+                onSelectLesson={handleLessonSelected}
+                onNavigateTab={handleNavigateStudyTab}
+                onOpenScan={() => setIsScanModalOpen(true)}
+                onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
+                onNavigateCultureTab={handleNavigateCultureTab}
+              />
+            </Suspense>
+          ) : (
+            <div>
             
             {/* Top Workspace Breadcrumbs & Topic Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200">
@@ -535,7 +547,8 @@ export function App() {
             </div>
 
           </div>
-        ) : (
+        )
+      ) : (
           /* ========================================================================= */
           /* PORTAL 2: ОБЩА КУЛТУРА & ЗАГАДКИ (СЪС СТРАНИЧНО МЕНЮ) */
           /* ========================================================================= */

@@ -160,7 +160,7 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
               <Scale className="w-3.5 h-3.5 text-purple-700" />
               <span>Казуси за ДЗИ (11.–12. кл.) • Анализ на исторически извори & Есе</span>
               <span className="text-[10px] bg-purple-200/70 text-purple-950 font-bold px-1.5 py-0.5 rounded">
-                10 академични казуса
+                {HISTORICAL_CASES_DATA.length} академични казуса
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">

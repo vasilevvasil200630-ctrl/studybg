@@ -13,7 +13,8 @@ import {
   ChevronRight,
   Award,
   BookMarked,
-  Compass
+  Compass,
+  PenTool
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -176,9 +177,11 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
           </div>
 
           {/* Informative Topics Overview Strip (No direct links) */}
-          <div className="pt-4 max-w-2xl mx-auto">
+          <div className="pt-4 max-w-3xl mx-auto">
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs text-slate-600 flex flex-wrap items-center justify-center gap-2">
               <span className="font-bold text-slate-800">Обхванати модули:</span>
+              <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">Тренажор правопис (Модул 1)</span>
+              <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">Литературен канон & тези (41. в-с)</span>
               <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">БЕЛ за ДЗИ (11.–12. кл.)</span>
               <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">История и цивилизации</span>
               <span className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-medium">НВО 10. клас</span>
@@ -210,21 +213,71 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       </section>
 
       {/* ========================================================================= */}
-      {/* 2. THE 4 PILLARS OF EXCELLENCE: INTERACTIVE & PURPOSEFUL CARDS */}
+      {/* 2. THE 6 PILLARS OF EXCELLENCE: INTERACTIVE & PURPOSEFUL CARDS */}
       {/* ========================================================================= */}
       <section id="pillars" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-10">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Четирите стълба за отличен резултат
+            Шестте стълба за отличен резултат (Отличен 6.00)
           </h2>
           <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-            Всичко необходимо за покриване на критериите на МОН — от първия модул до есето и кандидатстването във ВУЗ.
+            Всичко необходимо за покриване на критериите на МОН — от граматическите капани в Модул 1 до литературните тези за 41. задача и балообразуването за ВУЗ.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           
-          {/* Pillar 1: Exam Simulator */}
+          {/* Pillar 1: Grammar & Orthography Trainer */}
+          <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center border border-blue-200/80">
+                <PenTool className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-700 transition-colors">
+                Тренажор по Граматика & Правопис
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Специализиран тренажор за Модул 1 на ДЗИ: пълен/кратък член, пунктуация на сложни и вметнати изречения, слято/полуслято писане, двойно „нн“ и бройни форми.
+              </p>
+              <div className="pt-2 flex flex-wrap gap-1.5 text-[11px] font-mono text-slate-500">
+                <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">Пълен член</span>
+                <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">Пунктуация</span>
+                <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">Стандарти на БАН</span>
+              </div>
+            </div>
+            
+            <div className="pt-4 border-t border-slate-100 flex items-center gap-1.5 text-xs font-semibold text-blue-800">
+              <ShieldCheck className="w-4 h-4 text-blue-600" />
+              <span>Включено в Учебната академия</span>
+            </div>
+          </div>
+
+          {/* Pillar 2: Literature Canon & Thesis Generator */}
+          <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="w-11 h-11 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center border border-purple-200/80">
+                <BookMarked className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-bold text-slate-900 group-hover:text-purple-700 transition-colors">
+                Литературен Канон & Тези за 41. задача
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Всички 14 задължителни автори от Ботев до Талев, 5 тематични цикъла (Родното, Свободата, Любовта, Вярата), архив с цитати и 3-компонентен генератор на тези за ЛИС и есе.
+              </p>
+              <div className="pt-2 flex flex-wrap gap-1.5 text-[11px] font-mono text-slate-500">
+                <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">14 автори</span>
+                <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">Цитатник</span>
+                <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200">ЛИС & Есе</span>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-100 flex items-center gap-1.5 text-xs font-semibold text-purple-800">
+              <BookMarked className="w-4 h-4 text-purple-600" />
+              <span>Включено в Учебната академия</span>
+            </div>
+          </div>
+
+          {/* Pillar 3: Exam Simulator */}
           <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
             <div className="space-y-3">
               <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center border border-amber-200/80">
@@ -249,7 +302,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             </div>
           </div>
 
-          {/* Pillar 2: AI Essay Evaluator */}
+          {/* Pillar 4: AI Essay Evaluator */}
           <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
             <div className="space-y-3">
               <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center border border-blue-200/80">
@@ -274,7 +327,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             </div>
           </div>
 
-          {/* Pillar 3: MON Grade & Points Calculator */}
+          {/* Pillar 5: MON Grade & Points Calculator */}
           <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
             <div className="space-y-3">
               <div className="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center border border-indigo-200/80">
@@ -298,7 +351,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             </div>
           </div>
 
-          {/* Pillar 4: Primary Historical Sources & Cases */}
+          {/* Pillar 6: Primary Historical Sources & Cases */}
           <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
             <div className="space-y-3">
               <div className="w-11 h-11 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center border border-purple-200/80">

@@ -15,7 +15,8 @@ import {
   Scale,
   Compass,
   Calculator,
-  Home
+  Home,
+  PenTool
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -95,6 +96,35 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           sublabel: '',
           icon: CheckSquare,
           accentColor: 'text-amber-600'
+        }
+      ]
+    },
+    {
+      title: 'Матура & БЕЛ модули',
+      items: [
+        {
+          tab: 'grammar',
+          label: 'Тренажор БЕЛ (Модул 1)',
+          sublabel: '',
+          icon: PenTool,
+          accentColor: 'text-indigo-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-700 font-bold border border-indigo-200">
+              БАН
+            </span>
+          )
+        },
+        {
+          tab: 'literature',
+          label: 'Литературен Канон & Тези',
+          sublabel: '',
+          icon: BookMarked,
+          accentColor: 'text-purple-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-purple-100 text-purple-700 font-bold border border-purple-200">
+              41. в-с
+            </span>
+          )
         }
       ]
     },

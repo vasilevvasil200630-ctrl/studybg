@@ -21,7 +21,8 @@ import {
   Award,
   ArrowUpRight,
   Home,
-  Calculator
+  Calculator,
+  PenTool
 } from 'lucide-react';
 import { errorBankService } from '../services/errorBankService';
 import type { CultureSubTab } from './CultureHero';
@@ -40,7 +41,9 @@ export type AppNavTab =
   | 'generator'
   | 'catalog'
   | 'knowledge'
-  | 'calculator';
+  | 'calculator'
+  | 'grammar'
+  | 'literature';
 
 interface NavbarProps {
   portalMode: 'study' | 'culture';
@@ -117,6 +120,26 @@ export const Navbar: React.FC<NavbarProps> = ({
       badge: (
         <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 font-bold border border-purple-200">
           11–12 кл
+        </span>
+      )
+    },
+    {
+      tab: 'grammar',
+      label: 'Тренажор БЕЛ',
+      icon: <PenTool className="w-3.5 h-3.5 text-blue-600" />,
+      badge: (
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold border border-blue-200">
+          Модул 1
+        </span>
+      )
+    },
+    {
+      tab: 'literature',
+      label: 'Литературен Канон',
+      icon: <BookMarked className="w-3.5 h-3.5 text-purple-600" />,
+      badge: (
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-bold border border-purple-200">
+          41. въпрос
         </span>
       )
     },
@@ -261,6 +284,30 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <Scale className="w-4 h-4 text-purple-600" />
                 <span>Казуси за ДЗИ</span>
+              </button>
+
+              <button
+                onClick={() => handleStudyNavClick('grammar')}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
+                  portalMode === 'study' && activeTab === 'grammar'
+                    ? 'bg-blue-50 text-blue-900 font-bold shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <PenTool className="w-4 h-4 text-blue-600" />
+                <span>Тренажор БЕЛ</span>
+              </button>
+
+              <button
+                onClick={() => handleStudyNavClick('literature')}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all cursor-pointer ${
+                  portalMode === 'study' && activeTab === 'literature'
+                    ? 'bg-purple-50 text-purple-900 font-bold shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <BookMarked className="w-4 h-4 text-purple-600" />
+                <span>Литературен Канон</span>
               </button>
 
               <button

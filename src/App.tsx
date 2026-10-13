@@ -26,6 +26,8 @@ const QuickLessonSwitcherModal = lazy(() => import('./components/QuickLessonSwit
 const MonFormulaSheetsModal = lazy(() => import('./components/MonFormulaSheetsModal').then(m => ({ default: m.MonFormulaSheetsModal })));
 const HistoricalCasesView = lazy(() => import('./components/HistoricalCasesView').then(m => ({ default: m.HistoricalCasesView })));
 const MonGradeCalculatorView = lazy(() => import('./components/MonGradeCalculatorView').then(m => ({ default: m.MonGradeCalculatorView })));
+const GrammarTrainerLab = lazy(() => import('./components/GrammarTrainerLab').then(m => ({ default: m.GrammarTrainerLab })));
+const LiteratureCanonView = lazy(() => import('./components/LiteratureCanonView').then(m => ({ default: m.LiteratureCanonView })));
 import { errorBankService } from './services/errorBankService';
 
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
@@ -44,13 +46,15 @@ import {
   Home,
   BookMarked,
   Scale,
-  Calculator
+  Calculator,
+  PenTool
 } from 'lucide-react';
 import './App.css';
 
 const STUDY_TABS: AppNavTab[] = [
   'home', 'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
-  'simulator', 'errorbank', 'generator', 'catalog', 'calculator'
+  'simulator', 'errorbank', 'generator', 'catalog', 'calculator',
+  'grammar', 'literature'
 ];
 
 const ViewLoadingSkeleton = () => (
@@ -254,6 +258,8 @@ export function App() {
     { tab: 'home', label: 'Начало', icon: <Home className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'summary', label: 'Конспект', icon: <BookOpen className="w-3.5 h-3.5" /> },
     { tab: 'cases', label: 'Казуси ДЗИ', icon: <Scale className="w-3.5 h-3.5 text-purple-600" /> },
+    { tab: 'grammar', label: 'Тренажор БЕЛ', icon: <PenTool className="w-3.5 h-3.5 text-blue-600" /> },
+    { tab: 'literature', label: 'Литературен Канон', icon: <BookMarked className="w-3.5 h-3.5 text-purple-600" /> },
     { tab: 'audit', label: 'Одит 6.00', icon: <CheckSquare className="w-3.5 h-3.5" /> },
     { tab: 'flashcards', label: 'Флаш карти', icon: <Zap className="w-3.5 h-3.5" /> },
     { tab: 'quiz', label: 'Тест', icon: <GraduationCap className="w-3.5 h-3.5" /> },
@@ -538,6 +544,14 @@ export function App() {
 
                     {activeTab === 'calculator' && (
                       <MonGradeCalculatorView onNavigateTab={handleNavigateStudyTab} />
+                    )}
+
+                    {activeTab === 'grammar' && (
+                      <GrammarTrainerLab />
+                    )}
+
+                    {activeTab === 'literature' && (
+                      <LiteratureCanonView />
                     )}
                   </Suspense>
 

@@ -367,28 +367,75 @@ export function App() {
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   <span className="text-blue-700 font-semibold">Гимназиална академия (8.–12. кл)</span>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="text-emerald-700 font-medium">{currentLesson.subject}</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="text-slate-700 font-medium">{currentLesson.grade}</span>
+                  {activeTab === 'grammar' ? (
+                    <span className="text-indigo-700 font-semibold">Тренажор БЕЛ (Модул 1 • Норми на БАН)</span>
+                  ) : activeTab === 'literature' ? (
+                    <span className="text-purple-700 font-semibold">Литературен Канон & Тези (41. задача ДЗИ)</span>
+                  ) : activeTab === 'cases' ? (
+                    <span className="text-purple-700 font-semibold">Казуси за ДЗИ (11.–12. клас)</span>
+                  ) : activeTab === 'calculator' ? (
+                    <span className="text-indigo-700 font-semibold">МОН Калкулатор & Балообразуване</span>
+                  ) : activeTab === 'errorbank' ? (
+                    <span className="text-rose-700 font-semibold">Интерактивна банка с грешки</span>
+                  ) : activeTab === 'catalog' ? (
+                    <span className="text-blue-700 font-semibold">Пълна учебна програма ({lessons.length} теми)</span>
+                  ) : (
+                    <>
+                      <span className="text-emerald-700 font-medium">{currentLesson.subject}</span>
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                      <span className="text-slate-700 font-medium">{currentLesson.grade}</span>
+                    </>
+                  )}
                 </nav>
 
-                {/* Lesson Title & Quick Switcher Pill */}
+                {/* Lesson or Specialized Module Title */}
                 <div className="flex flex-wrap items-center gap-3 pt-1">
-                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                    <span>{currentLesson.title}</span>
-                    <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-200 font-medium">
-                      {currentLesson.grade}
-                    </span>
-                    {currentLesson.examType && (
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
-                        {currentLesson.examType}
+                  {activeTab === 'grammar' ? (
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                      <span>Тренажор по Граматика, Правопис и Пунктуация</span>
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                        ДЗИ Модул 1 • 20 задачи
                       </span>
-                    )}
-                  </h2>
+                    </h2>
+                  ) : activeTab === 'literature' ? (
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                      <span>Литературен Канон (15 автори) & Генератор на Тези</span>
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-purple-50 text-purple-800 border border-purple-200 font-semibold">
+                        41. задача • ЕСЕ & ЛИС
+                      </span>
+                    </h2>
+                  ) : activeTab === 'cases' ? (
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                      <span>Академични Казуси с Архивни Извори</span>
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-purple-50 text-purple-800 border border-purple-200 font-semibold">
+                        ЦДА & ЛИБИ • 11.–12. клас
+                      </span>
+                    </h2>
+                  ) : activeTab === 'calculator' ? (
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                      <span>Официален МОН Калкулатор за Оценка и Бал</span>
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                        Наредба №11 • 0–100 точки
+                      </span>
+                    </h2>
+                  ) : (
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                      <span>{currentLesson.title}</span>
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-200 font-medium">
+                        {currentLesson.grade}
+                      </span>
+                      {currentLesson.examType && (
+                        <span className="text-xs px-2.5 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
+                          {currentLesson.examType}
+                        </span>
+                      )}
+                    </h2>
+                  )}
                 </div>
 
                 {/* Direct Referral to Matura+ if user browses a 5-7th grade lesson */}
-                {(currentLesson.grade.includes('7.') || currentLesson.grade.includes('6.') || currentLesson.grade.includes('5.')) && (
+                {!['grammar', 'literature', 'cases', 'calculator'].includes(activeTab) &&
+                  (currentLesson.grade.includes('7.') || currentLesson.grade.includes('6.') || currentLesson.grade.includes('5.')) && (
                   <div className="pt-2">
                     <MaturaPlusBridgeBanner compact={true} source="lesson-breadcrumb" />
                   </div>

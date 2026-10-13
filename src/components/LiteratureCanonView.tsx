@@ -21,6 +21,7 @@ export const LiteratureCanonView: React.FC = () => {
   const [selectedAuthorId, setSelectedAuthorId] = useState<string>(LITERATURE_CANON[0].id);
   const [selectedEssayThemeIndex, setSelectedEssayThemeIndex] = useState<number>(0);
   const [copiedQuote, setCopiedQuote] = useState<string | null>(null);
+  const [copiedThesis, setCopiedThesis] = useState<boolean>(false);
 
   // Filter authors by search or thematic cycle
   const filteredAuthors = LITERATURE_CANON.filter(author => {
@@ -32,19 +33,22 @@ export const LiteratureCanonView: React.FC = () => {
 
     if (selectedCycle === 'all') return true;
     if (selectedCycle === 'rodnoto') {
-      return author.id === 'botev' || author.id === 'vazov' || author.id === 'aleko' || author.id === 'talev';
+      return ['botev', 'vazov', 'aleko', 'talev', 'debelyanov', 'bagryana'].includes(author.id);
     }
     if (selectedCycle === 'freedom') {
-      return author.id === 'botev' || author.id === 'vazov' || author.id === 'yavorov';
+      return ['botev', 'vazov', 'yavorov', 'geo_milev', 'bagryana'].includes(author.id);
     }
     if (selectedCycle === 'faith') {
-      return author.id === 'yovkov' || author.id === 'vaptsarov';
+      return ['yovkov', 'vaptsarov', 'pencho_slaveykov', 'geo_milev'].includes(author.id);
     }
     if (selectedCycle === 'love_death') {
-      return author.id === 'yavorov' || author.id === 'vaptsarov' || author.id === 'botev';
+      return ['yavorov', 'vaptsarov', 'botev', 'debelyanov', 'pencho_slaveykov', 'dimov'].includes(author.id);
     }
     if (selectedCycle === 'choice') {
-      return author.id === 'botev' || author.id === 'elin_pelin' || author.id === 'talev';
+      return ['botev', 'elin_pelin', 'talev', 'smirnenski', 'dimov', 'pencho_slaveykov'].includes(author.id);
+    }
+    if (selectedCycle === 'city_village') {
+      return ['elin_pelin', 'smirnenski', 'dalchev', 'yovkov', 'aleko'].includes(author.id);
     }
     return true;
   });
@@ -59,6 +63,13 @@ export const LiteratureCanonView: React.FC = () => {
   };
 
   const activeEssayTheme = activeAuthor.essayThemes[selectedEssayThemeIndex] || activeAuthor.essayThemes[0];
+
+  const handleCopyThesis = () => {
+    const fullText = `Тема: ${activeEssayTheme.theme} (${activeAuthor.name})\nТеза: ${activeEssayTheme.thesisPreview}\nПрепоръчани творби: ${activeEssayTheme.recommendedWorks.join(', ')}`;
+    navigator.clipboard.writeText(fullText);
+    setCopiedThesis(true);
+    setTimeout(() => setCopiedThesis(false), 2000);
+  };
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -308,6 +319,25 @@ export const LiteratureCanonView: React.FC = () => {
                     {rw}
                   </span>
                 ))}
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={handleCopyThesis}
+                  className="w-full py-2.5 px-4 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-800 font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                >
+                  {copiedThesis ? (
+                    <>
+                      <Check className="w-4 h-4 text-emerald-600" />
+                      <span className="text-emerald-700">Тезата е копирана в клипборда!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Копирай готовата теза за Модул 3</span>
+                    </>
+                  )}
+                </button>
               </div>
             </div>
 

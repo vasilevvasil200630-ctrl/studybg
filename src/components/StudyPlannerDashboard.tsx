@@ -26,6 +26,7 @@ import { LITERATURE_CANON } from '../data/literatureDatabase';
 import { GRAMMAR_QUESTIONS } from '../data/grammarDatabase';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
+import { ExcellenceCertificateModal } from './ExcellenceCertificateModal';
 
 interface StudyPlannerDashboardProps {
   lessons: LessonData[];
@@ -54,6 +55,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
   );
   const [now, setNow] = useState<Date>(() => new Date());
   const [checklistTab, setChecklistTab] = useState<'authors' | 'lessons'>('authors');
+  const [isCertModalOpen, setIsCertModalOpen] = useState(false);
 
   // Tick every second for the live official exam countdown
   useEffect(() => {
@@ -514,6 +516,17 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                   <span>Рекорд серия: <strong>{progress.grammarBestStreak} поредни</strong></span>
                 </div>
               </div>
+
+              <div className="pt-2 border-t border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setIsCertModalOpen(true)}
+                  className="w-full py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                >
+                  <Award className="w-4 h-4" />
+                  <span>Генерирай Грамота / Сертификат за 6.00 (PDF / A4)</span>
+                </button>
+              </div>
             </div>
 
           </div>
@@ -914,6 +927,21 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
         )}
 
       </div>
+
+      <ExcellenceCertificateModal
+        isOpen={isCertModalOpen}
+        onClose={() => setIsCertModalOpen(false)}
+        achievementTitle="Систематична подготовка по „Моят План за 6.00“"
+        examOrTrackLabel={activeExam.title}
+        scoreText={`Индекс на готовност: ${overallReadinessPercent}%`}
+        gradeLabel={`Целева оценка: Отличен (${progress.targetGrade.toFixed(2)})`}
+        highlights={[
+          `Автори по канона: ${masteredAuthorsCount}/${totalAuthors}`,
+          `Учебни теми: ${masteredLessonsCount}/${totalLessons}`,
+          `Модул 1 задачи: ${progress.grammarQuestionsSolved} решени`,
+          `Най-дълга серия: ${progress.grammarBestStreak} верни`
+        ]}
+      />
 
     </div>
   );

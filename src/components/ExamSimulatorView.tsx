@@ -17,13 +17,15 @@ import {
   Lightbulb,
   Check,
   AlertTriangle,
-  TrendingUp
+  TrendingUp,
+  Award
 } from 'lucide-react';
 import type { QuizQuestion, LessonData } from '../types';
 import { getExamModulesForLesson } from '../data/examModulesData';
 import { evaluateEssayWithGemini, type EssayEvaluationResult } from '../services/geminiService';
 import { examHistoryService } from '../services/examHistoryService';
 import { ExamHistoryModal } from './ExamHistoryModal';
+import { ExcellenceCertificateModal } from './ExcellenceCertificateModal';
 
 interface ExamSimulatorViewProps {
   currentLesson: LessonData;
@@ -46,6 +48,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [activeModuleTab, setActiveModuleTab] = useState<1 | 2 | 3>(1);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState<boolean>(false);
+  const [isCertModalOpen, setIsCertModalOpen] = useState<boolean>(false);
   const [activePreset, setActivePreset] = useState<string>('lesson');
   const [studentName, setStudentName] = useState<string>('Ученик StudyBG');
 
@@ -640,6 +643,14 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
               </div>
 
               <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  onClick={() => setIsCertModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold transition-colors shadow-xs"
+                >
+                  <Award className="w-3.5 h-3.5" />
+                  <span>Дигитална Грамота / Сертификат (A4)</span>
+                </button>
+
                 <button
                   onClick={() => setIsPrintModalOpen(true)}
                   className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-black text-white text-xs font-semibold transition-colors shadow-xs"
@@ -1555,6 +1566,21 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
         isOpen={isHistoryModalOpen}
         onClose={() => setIsHistoryModalOpen(false)}
         onRefresh={() => setHistoryCount(examHistoryService.getAllAttempts().length)}
+      />
+
+      {/* Digital Certificate of Academic Excellence Modal */}
+      <ExcellenceCertificateModal
+        isOpen={isCertModalOpen}
+        onClose={() => setIsCertModalOpen(false)}
+        achievementTitle={`100-точкова Изпитна Симулация: ${currentLesson.title}`}
+        examOrTrackLabel={`${currentLesson.subject} • ${currentLesson.grade}`}
+        scoreText={`Резултат: ${totalPoints} / 100 точки`}
+        gradeLabel={`Оценка: ${gradeInfo.grade}`}
+        highlights={[
+          `Модул 1 (Тест): ${module1Points} / 40 т.`,
+          `Модул 2 (Извори): ${module2Points} / 30 т.`,
+          `Модул 3 (Есе/ЛИС): ${module3Points} / 30 т.`
+        ]}
       />
 
     </div>

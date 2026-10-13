@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  GraduationCap,
   Clock,
   Scale,
   Calculator,
@@ -12,7 +13,8 @@ import {
   FileText,
   ChevronRight,
   Award,
-  BookMarked
+  BookMarked,
+  Compass
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -109,34 +111,118 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             Официални симулатори по стандартите на МОН, интелигентен AI оценител на есета, автентични исторически извори и интерактивен калкулатор за диплома и университетски бал.
           </p>
 
-          {/* Primary Action Buttons */}
-          <div className="pt-2 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-            <button
-              onClick={() => handleStartExamSimulator('12')}
-              className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-sm sm:text-base shadow-sm transition-all hover:shadow-md cursor-pointer"
-            >
-              <Clock className="w-5 h-5 text-white" />
-              <span>100т. Симулатор на ДЗИ 12</span>
-              <ArrowRight className="w-4 h-4 text-blue-200" />
-            </button>
+          {/* Dedicated Entrance Portal Gateway Card */}
+          <div className="pt-2 max-w-3xl mx-auto">
+            <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-5 sm:p-7 space-y-5 text-left">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                <div className="space-y-0.5">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-600">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Портал за достъп до платформата</span>
+                  </div>
+                  <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
+                    Влез в платформата и започни подготовка
+                  </h2>
+                </div>
+                <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 self-start sm:self-auto">
+                  Безплатна регистрация • 100% свободен достъп
+                </span>
+              </div>
 
-            <button
-              onClick={() => onNavigateTab('calculator')}
-              className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-semibold text-sm sm:text-base shadow-xs transition-all cursor-pointer"
-            >
-              <Calculator className="w-4 h-4 text-indigo-600" />
-              <span>МОН Калкулатор оценка & бал</span>
-            </button>
+              {/* Main Entrance Call-to-Actions */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {/* Entrance 1: The Study Academy (8.-12. grade) */}
+                <button
+                  onClick={() => onNavigateTab('summary')}
+                  className="group relative p-4 sm:p-5 rounded-2xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white flex flex-col justify-between transition-all shadow-sm hover:shadow-md cursor-pointer text-left"
+                >
+                  <div className="space-y-2.5">
+                    <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center text-white border border-white/20 shadow-2xs">
+                      <GraduationCap className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <div className="text-[11px] uppercase tracking-wider font-bold text-blue-200">
+                        Гимназиален модул
+                      </div>
+                      <div className="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-1.5 pt-0.5">
+                        <span>Влез в Учебната академия</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                    <p className="text-xs text-blue-100/90 leading-relaxed">
+                      Пълен достъп до уроците за 8.–12. клас, официални конспекти, одит 6.00, интерактивни флаш карти и тестове.
+                    </p>
+                  </div>
+                  <div className="pt-3.5 text-xs font-bold text-blue-200 flex items-center gap-1">
+                    <span>Отвори учебното пространство</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </div>
+                </button>
 
-            <button
-              onClick={onOpenScan}
-              className="inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 font-medium text-sm sm:text-base transition-all cursor-pointer"
-              title="Сканирай своя тетрадка с камера или качи PDF"
-            >
-              <Camera className="w-4 h-4 text-slate-600" />
-              <span className="hidden sm:inline">Сканирай записки</span>
-              <span className="sm:hidden">Сканирай</span>
-            </button>
+                {/* Entrance 2: Cultural Context & Mysteries */}
+                <button
+                  onClick={() => onNavigateCultureTab?.('mysteries')}
+                  className="group relative p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50/60 hover:from-amber-100/80 hover:to-orange-100/80 border border-amber-200/90 text-slate-900 flex flex-col justify-between transition-all shadow-2xs hover:shadow-sm cursor-pointer text-left"
+                >
+                  <div className="space-y-2.5">
+                    <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shadow-xs">
+                      <Compass className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="text-[11px] uppercase tracking-wider font-bold text-amber-800">
+                        Ерудиция & Извори
+                      </div>
+                      <div className="text-base sm:text-lg font-black tracking-tight text-slate-900 flex items-center gap-1.5 pt-0.5">
+                        <span>Влез в „Обща култура & Загадки“</span>
+                        <ArrowRight className="w-4 h-4 text-amber-700 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      Хронология (681–1908), неразгадани български мистерии, ЮНЕСКО паметници и куизове за ерудити.
+                    </p>
+                  </div>
+                  <div className="pt-3.5 text-xs font-bold text-amber-800 flex items-center gap-1">
+                    <span>Отвори културния портал</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </div>
+                </button>
+              </div>
+
+              {/* Quick Tool Entry Bar */}
+              <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+                <span className="text-slate-500 font-medium">Директен вход към специализирани инструменти:</span>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <button
+                    onClick={() => handleStartExamSimulator('12')}
+                    className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold transition-colors cursor-pointer inline-flex items-center gap-1"
+                  >
+                    <Clock className="w-3.5 h-3.5 text-amber-600" />
+                    <span>100т. Симулатор</span>
+                  </button>
+                  <button
+                    onClick={() => onNavigateTab('calculator')}
+                    className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold transition-colors cursor-pointer inline-flex items-center gap-1"
+                  >
+                    <Calculator className="w-3.5 h-3.5 text-indigo-600" />
+                    <span>МОН Калкулатор</span>
+                  </button>
+                  <button
+                    onClick={() => onNavigateTab('cases')}
+                    className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold transition-colors cursor-pointer inline-flex items-center gap-1"
+                  >
+                    <Scale className="w-3.5 h-3.5 text-purple-600" />
+                    <span>Казуси</span>
+                  </button>
+                  <button
+                    onClick={onOpenScan}
+                    className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold transition-colors cursor-pointer inline-flex items-center gap-1"
+                  >
+                    <Camera className="w-3.5 h-3.5 text-blue-600" />
+                    <span>SmartScan OCR</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Live Search Bar for Quick Topic Finding */}
@@ -358,10 +444,10 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
             <div>
               <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-                Избери фокус на подготовката
+                Какво те очаква в Учебната академия
               </h2>
               <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Директен достъп до конспектите, анализите, флаш картите и тестовете.
+                Всеки урок включва структуриран конспект, одит на ключови термини, интерактивни флаш карти и автоматичен тест.
               </p>
             </div>
 
@@ -442,10 +528,10 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                   <div className="pt-4 flex items-center justify-between gap-2 border-t border-slate-200/60 mt-3">
                     <button
                       onClick={() => onSelectLesson(lesson, 'summary')}
-                      className="text-xs font-semibold text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 cursor-pointer"
+                      className="text-xs font-bold text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 cursor-pointer"
                     >
-                      <span>Конспект</span>
-                      <ChevronRight className="w-3 h-3" />
+                      <span>Влез в урока</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </button>
 
                     <button
@@ -464,10 +550,10 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
           <div className="pt-6 text-center">
             <button
               onClick={() => onNavigateTab('catalog')}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
             >
-              <BookMarked className="w-4 h-4 text-blue-600" />
-              <span>Отвори пълния каталог с всички {lessons.length} теми</span>
+              <BookMarked className="w-4 h-4 text-blue-300" />
+              <span>Влез в Академията и разгледай всички {lessons.length} теми в каталога</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -544,7 +630,44 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       </section>
 
       {/* ========================================================================= */}
-      {/* 6. PARTNERSHIP / SYNERGY BRIDGE TO MATURA+ (FOR 7TH GRADERS) */}
+      {/* 6. GRAND ENTRANCE BANNER: DECISIVE CALL TO ENTER THE ACADEMY */}
+      {/* ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="p-8 sm:p-12 rounded-3xl bg-slate-900 text-white text-center space-y-6 shadow-xl border border-slate-800">
+          <div className="max-w-2xl mx-auto space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-400/30">
+              <GraduationCap className="w-4 h-4 text-blue-300" />
+              <span>Започни подготовка за НВО 10 и ДЗИ 12</span>
+            </div>
+            <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-white leading-tight">
+              Влез в Учебната академия и вземи пълен контрол над оценките си
+            </h2>
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+              Спести десетки часове лутане. Разполагаш с конспекти по новите изпитни програми на МОН, 100-точковия симулатор с официален хронометър и AI оценител на есета.
+            </p>
+            <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
+              <button
+                onClick={() => onNavigateTab('summary')}
+                className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-extrabold text-base shadow-lg transition-all hover:scale-[1.02] cursor-pointer"
+              >
+                <GraduationCap className="w-5 h-5 text-white" />
+                <span>Влез в Академията (8.–12. клас)</span>
+                <ArrowRight className="w-5 h-5 text-blue-200" />
+              </button>
+              <button
+                onClick={() => handleStartExamSimulator('12')}
+                className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-sm transition-all cursor-pointer"
+              >
+                <Clock className="w-4 h-4 text-amber-300" />
+                <span>Започни 100т. симулация</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 7. PARTNERSHIP / SYNERGY BRIDGE TO MATURA+ (FOR 7TH GRADERS) */}
       {/* ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <MaturaPlusBridgeBanner source="hero" />

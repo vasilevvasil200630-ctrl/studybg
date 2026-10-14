@@ -18,12 +18,22 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
 }) => {
   const [selectedGrade, setSelectedGrade] = useState<GradeLevel>('Всички класове');
   const [selectedSubject, setSelectedSubject] = useState<SubjectName>('Всички предмети');
+  const [selectedExamType, setSelectedExamType] = useState<string>('Всички изпити');
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const examTypesList = [
+    { id: 'Всички изпити', label: 'Всички изпитни формати' },
+    { id: 'ДЗИ / Матура', label: '🎓 ДЗИ / Матура (12. кл.)' },
+    { id: 'ДИППК / Професионален изпит', label: '🛠️ ДИППК / Професионален изпит (III СПК)' },
+    { id: 'НВО (10. клас)', label: '📘 НВО (10. клас)' },
+    { id: 'НВО (7. клас)', label: '🌱 НВО (7. клас)' }
+  ];
 
   const isJuniorHigh =
     selectedGrade.includes('5.') ||
     selectedGrade.includes('6.') ||
-    selectedGrade.includes('7.');
+    selectedGrade.includes('7.') ||
+    selectedExamType === 'НВО (7. клас)';
 
   const matchesGradeFilter = (lessonGrade: string, targetGrade: GradeLevel): boolean => {
     if (targetGrade === 'Всички класове') return true;
@@ -48,6 +58,8 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
     const matchesGrade = matchesGradeFilter(lesson.grade, selectedGrade);
     const matchesSubject =
       selectedSubject === 'Всички предмети' || lesson.subject === selectedSubject;
+    const matchesExam =
+      selectedExamType === 'Всички изпити' || lesson.examType === selectedExamType;
     const q = searchQuery.toLowerCase().trim();
     const matchesQuery =
       !q ||
@@ -55,7 +67,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
       lesson.subject.toLowerCase().includes(q) ||
       lesson.summary.overview.toLowerCase().includes(q) ||
       lesson.summary.keyPoints.some((kp) => kp.toLowerCase().includes(q));
-    return matchesGrade && matchesSubject && matchesQuery;
+    return matchesGrade && matchesSubject && matchesExam && matchesQuery;
   });
 
   return (
@@ -68,10 +80,10 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
             <span>Държавни образователни стандарти на МОН ({lessons.length} пълни урока)</span>
           </div>
           <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-            Гимназиален каталог: НВО 10 и ДЗИ 12
+            Гимназиален и Професионален каталог: НВО 10, ДЗИ 12 и ДИППК
           </h3>
           <p className="text-xs text-slate-600 mt-1">
-            Избери клас и предмет за достъп до официалния конспект, изискванията за пълно отличие (6.00), флашкартите, тестовете и симулатора.
+            Избери клас, предмет или изпитен формат за достъп до официалния конспект, изискванията за пълно отличие (6.00), флашкартите, тестовете и симулатора.
           </p>
         </div>
 
@@ -102,7 +114,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
               <button
                 key={grade}
                 onClick={() => setSelectedGrade(grade)}
-                className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 ${
+                className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer ${
                   isSelected
                     ? isJunior
                       ? 'bg-emerald-600 text-white shadow-xs font-semibold'
@@ -120,6 +132,45 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                     Matura+
                   </span>
                 )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Exam Type Filter Row */}
+      <div className="mb-4">
+        <div className="flex items-center gap-2 text-xs font-medium text-slate-600 mb-2">
+          <BookOpen className="w-3.5 h-3.5 text-slate-500" />
+          <span>Изпитен формат на МОН (ДЗИ / ДИППК / НВО):</span>
+        </div>
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 no-scrollbar">
+          {examTypesList.map((examItem) => {
+            const count =
+              examItem.id === 'Всички изпити'
+                ? lessons.length
+                : lessons.filter((l) => l.examType === examItem.id).length;
+            const isSelected = selectedExamType === examItem.id;
+            return (
+              <button
+                key={examItem.id}
+                onClick={() => setSelectedExamType(examItem.id)}
+                className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer ${
+                  isSelected
+                    ? 'bg-indigo-600 text-white shadow-xs font-semibold'
+                    : 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200/80 border border-slate-200'
+                }`}
+              >
+                <span>{examItem.label}</span>
+                <span
+                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
+                    isSelected
+                      ? 'bg-indigo-700 text-indigo-100'
+                      : 'bg-white text-slate-600 border border-slate-200/80'
+                  }`}
+                >
+                  {count}
+                </span>
               </button>
             );
           })}
@@ -147,7 +198,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
               <button
                 key={subj}
                 onClick={() => setSelectedSubject(subj)}
-                className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 ${
+                className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer ${
                   selectedSubject === subj
                     ? 'bg-blue-600 text-white shadow-xs font-semibold'
                     : 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200/80 border border-slate-200'

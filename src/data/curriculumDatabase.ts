@@ -26,7 +26,7 @@ export const SUBJECTS_LIST: SubjectName[] = [
   'Гражданско образование и философия'
 ];
 
-export const CURRICULUM_LESSONS: LessonData[] = [
+const CORE_CURRICULUM_LESSONS: LessonData[] = [
   // 1. История 11. клас: Априлското въстание
   {
     id: 'history-april-uprising',
@@ -5375,6 +5375,63 @@ export const CURRICULUM_LESSONS: LessonData[] = [
     "Какви са правомощията на Княза и министрите?",
     "Защо консерваторите са искали имуществен ценз?"
   ]
-},
-  ...EXTRA_CURRICULUM_LESSONS
+}
 ];
+
+// Подреждаме учебната база интердисциплинарно (Round-Robin по предмети),
+// така че началната страница, тренажорът на живо и каталогът да представят
+// балансирано всички 9 предмета, без да се зацикля върху една-единствена тема.
+const RAW_ALL_LESSONS: LessonData[] = [
+  ...EXTRA_CURRICULUM_LESSONS,
+  ...CORE_CURRICULUM_LESSONS
+];
+
+const SUBJECT_ROTATION_ORDER: string[] = [
+  'Български език и литература',
+  'Математика',
+  'Биология и ЗО',
+  'Физика и астрономия',
+  'Химия и ООС',
+  'География и икономика',
+  'Гражданско образование и философия',
+  'Английски език',
+  'История и цивилизации'
+];
+
+function buildInterleavedCurriculum(allLessons: LessonData[]): LessonData[] {
+  const buckets = new Map<string, LessonData[]>();
+  for (const subj of SUBJECT_ROTATION_ORDER) {
+    buckets.set(subj, []);
+  }
+  const otherBucket: LessonData[] = [];
+
+  for (const lesson of allLessons) {
+    const matchedSubj = SUBJECT_ROTATION_ORDER.find((s) => lesson.subject.includes(s.split(' ')[0]));
+    if (matchedSubj && buckets.has(matchedSubj)) {
+      buckets.get(matchedSubj)!.push(lesson);
+    } else {
+      otherBucket.push(lesson);
+    }
+  }
+
+  const interleaved: LessonData[] = [];
+  let addedInPass = true;
+  let roundIndex = 0;
+
+  while (addedInPass) {
+    addedInPass = false;
+    for (const subj of SUBJECT_ROTATION_ORDER) {
+      const list = buckets.get(subj)!;
+      if (roundIndex < list.length) {
+        interleaved.push(list[roundIndex]);
+        addedInPass = true;
+      }
+    }
+    roundIndex++;
+  }
+
+  return [...interleaved, ...otherBucket];
+}
+
+export const CURRICULUM_LESSONS: LessonData[] = buildInterleavedCurriculum(RAW_ALL_LESSONS);
+

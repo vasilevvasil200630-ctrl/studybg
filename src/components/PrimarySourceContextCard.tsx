@@ -19,9 +19,8 @@ export const PrimarySourceContextCard: React.FC<PrimarySourceContextCardProps> =
   const matchedCase: HistoricalCaseStudy | undefined = React.useMemo(() => {
     const lTitle = lesson.title.toLowerCase();
 
-    // 1. Direct match for April Uprising
-    if (lTitle.includes('априлско') || lTitle.includes('1876')) {
-      return HISTORICAL_CASES_DATA.find(c => c.id === 'case-april-uprising');
+    if (lesson.id === 'history-april-uprising' || lTitle.includes('априлско') || lTitle.includes('1876')) {
+      return undefined;
     }
     // 2. Direct match for Simeon / Golden Age
     if (lTitle.includes('симеон') || lTitle.includes('златен век') || lTitle.includes('преслав')) {
@@ -45,6 +44,10 @@ export const PrimarySourceContextCard: React.FC<PrimarySourceContextCardProps> =
       c.title.toLowerCase().includes(lTitle.slice(0, 7))
     );
   }, [lesson]);
+
+  if (lesson.id === 'history-april-uprising' || lesson.title.toLowerCase().includes('априлско')) {
+    return null;
+  }
 
   if (!matchedCase) {
     // If no specific case, return contextual bridge for literature/exact sciences

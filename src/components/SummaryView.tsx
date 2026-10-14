@@ -23,7 +23,6 @@ import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import { AudioReader } from './AudioReader';
 import { EmailShareModal } from './EmailShareModal';
-import { PrimarySourceContextCard } from './PrimarySourceContextCard';
 
 interface SummaryViewProps {
   lesson: LessonData;
@@ -352,13 +351,6 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
             className="w-full p-3 rounded-xl bg-white border border-amber-200 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-amber-400 leading-relaxed"
           />
         </div>
-
-        {/* Context Bridge: Primary Sources & Historical Cases for DZI Module 2 & 3 */}
-        {onNavigateTab && (
-          <div className="my-6">
-            <PrimarySourceContextCard lesson={lesson} onNavigateTab={onNavigateTab} />
-          </div>
-        )}
 
         {/* Quick Actions to other tabs */}
         {onNavigateTab && (

@@ -88,21 +88,68 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
     return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   }, [secondsLeft]);
 
-  // 3. Interactive "Question of the Day" (Daily Blitz Widget)
+  // 3. Interactive "Question of the Day" (Multi-Subject Live Trainer Widget)
+  const [trainerSubjectFilter, setTrainerSubjectFilter] = useState<
+    'all' | 'bel' | 'math' | 'bio_chem' | 'phys_geo' | 'phil_eng' | 'history'
+  >('all');
+
   const allQuizPool = useMemo(() => {
-    return lessons.flatMap((lesson) =>
-      lesson.quiz.map((q) => ({
-        question: q,
-        lesson
-      }))
-    );
-  }, [lessons]);
+    // Поставяме уроците в разнообразен ред, като „Априлското въстание“ остава в края на опашката,
+    // за да може началният тренажор да стартира и върти въпроси от всички учебни предмети.
+    const orderedLessons = [
+      ...lessons.filter((l) => l.id !== 'history-april-uprising'),
+      ...lessons.filter((l) => l.id === 'history-april-uprising')
+    ];
+
+    const filteredLessons = orderedLessons.filter((l) => {
+      if (trainerSubjectFilter === 'bel') return l.subject.includes('Български');
+      if (trainerSubjectFilter === 'math') return l.subject.includes('Математика');
+      if (trainerSubjectFilter === 'bio_chem')
+        return l.subject.includes('Биология') || l.subject.includes('Химия');
+      if (trainerSubjectFilter === 'phys_geo')
+        return l.subject.includes('Физика') || l.subject.includes('География');
+      if (trainerSubjectFilter === 'phil_eng')
+        return l.subject.includes('Гражданско') || l.subject.includes('Английски');
+      if (trainerSubjectFilter === 'history') return l.subject.includes('История');
+      return true;
+    });
+
+    const sourceLessons = filteredLessons.length > 0 ? filteredLessons : orderedLessons;
+
+    // Интерлийвинг (Round-Robin): взимаме въпрос №1 от всеки урок, после въпрос №2 от всеки урок и т.н.
+    // Така всяко натискане на „Следващ въпрос“ гарантирано сменя както предмета, така и темата!
+    const interleaved: { question: LessonData['quiz'][number]; lesson: LessonData }[] = [];
+    let qIdx = 0;
+    let added = true;
+    while (added) {
+      added = false;
+      for (const lesson of sourceLessons) {
+        if (qIdx < lesson.quiz.length) {
+          interleaved.push({
+            question: lesson.quiz[qIdx],
+            lesson
+          });
+          added = true;
+        }
+      }
+      qIdx++;
+    }
+    return interleaved;
+  }, [lessons, trainerSubjectFilter]);
 
   const [dailyQuestionIndex, setDailyQuestionIndex] = useState(0);
   const [selectedOptionIdx, setSelectedOptionIdx] = useState<number | null>(null);
   const [dailyStreakCount, setDailyStreakCount] = useState(0);
 
   const currentDailyItem = allQuizPool[dailyQuestionIndex % Math.max(1, allQuizPool.length)];
+
+  const handleSelectTrainerFilter = (
+    filter: 'all' | 'bel' | 'math' | 'bio_chem' | 'phys_geo' | 'phil_eng' | 'history'
+  ) => {
+    setTrainerSubjectFilter(filter);
+    setSelectedOptionIdx(null);
+    setDailyQuestionIndex(0);
+  };
 
   const handleAnswerDailyQuestion = (idx: number) => {
     if (selectedOptionIdx !== null || !currentDailyItem) return;
@@ -116,7 +163,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
 
   const handleNextDailyQuestion = () => {
     setSelectedOptionIdx(null);
-    setDailyQuestionIndex((prev) => (prev + 7) % Math.max(1, allQuizPool.length));
+    setDailyQuestionIndex((prev) => (prev + 1) % Math.max(1, allQuizPool.length));
   };
 
   // 4. Real Student Telemetry from localStorage
@@ -570,13 +617,13 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
           {/* Widget A: Live Interactive "Question of the Day" (7 cols on lg) */}
           <div className="lg:col-span-7 p-5 sm:p-6 rounded-3xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between space-y-4">
             <div className="space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
+              <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
                 <div className="flex items-center gap-2">
                   <span className="px-2.5 py-1 rounded-lg bg-blue-600 text-white text-[11px] font-extrabold uppercase tracking-wider">
                     🎯 Тренажор на живо
                   </span>
                   <span className="text-xs font-bold text-slate-700">
-                    Изпитен въпрос от банката на МОН ({allQuizPool.length}+ въпроса)
+                    Изпитни въпроси от всички предмети ({allQuizPool.length} въпроса)
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -587,13 +634,42 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                   )}
                   <button
                     onClick={handleNextDailyQuestion}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors cursor-pointer"
-                    title="Зареди друг изпитен въпрос"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold transition-colors cursor-pointer"
+                    title="Зареди въпрос от следващ предмет и урок"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
                     <span>Следващ въпрос</span>
                   </button>
                 </div>
+              </div>
+
+              {/* Multi-Subject Filter Strip inside Live Trainer */}
+              <div className="flex flex-wrap items-center gap-1.5 pb-1">
+                {[
+                  { id: 'all' as const, label: '🎲 Всички предмети (Микс)' },
+                  { id: 'bel' as const, label: '📚 БЕЛ & Литература' },
+                  { id: 'math' as const, label: '📐 Математика' },
+                  { id: 'bio_chem' as const, label: '🧬 Биология & Химия' },
+                  { id: 'phys_geo' as const, label: '⚡ Физика & География' },
+                  { id: 'phil_eng' as const, label: '🧠 Философия & Английски' },
+                  { id: 'history' as const, label: '🏛️ История' }
+                ].map((pill) => {
+                  const isActive = trainerSubjectFilter === pill.id;
+                  return (
+                    <button
+                      key={pill.id}
+                      type="button"
+                      onClick={() => handleSelectTrainerFilter(pill.id)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer border ${
+                        isActive
+                          ? 'bg-slate-900 text-white border-slate-900 shadow-2xs'
+                          : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'
+                      }`}
+                    >
+                      {pill.label}
+                    </button>
+                  );
+                })}
               </div>
 
               {currentDailyItem && (

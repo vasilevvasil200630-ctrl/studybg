@@ -38,7 +38,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
           const parsed: CookiePreferences = JSON.parse(stored);
           setFunctionalConsent(parsed.functional ?? true);
           setAnalyticsConsent(parsed.analytics ?? false);
-        } catch (e) {
+        } catch {
           setIsVisible(true);
         }
       }

@@ -126,7 +126,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
       }
       setPasteNotice('Клипбордът е празен. Поставете текста с клавишна комбинация Ctrl + V.');
       setTimeout(() => setPasteNotice(null), 3000);
-    } catch (e) {
+    } catch {
       setPasteNotice('Браузърът изисква директно поставяне: натиснете Ctrl + V в полето.');
       setTimeout(() => setPasteNotice(null), 3500);
     }
@@ -147,7 +147,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
       } else {
         setUnmatchedError(`Не открихме съответствие с учебната програма за „${filename}“. Моля добавете конкретни понятия или изберете тема от образците.`);
       }
-    } catch (e) {
+    } catch {
       setIsScanning(false);
       setUnmatchedError('Възникна грешка при обработката на текста. Моля опитайте отново.');
     }

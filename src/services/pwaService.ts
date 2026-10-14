@@ -98,7 +98,7 @@ class PwaManager {
       this.deferredPrompt = null;
       this.notifyInstallable(false);
       return choiceResult.outcome === 'accepted';
-    } catch (e) {
+    } catch {
       return false;
     }
   }

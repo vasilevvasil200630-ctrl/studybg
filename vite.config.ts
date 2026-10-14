@@ -12,10 +12,11 @@ export default defineConfig({
   build: {
     target: 'es2022',
     cssMinify: true,
-    chunkSizeWarningLimit: 1600,
+    chunkSizeWarningLimit: 500,
     rollupOptions: {
       output: {
-        manualChunks(id: string) {
+        manualChunks(rawId: string) {
+          const id = rawId.replace(/\\/g, '/');
           if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/') || id.includes('node_modules/scheduler/')) {
             return 'vendor-react';
           }
@@ -25,11 +26,17 @@ export default defineConfig({
           if (id.includes('node_modules/lucide-react/')) {
             return 'vendor-icons';
           }
+          if (id.includes('curriculumExpansionLessonsPart3')) {
+            return 'data-curriculum-exp3';
+          }
+          if (id.includes('curriculumExpansionLessonsPart2')) {
+            return 'data-curriculum-exp2';
+          }
           if (id.includes('curriculumExpansionLessons')) {
-            return 'data-curriculum-expansion';
+            return 'data-curriculum-exp1';
           }
           if (id.includes('curriculumDatabase')) {
-            return 'data-curriculum';
+            return 'data-curriculum-core';
           }
           if (id.includes('schoolsSpecialtiesDatabase')) {
             return 'data-schools-specialties';

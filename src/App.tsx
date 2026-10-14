@@ -41,7 +41,7 @@ const OralExamSimulatorLab = lazy(() => import('./components/OralExamSimulatorLa
 const SchoolsSpecialtiesHub = lazy(() => import('./components/SchoolsSpecialtiesHub').then(m => ({ default: m.SchoolsSpecialtiesHub })));
 import { errorBankService } from './services/errorBankService';
 
-import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
+import { CURRICULUM_LESSONS, loadFullCurriculumLessons } from './data/curriculumDatabase';
 import type { LessonData, QuizQuestion } from './types';
 import {
   Camera,
@@ -91,6 +91,20 @@ export function App() {
 
   const [lessons, setLessons] = useState<LessonData[]>(CURRICULUM_LESSONS);
   const [currentLesson, setCurrentLesson] = useState<LessonData>(CURRICULUM_LESSONS[0]);
+
+  useEffect(() => {
+    let isMounted = true;
+    loadFullCurriculumLessons().then((fullLessons) => {
+      if (!isMounted) return;
+      setLessons((prev) => {
+        const customScans = prev.filter((l) => !fullLessons.some((fl) => fl.id === l.id));
+        return [...customScans, ...fullLessons];
+      });
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const [activeTab, setActiveTab] = useState<AppNavTab>('home');
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);

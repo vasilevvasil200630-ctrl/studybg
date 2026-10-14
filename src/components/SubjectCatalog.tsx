@@ -77,7 +77,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
         <div>
           <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 uppercase tracking-wider mb-1">
             <BookOpen className="w-3.5 h-3.5" />
-            <span>Държавни образователни стандарти на МОН ({lessons.length} пълни урока)</span>
+            <span>Държавни образователни стандарти на МОН ({lessons.length} пълни урока · 100% одит-критерии за 6.00)</span>
           </div>
           <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
             Гимназиален и Професионален каталог: НВО 10, ДЗИ 12 и ДИППК

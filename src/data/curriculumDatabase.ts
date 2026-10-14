@@ -1,5 +1,4 @@
-import type { LessonData, GradeLevel, SubjectName } from '../types';
-import { EXTRA_CURRICULUM_LESSONS } from './curriculumExpansionLessons';
+import type { LessonData, GradeLevel, SubjectName, NotebookCheckItem } from '../types';
 
 export const GRADES_LIST: GradeLevel[] = [
   'Всички класове',
@@ -5382,14 +5381,56 @@ const CORE_CURRICULUM_LESSONS: LessonData[] = [
 }
 ];
 
+function ensureNotebookChecklist(lesson: LessonData): LessonData {
+  if (lesson.notebookChecklist && lesson.notebookChecklist.length > 0) {
+    return lesson;
+  }
+  const f0 = lesson.summary.formulasOrDates[0];
+  const f1 = lesson.summary.formulasOrDates[1];
+  const kp0 = lesson.summary.keyPoints[0] || lesson.summary.overview;
+  const kp1 = lesson.summary.keyPoints[1] || lesson.summary.overview;
+  const trap0 = lesson.summary.commonTraps[0] || lesson.summary.examGoldenRule;
+
+  const generatedChecklist: NotebookCheckItem[] = [
+    {
+      id: `${lesson.id}-chk-1`,
+      requirement: f0 ? `Точна формулировка и запис: ${f0.label}` : `Основна дефиниция и терминологична рамка по темата`,
+      whyNeeded: 'Задължителен опорен елемент при проверка на знанията на НВО, ДЗИ и ДИППК по критериите на МОН.',
+      isEssentialForSix: true,
+      suggestedNotes: f0 ? `${f0.label}: ${f0.value}` : kp0
+    },
+    {
+      id: `${lesson.id}-chk-2`,
+      requirement: 'Систематизиран конспект на водещите теоретични зависимости и причинно-следствени връзки',
+      whyNeeded: 'Осигурява пълнота на аргументацията при въпроси със свободен отговор и практически казуси.',
+      isEssentialForSix: true,
+      suggestedNotes: kp0
+    },
+    {
+      id: `${lesson.id}-chk-3`,
+      requirement: f1 ? `Ключови формули, дати и стандарти: ${f1.label}` : 'Практическо приложение и алгоритъм за решаване на типови задачи',
+      whyNeeded: 'Без конкретните измерители, формули или хронология решението губи точки за точност.',
+      isEssentialForSix: true,
+      suggestedNotes: f1 ? `${f1.label}: ${f1.value}` : kp1
+    },
+    {
+      id: `${lesson.id}-chk-4`,
+      requirement: 'Разграничаване на най-честите изпитни капани и златно правило за отличен (6.00)',
+      whyNeeded: 'Предпазва от типичните грешки, водещи до отнемане на точки на матура и контролна работа.',
+      isEssentialForSix: false,
+      suggestedNotes: `${lesson.summary.examGoldenRule} | Внимание: ${trap0}`
+    }
+  ];
+
+  return {
+    ...lesson,
+    notebookChecklist: generatedChecklist
+  };
+}
+
 // Подреждаме учебната база интердисциплинарно (Round-Robin по предмети),
 // така че началната страница, тренажорът на живо и каталогът да представят
-// балансирано всички 9 предмета, без да се зацикля върху една-единствена тема.
-const RAW_ALL_LESSONS: LessonData[] = [
-  ...EXTRA_CURRICULUM_LESSONS,
-  ...CORE_CURRICULUM_LESSONS
-];
-
+// балансирано всички предмети, без да се зацикля върху една-единствена тема.
 const SUBJECT_ROTATION_ORDER: string[] = [
   'Български език и литература',
   'Математика',
@@ -5441,5 +5482,27 @@ function buildInterleavedCurriculum(allLessons: LessonData[]): LessonData[] {
   return [...interleaved, ...otherBucket];
 }
 
-export const CURRICULUM_LESSONS: LessonData[] = buildInterleavedCurriculum(RAW_ALL_LESSONS);
+export const CURRICULUM_LESSONS: LessonData[] = buildInterleavedCurriculum(
+  CORE_CURRICULUM_LESSONS.map(ensureNotebookChecklist)
+);
 
+let cachedFullCurriculum: LessonData[] | null = null;
+
+export async function loadFullCurriculumLessons(): Promise<LessonData[]> {
+  if (cachedFullCurriculum) {
+    return cachedFullCurriculum;
+  }
+  const [part1, part2, part3] = await Promise.all([
+    import('./curriculumExpansionLessons'),
+    import('./curriculumExpansionLessonsPart2'),
+    import('./curriculumExpansionLessonsPart3')
+  ]);
+  const fullRaw: LessonData[] = [
+    ...part1.EXTRA_CURRICULUM_LESSONS,
+    ...part2.EXTRA_CURRICULUM_LESSONS_PART2,
+    ...part3.EXTRA_CURRICULUM_LESSONS_PART3,
+    ...CORE_CURRICULUM_LESSONS
+  ].map(ensureNotebookChecklist);
+  cachedFullCurriculum = buildInterleavedCurriculum(fullRaw);
+  return cachedFullCurriculum;
+}

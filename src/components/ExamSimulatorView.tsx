@@ -125,30 +125,31 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
     setRubricScores({});
 
     if (!allLessons || !onSelectLesson) return;
+    const pool = allLessons;
 
     if (preset === 'dzi12-bel' || preset === 'dzi12-bel-tyutyun') {
-      const l = allLessons.find(x => x.id === 'literature-tyutyun');
+      const l = pool.find(x => x.id === 'literature-tyutyun');
       if (l) onSelectLesson(l);
     } else if (preset === 'dzi12-bel-geratsite') {
-      const l = allLessons.find(x => x.id === 'literature-geratsite');
+      const l = pool.find(x => x.id === 'literature-geratsite');
       if (l) onSelectLesson(l);
     } else if (preset === 'dzi12-history' || preset === 'dzi12-history-april') {
-      const l = allLessons.find(x => x.id === 'history-april-uprising');
+      const l = pool.find(x => x.id === 'history-april-uprising');
       if (l) onSelectLesson(l);
     } else if (preset === 'nvo10-history' || preset === 'nvo10-history-simeon') {
-      const l = allLessons.find(x => x.id === 'history-simeon-golden-age');
+      const l = pool.find(x => x.id === 'history-simeon-golden-age');
       if (l) onSelectLesson(l);
     } else if (preset === 'nvo10-bel-debelyanov') {
-      const l = allLessons.find(x => x.id === 'bel-10-dimcho-debelianov');
+      const l = pool.find(x => x.id === 'bel-10-dimcho-debelianov');
       if (l) onSelectLesson(l);
     } else if (preset === 'nvo10-math-vieta') {
-      const l = allLessons.find(x => x.id === 'math-10-quadratic-equations-vieta');
+      const l = pool.find(x => x.id === 'math-10-quadratic-equations-vieta');
       if (l) onSelectLesson(l);
     } else if (preset === 'nvo7-bel') {
-      const l = allLessons.find(x => x.id === 'bel-7-edna-balgarka');
+      const l = pool.find(x => x.id === 'bel-7-edna-balgarka');
       if (l) onSelectLesson(l);
     } else if (preset === 'nvo7-math') {
-      const l = allLessons.find(x => x.id === 'math-7-linear-equations');
+      const l = pool.find(x => x.id === 'math-7-linear-equations');
       if (l) onSelectLesson(l);
     }
   };

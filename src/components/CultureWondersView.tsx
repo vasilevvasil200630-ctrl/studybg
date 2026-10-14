@@ -108,7 +108,7 @@ export const CultureWondersView: React.FC = () => {
         <div>
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-teal-50 border border-teal-200 text-teal-800 mb-1">
             <Compass className="w-3.5 h-3.5" />
-            <span>Географска съкровищница • 12 природни феномена на България</span>
+            <span>Географска съкровищница • {NATURAL_WONDERS_DATA.length} природни и мистични феномена на България</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
             Природни чудеса, ледникови езера и скални лабиринти

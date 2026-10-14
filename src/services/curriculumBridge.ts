@@ -27,6 +27,18 @@ const MYSTERY_LESSON_MAP: Record<string, string> = {
   
   // Folk & Revival
   'mystery-valchan-gold': 'history-april-uprising',
+
+  // New Conspiracy & Esoteric Dossiers -> Connected School Lessons
+  'mystery-magura-cosmic-code': 'bio-dna-replication-protein',
+  'mystery-belintash-energy-triangle': 'geo-bulgaria-relief-climate-waters',
+  'mystery-bogomils-secret-book-grail': 'hist-christianization-boris-cyrillic',
+  'mystery-voynich-bulgarian-trace': 'hist-christianization-boris-cyrillic',
+  'mystery-black-sea-deluge-ships': 'geo-bulgaria-relief-climate-waters',
+  'mystery-tesla-wardencliffe-files': 'phys-electricity-ohm-joule',
+  'mystery-thracian-110hz-resonance': 'phys-newton-laws-mechanics',
+  'mystery-lozanov-suggestopedia-vanga': 'bio-dna-replication-protein',
+  'mystery-krum-greek-fire-mesembria': 'hist-christianization-boris-cyrillic',
+  'mystery-danov-paneurhythmy-rila-code': 'phil-ethics-law-democracy-economy',
 };
 
 const HERITAGE_LESSON_MAP: Record<string, string> = {
@@ -34,7 +46,11 @@ const HERITAGE_LESSON_MAP: Record<string, string> = {
   'heritage-madara-rider': 'history-asparukh-681',
   'heritage-pliska-great-basilica': 'history-asparukh-681',
   'heritage-rila-monastery': 'history-simeon-golden-age',
-  'heritage-cyrillic-alphabet': 'history-simeon-golden-age',
+  'heritage-cyrillic-alphabet': 'hist-christianization-boris-cyrillic',
+  'heritage-nadjakov-photoelectrets': 'phys-quantum-nuclear-astrophysics',
+  'heritage-petar-petrov-pulsar': 'phys-electricity-ohm-joule',
+  'heritage-space-greenhouse-svet': 'bio-dna-replication-protein',
+  'heritage-viden-tabakov-apollo11': 'phys-newton-laws-mechanics',
 };
 
 const TIMELINE_YEAR_MAP: Record<number, string> = {

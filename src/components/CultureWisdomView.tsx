@@ -91,6 +91,8 @@ export const CultureWisdomView: React.FC<CultureWisdomViewProps> = ({
       if (aName.includes('вазов') && (lTitle.includes('вазов') || lTitle.includes('литература'))) return true;
       if (aName.includes('симеон') && (lTitle.includes('симеон') || lTitle.includes('златен век') || lTitle.includes('първо българско'))) return true;
       if (aName.includes('омуртаг') && (lTitle.includes('омуртаг') || lTitle.includes('първо българско'))) return true;
+      if ((aName.includes('евтимий') || aName.includes('иван рилски')) && (lTitle.includes('покръстване') || lTitle.includes('кирил') || lTitle.includes('симеон'))) return true;
+      if (aName.includes('яворов') && (lTitle.includes('яворов') || lTitle.includes('символизъм') || lTitle.includes('литература'))) return true;
       return false;
     });
   };
@@ -103,13 +105,13 @@ export const CultureWisdomView: React.FC<CultureWisdomViewProps> = ({
         <div>
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-indigo-50 border border-indigo-200 text-indigo-800 mb-1">
             <Quote className="w-3.5 h-3.5" />
-            <span>Златен фонд • 10 вечни национални завета и нравствени уроци</span>
+            <span>Златен фонд • {WISDOM_QUOTES_DATA.length} вечни национални завета и нравствени уроци</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
             Мъдростта на епохите и словото на българските будители
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
-            Великите фрази, които съградиха българския дух. Открийте историческия контекст зад думите на Паисий, Левски, Ботев, Вазов и Омуртаг.
+            Великите фрази, които съградиха българския дух. Открийте историческия контекст зад думите на Паисий, Левски, Ботев, Вазов, Гоце Делчев, полк. Дрангов и св. Иван Рилски.
           </p>
         </div>
 

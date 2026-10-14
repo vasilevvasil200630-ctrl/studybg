@@ -38,15 +38,16 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
   onOpenFormulaModal,
   onNavigateCultureTab
 }) => {
-  const [selectedCurriculumTrack, setSelectedCurriculumTrack] = useState<'dzi' | 'nvo' | 'stem'>('dzi');
+  const [selectedCurriculumTrack, setSelectedCurriculumTrack] = useState<'dzi' | 'nvo' | 'stem' | 'all'>('dzi');
+  const [showAllInTrack, setShowAllInTrack] = useState(false);
 
   // Curated DZI 12 High-Yield Lessons
   const dziLessons = lessons.filter(
-    (l) => l.grade.includes('12') || l.grade.includes('11')
+    (l) => l.grade.includes('12') || l.grade.includes('11') || (l.examType && l.examType.includes('ДЗИ'))
   );
 
   // Curated NVO 10 Lessons
-  const nvo10Lessons = lessons.filter((l) => l.grade.includes('10'));
+  const nvo10Lessons = lessons.filter((l) => l.grade.includes('10') || l.grade.includes('9') || l.grade.includes('8'));
 
   // STEM / Science Lessons
   const stemLessons = lessons.filter(
@@ -57,12 +58,16 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       l.subject.includes('Физика')
   );
 
-  const displayedCurriculum =
+  const activeTrackList =
     selectedCurriculumTrack === 'dzi'
-      ? dziLessons.slice(0, 8)
+      ? dziLessons
       : selectedCurriculumTrack === 'nvo'
-      ? nvo10Lessons.slice(0, 8)
-      : stemLessons.slice(0, 8);
+      ? nvo10Lessons
+      : selectedCurriculumTrack === 'stem'
+      ? stemLessons
+      : lessons;
+
+  const displayedCurriculum = showAllInTrack ? activeTrackList : activeTrackList.slice(0, 12);
 
   return (
     <div className="space-y-16 pb-16">
@@ -122,7 +127,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                     </div>
                     <div>
                       <div className="text-[11px] uppercase tracking-wider font-bold text-blue-200">
-                        Гимназиален модул
+                        Гимназиален модул ({lessons.length} урока по МОН)
                       </div>
                       <div className="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-1.5 pt-0.5">
                         <span>Влез в Учебната академия</span>
@@ -130,7 +135,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                       </div>
                     </div>
                     <p className="text-xs text-blue-100/90 leading-relaxed">
-                      Пълен достъп до уроците за 8.–12. клас, официални конспекти, одит 6.00, интерактивни флаш карти и тестове.
+                      Пълен достъп до нормалните уроци по всички 9 предмета за 8.–12. клас, официални конспекти, одит 6.00, флаш карти и тестове.
                     </p>
                   </div>
                   <div className="pt-3.5 text-xs font-bold text-blue-200 flex items-center gap-1">
@@ -150,7 +155,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                     </div>
                     <div>
                       <div className="text-[11px] uppercase tracking-wider font-bold text-amber-800">
-                        Ерудиция & Извори
+                        🕵️ Конспирации, Мистерии & Ерудиция
                       </div>
                       <div className="text-base sm:text-lg font-black tracking-tight text-slate-900 flex items-center gap-1.5 pt-0.5">
                         <span>Влез в „Обща култура & Загадки“</span>
@@ -158,11 +163,11 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                       </div>
                     </div>
                     <p className="text-xs text-slate-600 leading-relaxed">
-                      Хронология (681–1908), неразгадани български мистерии, ЮНЕСКО паметници и куизове за ерудити.
+                      33 конспиративни досиета и тайни (Царичина, Бастет в Странджа, подземни тунели, Магурата, Богомилите, Тесла), 18 феномена и 42 куиз въпроса.
                     </p>
                   </div>
                   <div className="pt-3.5 text-xs font-bold text-amber-800 flex items-center gap-1">
-                    <span>Отвори културния портал</span>
+                    <span>Отвори секретните досиета и куизове</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </div>
                 </button>
@@ -491,36 +496,58 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             </div>
 
             {/* Curriculum Track Switcher */}
-            <div className="inline-flex items-center p-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-semibold">
+            <div className="flex flex-wrap items-center gap-1 p-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-semibold">
               <button
-                onClick={() => setSelectedCurriculumTrack('dzi')}
-                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+                onClick={() => {
+                  setSelectedCurriculumTrack('dzi');
+                  setShowAllInTrack(false);
+                }}
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   selectedCurriculumTrack === 'dzi'
                     ? 'bg-white text-blue-700 shadow-xs font-bold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                ДЗИ 12. клас (БЕЛ & История)
+                ДЗИ 11.–12. кл ({dziLessons.length})
               </button>
               <button
-                onClick={() => setSelectedCurriculumTrack('nvo')}
-                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+                onClick={() => {
+                  setSelectedCurriculumTrack('nvo');
+                  setShowAllInTrack(false);
+                }}
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   selectedCurriculumTrack === 'nvo'
                     ? 'bg-white text-blue-700 shadow-xs font-bold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                НВО 10. клас
+                8.–10. кл & НВО ({nvo10Lessons.length})
               </button>
               <button
-                onClick={() => setSelectedCurriculumTrack('stem')}
-                className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+                onClick={() => {
+                  setSelectedCurriculumTrack('stem');
+                  setShowAllInTrack(false);
+                }}
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   selectedCurriculumTrack === 'stem'
                     ? 'bg-white text-blue-700 shadow-xs font-bold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Математика & Природни науки
+                Математика & Природни науки ({stemLessons.length})
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedCurriculumTrack('all');
+                  setShowAllInTrack(true);
+                }}
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                  selectedCurriculumTrack === 'all'
+                    ? 'bg-white text-blue-700 shadow-xs font-bold'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Всички 9 предмета ({lessons.length})
               </button>
             </div>
           </div>
@@ -579,8 +606,21 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             })}
           </div>
 
-          {/* Full Catalog Button */}
-          <div className="pt-6 text-center">
+          {/* Full Catalog / Expand Buttons */}
+          <div className="pt-6 flex flex-wrap items-center justify-center gap-3">
+            {activeTrackList.length > 12 && (
+              <button
+                type="button"
+                onClick={() => setShowAllInTrack(!showAllInTrack)}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-800 text-xs font-bold transition-colors cursor-pointer"
+              >
+                <span>
+                  {showAllInTrack
+                    ? 'Свий списъка (покажи първите 12)'
+                    : `Покажи всички ${activeTrackList.length} урока в тази категория`}
+                </span>
+              </button>
+            )}
             <button
               type="button"
               onClick={() => onNavigateTab('catalog')}
@@ -642,13 +682,13 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-200/70 text-amber-900 border border-amber-300">
               <Award className="w-3.5 h-3.5 text-amber-800" />
-              <span>Портал „Обща култура & Загадки“</span>
+              <span>🕵️ Портал „Обща култура, Конспирации & Загадки“</span>
             </div>
             <h2 className="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-              Хронология (681–1908), исторически загадки и национално наследство
+              33 конспиративни досиета и мистерии, 18 природни феномена и 16 световни открития
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Задълбочи литературния и историческия си кръгозор за есето на ДЗИ. Автентични документи, куизове за ерудити и неразгадани български мистерии.
+              Операция „Слава“ в Царичина, експедицията за богинята Бастет в Странджа, подземните тунели под София и Царевец, космическият код в „Магурата“, „Тайната книга“ на Богомилите, кулата на Никола Тесла и 42 куиз въпроса за ерудити.
             </p>
           </div>
 

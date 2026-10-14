@@ -34,7 +34,7 @@ export const CultureSidebar: React.FC<CultureSidebarProps> = ({
     {
       tab: 'mysteries',
       label: 'Конспирации & Мистерии',
-      sublabel: '29 секретни досиета & загадки',
+      sublabel: '33 секретни досиета & загадки',
       icon: Compass,
       accentColor: 'text-amber-600'
     },

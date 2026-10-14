@@ -747,20 +747,20 @@ export function App() {
                 <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                 <span className="text-slate-800 font-medium">
                   {cultureSubTab === 'heritage'
-                    ? '🏆 Български принос & ЮНЕСКО (10)'
+                    ? '🏆 Български принос & ЮНЕСКО (16)'
                     : cultureSubTab === 'mysteries'
-                    ? '📜 Неразгадани случки от историята (14)'
+                    ? '🕵️ Конспирации, секретни досиета & загадки (33)'
                     : cultureSubTab === 'timeline'
                     ? '⏳ Интерактивна хронология (681–1908 г.)'
                     : cultureSubTab === 'cases'
-                    ? '⚖️ Отворени исторически казуси & Есета (8)'
+                    ? '⚖️ Отворени исторически казуси & Есета (12)'
                     : cultureSubTab === 'wonders'
-                    ? '🗺️ Природни чудеса на България (12)'
+                    ? '🗺️ Природни чудеса & мистични зони (18)'
                     : cultureSubTab === 'trivia'
-                    ? '🧠 Куиз за ерудити (20 въпроса)'
+                    ? '🧠 Куиз за ерудити (42 въпроса)'
                     : cultureSubTab === 'myths'
-                    ? '⚖️ Факт или Мит? (16)'
-                    : '🏛️ Златен фонд & Мъдрост на епохите'}
+                    ? '⚖️ Факт, Мит или Конспирация? (24)'
+                    : '🏛️ Златен фонд & Мъдрост на епохите (16)'}
                 </span>
               </nav>
             </div>
@@ -768,14 +768,14 @@ export function App() {
             {/* Mobile / Tablet Horizontal Quick Tab Strip for Culture (visible only on small viewports) */}
             <div className="lg:hidden mb-6 p-1.5 rounded-xl bg-white border border-slate-200 shadow-xs overflow-x-auto no-scrollbar flex items-center gap-1.5">
               {[
-                { tab: 'heritage', label: 'Принос & ЮНЕСКО (10)' },
-                { tab: 'mysteries', label: 'Загадки (14)' },
+                { tab: 'mysteries', label: '🕵️ Конспирации & Загадки (33)' },
+                { tab: 'heritage', label: 'Принос & ЮНЕСКО (16)' },
+                { tab: 'wonders', label: 'Природни чудеса (18)' },
+                { tab: 'trivia', label: 'Куиз за ерудити (42)' },
+                { tab: 'myths', label: 'Факт или Конспирация (24)' },
                 { tab: 'timeline', label: 'Хронология' },
-                { tab: 'cases', label: 'Казуси & Есета (8)' },
-                { tab: 'wonders', label: 'Природни чудеса' },
-                { tab: 'trivia', label: 'Куиз за ерудити' },
-                { tab: 'myths', label: 'Факт или Мит?' },
-                { tab: 'wisdom', label: 'Златен фонд' },
+                { tab: 'cases', label: 'Казуси & Есета (12)' },
+                { tab: 'wisdom', label: 'Златен фонд (16)' },
               ].map((p) => {
                 const isActive = cultureSubTab === p.tab;
                 return (

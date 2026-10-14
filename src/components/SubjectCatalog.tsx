@@ -25,19 +25,36 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
     selectedGrade.includes('6.') ||
     selectedGrade.includes('7.');
 
+  const matchesGradeFilter = (lessonGrade: string, targetGrade: GradeLevel): boolean => {
+    if (targetGrade === 'Всички класове') return true;
+    const numMatch = targetGrade.match(/(\d+)/);
+    if (!numMatch) return true;
+    const targetNum = Number(numMatch[1]);
+
+    // Check range format like "8.–10. клас" or "10.–12. клас"
+    const rangeMatch = lessonGrade.match(/(\d+)\.\s*[–-]\s*(\d+)\./);
+    if (rangeMatch) {
+      const startGrade = Number(rangeMatch[1]);
+      const endGrade = Number(rangeMatch[2]);
+      if (targetNum >= startGrade && targetNum <= endGrade) return true;
+    }
+
+    // Check direct grade number like "10. клас"
+    const directRegex = new RegExp(`(^|\\D)${targetNum}\\.`);
+    return directRegex.test(lessonGrade);
+  };
+
   const filteredLessons = lessons.filter((lesson) => {
-    const matchesGrade =
-      selectedGrade === 'Всички класове'
-        ? true
-        : lesson.grade.includes(
-            selectedGrade.replace(' (НВО)', '').replace(' (ДЗИ / Матура)', '')
-          );
+    const matchesGrade = matchesGradeFilter(lesson.grade, selectedGrade);
     const matchesSubject =
       selectedSubject === 'Всички предмети' || lesson.subject === selectedSubject;
+    const q = searchQuery.toLowerCase().trim();
     const matchesQuery =
-      lesson.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lesson.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lesson.summary.overview.toLowerCase().includes(searchQuery.toLowerCase());
+      !q ||
+      lesson.title.toLowerCase().includes(q) ||
+      lesson.subject.toLowerCase().includes(q) ||
+      lesson.summary.overview.toLowerCase().includes(q) ||
+      lesson.summary.keyPoints.some((kp) => kp.toLowerCase().includes(q));
     return matchesGrade && matchesSubject && matchesQuery;
   });
 
@@ -48,13 +65,13 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
         <div>
           <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 uppercase tracking-wider mb-1">
             <BookOpen className="w-3.5 h-3.5" />
-            <span>Държавни образователни стандарти на МОН (8.–12. клас)</span>
+            <span>Държавни образователни стандарти на МОН ({lessons.length} пълни урока)</span>
           </div>
           <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
             Гимназиален каталог: НВО 10 и ДЗИ 12
           </h3>
           <p className="text-xs text-slate-600 mt-1">
-            Избери клас и предмет за достъп до официалния конспект, изискванията за пълно отличие (6.00), историческите казуси и симулатора.
+            Избери клас и предмет за достъп до официалния конспект, изискванията за пълно отличие (6.00), флашкартите, тестовете и симулатора.
           </p>
         </div>
 
@@ -111,24 +128,44 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
 
       {/* Subject Filter Row */}
       <div className="mb-6">
-        <div className="flex items-center gap-2 text-xs font-medium text-slate-600 mb-2">
-          <Layers className="w-3.5 h-3.5 text-slate-500" />
-          <span>Учебна дисциплина:</span>
+        <div className="flex items-center justify-between gap-2 text-xs font-medium text-slate-600 mb-2">
+          <div className="flex items-center gap-2">
+            <Layers className="w-3.5 h-3.5 text-slate-500" />
+            <span>Учебна дисциплина:</span>
+          </div>
+          <span className="text-[11px] font-semibold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
+            Показани: {filteredLessons.length} от {lessons.length} теми
+          </span>
         </div>
         <div className="flex items-center gap-1.5 overflow-x-auto pb-2 no-scrollbar">
-          {SUBJECTS_LIST.map((subj) => (
-            <button
-              key={subj}
-              onClick={() => setSelectedSubject(subj)}
-              className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                selectedSubject === subj
-                  ? 'bg-blue-600 text-white shadow-xs font-semibold'
-                  : 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200/80 border border-slate-200'
-              }`}
-            >
-              {subj}
-            </button>
-          ))}
+          {SUBJECTS_LIST.map((subj) => {
+            const subjCount =
+              subj === 'Всички предмети'
+                ? lessons.length
+                : lessons.filter((l) => l.subject === subj).length;
+            return (
+              <button
+                key={subj}
+                onClick={() => setSelectedSubject(subj)}
+                className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 ${
+                  selectedSubject === subj
+                    ? 'bg-blue-600 text-white shadow-xs font-semibold'
+                    : 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200/80 border border-slate-200'
+                }`}
+              >
+                <span>{subj}</span>
+                <span
+                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
+                    selectedSubject === subj
+                      ? 'bg-blue-700 text-blue-100'
+                      : 'bg-white text-slate-600 border border-slate-200/80'
+                  }`}
+                >
+                  {subjCount}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -181,7 +218,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                   </div>
                 </div>
 
-                <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-700 transition-colors line-clamp-1 mb-1.5">
+                <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-700 transition-colors line-clamp-2 leading-snug mb-1.5">
                   {lesson.title}
                 </h4>
 

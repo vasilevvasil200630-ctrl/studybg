@@ -36,7 +36,7 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
 
         {/* Subtitle */}
         <p className="mt-3 text-xs sm:text-sm md:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
-          Зона за обща култура, конспиративни теории, секретни експедиции и древни мистерии: 29 разследвания (Царичина, Странджа-Бастет, подземни тунели, богомилски шифри, Тесла), 18 природни феномена, 16 световни открития и 24 развенчани мита.
+          Зона за обща култура, конспиративни теории, секретни експедиции и древни мистерии: 33 разследвания (Царичина, Странджа-Бастет, подземни тунели, богомилски шифри, Тесла), 18 природни феномена, 16 световни открития и 24 развенчани мита.
         </p>
 
         {/* Quick Highlights Row */}
@@ -46,7 +46,7 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100/80 border border-amber-200 text-amber-900 text-xs font-semibold shadow-2xs transition-colors"
           >
             <Compass className="w-3.5 h-3.5 text-amber-600" />
-            <span>🕵️ 29 конспирации & загадки</span>
+            <span>🕵️ 33 конспирации & загадки</span>
           </button>
 
           <button

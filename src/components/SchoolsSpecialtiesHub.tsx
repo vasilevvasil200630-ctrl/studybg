@@ -18,7 +18,12 @@ import {
   Palette,
   Languages,
   Atom,
-  Filter
+  Filter,
+  Plane,
+  Utensils,
+  Trophy,
+  Globe2,
+  Calculator
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import {
@@ -41,7 +46,11 @@ const SECTION_ICON_MAP: Record<string, React.ReactNode> = {
   'architecture-construction-sgsag': <Compass className="w-5 h-5 text-cyan-400" />,
   'engineering-mechatronics-energy': <Cpu className="w-5 h-5 text-blue-400" />,
   'medicine-biotech-ecology-agro': <Stethoscope className="w-5 h-5 text-rose-400" />,
-  'arts-design-tourism-culinary': <Palette className="w-5 h-5 text-fuchsia-400" />
+  'arts-design-tourism-culinary': <Palette className="w-5 h-5 text-fuchsia-400" />,
+  'aviation-maritime-logistics-rail': <Plane className="w-5 h-5 text-sky-400" />,
+  'food-polygraphy-forestry-textile': <Utensils className="w-5 h-5 text-orange-400" />,
+  'sports-schools-performing-arts': <Trophy className="w-5 h-5 text-yellow-400" />,
+  'classical-languages-russian-italian-oriental': <Globe2 className="w-5 h-5 text-teal-400" />
 };
 
 export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
@@ -56,6 +65,13 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
   const [activeSectionFilter, setActiveSectionFilter] = useState<string>('Всички раздели');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({});
+  // Интерактивен калкулатор за Диплома & ДИППК (Трета СПК)
+  const [calcSchoolMode, setCalcSchoolMode] = useState<'vocational' | 'profiled'>('vocational');
+  const [oopAverage, setOopAverage] = useState<number>(5.65);
+  const [specAverage, setSpecAverage] = useState<number>(5.80);
+  const [dziBelGrade, setDziBelGrade] = useState<number>(5.50);
+  const [secondExamTheoryGrade, setSecondExamTheoryGrade] = useState<number>(5.75);
+  const [dippkPracticeGrade, setDippkPracticeGrade] = useState<number>(6.00);
 
   const selectedSchool: SchoolCategorySection = useMemo(() => {
     return (
@@ -131,11 +147,11 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
 
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3 shrink-0">
             <div className="rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3.5 text-center">
-              <div className="text-2xl font-black text-indigo-400">8</div>
+              <div className="text-2xl font-black text-indigo-400">12</div>
               <div className="text-[11px] text-slate-300 font-medium">Вида гимназии & техникуми</div>
             </div>
             <div className="rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3.5 text-center">
-              <div className="text-2xl font-black text-emerald-400">32+</div>
+              <div className="text-2xl font-black text-emerald-400">48+</div>
               <div className="text-[11px] text-slate-300 font-medium">Профила и специалности (СПК)</div>
             </div>
             <div className="rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3.5 text-center">
@@ -150,13 +166,13 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
         </div>
       </div>
 
-      {/* СЕКЦИЯ 1: Избор на вид училище и специалност (8 специални секции) */}
+      {/* СЕКЦИЯ 1: Избор на вид училище и специалност (12 специални секции) */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h2 className="text-xl font-bold text-white flex items-center gap-2.5">
               <GraduationCap className="w-6 h-6 text-indigo-400" />
-              1. Изберете специална секция по вид гимназия и професионално направление
+              1. Изберете специална секция по вид гимназия и професионално направление (12 направления)
             </h2>
             <p className="text-xs sm:text-sm text-slate-400">
               Разгледайте официалните специалности, предметите от 8. до 12. клас, формулите и решавайте изпитни въпроси за ДЗИ и ДИППК.
@@ -164,7 +180,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
           </div>
         </div>
 
-        {/* 8 Карти за избор на училище */}
+        {/* 12 Карти за избор на училище */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {SCHOOL_SPECIALTIES_SECTIONS.map((school) => {
             const isSelected = school.id === selectedSchool.id;
@@ -663,6 +679,256 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* СЕКЦИЯ 3: Интерактивен калкулатор за Диплома за средно образование (8.–12. клас) и ДИППК (Трета СПК) */}
+      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 space-y-6 shadow-xl">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+          <div className="space-y-1">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-white flex items-center gap-2.5">
+              <Calculator className="w-6 h-6 text-amber-400" />
+              3. Калкулатор за Диплома (8.–12. клас) & ДИППК (Трета степен на професионална квалификация)
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-400">
+              Изчислете своя общ дипломен успех от гимназията (Раздел А + Раздел Б/В + ДЗИ) и оценката в Свидетелството за професионална квалификация (СПК).
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800 self-start">
+            <button
+              onClick={() => setCalcSchoolMode('vocational')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                calcSchoolMode === 'vocational'
+                  ? 'bg-amber-500 text-slate-950 shadow-sm'
+                  : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              Професионална гимназия (ДИППК / Трета СПК)
+            </button>
+            <button
+              onClick={() => setCalcSchoolMode('profiled')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                calcSchoolMode === 'profiled'
+                  ? 'bg-indigo-600 text-white shadow-sm'
+                  : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              Профилирана гимназия (2 матури ДЗИ)
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Плъзгачи за оценките */}
+          <div className="lg:col-span-7 space-y-4">
+            <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 space-y-2">
+              <div className="flex items-center justify-between text-xs sm:text-sm">
+                <span className="font-bold text-slate-200">
+                  1. Среден успех от Раздел А — Задължителни предмети ООП (8.–12. клас)
+                </span>
+                <span className="font-mono font-black text-indigo-400 text-base">
+                  {oopAverage.toFixed(2)}
+                </span>
+              </div>
+              <input
+                type="range"
+                min={3.0}
+                max={6.0}
+                step={0.05}
+                value={oopAverage}
+                onChange={(e) => setOopAverage(parseFloat(e.target.value))}
+                className="w-full accent-indigo-500 cursor-pointer"
+              />
+              <div className="text-[11px] text-slate-400">
+                Включва годишните оценки от 8. до 12. клас по БЕЛ, Математика, Чужди езици, История, География, Биология, Хизика, Физика, Философия и Гражданско образование.
+              </div>
+            </div>
+
+            <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 space-y-2">
+              <div className="flex items-center justify-between text-xs sm:text-sm">
+                <span className="font-bold text-slate-200">
+                  2. Среден успех от {calcSchoolMode === 'vocational' ? 'Раздел Б/В — Специални професионални предмети' : 'Раздел Б — Профилиращи модули (11.–12. клас)'}
+                </span>
+                <span className="font-mono font-black text-emerald-400 text-base">
+                  {specAverage.toFixed(2)}
+                </span>
+              </div>
+              <input
+                type="range"
+                min={3.0}
+                max={6.0}
+                step={0.05}
+                value={specAverage}
+                onChange={(e) => setSpecAverage(parseFloat(e.target.value))}
+                className="w-full accent-emerald-500 cursor-pointer"
+              />
+              <div className="text-[11px] text-slate-400">
+                {calcSchoolMode === 'vocational'
+                  ? 'Среден успех от общата, отрасловата и специфичната професионална подготовка (учебна и производствена практика) от 8. до 12. клас.'
+                  : 'Среден успех от задължителните профилиращи модули в 11. и 12. клас.'}
+              </div>
+            </div>
+
+            <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 space-y-2">
+              <div className="flex items-center justify-between text-xs sm:text-sm">
+                <span className="font-bold text-slate-200">
+                  3. Първа задължителна матура — ДЗИ по Български език и литература (12. клас)
+                </span>
+                <span className="font-mono font-black text-amber-400 text-base">
+                  {dziBelGrade.toFixed(2)}
+                </span>
+              </div>
+              <input
+                type="range"
+                min={3.0}
+                max={6.0}
+                step={0.05}
+                value={dziBelGrade}
+                onChange={(e) => setDziBelGrade(parseFloat(e.target.value))}
+                className="w-full accent-amber-500 cursor-pointer"
+              />
+            </div>
+
+            <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 space-y-2">
+              <div className="flex items-center justify-between text-xs sm:text-sm">
+                <span className="font-bold text-slate-200">
+                  {calcSchoolMode === 'vocational'
+                    ? '4А. ДИППК — Част по ТЕОРИЯ на професията (Писмен тест / Дипломна тема)'
+                    : '4. Втора задължителна матура — 2-ро ДЗИ по профилиращ предмет'}
+                </span>
+                <span className="font-mono font-black text-cyan-400 text-base">
+                  {secondExamTheoryGrade.toFixed(2)}
+                </span>
+              </div>
+              <input
+                type="range"
+                min={3.0}
+                max={6.0}
+                step={0.05}
+                value={secondExamTheoryGrade}
+                onChange={(e) => setSecondExamTheoryGrade(parseFloat(e.target.value))}
+                className="w-full accent-cyan-500 cursor-pointer"
+              />
+            </div>
+
+            {calcSchoolMode === 'vocational' && (
+              <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 space-y-2">
+                <div className="flex items-center justify-between text-xs sm:text-sm">
+                  <span className="font-bold text-slate-200">
+                    4Б. ДИППК — Част по ПРАКТИКА на професията (Дипломен проект / Практическо задание)
+                  </span>
+                  <span className="font-mono font-black text-rose-400 text-base">
+                    {dippkPracticeGrade.toFixed(2)}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={3.0}
+                  max={6.0}
+                  step={0.05}
+                  value={dippkPracticeGrade}
+                  onChange={(e) => setDippkPracticeGrade(parseFloat(e.target.value))}
+                  className="w-full accent-rose-500 cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Табло с изчислени резултати */}
+          <div className="lg:col-span-5 rounded-3xl bg-gradient-to-br from-indigo-950 via-slate-950 to-slate-900 border border-indigo-500/40 p-6 space-y-5">
+            {(() => {
+              const dippkCombined =
+                calcSchoolMode === 'vocational'
+                  ? (secondExamTheoryGrade + dippkPracticeGrade) / 2
+                  : secondExamTheoryGrade;
+              const examsAverage = (dziBelGrade + dippkCombined) / 2;
+              const finalDiplomaGrade = (oopAverage * 0.5) + (specAverage * 0.25) + (examsAverage * 0.25);
+              // За Свидетелство за Трета СПК: средноаритметично от успеха по специалните предмети и оценките от ДИППК (Теория и Практика)
+              const spkCertificateGrade = (specAverage + secondExamTheoryGrade + dippkPracticeGrade) / 3;
+
+              return (
+                <>
+                  <div className="space-y-1 border-b border-slate-800 pb-4">
+                    <div className="text-xs font-bold uppercase tracking-wider text-indigo-300">
+                      Официална симулация на дипломиране (12. клас)
+                    </div>
+                    <div className="text-sm text-slate-300">
+                      {calcSchoolMode === 'vocational'
+                        ? 'Диплома за средно образование + Свидетелство за Трета СПК (Европас)'
+                        : 'Диплома за средно образование (Профилирана подготовка)'}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="p-4 rounded-2xl bg-slate-900/90 border border-indigo-500/40">
+                      <div className="text-[11px] font-bold uppercase text-indigo-300">
+                        Общ успех — Диплома
+                      </div>
+                      <div className="text-3xl font-black text-white mt-1">
+                        {finalDiplomaGrade.toFixed(2)}
+                      </div>
+                      <div className="text-[11px] text-emerald-400 font-semibold mt-1">
+                        {finalDiplomaGrade >= 5.5
+                          ? 'Отличен (Почетна диплома)'
+                          : finalDiplomaGrade >= 4.5
+                          ? 'Много добър'
+                          : 'Добър'}
+                      </div>
+                    </div>
+
+                    {calcSchoolMode === 'vocational' ? (
+                      <div className="p-4 rounded-2xl bg-slate-900/90 border border-amber-500/40">
+                        <div className="text-[11px] font-bold uppercase text-amber-300">
+                          Трета СПК (ДИППК)
+                        </div>
+                        <div className="text-3xl font-black text-amber-400 mt-1">
+                          {spkCertificateGrade.toFixed(2)}
+                        </div>
+                        <div className="text-[11px] text-slate-300 mt-1">
+                          Европейско ниво EQF 4
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-4 rounded-2xl bg-slate-900/90 border border-emerald-500/40">
+                        <div className="text-[11px] font-bold uppercase text-emerald-300">
+                          Средно от 2-те матури ДЗИ
+                        </div>
+                        <div className="text-3xl font-black text-emerald-400 mt-1">
+                          {examsAverage.toFixed(2)}
+                        </div>
+                        <div className="text-[11px] text-slate-300 mt-1">
+                          Конкурсен бал за ВУЗ
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="rounded-2xl bg-slate-900/70 border border-slate-800 p-4 space-y-2 text-xs text-slate-300">
+                    <div className="font-bold text-white">Разбивка по компоненти:</div>
+                    <div className="flex justify-between">
+                      <span>• Раздел А (ООП 8.–12. клас):</span>
+                      <strong className="text-indigo-300">{oopAverage.toFixed(2)}</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>• Раздел Б/В (Профил / Специалност):</span>
+                      <strong className="text-emerald-300">{specAverage.toFixed(2)}</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>• 1-ви ДЗИ (БЕЛ):</span>
+                      <strong className="text-amber-300">{dziBelGrade.toFixed(2)}</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>
+                        • {calcSchoolMode === 'vocational' ? '2-ри ДЗИ (ДИППК Теория + Практика):' : '2-ри ДЗИ (Профилиращ предмет):'}
+                      </span>
+                      <strong className="text-cyan-300">{dippkCombined.toFixed(2)}</strong>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
         </div>
       </div>
     </div>

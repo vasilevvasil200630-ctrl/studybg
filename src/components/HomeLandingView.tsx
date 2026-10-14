@@ -931,13 +931,13 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             <div className="space-y-1.5 max-w-3xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-extrabold uppercase tracking-wider">
                 <GraduationCap className="w-4 h-4 text-indigo-600" />
-                <span>Специални секции • Всички гимназии, техникуми и специалности (8.–12. клас)</span>
+                <span>12 Специални секции • Всички гимназии, техникуми и специалности (8.–12. клас)</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                 Всеки предмет от всеки клас (8.–12.) за всяко училище и специалност
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Избери своето училище (ПМГ/СМГ, ЕГ, ТУЕС/ИТ, НТБГ/НФСГ, СГСАГ, ПГМЕ/Мехатроника, Медицина/Биотехнологии, Дизайн/Туризъм) или клас (8.–12. клас), за да отвориш както <strong>Общообразователните (Раздел А)</strong>, така и <strong>Профилираните (Раздел Б за ДЗИ)</strong> и <strong>Специалните професионални предмети (Раздел В за ДИППК — Трета СПК)</strong>.
+                Избери своето училище (ПМГ/СМГ, ЕГ, ТУЕС/ИТ, НТБГ/НФСГ, СГСАГ, ПГМЕ/Мехатроника, Медицина/Биотехнологии, Дизайн/Туризъм, ВМГ/Авиация и Логистика, ПГХВТ/Полиграфия и Дървообработване, Спортни и Музикални училища, НГДЕК/Класически езици) или клас (8.–12. клас), за да отвориш <strong>Общообразователните (Раздел А)</strong>, <strong>Профилираните (Раздел Б за ДЗИ)</strong> и <strong>Специалните професионални предмети (Раздел В за ДИППК — Трета СПК)</strong>.
               </p>
             </div>
             <button
@@ -945,12 +945,12 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               onClick={() => onNavigateTab('specialties')}
               className="self-start lg:self-center inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-extrabold shadow-sm transition-all cursor-pointer shrink-0"
             >
-              <span>Отвори пълния справочник & тестове</span>
+              <span>Отвори пълния справочник & калкулатор ДИППК</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Part A: 8 School & Vocational Specialty Tabs */}
+          {/* Part A: 12 School & Vocational Specialty Tabs */}
           <div className="space-y-4">
             <div className="flex flex-wrap gap-2">
               {SCHOOL_SPECIALTIES_SECTIONS.map((school) => {

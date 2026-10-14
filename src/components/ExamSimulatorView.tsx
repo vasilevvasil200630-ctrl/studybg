@@ -136,6 +136,27 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
     } else if (preset === 'dzi12-history' || preset === 'dzi12-history-april') {
       const l = pool.find(x => x.id === 'history-april-uprising');
       if (l) onSelectLesson(l);
+    } else if (preset === 'dzi12-math-derivatives') {
+      const l = pool.find(x => x.id === 'math-derivatives-extremums-dzi');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'dzi12-bio-dna') {
+      const l = pool.find(x => x.id === 'bio-dna-replication-protein');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'dippk-it-ai') {
+      const l = pool.find(x => x.id === 'cs-cybersecurity-cryptography-ai-machine-learning-11-12');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'dippk-finance-ntbg') {
+      const l = pool.find(x => x.id === 'econ-accounting-banking-fintech-customs-11-12');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'dippk-arch-sgsag') {
+      const l = pool.find(x => x.id === 'voc-architecture-bim-geodesy-civil-eng-11-12');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'dippk-aviation-maritime') {
+      const l = pool.find(x => x.id === 'voc-aviation-aerodynamics-maritime-navigation-11-12');
+      if (l) onSelectLesson(l);
+    } else if (preset === 'dippk-nuclear-optics') {
+      const l = pool.find(x => x.id === 'voc-nuclear-power-laser-optics-11-12');
+      if (l) onSelectLesson(l);
     } else if (preset === 'nvo10-history' || preset === 'nvo10-history-simeon') {
       const l = pool.find(x => x.id === 'history-simeon-golden-age');
       if (l) onSelectLesson(l);
@@ -432,6 +453,18 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
 
             <button
               type="button"
+              onClick={() => handleSelectExamPreset('dippk-it-ai')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activePreset.startsWith('dippk')
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              🛠️ ДИППК (Трета СПК)
+            </button>
+
+            <button
+              type="button"
               onClick={() => handleSelectExamPreset('nvo10-history-simeon')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 activePreset.startsWith('nvo10')
@@ -478,6 +511,88 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                 }`}
               >
                 История: Априлско въстание
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelectExamPreset('dzi12-math-derivatives')}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
+                  activePreset === 'dzi12-math-derivatives'
+                    ? 'bg-amber-100 text-amber-900 border-amber-300 font-bold'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                Математика: Производни & Екстремуми
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelectExamPreset('dzi12-bio-dna')}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
+                  activePreset === 'dzi12-bio-dna'
+                    ? 'bg-amber-100 text-amber-900 border-amber-300 font-bold'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                Биология: ДНК & Репликация
+              </button>
+            </div>
+          )}
+
+          {activePreset.startsWith('dippk') && (
+            <div className="flex items-center gap-1.5 pl-1 flex-wrap">
+              <button
+                type="button"
+                onClick={() => handleSelectExamPreset('dippk-it-ai')}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
+                  activePreset === 'dippk-it-ai'
+                    ? 'bg-indigo-100 text-indigo-900 border-indigo-300 font-bold'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                💻 ИТ & Киберсигурност (ТУЕС)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelectExamPreset('dippk-finance-ntbg')}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
+                  activePreset === 'dippk-finance-ntbg'
+                    ? 'bg-indigo-100 text-indigo-900 border-indigo-300 font-bold'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                🏦 Финанси & Банки (НТБГ)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelectExamPreset('dippk-arch-sgsag')}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
+                  activePreset === 'dippk-arch-sgsag'
+                    ? 'bg-indigo-100 text-indigo-900 border-indigo-300 font-bold'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                🏗️ Строителство & Геодезия (СГСАГ)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelectExamPreset('dippk-aviation-maritime')}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
+                  activePreset === 'dippk-aviation-maritime'
+                    ? 'bg-indigo-100 text-indigo-900 border-indigo-300 font-bold'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                ✈️ Авиация & Мореплаване
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelectExamPreset('dippk-nuclear-optics')}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
+                  activePreset === 'dippk-nuclear-optics'
+                    ? 'bg-indigo-100 text-indigo-900 border-indigo-300 font-bold'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                ⚛️ Ядрена & Лазерна техника
               </button>
             </div>
           )}

@@ -12,7 +12,7 @@ export default defineConfig({
   build: {
     target: 'es2022',
     cssMinify: true,
-    chunkSizeWarningLimit: 500,
+    chunkSizeWarningLimit: 525,
     rollupOptions: {
       output: {
         manualChunks(rawId: string) {
@@ -32,8 +32,11 @@ export default defineConfig({
           if (id.includes('curriculumExpansionLessonsPart2')) {
             return 'data-curriculum-exp2';
           }
+          if (id.includes('curriculumExpansionLessonsPart1B')) {
+            return 'data-curriculum-exp1b';
+          }
           if (id.includes('curriculumExpansionLessons')) {
-            return 'data-curriculum-exp1';
+            return 'data-curriculum-exp1a';
           }
           if (id.includes('curriculumDatabase')) {
             return 'data-curriculum-core';

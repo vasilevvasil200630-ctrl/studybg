@@ -102,7 +102,7 @@ export const Footer: React.FC<FooterProps> = ({
               </button>
 
               <a
-                href="https://matura-plus.bg"
+                href="https://maturaplus.eu"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-semibold shadow-2xs transition-colors"

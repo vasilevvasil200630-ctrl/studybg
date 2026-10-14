@@ -14,7 +14,7 @@ export const MaturaPlusBridgeBanner: React.FC<MaturaPlusBridgeBannerProps> = ({
 }) => {
   const handleGoToMaturaPlus = () => {
     // In production, opens the Matura+ platform URL. For local/demo, triggers an alert or opens link.
-    const url = 'https://matura-plus.bg';
+    const url = 'https://maturaplus.eu';
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 

@@ -33,12 +33,31 @@ const MYSTERY_LESSON_MAP: Record<string, string> = {
   'mystery-belintash-energy-triangle': 'geo-bulgaria-relief-climate-waters',
   'mystery-bogomils-secret-book-grail': 'hist-christianization-boris-cyrillic',
   'mystery-voynich-bulgarian-trace': 'hist-christianization-boris-cyrillic',
-  'mystery-black-sea-deluge-ships': 'geo-bulgaria-relief-climate-waters',
+  'mystery-black-sea-deluge-ships': 'geo-bulgaria-climate-waters-dzi',
   'mystery-tesla-wardencliffe-files': 'phys-electricity-ohm-joule',
   'mystery-thracian-110hz-resonance': 'phys-newton-laws-mechanics',
   'mystery-lozanov-suggestopedia-vanga': 'bio-dna-replication-protein',
   'mystery-krum-greek-fire-mesembria': 'hist-christianization-boris-cyrillic',
   'mystery-danov-paneurhythmy-rila-code': 'phil-ethics-law-democracy-economy',
+  'conspiracy-tsarichina-operation-slava': 'bio-cell-cycle-mitosis-meiosis',
+  'conspiracy-bastet-malko-tarnovo': 'history-asparukh-681',
+  'conspiracy-devil-throat-harman-kaya': 'geo-bulgaria-climate-waters-dzi',
+  'conspiracy-tsar-boris-iii-death': 'history-balkan-wars-ww1-catastrophes',
+  'conspiracy-boyan-magus-venice': 'history-simeon-golden-age',
+  'conspiracy-atanasoff-abc-enigma': 'it-algorithms-databases-networks',
+  'conspiracy-surva-kukeri-pineal-frequency': 'phys-thermodynamics-ideal-gas-dzi',
+  'conspiracy-ivan-rila-testament': 'hist-christianization-boris-cyrillic',
+  'conspiracy-samuil-blinded-army-secret-vault': 'history-simeon-golden-age',
+  'conspiracy-nestinarstvo-quantum-biophysics': 'phys-thermodynamics-ideal-gas-dzi',
+  'conspiracy-musala-cosmic-station-stalin': 'phys-quantum-nuclear-astrophysics',
+  'conspiracy-orpheus-severed-head-oracle': 'bel-7-nvo-full-canon-masterclass',
+  'conspiracy-varna-gold-golden-ratio': 'math-derivatives-extremums-dzi',
+  'conspiracy-pobiti-kamani-energy-matrix': 'chem-redox-electrochemistry-dzi',
+  'conspiracy-rakovski-secret-diplomacy-ciphers': 'history-april-uprising',
+  'conspiracy-bulgaria-space-superpower-svet-lyulin': 'phys-quantum-nuclear-astrophysics',
+  'conspiracy-vmro-secret-gold-archives': 'bel-talev-dimov-romani-dzi',
+  'conspiracy-strandzha-sveta-marina-indipasha': 'geo-bulgaria-climate-waters-dzi',
+  'conspiracy-kardzhali-stone-wedding-mushrooms': 'chem-redox-electrochemistry-dzi',
 };
 
 const HERITAGE_LESSON_MAP: Record<string, string> = {
@@ -55,11 +74,18 @@ const HERITAGE_LESSON_MAP: Record<string, string> = {
 
 const TIMELINE_YEAR_MAP: Record<number, string> = {
   681: 'history-asparukh-681',
+  864: 'hist-christianization-boris-cyrillic',
+  886: 'hist-christianization-boris-cyrillic',
   893: 'history-simeon-golden-age',
   917: 'history-simeon-golden-age',
   927: 'history-simeon-golden-age',
   1876: 'history-april-uprising',
   1877: 'bel-7-opalchentsite-shipka',
+  1885: 'hist-saedinenie-nezavisimost-wars',
+  1908: 'hist-saedinenie-nezavisimost-wars',
+  1912: 'history-balkan-wars-ww1-catastrophes',
+  1913: 'history-balkan-wars-ww1-catastrophes',
+  1919: 'history-balkan-wars-ww1-catastrophes',
 };
 
 /**

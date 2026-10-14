@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, Check, Calendar, AlertTriangle, ArrowRight, ShieldCheck, CheckSquare, Zap, GraduationCap, Clock, Printer, Mail } from 'lucide-react';
+import { Copy, Check, Calendar, AlertTriangle, ArrowRight, ShieldCheck, CheckSquare, Zap, GraduationCap, Clock, Printer, Mail, Mic, FlaskConical } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import { AudioReader } from './AudioReader';
@@ -208,7 +208,14 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
             <div className="text-xs font-semibold text-slate-500 mb-3">
               Продължи подготовката по този урок:
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+              <button
+                onClick={() => onNavigateTab('oralexam')}
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200 text-xs font-bold transition-all shadow-2xs"
+              >
+                <Mic className="w-3.5 h-3.5 text-indigo-600" />
+                <span>Устен изпит</span>
+              </button>
               <button
                 onClick={() => onNavigateTab('audit')}
                 className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-slate-50 hover:bg-white text-slate-700 hover:text-slate-900 border border-slate-200 text-xs font-medium transition-all shadow-2xs"
@@ -236,6 +243,13 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
               >
                 <Clock className="w-3.5 h-3.5 text-amber-600" />
                 <span>Симулатор</span>
+              </button>
+              <button
+                onClick={() => onNavigateTab('sciencelab')}
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 text-xs font-semibold transition-all shadow-2xs"
+              >
+                <FlaskConical className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Научна Лаб</span>
               </button>
             </div>
           </div>

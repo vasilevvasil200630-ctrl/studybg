@@ -19,7 +19,9 @@ import {
   Feather,
   Calculator,
   MapPin,
-  Globe
+  Globe,
+  FlaskConical,
+  Mic
 } from 'lucide-react';
 import type { AppNavTab } from './Navbar';
 import type { CultureSubTab } from './CultureHero';
@@ -139,6 +141,15 @@ export const Footer: React.FC<FooterProps> = ({
               </li>
               <li>
                 <button
+                  onClick={() => handleOpenStudyTab('oralexam')}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2 font-semibold text-indigo-800"
+                >
+                  <Mic className="w-3.5 h-3.5 text-indigo-600" />
+                  <span>Устно изпитване пред дъската (Глас)</span>
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => handleOpenStudyTab('grammar')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
@@ -171,6 +182,15 @@ export const Footer: React.FC<FooterProps> = ({
                 >
                   <Calculator className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Математика & STEM Лаборатория</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleOpenStudyTab('sciencelab')}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2 font-semibold text-emerald-800"
+                >
+                  <FlaskConical className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Природни науки Лаб (ДНК, Йони, Ом)</span>
                 </button>
               </li>
               <li>
@@ -298,16 +318,25 @@ export const Footer: React.FC<FooterProps> = ({
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-amber-800 mb-3.5 flex items-center gap-1.5">
               <Compass className="w-3.5 h-3.5 text-amber-700" />
-              <span>Исторически контекст (за ДЗИ)</span>
+              <span>Обща култура, Конспирации & Извори</span>
             </h4>
             <ul className="space-y-2 text-xs text-slate-600">
               <li>
                 <button
                   onClick={() => handleOpenCultureTab('mysteries')}
-                  className="hover:text-amber-800 transition-colors flex items-center gap-2"
+                  className="hover:text-amber-800 transition-colors flex items-center gap-2 font-semibold text-amber-900"
                 >
                   <Compass className="w-3.5 h-3.5 text-amber-700" />
-                  <span>Неразгадани исторически казуси</span>
+                  <span>33 Конспиративни досиета & Загадки</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleOpenCultureTab('mysticmap')}
+                  className="hover:text-purple-800 transition-colors flex items-center gap-2 font-semibold text-purple-900"
+                >
+                  <MapPin className="w-3.5 h-3.5 text-purple-600" />
+                  <span>Карта на мистичните зони (12 обекта)</span>
                 </button>
               </li>
               <li>
@@ -325,7 +354,7 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-orange-700 transition-colors flex items-center gap-2"
                 >
                   <ShieldCheck className="w-3.5 h-3.5 text-orange-600" />
-                  <span>Български принос & ЮНЕСКО</span>
+                  <span>Български принос & ЮНЕСКО (16)</span>
                 </button>
               </li>
               <li>
@@ -334,7 +363,7 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Куиз за ерудиция и широк кръгозор</span>
+                  <span>Куиз за ерудити (42 въпроса)</span>
                 </button>
               </li>
             </ul>

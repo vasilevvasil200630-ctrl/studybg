@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   Mic,
   MicOff,
@@ -72,6 +72,13 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
   const [isListening, setIsListening] = useState<boolean>(false);
   const [isSpeakingQuestion, setIsSpeakingQuestion] = useState<boolean>(false);
   const [micMessage, setMicMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    setActiveLessonId(currentLesson.id);
+    setQuestionIndex(0);
+    setStudentAnswer('');
+    setIsSubmitted(false);
+  }, [currentLesson.id]);
 
   const [gradeBook, setGradeBook] = useState<GradeBookEntry[]>(() => {
     try {

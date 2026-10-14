@@ -23,7 +23,11 @@ import {
   Utensils,
   Trophy,
   Globe2,
-  Calculator
+  Calculator,
+  Flame,
+  ShieldCheck,
+  Film,
+  HeartHandshake
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import {
@@ -50,8 +54,139 @@ const SECTION_ICON_MAP: Record<string, React.ReactNode> = {
   'aviation-maritime-logistics-rail': <Plane className="w-5 h-5 text-sky-400" />,
   'food-polygraphy-forestry-textile': <Utensils className="w-5 h-5 text-orange-400" />,
   'sports-schools-performing-arts': <Trophy className="w-5 h-5 text-yellow-400" />,
-  'classical-languages-russian-italian-oriental': <Globe2 className="w-5 h-5 text-teal-400" />
+  'classical-languages-russian-italian-oriental': <Globe2 className="w-5 h-5 text-teal-400" />,
+  'mining-metallurgy-chemical-geology': <Flame className="w-5 h-5 text-cyan-400" />,
+  'security-interior-criminalistics-law': <ShieldCheck className="w-5 h-5 text-amber-400" />,
+  'applied-arts-stone-woodcarving-ceramics-cinema': <Film className="w-5 h-5 text-purple-400" />,
+  'pedagogy-social-work-beauty-wellness-spa': <HeartHandshake className="w-5 h-5 text-pink-400" />
 };
+
+const DIPLOMA_DEFENSE_ASSIGNMENTS: {
+  id: string;
+  sectorBadge: string;
+  title: string;
+  professionCode: string;
+  inputParameters: string;
+  calculationSteps: string[];
+  commissionQuestions: { q: string; a: string }[];
+  linkedLessonId: string;
+}[] = [
+  {
+    id: 'defense-it-ai',
+    sectorBadge: 'ТУЕС / ИТ & Изкуствен интелект',
+    title: 'Проектиране на защитена Full-Stack микросервизна система с криптографска автентикация и ML модул за класификация',
+    professionCode: 'Системен програмист / Приложен програмист (4810201 — III СПК)',
+    inputParameters: 'REST API с JWT (RS256), PostgreSQL база данни в 3NF (150 000 записа), AES-256 криптиране и невронна мрежа с Precision = 0.90 и Recall = 0.85.',
+    calculationSteps: [
+      'Нормализиране на БД до Трета нормална форма (3NF) и създаване на B-Tree индекси за O(log n) търсене.',
+      'Защита на всички SQL заявки чрез Prepared Statements и хеширане на пароли с Argon2id / bcrypt + Salt.',
+      'Изчисляване на F1-Score на класификатора: F1 = 2·(0.90·0.85)/(0.90+0.85) = 1.53 / 1.75 ≈ 0.874 (87.4%).'
+    ],
+    commissionQuestions: [
+      {
+        q: 'Защо използвате Prepared Statements вместо конкатенация на низове в SQL заявките?',
+        a: 'Защото параметризираните заявки отделят структурно SQL кода от потребителските данни и напълно предотвратяват SQL Injection атаки.'
+      },
+      {
+        q: 'Каква е разликата между симетричното (AES) и асиметричното (RSA) криптиране в TLS/HTTPS?',
+        a: 'Асиметричният алгоритъм (RSA/ECDHE) обменя сигурно сесийния ключ през публичния канал, след което AES криптира трафика с висока скорост.'
+      }
+    ],
+    linkedLessonId: 'cs-cybersecurity-cryptography-ai-machine-learning-11-12'
+  },
+  {
+    id: 'defense-nuclear-optics',
+    sectorBadge: 'ПГЯЕ / НПГПТО / Ядрена & Лазерна техника',
+    title: 'Топлинно-хидравличен баланс и радиационен контрол на парогенератор ПГВ-1000М във ВВЕР-1000 и оптично-лазерна телеметрия',
+    professionCode: 'Техник-енергетик / Лазерна и оптична техника (5220301 / 5210501 — III СПК)',
+    inputParameters: 'Първи контур: налягане p₁ = 15.7 MPa, T_вх = 320 °C, T_изх = 290 °C; Втори контур: наситена пара p₂ = 6.27 MPa; влакнесто-оптичен сензор с n₁ = 1.48 и n₂ = 1.46.',
+    calculationSteps: [
+      'Проверка на условието за пълно вътрешно отражение в оптичното влакно: sin α_гр = n₂ / n₁ = 1.46 / 1.48 ≈ 0.986.',
+      'Определяне на термичния КПД на паротурбинния цикъл на Ранкин и контрол на еквивалентната доза H = w_R · D [mSv].',
+      'Металографски контрол на аустенитната неръждаема стомана на топлообменните тръби.'
+    ],
+    commissionQuestions: [
+      {
+        q: 'Защо водата в Първи контур на ВВЕР-1000 не кипи въпреки температурата от 320 °C?',
+        a: 'Защото се поддържа под високо налягане от ~15.7 MPa (157 атмосфери) чрез компенсатора на обема, при което точката на кипене е над 345 °C.'
+      },
+      {
+        q: 'Кое физично явление стои в основата на работата на всеки лазер?',
+        a: 'Стимулираното (индуцирано) излъчване на кохерентни фотони при наличие на инверсна населеност на енергетичните нива в активната среда.'
+      }
+    ],
+    linkedLessonId: 'voc-nuclear-energy-optics-lasers-metallurgy-8-12'
+  },
+  {
+    id: 'defense-banking-economics',
+    sectorBadge: 'НТБГ / НФСГ / Банково, Данъчно и Счетоводно дело',
+    title: 'Годишно счетоводно приключване, данъчно преобразуване по ЗКПО и оценка на инвестиционен проект с NPV',
+    professionCode: 'Икономист-информатик / Оперативен счетоводител / Финансист (3451203 — III СПК)',
+    inputParameters: 'Приходи = 800 000 лв., Разходи = 600 000 лв., Активи = 1 000 000 лв., Собствен капитал = 500 000 лв., Корпоративен данък = 10%, ДДС = 20%.',
+    calculationSteps: [
+      'Съставяне на Счетоводен баланс (Активи = Собствен капитал + Пасиви) и Отчет за приходите и разходите.',
+      'Изчисляване на счетоводна печалба (200 000 лв.), корпоративен данък 10% (20 000 лв.) и нетна печалба (180 000 лв.).',
+      'Изчисляване на рентабилност на собствения капитал ROE = (180 000 / 500 000) × 100% = 36.0%.'
+    ],
+    commissionQuestions: [
+      {
+        q: 'Как се променя една активна счетоводна сметка (напр. сметка 503 „Разплащателна сметка“) при постъпване на парични средства?',
+        a: 'Активните сметки се увеличават по Дебита (Дт) и се намаляват по Кредита (Кт).'
+      },
+      {
+        q: 'Какво означава положителна Нетна настояща стойност (NPV > 0) на инвестиционен проект?',
+        a: 'Означава, че дисконтираните бъдещи парични потоци надвишават първоначалната инвестиция и проектът е икономически изгоден.'
+      }
+    ],
+    linkedLessonId: 'econ-accounting-finance-banking-8-12'
+  },
+  {
+    id: 'defense-architecture-mechatronics',
+    sectorBadge: 'СГСАГ / ПГМЕ / Строителство, Мехатроника & ВЕИ',
+    title: 'Оразмеряване на стоманобетонна греда, геодезическо трасиране и фотоволтаична/PLC автоматизация на сградата',
+    professionCode: 'Строителен техник / Геодезист / Мехатроник (5820101 / 5230901 — III СПК)',
+    inputParameters: 'Проста греда с отвор L = 6 m и равномерно натоварване q = 12 kN/m; фотоволтаична централа P_p = 30 kWp с трифазен инвертор cos φ = 0.95.',
+    calculationSteps: [
+      'Определяне на опорните реакции A = B = q·L/2 = 36 kN и максималния огъващ момент M_max = q·L²/8 = 12·36/8 = 54 kN·m.',
+      'Изчисляване на армировката в опънната зона на стоманобетонната греда и проверка на провисването.',
+      'Настройка на PID регулатор в PLC контролер за управление на ОВК и трифазната мощност P = √3 · U_L · I_L · cos φ.'
+    ],
+    commissionQuestions: [
+      {
+        q: 'В коя зона на проста стоманобетонна греда на две опори се разполага основната носеща стоманена армировка?',
+        a: 'В долната (опънна) зона, тъй като бетонът поема отлично натиска отгоре, но има ниска якост на опън отдолу.'
+      },
+      {
+        q: 'Каква е ролята на диференциалната съставка (D) в един PID регулатор?',
+        a: 'Тя реагира на скоростта на изменение на грешката (de/dt), предвижда отклоненията и гаси колебанията (пререгулирането).'
+      }
+    ],
+    linkedLessonId: 'voc-architecture-construction-cad-8-12'
+  },
+  {
+    id: 'defense-law-cinema-spa',
+    sectorBadge: 'Право & ПАБ / Кино & Иконопис / Балнеология & СПА',
+    title: 'Комплексен проект по Пожарна безопасност и Сигурност / Студийна Аудио-Визуална продукция / Балнео-СПА рехабилитация',
+    professionCode: 'Сигурност и ПАБ / Кинотехника и Иконопис / Изпълнител на термални процедури (III СПК)',
+    inputParameters: 'Евакуационен план и пожарогасене за класове A, B, C, F; Цифров аудио-видео мастер 48 kHz / 24-bit, 24 fps (1/50 s) или хипертермална минерална терапия (39 °C, pH на кожата 5.0).',
+    calculationSteps: [
+      'Сигурност/ПАБ: Изчисляване на евакуационните пътища, разполагане на CO₂ и прахови пожарогасители и СОТ/CCTV зони.',
+      'Кино/Приложни изкуства: Настройка на 3-точково осветление (3200 K / 5600 K), дискретизация по Котелников-Шанън и грунд левкас.',
+      'Балнеология/Козметика: Съставяне на 10-дневна балнеолечебна и дерматологична програма при спазване на медицинските противопоказания.'
+    ],
+    commissionQuestions: [
+      {
+        q: 'Защо пожари от Клас F (горещи кулинарни мазнини) и електроуреди под напрежение никога не се гасят с вода?',
+        a: 'При мазнините водата се изпарява мигновено и предизвиква взривно разпръскване на пламъка, а при електроуредите провежда тока.'
+      },
+      {
+        q: 'Защо козметичните продукти за почистване трябва да запазват pH 4.5–5.5?',
+        a: 'За да не разрушават естествената киселинна (хидролипидна) мантия на епидермиса, която предпазва кожата от патогенни бактерии.'
+      }
+    ],
+    linkedLessonId: 'voc-law-security-criminalistics-fire-safety-8-12'
+  }
+];
 
 export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
   allLessons,
@@ -72,6 +207,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
   const [dziBelGrade, setDziBelGrade] = useState<number>(5.50);
   const [secondExamTheoryGrade, setSecondExamTheoryGrade] = useState<number>(5.75);
   const [dippkPracticeGrade, setDippkPracticeGrade] = useState<number>(6.00);
+  const [selectedDefenseId, setSelectedDefenseId] = useState<string>(DIPLOMA_DEFENSE_ASSIGNMENTS[0].id);
 
   const selectedSchool: SchoolCategorySection = useMemo(() => {
     return (
@@ -147,11 +283,11 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
 
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3 shrink-0">
             <div className="rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3.5 text-center">
-              <div className="text-2xl font-black text-indigo-400">12</div>
+              <div className="text-2xl font-black text-indigo-400">16</div>
               <div className="text-[11px] text-slate-300 font-medium">Вида гимназии & техникуми</div>
             </div>
             <div className="rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3.5 text-center">
-              <div className="text-2xl font-black text-emerald-400">48+</div>
+              <div className="text-2xl font-black text-emerald-400">64+</div>
               <div className="text-[11px] text-slate-300 font-medium">Профила и специалности (СПК)</div>
             </div>
             <div className="rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3.5 text-center">
@@ -166,13 +302,13 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
         </div>
       </div>
 
-      {/* СЕКЦИЯ 1: Избор на вид училище и специалност (12 специални секции) */}
+      {/* СЕКЦИЯ 1: Избор на вид училище и специалност (16 специални секции) */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h2 className="text-xl font-bold text-white flex items-center gap-2.5">
               <GraduationCap className="w-6 h-6 text-indigo-400" />
-              1. Изберете специална секция по вид гимназия и професионално направление (12 направления)
+              1. Изберете специална секция по вид гимназия и професионално направление (16 направления)
             </h2>
             <p className="text-xs sm:text-sm text-slate-400">
               Разгледайте официалните специалности, предметите от 8. до 12. клас, формулите и решавайте изпитни въпроси за ДЗИ и ДИППК.
@@ -180,7 +316,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
           </div>
         </div>
 
-        {/* 12 Карти за избор на училище */}
+        {/* 16 Карти за избор на училище */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {SCHOOL_SPECIALTIES_SECTIONS.map((school) => {
             const isSelected = school.id === selectedSchool.id;
@@ -930,6 +1066,133 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
             })()}
           </div>
         </div>
+      </div>
+
+      {/* СЕКЦИЯ 4: Интерактивен Тренажор за Защита на Дипломен проект пред Държавна изпитна комисия (ДИППК — Трета СПК) */}
+      <div className="rounded-3xl bg-slate-900/90 border border-emerald-500/30 p-6 sm:p-8 shadow-2xl space-y-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+          <div className="space-y-1.5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold uppercase tracking-wider">
+              <Award className="w-3.5 h-3.5" />
+              Симулатор на Държавна изпитна комисия • 12. клас (Трета СПК)
+            </div>
+            <h2 className="text-xl sm:text-2xl font-extrabold text-white">
+              4. Тренажор за Защита на Дипломен проект (ДИППК — Практика & Теория)
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-400 max-w-3xl">
+              Изберете направление и разгледайте реално структурирано <strong>Дипломно задание за 12. клас</strong> с изходни параметри, изчислителни стъпки и реални въпроси на Държавната квалификационна комисия с образцови отговори за <strong>Отличен (6.00)</strong>.
+            </p>
+          </div>
+        </div>
+
+        {/* Табове за избор на Дипломно задание */}
+        <div className="flex flex-wrap gap-2">
+          {DIPLOMA_DEFENSE_ASSIGNMENTS.map((item) => {
+            const active = item.id === selectedDefenseId;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setSelectedDefenseId(item.id)}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${
+                  active
+                    ? 'bg-emerald-500/20 border-emerald-400 text-emerald-200 shadow-md'
+                    : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+                }`}
+              >
+                {item.sectorBadge}
+              </button>
+            );
+          })}
+        </div>
+
+        {(() => {
+          const activeDefense =
+            DIPLOMA_DEFENSE_ASSIGNMENTS.find((d) => d.id === selectedDefenseId) ||
+            DIPLOMA_DEFENSE_ASSIGNMENTS[0];
+          return (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Ляв панел: Задание, Изходни данни и Етапи */}
+              <div className="lg:col-span-7 rounded-2xl bg-slate-950/90 border border-slate-800 p-5 space-y-4">
+                <div className="space-y-1">
+                  <div className="text-xs font-mono font-bold text-emerald-400">
+                    {activeDefense.professionCode}
+                  </div>
+                  <h3 className="text-base sm:text-lg font-bold text-white leading-snug">
+                    Тема: {activeDefense.title}
+                  </h3>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-indigo-950/40 border border-indigo-500/30 space-y-1">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-indigo-300">
+                    Изходни данни по задание:
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-200 font-mono">
+                    {activeDefense.inputParameters}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                    Задължителни изчислителни и технологични етапи в обяснителната записка:
+                  </div>
+                  <div className="space-y-2">
+                    {activeDefense.calculationSteps.map((step, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 text-xs sm:text-sm text-slate-200"
+                      >
+                        <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 font-mono font-bold text-xs shrink-0">
+                          Етап {idx + 1}
+                        </span>
+                        <span>{step}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    onClick={() => handleOpenLessonById(activeDefense.linkedLessonId)}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors"
+                  >
+                    <BookOpen className="w-4 h-4" />
+                    Отвори пълния теоретичен урок за тази защита
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Десен панел: Въпроси на Държавната изпитна комисия */}
+              <div className="lg:col-span-5 rounded-2xl bg-gradient-to-br from-slate-950 via-emerald-950/20 to-slate-950 border border-emerald-500/30 p-5 space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <div className="text-xs font-bold uppercase tracking-wider text-emerald-300">
+                    Блиц въпроси на Държавната комисия при защита
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-bold">
+                    Критерий: Отличен 6.00
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {activeDefense.commissionQuestions.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2"
+                    >
+                      <div className="text-xs sm:text-sm font-bold text-amber-300">
+                        Въпрос {idx + 1}: {item.q}
+                      </div>
+                      <div className="text-xs text-slate-300 leading-relaxed pl-3 border-l-2 border-emerald-500/60">
+                        <strong className="text-emerald-400">Еталонен отговор: </strong>
+                        {item.a}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

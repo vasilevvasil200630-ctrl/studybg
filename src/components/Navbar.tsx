@@ -88,7 +88,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onScrollToCatalog,
   onOpenFormulaModal,
   onOpenQuickSearch,
-  totalLessonsCount = 80
+  totalLessonsCount = 92
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLabsDropdownOpen, setIsLabsDropdownOpen] = useState(false);

@@ -25,12 +25,31 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
     window.print();
   };
 
-  // Group A uses original questions; Group B inverts order or uses alternating questions
+  // Group A uses original questions; Group B reverses question order AND rotates option order
   const questionsA = currentLesson.quiz;
-  const questionsB = [...currentLesson.quiz].reverse();
+  const questionsB = [...currentLesson.quiz].reverse().map((q, idx) => {
+    const len = q.options.length;
+    if (len < 2) return q;
+    const shift = (idx % (len - 1)) + 1;
+    const rotatedOptions = q.options.map((_, oIdx) => q.options[(oIdx + shift) % len]);
+    const newCorrectIndex = (q.correctIndex - shift + len) % len;
+    return {
+      ...q,
+      options: rotatedOptions,
+      correctIndex: newCorrectIndex,
+    };
+  });
 
   const currentQuestions = activeGroup === 'A' ? questionsA : questionsB;
-  const checklist = currentLesson.notebookChecklist || [];
+  const fullChecklist = currentLesson.notebookChecklist || [];
+  const checklist =
+    activeGroup === 'B' && fullChecklist.length >= 4
+      ? [fullChecklist[2], fullChecklist[3]]
+      : fullChecklist.slice(0, 2);
+  const isVocationalDippk =
+    currentLesson.grade.includes('ДИППК') ||
+    currentLesson.grade.includes('СПК') ||
+    currentLesson.id.startsWith('voc-');
 
   return (
     <div className="space-y-6">
@@ -357,23 +376,31 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
           </div>
         )}
 
-        {/* Section 3: Module 3 Extended Analytic Task (ДЗИ 41. задача / НВО разширен отговор) */}
+        {/* Section 3: Module 3 Extended Analytic Task (ДЗИ 41. задача / ДИППК Задание / НВО разширен отговор) */}
         {includeModule3 && (
           <div className="space-y-3 pt-4 border-t-2 border-black">
             <div className="flex items-center justify-between border-b border-black/40 pb-1">
               <div>
                 <h3 className="text-xs font-black uppercase tracking-wider">
-                  {currentLesson.subject.includes('литература') || currentLesson.subject.includes('БЕЛ')
+                  {isVocationalDippk
+                    ? 'III. МОДУЛ 3: ДИППК Практическо и инженерно задание (Трета СПК по Наредба № 1) — 30 т.'
+                    : currentLesson.subject.includes('литература') || currentLesson.subject.includes('БЕЛ')
                     ? 'III. МОДУЛ 3: Аргументативен текст (Интерпретативно съчинение или есе) — 30 т.'
                     : currentLesson.subject.includes('Математика')
                     ? 'III. МОДУЛ 3: Задачи с пълно аналитично и геометрично решение — 30 т.'
+                    : currentLesson.subject.includes('Физика') || currentLesson.subject.includes('Химия') || currentLesson.subject.includes('Биология')
+                    ? 'III. МОДУЛ 3: Експериментална и изчислителна STEM задача — 30 т.'
                     : 'III. МОДУЛ 3: Разширен анализ на исторически казус и извори — 30 т.'}
                 </h3>
                 <p className="text-[10px] text-slate-600">
-                  {currentLesson.subject.includes('литература') || currentLesson.subject.includes('БЕЛ')
+                  {isVocationalDippk
+                    ? 'Разработете технологичен маршрут, принципна схема / програмен модул и посочете приложимите стандарти (БДС / ISO) и правила по ЗБУТ.'
+                    : currentLesson.subject.includes('литература') || currentLesson.subject.includes('БЕЛ')
                     ? 'Създайте текст в обем до 4 страници. Формулирайте ясна теза, подкрепена с аргументи и коментар върху текста.'
                     : currentLesson.subject.includes('Математика')
                     ? 'Опишете подробно всички етапи на решението, дефиниционните области и чертежи.'
+                    : currentLesson.subject.includes('Физика') || currentLesson.subject.includes('Химия') || currentLesson.subject.includes('Биология')
+                    ? 'Запишете всички физични закони / химични уравнения, изведете работната формула и проверете размерностите в SI.'
                     : 'Анализирайте историческия контекст, причинно-следствените връзки и цитираните извори.'}
                 </p>
               </div>
@@ -383,10 +410,14 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
             {/* Formatted ruled writing lines or calculation area */}
             <div className="border border-black p-3.5 space-y-3 bg-white min-h-[170px]">
               <div className="text-[11px] font-bold text-slate-900">
-                {currentLesson.subject.includes('литература') || currentLesson.subject.includes('БЕЛ')
+                {isVocationalDippk
+                  ? `Дипломно / Практическо задание (Вариант ${activeGroup}): „Проектиране, диагностика и технологично изпълнение по тема «${currentLesson.title}» (${currentLesson.subject})“`
+                  : currentLesson.subject.includes('литература') || currentLesson.subject.includes('БЕЛ')
                   ? `Тема за съчинение / есе: „Моралните дилеми и цената на компромиса в «${currentLesson.title}»“`
                   : currentLesson.subject.includes('Математика')
                   ? `Задача с пълно доказателство по темата: „${currentLesson.title}“ (Чертожна и изчислителна площ)`
+                  : currentLesson.subject.includes('Физика') || currentLesson.subject.includes('Химия') || currentLesson.subject.includes('Биология')
+                  ? `Изследователски STEM казус: „Количествен и лабораторен анализ на процесите в «${currentLesson.title}»“`
                   : `Исторически казус: „Последици и историческо значение на събитията около «${currentLesson.title}»“`}
               </div>
 
@@ -400,7 +431,11 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
               </div>
 
               <div className="flex justify-between items-center text-[10px] text-slate-500 pt-2 border-t border-dashed border-slate-300">
-                <span>Оценка на Модул 3 (критерии на МОН за теза, аргументация и езикова норма):</span>
+                <span>
+                  {isVocationalDippk
+                    ? 'Оценка от Държавна изпитна комисия (Технологична точност 15 т. + БДС/ISO норми 10 т. + ЗБУТ 5 т.):'
+                    : 'Оценка на Модул 3 (критерии на МОН за теза, аргументация и езикова норма):'}
+                </span>
                 <span className="font-bold text-slate-900">Точки: ...... / 30 т.</span>
               </div>
             </div>
@@ -409,18 +444,33 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
 
         {/* Section 4: Teacher / Parent Answer Key (Optional display) */}
         {showAnswerKey && (
-          <div className="mt-8 pt-4 border-t-2 border-dashed border-black/60 bg-amber-50 p-4 rounded text-xs print:bg-white print:border-black">
-            <div className="flex items-center gap-2 mb-2 font-bold text-amber-900 print:text-black">
+          <div className="mt-8 pt-4 border-t-2 border-dashed border-black/60 bg-amber-50 p-4 rounded text-xs print:bg-white print:border-black space-y-3">
+            <div className="flex items-center gap-2 font-bold text-amber-900 print:text-black">
               <ShieldCheck className="w-4 h-4" />
-              <span>Ключ с верните отговори и критерии за оценка (Вариант {activeGroup}):</span>
+              <span>Ключ с верните отговори, обосновки и критерии за оценка (Вариант {activeGroup}):</span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
               {currentQuestions.map((q, idx) => {
                 const letters = ['А', 'Б', 'В', 'Г'];
                 return (
                   <div key={q.id} className="p-1.5 rounded bg-white border border-amber-300 font-mono text-[11px] print:border-black">
                     Въпрос {idx + 1}: <strong className="text-blue-900 print:text-black">{letters[q.correctIndex]}</strong>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Detailed methodological explanations for each question */}
+            <div className="space-y-1.5 border-t border-amber-200 pt-2">
+              <div className="font-bold text-[11px] text-amber-950 print:text-black">
+                Методическа обосновка към въпросите от Модул 1 (Вариант {activeGroup}):
+              </div>
+              {currentQuestions.map((q, idx) => {
+                const letters = ['А', 'Б', 'В', 'Г'];
+                return (
+                  <div key={`exp-${q.id}`} className="text-[11px] text-slate-700 print:text-black leading-snug">
+                    <strong>{idx + 1}. ({letters[q.correctIndex]})</strong> {q.explanation}
                   </div>
                 );
               })}

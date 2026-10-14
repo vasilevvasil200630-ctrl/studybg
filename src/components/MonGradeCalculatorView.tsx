@@ -19,7 +19,7 @@ interface MonGradeCalculatorViewProps {
 export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
   onNavigateTab
 }) => {
-  const [calculatorMode, setCalculatorMode] = useState<'pointsToGrade' | 'gradeToPoints' | 'universityBal'>('pointsToGrade');
+  const [calculatorMode, setCalculatorMode] = useState<'pointsToGrade' | 'gradeToPoints' | 'universityBal' | 'dippkCalc'>('pointsToGrade');
   
   // Mode 1: Points to Grade
   const [points, setPoints] = useState<number>(78);
@@ -30,7 +30,12 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
   // Mode 3: University Bal
   const [diplomaGrade, setDiplomaGrade] = useState<number>(5.80);
   const [examGrade, setExamGrade] = useState<number>(5.50);
-  const [examMultiplier, setExamMultiplier] = useState<number>(3); // x3, x4, x2.5
+  const [examMultiplier, setExamMultiplier] = useState<number>(3); // x3, x4, x2.5, x2, x3.5
+
+  // Mode 4: ДИППК (Трета СПК - Теория + Практика + ЗПП успех)
+  const [dippkTheoryPoints, setDippkTheoryPoints] = useState<number>(84);
+  const [dippkPracticePoints, setDippkPracticePoints] = useState<number>(92);
+  const [dippkSubjectsAvg, setDippkSubjectsAvg] = useState<number>(5.65);
 
   // Official МОН Formula: Grade = 2 + 4 * ((points - 30) / 70) for points >= 30
   const calculateMonGrade = (pts: number) => {
@@ -128,6 +133,38 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
     return { bal: Number(bal.toFixed(2)), maxBal, percentage };
   }, [diplomaGrade, examGrade, examMultiplier]);
 
+  // ДИППК (Трета СПК) Calculation according to Наредба № 1 на МОН
+  const dippkResult = useMemo(() => {
+    // Convert 0-100 points to 2.00-6.00 (50 points = 3.00 threshold for vocational exams, or 3 + 3*(pts-50)/50)
+    const pointsToSpkGrade = (pts: number) => {
+      if (pts < 50) return 2.00;
+      const g = 3.00 + 3.00 * ((pts - 50) / 50);
+      return Math.min(6.00, Number(g.toFixed(2)));
+    };
+    const theoryGrade = pointsToSpkGrade(dippkTheoryPoints);
+    const practiceGrade = pointsToSpkGrade(dippkPracticePoints);
+    const bothPassed = dippkTheoryPoints >= 50 && dippkPracticePoints >= 50;
+    const dippkExamAvg = bothPassed ? Number(((theoryGrade + practiceGrade) / 2).toFixed(2)) : 2.00;
+    const certificateFinalGrade = bothPassed
+      ? Number(((dippkSubjectsAvg + theoryGrade + practiceGrade) / 3).toFixed(2))
+      : 2.00;
+
+    let verbal = 'Слаб';
+    if (certificateFinalGrade >= 5.50) verbal = 'Отличен';
+    else if (certificateFinalGrade >= 4.50) verbal = 'Много добър';
+    else if (certificateFinalGrade >= 3.50) verbal = 'Добър';
+    else if (certificateFinalGrade >= 3.00) verbal = 'Среден';
+
+    return {
+      theoryGrade,
+      practiceGrade,
+      bothPassed,
+      dippkExamAvg,
+      certificateFinalGrade,
+      verbal,
+    };
+  }, [dippkTheoryPoints, dippkPracticePoints, dippkSubjectsAvg]);
+
   return (
     <div className="space-y-8 animate-fade-in max-w-5xl mx-auto">
       
@@ -143,18 +180,18 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                 Официален държавен стандарт
               </span>
               <h2 className="text-xl sm:text-2xl font-black tracking-tight">
-                МОН Калкулатор: Превръщане на точки в оценка
+                МОН Калкулатор: Точки, Оценка, Бал и ДИППК (Трета СПК)
               </h2>
             </div>
           </div>
 
           <span className="text-xs px-3 py-1 rounded-full bg-white/20 font-semibold border border-white/30 backdrop-blur-md">
-            ДЗИ 12. клас & НВО 10. клас
+            ДЗИ 12. кл. • ДИППК • НВО 10. кл.
           </span>
         </div>
 
         <p className="text-xs sm:text-sm text-blue-100 max-w-3xl leading-relaxed">
-          Изчислете точната си оценка по официалната линейна формула на МОН (Наредба № 11). Минимален праг за успешно полагане на матура: <strong>30 точки от 100</strong> (Среден 3.00).
+          Изчислете точната си оценка по официалната линейна формула на МОН (Наредба № 11 за ДЗИ — праг <strong>30 т.</strong>) или по Наредба № 1 за <strong>ДИППК / Трета СПК</strong> (Теория + Практика на професията — праг <strong>50 т.</strong>).
         </p>
       </div>
 
@@ -162,19 +199,19 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
       <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-xl bg-slate-200/80 border border-slate-300">
         <button
           onClick={() => setCalculatorMode('pointsToGrade')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             calculatorMode === 'pointsToGrade'
               ? 'bg-white text-blue-900 shadow-xs'
               : 'text-slate-700 hover:text-slate-900'
           }`}
         >
           <Percent className="w-4 h-4 text-blue-600" />
-          <span>Точки ➔ Оценка по МОН</span>
+          <span>Точки ➔ Оценка (ДЗИ)</span>
         </button>
 
         <button
           onClick={() => setCalculatorMode('gradeToPoints')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             calculatorMode === 'gradeToPoints'
               ? 'bg-white text-blue-900 shadow-xs'
               : 'text-slate-700 hover:text-slate-900'
@@ -186,14 +223,26 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
 
         <button
           onClick={() => setCalculatorMode('universityBal')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             calculatorMode === 'universityBal'
               ? 'bg-white text-blue-900 shadow-xs'
               : 'text-slate-700 hover:text-slate-900'
           }`}
         >
           <School className="w-4 h-4 text-emerald-600" />
-          <span>Кандидатстудентски бал (СУ, УНСС, ТУ)</span>
+          <span>Кандидатстудентски бал (ВУЗ)</span>
+        </button>
+
+        <button
+          onClick={() => setCalculatorMode('dippkCalc')}
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            calculatorMode === 'dippkCalc'
+              ? 'bg-white text-indigo-950 shadow-xs'
+              : 'text-slate-700 hover:text-slate-900'
+          }`}
+        >
+          <Award className="w-4 h-4 text-amber-600" />
+          <span>🛠️ ДИППК Калкулатор (Трета СПК)</span>
         </button>
       </div>
 
@@ -525,16 +574,19 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                 <span className="text-xs font-bold text-slate-800 block">
                   Тежест / Коефициент на матурата в специалността:
                 </span>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {[
                     { mult: 3, label: 'x3 (СУ, УНСС, ТУ)', desc: 'Стандартен прием' },
-                    { mult: 4, label: 'x4 (Право / Филология)', desc: 'Максимална тежест' },
-                    { mult: 2.5, label: 'x2.5 (Икономика / ИТ)', desc: 'Смесен бал' }
+                    { mult: 4, label: 'x4 (Право / МУ / Мед.)', desc: 'Максимална тежест' },
+                    { mult: 3.5, label: 'x3.5 (УАСГ / Архит.)', desc: 'Математика + Физика' },
+                    { mult: 2.5, label: 'x2.5 (Икономика / ИТ)', desc: 'Смесен бал' },
+                    { mult: 2, label: 'x2 (ВВМУ / ВВВУ)', desc: 'Инженерен прием' },
+                    { mult: 1.5, label: 'x1.5 (НСА / Академии)', desc: 'Практически прием' }
                   ].map((m) => (
                     <button
                       key={m.mult}
                       onClick={() => setExamMultiplier(m.mult)}
-                      className={`p-2.5 rounded-xl border text-left transition-all ${
+                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                         examMultiplier === m.mult
                           ? 'bg-emerald-50 border-emerald-500 text-emerald-950 font-bold'
                           : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
@@ -600,6 +652,159 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
 
           </div>
 
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* MODE 4: DIPPK THIRD SPK VOCATIONAL QUALIFICATION CALCULATOR               */}
+      {/* ========================================================================= */}
+      {calculatorMode === 'dippkCalc' && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left Column: Theory + Practice + Vocational GPA */}
+          <div className="lg:col-span-7 p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Държавен изпит за придобиване на Трета СПК (ДИППК)
+              </span>
+              <span className="text-xs font-mono font-bold text-indigo-700">
+                Наредба № 1 на МОН
+              </span>
+            </div>
+
+            {/* Part 1: Theory / Diploma Project Points */}
+            <div className="space-y-2 p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-bold text-slate-900 block">
+                    1. Част по Теория на професията (Дипломен проект / Писмена тема):
+                  </span>
+                  <span className="text-[11px] text-slate-500">
+                    Минимум 50 от 100 т. за Среден 3.00 • Оценка: <strong>{dippkResult.theoryGrade.toFixed(2)}</strong>
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={dippkTheoryPoints}
+                  onChange={(e) => setDippkTheoryPoints(Math.min(100, Math.max(0, Number(e.target.value) || 0)))}
+                  className="w-20 p-2 rounded-xl border border-slate-300 bg-white text-center font-mono text-base font-bold text-indigo-700"
+                />
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={dippkTheoryPoints}
+                onChange={(e) => setDippkTheoryPoints(Number(e.target.value))}
+                className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+              />
+            </div>
+
+            {/* Part 2: Practice / Defense Points */}
+            <div className="space-y-2 p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-bold text-slate-900 block">
+                    2. Част по Практика на професията (Практическо задание & Защита):
+                  </span>
+                  <span className="text-[11px] text-slate-500">
+                    Минимум 50 от 100 т. за Среден 3.00 • Оценка: <strong>{dippkResult.practiceGrade.toFixed(2)}</strong>
+                  </span>
+                </div>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={dippkPracticePoints}
+                  onChange={(e) => setDippkPracticePoints(Math.min(100, Math.max(0, Number(e.target.value) || 0)))}
+                  className="w-20 p-2 rounded-xl border border-slate-300 bg-white text-center font-mono text-base font-bold text-emerald-700"
+                />
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={dippkPracticePoints}
+                onChange={(e) => setDippkPracticePoints(Number(e.target.value))}
+                className="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+              />
+            </div>
+
+            {/* Part 3: Average from Vocational Subjects (ЗПП) */}
+            <div className="flex items-center justify-between gap-4 pt-2 border-t border-slate-100">
+              <div>
+                <span className="text-xs font-bold text-slate-800 block">
+                  3. Среден успех от специалните предмети в гимназията (ЗПП):
+                </span>
+                <span className="text-[11px] text-slate-500">
+                  Участва при формиране на окончателната оценка в Свидетелството за СПК
+                </span>
+              </div>
+              <input
+                type="number"
+                min={3.00}
+                max={6.00}
+                step={0.05}
+                value={dippkSubjectsAvg}
+                onChange={(e) => setDippkSubjectsAvg(Math.min(6.00, Math.max(3.00, Number(e.target.value) || 3)))}
+                className="w-20 p-2 rounded-xl border border-slate-300 text-center font-mono text-base font-bold text-slate-900"
+              />
+            </div>
+          </div>
+
+          {/* Right Column: Calculated SPK Certificate Grade */}
+          <div className="lg:col-span-5 p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Свидетелство за Трета СПК
+              </span>
+              <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                dippkResult.bothPassed
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                  : 'bg-rose-50 text-rose-800 border-rose-200'
+              }`}>
+                {dippkResult.bothPassed ? 'Придобита III СПК' : 'Под прага от 50 т.'}
+              </span>
+            </div>
+
+            <div className="text-center py-4 bg-indigo-50/60 rounded-2xl border border-indigo-200 space-y-1">
+              <span className="text-xs text-indigo-900 font-medium">
+                Окончателна оценка в Свидетелството за СПК (EUROPASS):
+              </span>
+              <div className="text-4xl sm:text-5xl font-black font-mono text-indigo-950">
+                {dippkResult.certificateFinalGrade.toFixed(2)}
+              </div>
+              <div className="text-sm font-bold text-indigo-800">
+                {dippkResult.verbal} ({dippkResult.certificateFinalGrade.toFixed(2)})
+              </div>
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                <span className="text-slate-600">Оценка от ДИППК (Теория + Практика):</span>
+                <strong className="font-mono text-slate-900">{dippkResult.dippkExamAvg.toFixed(2)}</strong>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                <span className="text-slate-600">Оценка по Теория ({dippkTheoryPoints} т.):</span>
+                <strong className="font-mono text-indigo-700">{dippkResult.theoryGrade.toFixed(2)}</strong>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                <span className="text-slate-600">Оценка по Практика ({dippkPracticePoints} т.):</span>
+                <strong className="font-mono text-emerald-700">{dippkResult.practiceGrade.toFixed(2)}</strong>
+              </div>
+            </div>
+
+            {onNavigateTab && (
+              <button
+                onClick={() => onNavigateTab('specialties')}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-xs transition-all cursor-pointer"
+              >
+                <span>Отвори 16-те Дипломни Задания за Трета СПК</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </div>
       )}
 

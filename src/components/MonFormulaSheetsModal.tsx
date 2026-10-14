@@ -12,7 +12,7 @@ interface MonFormulaSheetsModalProps {
 
 export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState<'math' | 'literature' | 'science' | 'posters'>('math');
-  const [selectedPoster, setSelectedPoster] = useState<'bel_dzi' | 'math_all' | 'history_dates' | 'civics_eu'>('bel_dzi');
+  const [selectedPoster, setSelectedPoster] = useState<'bel_dzi' | 'math_all' | 'history_dates' | 'civics_eu' | 'dippk_stem'>('bel_dzi');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedText, setCopiedText] = useState<string | null>(null);
 
@@ -125,7 +125,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
-              <span>Физика & Химия</span>
+              <span>STEM & ДИППК</span>
             </button>
 
             <button
@@ -137,7 +137,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
               }`}
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>A4 Табла за Стена (4)</span>
+              <span>A4 Табла за Стена (5)</span>
             </button>
           </div>
 
@@ -305,7 +305,11 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
                         <span className={`text-xs font-semibold px-2 py-0.5 rounded border ${
                           item.subject === 'Физика'
                             ? 'bg-sky-50 text-sky-800 border-sky-200'
-                            : 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                            : item.subject === 'Химия'
+                            ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                            : item.subject === 'Биология'
+                            ? 'bg-rose-50 text-rose-800 border-rose-200'
+                            : 'bg-indigo-50 text-indigo-800 border-indigo-200'
                         }`}>
                           {item.subject} • {item.category}
                         </span>
@@ -345,11 +349,12 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
                     { id: 'bel_dzi', label: '1. Табло БЕЛ ДЗИ (9 блока / 27 творби)' },
                     { id: 'math_all', label: '2. Табло Математика (НВО & ДЗИ)' },
                     { id: 'history_dates', label: '3. Табло История (681–2007 г.)' },
-                    { id: 'civics_eu', label: '4. Табло Конституция & ЕС' }
+                    { id: 'civics_eu', label: '4. Табло Конституция & ЕС' },
+                    { id: 'dippk_stem', label: '5. Табло ДИППК & Трета СПК (Професии)' }
                   ].map(p => (
                     <button
                       key={p.id}
-                      onClick={() => setSelectedPoster(p.id as any)}
+                      onClick={() => setSelectedPoster(p.id as 'bel_dzi' | 'math_all' | 'history_dates' | 'civics_eu' | 'dippk_stem')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                         selectedPoster === p.id
                           ? 'bg-slate-900 text-white shadow-xs'
@@ -576,6 +581,62 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
                         <li><strong>Европейски съвет (Брюксел):</strong> Лидерите (премиери/президенти) на 27-те държави. Задава политическата стратегия (НЕ приема закони).</li>
                         <li><strong>Съд на ЕС (Люксембург) vs. ЕСПЧ (Страсбург):</strong> СЕС в Люксембург е съдът на ЕС; ЕСПЧ в Страсбург е орган на <em>Съвета на Европа</em> (46 държави).</li>
                       </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* POSTER 5: DIPPK & VOCATIONAL THIRD SPK A4 POSTER */}
+              {selectedPoster === 'dippk_stem' && (
+                <div className="border-2 border-slate-900 rounded-xl p-5 bg-white space-y-4">
+                  <div className="text-center border-b-2 border-slate-900 pb-3">
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                      StudyBG • Едностранично A4 Табло за Стена • ДИППК (Трета СПК — Професионални Гимназии)
+                    </div>
+                    <h3 className="text-lg font-extrabold text-slate-900 font-serif mt-0.5">
+                      Златни Инженерни, ИТ, Финансови и Строителни Еталони за Дипломна Защита
+                    </h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div className="p-3.5 rounded-xl border border-slate-300 space-y-1.5">
+                      <h4 className="font-bold text-indigo-900 uppercase">1. Софтуер, Мрежи, Криптография & БД</h4>
+                      <div className="space-y-1 text-slate-800">
+                        <div><strong>Криптография:</strong> AES-256-GCM (симетричен), RSA / ECC (асиметричен), Argon2id (хеширане на пароли със сол).</div>
+                        <div><strong>Мрежи (CIDR):</strong> /24 = 254 хоста (255.255.255.0); /26 = 62 хоста (.192); /30 = 2 хоста (.252).</div>
+                        <div><strong>Бази данни (3NF):</strong> Всеки неключов атрибут зависи само от целия първичен ключ (ACID транзакции).</div>
+                        <div><strong>SLA Наличност:</strong> R = 1 - Π(1 - R_i) при паралелен клъстер; 99,99% = макс. 52,6 min престой/година.</div>
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl border border-slate-300 space-y-1.5">
+                      <h4 className="font-bold text-emerald-900 uppercase">2. Счетоводство, Банково дело, Финтех & Митници</h4>
+                      <div className="space-y-1 text-slate-800">
+                        <div><strong>Балансово равенство:</strong> Активи (ДМА + КМА) = Собствен капитал + Пасиви (Задължения).</div>
+                        <div><strong>Рентабилност:</strong> ROE = Нетна печалба / СК · 100%  |  ROA = Нетна печалба / Активи · 100%.</div>
+                        <div><strong>Кредити и Карти:</strong> ГПР включва лихва + всички такси; Кредитен скоринг (PD, LGD, DTI ≤ 40%).</div>
+                        <div><strong>Митнически контрол:</strong> Мито = Митническа стойност (CIF) · %; ДДС = 20% върху (CIF + Мито + Акциз).</div>
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl border border-slate-300 space-y-1.5">
+                      <h4 className="font-bold text-blue-900 uppercase">3. Архитектура, BIM, Геодезия & Строителство</h4>
+                      <div className="space-y-1 text-slate-800">
+                        <div><strong>Еврокод 2 (ULS):</strong> Изчислителен товар q_d = 1,35·g_k + 1,50·q_k; Макс. момент M_max = q·L² / 8.</div>
+                        <div><strong>Геодезия (Права задача):</strong> ΔX = S · cos α, ΔY = S · sin α (оста +X е на Север, α е дирекционен ъгъл).</div>
+                        <div><strong>BIM Координация:</strong> LOD 100–500, IFC (ISO 16739), Clash Detection (Hard / Soft / 4D колизии).</div>
+                        <div><strong>Топлотехника:</strong> Коефициент на топлопреминаване U = 1 / R_tot [W/(m²·K)], точка на оросяване.</div>
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl border border-slate-300 space-y-1.5">
+                      <h4 className="font-bold text-amber-900 uppercase">4. Енергетика (ВВЕР-1000), Металургия & Транспорт</h4>
+                      <div className="space-y-1 text-slate-800">
+                        <div><strong>Ядрен реактор ВВЕР-1000:</strong> Двуконтурен с вода под налягане (15,7 MPa), Q_т = 3000 MW, P_ел = 1000 MW (η ≈ 33,3%).</div>
+                        <div><strong>Оптични влакна:</strong> Числова апертура NA = √(n₁² - n₂²); прозорци 1310 nm и 1550 nm (0,2 dB/km).</div>
+                        <div><strong>Авиация & Навигация:</strong> L = ½·ρ·v²·S·C_L; Число на Мах M = v / a; КК = ИК - Δ_м - δ_к (COLREGs).</div>
+                        <div><strong>Диаграма Fe–Fe₃C:</strong> Стомани (&lt; 2,14% C, евтектоид перлит при 0,77% C / 727°C) vs. Чугуни (2,14–6,67% C).</div>
+                      </div>
                     </div>
                   </div>
                 </div>

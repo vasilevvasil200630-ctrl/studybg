@@ -55,6 +55,13 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
   const [triB, setTriB] = useState<number>(13);
   const [triC, setTriC] = useState<number>(14);
 
+  // Live Solver 4: Cubic Function Calculus (f(x) = ax³ + bx² + cx + d)
+  const [cubA, setCubA] = useState<number>(1);
+  const [cubB, setCubB] = useState<number>(-3);
+  const [cubC, setCubC] = useState<number>(-9);
+  const [cubD, setCubD] = useState<number>(12);
+  const [cubX0, setCubX0] = useState<number>(2);
+
   // Quiz state
   const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({});
 
@@ -214,6 +221,63 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
     };
   }, [triA, triB, triC]);
 
+  // Live Cubic Calculus Solver (f(x) = ax³ + bx² + cx + d)
+  const cubicResults = useMemo(() => {
+    if (cubA === 0) {
+      return {
+        valid: false,
+        message: 'Коефициентът a пред x³ трябва да е различен от 0 за кубична функция (a ≠ 0).',
+      };
+    }
+    const evalF = (x: number) => cubA * x * x * x + cubB * x * x + cubC * x + cubD;
+    const evalFp = (x: number) => 3 * cubA * x * x + 2 * cubB * x + cubC;
+
+    // f'(x) = 3a x² + 2b x + c = 0
+    const A = 3 * cubA;
+    const B = 2 * cubB;
+    const C = cubC;
+    const D = B * B - 4 * A * C;
+
+    // Inflection point: f''(x) = 6ax + 2b = 0 => x_infl = -b / (3a)
+    const xInfl = -cubB / (3 * cubA);
+    const yInfl = evalF(xInfl);
+
+    // Tangent at x0: y = f(x0) + f'(x0)(x - x0) = k*x + m
+    const y0 = evalF(cubX0);
+    const k = evalFp(cubX0);
+    const m = y0 - k * cubX0;
+    const tangentEq = `y = ${Number(k.toFixed(2))}·x ${m >= 0 ? '+ ' + Number(m.toFixed(2)) : '- ' + Math.abs(Number(m.toFixed(2)))}`;
+
+    let extremaStatus = 'Функцията е строго монотонна (няма локални екстремуми, D ≤ 0)';
+    let xMaxText = 'Няма';
+    let xMinText = 'Няма';
+
+    if (D > 0) {
+      const r1 = (-B - Math.sqrt(D)) / (2 * A);
+      const r2 = (-B + Math.sqrt(D)) / (2 * A);
+      // Check second derivative f''(x) = 6ax + 2b
+      const fpp1 = 6 * cubA * r1 + 2 * cubB;
+      const xMax = fpp1 < 0 ? r1 : r2;
+      const xMin = fpp1 < 0 ? r2 : r1;
+      const yMax = evalF(xMax);
+      const yMin = evalF(xMin);
+      extremaStatus = 'Два локални екстремума (D > 0)';
+      xMaxText = `x = ${Number(xMax.toFixed(2))} ⇒ y_max = ${Number(yMax.toFixed(2))}`;
+      xMinText = `x = ${Number(xMin.toFixed(2))} ⇒ y_min = ${Number(yMin.toFixed(2))}`;
+    }
+
+    return {
+      valid: true,
+      derivativeFormula: `f'(x) = ${3 * cubA}x² ${2 * cubB >= 0 ? '+ ' + 2 * cubB : '- ' + Math.abs(2 * cubB)}x ${cubC >= 0 ? '+ ' + cubC : '- ' + Math.abs(cubC)}`,
+      extremaStatus,
+      xMaxText,
+      xMinText,
+      inflectionText: `I(${Number(xInfl.toFixed(2))}; ${Number(yInfl.toFixed(2))})`,
+      slopeAtX0: Number(k.toFixed(3)),
+      tangentEq,
+    };
+  }, [cubA, cubB, cubC, cubD, cubX0]);
+
   // Filtered Quiz Questions
   const filteredQuiz = useMemo(() => {
     if (selectedCategory === 'all') return MATH_QUIZ_QUESTIONS;
@@ -290,6 +354,49 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
             <text x="155" y="118" fill="#6ee7b7" fontSize="10" fontWeight="bold">r=6</text>
             <text x="172" y="72" fill="#fbbf24" fontSize="11" fontWeight="bold">k=10</text>
             <text x="95" y="155" fill="#c7d2fe" fontSize="11" fontWeight="bold">a = 12 cm</text>
+          </svg>
+        );
+      case 'cubic-extrema':
+        return (
+          <svg viewBox="0 0 280 175" className="w-full h-44 bg-slate-900 rounded-xl border border-slate-700 p-2">
+            {/* Axes */}
+            <line x1="20" y1="95" x2="260" y2="95" stroke="#64748b" strokeWidth="1.5" />
+            <line x1="115" y1="15" x2="115" y2="165" stroke="#64748b" strokeWidth="1.5" />
+            {/* Cubic curve */}
+            <path
+              d="M 40 155 C 75 10, 110 10, 145 90 C 180 170, 215 170, 245 20"
+              fill="none"
+              stroke="#38bdf8"
+              strokeWidth="2.5"
+            />
+            {/* Local Max & Min tangent lines */}
+            <line x1="65" y1="35" x2="115" y2="35" stroke="#34d399" strokeWidth="1.5" strokeDasharray="3 3" />
+            <line x1="170" y1="145" x2="220" y2="145" stroke="#f43f5e" strokeWidth="1.5" strokeDasharray="3 3" />
+            {/* Points */}
+            <circle cx="90" cy="35" r="4.5" fill="#34d399" />
+            <circle cx="145" cy="90" r="4" fill="#fbbf24" />
+            <circle cx="195" cy="145" r="4.5" fill="#f43f5e" />
+            <text x="48" y="27" fill="#6ee7b7" fontSize="10" fontWeight="bold">y_max (f&apos;=0)</text>
+            <text x="152" y="86" fill="#fde68a" fontSize="10" fontWeight="bold">I (f&apos;&apos;=0)</text>
+            <text x="162" y="162" fill="#fda4af" fontSize="10" fontWeight="bold">y_min (f&apos;=0)</text>
+          </svg>
+        );
+      case 'cylinder-cone':
+        return (
+          <svg viewBox="0 0 280 175" className="w-full h-44 bg-slate-900 rounded-xl border border-slate-700 p-2">
+            {/* Cylinder top & bottom ellipses */}
+            <ellipse cx="140" cy="35" rx="65" ry="15" fill="rgba(59, 130, 246, 0.12)" stroke="#60a5fa" strokeWidth="1.8" />
+            <ellipse cx="140" cy="140" rx="65" ry="15" fill="rgba(59, 130, 246, 0.2)" stroke="#60a5fa" strokeWidth="2" />
+            <line x1="75" y1="35" x2="75" y2="140" stroke="#60a5fa" strokeWidth="2" />
+            <line x1="205" y1="35" x2="205" y2="140" stroke="#60a5fa" strokeWidth="2" />
+            {/* Inscribed Cone */}
+            <polygon points="140,35 75,140 205,140" fill="rgba(245, 158, 11, 0.16)" stroke="#fbbf24" strokeWidth="2" />
+            {/* Height & Radius */}
+            <line x1="140" y1="35" x2="140" y2="140" stroke="#f43f5e" strokeWidth="2" strokeDasharray="3 3" />
+            <line x1="140" y1="140" x2="205" y2="140" stroke="#34d399" strokeWidth="2.5" />
+            <text x="112" y="95" fill="#fda4af" fontSize="11" fontWeight="bold">H=8</text>
+            <text x="162" y="135" fill="#6ee7b7" fontSize="11" fontWeight="bold">r=6</text>
+            <text x="176" y="88" fill="#fde68a" fontSize="11" fontWeight="bold">l=10</text>
           </svg>
         );
       case 'parabola-roots':
@@ -1042,6 +1149,122 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
                   <div className="text-[11px] font-semibold text-amber-800">Медиана m_c</div>
                   <div className="text-base font-bold text-amber-950">m_c = {triResults.mc} cm</div>
                   <div className="text-[10px] text-amber-700">½√(2a²+2b²-c²)</div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Solver 4: Cubic Function Calculus (Derivative, Extrema, Inflection & Tangent Line) */}
+          <div className="rounded-2xl bg-slate-50 border border-slate-200 p-5 sm:p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-rose-700">
+                  Интерактивен Решавач #4 • Математически Анализ (11.–12. кл. Профил & ТУ)
+                </span>
+                <h3 className="text-lg font-bold text-slate-900">
+                  Кубична функция f(x) = ax³ + bx² + cx + d — Производна f&apos;(x), Екстремуми & Допирателна
+                </h3>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                <button
+                  onClick={() => { setCubA(1); setCubB(-3); setCubC(-9); setCubD(12); setCubX0(2); }}
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-rose-50 cursor-pointer"
+                >
+                  x³ - 3x² - 9x + 12
+                </button>
+                <button
+                  onClick={() => { setCubA(1); setCubB(-6); setCubC(0); setCubD(5); setCubX0(1); }}
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-rose-50 cursor-pointer"
+                >
+                  x³ - 6x² + 5
+                </button>
+                <button
+                  onClick={() => { setCubA(4); setCubB(-72); setCubC(324); setCubD(0); setCubX0(3); }}
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-rose-50 cursor-pointer"
+                >
+                  Резервоар V(x) = 4x³ - 72x² + 324x
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <div className="p-3 rounded-xl bg-white border border-slate-200">
+                <label className="block text-xs font-bold text-slate-600 mb-1">a (пред x³):</label>
+                <input
+                  type="number"
+                  value={cubA}
+                  onChange={(e) => setCubA(Number(e.target.value))}
+                  className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 font-bold text-slate-900 text-sm"
+                />
+              </div>
+              <div className="p-3 rounded-xl bg-white border border-slate-200">
+                <label className="block text-xs font-bold text-slate-600 mb-1">b (пред x²):</label>
+                <input
+                  type="number"
+                  value={cubB}
+                  onChange={(e) => setCubB(Number(e.target.value))}
+                  className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 font-bold text-slate-900 text-sm"
+                />
+              </div>
+              <div className="p-3 rounded-xl bg-white border border-slate-200">
+                <label className="block text-xs font-bold text-slate-600 mb-1">c (пред x):</label>
+                <input
+                  type="number"
+                  value={cubC}
+                  onChange={(e) => setCubC(Number(e.target.value))}
+                  className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 font-bold text-slate-900 text-sm"
+                />
+              </div>
+              <div className="p-3 rounded-xl bg-white border border-slate-200">
+                <label className="block text-xs font-bold text-slate-600 mb-1">d (своб. член):</label>
+                <input
+                  type="number"
+                  value={cubD}
+                  onChange={(e) => setCubD(Number(e.target.value))}
+                  className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 font-bold text-slate-900 text-sm"
+                />
+              </div>
+              <div className="p-3 rounded-xl bg-indigo-50/70 border border-indigo-200 col-span-2 sm:col-span-1">
+                <label className="block text-xs font-bold text-indigo-800 mb-1">Точка x₀ (допир.):</label>
+                <input
+                  type="number"
+                  value={cubX0}
+                  onChange={(e) => setCubX0(Number(e.target.value))}
+                  className="w-full px-2.5 py-1.5 rounded-lg border border-indigo-300 bg-white font-bold text-indigo-950 text-sm"
+                />
+              </div>
+            </div>
+
+            {!cubicResults.valid ? (
+              <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold">
+                {cubicResults.message}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                <div className="p-3.5 rounded-xl bg-white border border-slate-200">
+                  <div className="text-[11px] font-semibold text-slate-500">Първа производна</div>
+                  <div className="text-sm font-mono font-bold text-slate-900 mt-0.5">{cubicResults.derivativeFormula}</div>
+                  <div className="text-[10px] text-slate-500 mt-0.5">{cubicResults.extremaStatus}</div>
+                </div>
+                <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200">
+                  <div className="text-[11px] font-semibold text-emerald-800">Локален Максимум (f&apos;=0)</div>
+                  <div className="text-sm font-bold text-emerald-950 mt-0.5">{cubicResults.xMaxText}</div>
+                  <div className="text-[10px] text-emerald-700 mt-0.5">Смяна от (+) към (-)</div>
+                </div>
+                <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200">
+                  <div className="text-[11px] font-semibold text-rose-800">Локален Минимум (f&apos;=0)</div>
+                  <div className="text-sm font-bold text-rose-950 mt-0.5">{cubicResults.xMinText}</div>
+                  <div className="text-[10px] text-rose-700 mt-0.5">Смяна от (-) към (+)</div>
+                </div>
+                <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200">
+                  <div className="text-[11px] font-semibold text-amber-800">Инфлексна точка (f&apos;&apos;=0)</div>
+                  <div className="text-sm font-bold text-amber-950 mt-0.5">{cubicResults.inflectionText}</div>
+                  <div className="text-[10px] text-amber-700 mt-0.5">x_инфл = -b / (3a)</div>
+                </div>
+                <div className="p-3.5 rounded-xl bg-indigo-50 border border-indigo-200">
+                  <div className="text-[11px] font-semibold text-indigo-800">Допирателна при x₀ = {cubX0}</div>
+                  <div className="text-sm font-mono font-bold text-indigo-950 mt-0.5">{cubicResults.tangentEq}</div>
+                  <div className="text-[10px] text-indigo-700 mt-0.5">Наклон k = f&apos;({cubX0}) = {cubicResults.slopeAtX0}</div>
                 </div>
               </div>
             )}

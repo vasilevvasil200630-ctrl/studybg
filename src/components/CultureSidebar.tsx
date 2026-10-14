@@ -39,6 +39,13 @@ export const CultureSidebar: React.FC<CultureSidebarProps> = ({
       accentColor: 'text-amber-600'
     },
     {
+      tab: 'mysticmap',
+      label: 'Карта на мистичните зони',
+      sublabel: '12 секретни координати & меридиани',
+      icon: MapPin,
+      accentColor: 'text-purple-600'
+    },
+    {
       tab: 'heritage',
       label: 'Български принос & ЮНЕСКО',
       sublabel: '16 световни обекта & открития',

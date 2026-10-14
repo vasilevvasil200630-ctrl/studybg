@@ -31,6 +31,7 @@ const CultureWondersView = lazy(() => import('./CultureWondersView').then(m => (
 const CultureWisdomView = lazy(() => import('./CultureWisdomView').then(m => ({ default: m.CultureWisdomView })));
 const HistoricalCasesView = lazy(() => import('./HistoricalCasesView').then(m => ({ default: m.HistoricalCasesView })));
 const CultureHeritageView = lazy(() => import('./CultureHeritageView').then(m => ({ default: m.CultureHeritageView })));
+const CultureMysticMapView = lazy(() => import('./CultureMysticMapView').then(m => ({ default: m.CultureMysticMapView })));
 
 const SubViewLoadingSkeleton = () => (
   <div className="p-8 rounded-2xl bg-white border border-slate-200 animate-pulse flex items-center justify-center min-h-[300px] shadow-xs">
@@ -59,6 +60,7 @@ interface CultureHubViewProps {
 
 export const CultureHubView: React.FC<CultureHubViewProps> = ({
   activeSubTab,
+  onSelectSubTab,
   onSelectLesson,
   onNavigateTab,
   onSwitchToStudy,
@@ -570,6 +572,26 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
             })}
           </div>
         </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 1.5 ИНТЕРАКТИВНА КАРТА НА МИСТИЧНИТЕ И СЕКРЕТНИ ЗОНИ (12 КООРДИНАТИ) */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'mysticmap' && (
+        <Suspense fallback={<SubViewLoadingSkeleton />}>
+          <CultureMysticMapView
+            onOpenMysteryDossier={(mysteryId) => {
+              onSelectSubTab?.('mysteries');
+              setSelectedMysteryCategory('all');
+              setMysterySearchQuery('');
+              setExpandedMysteryId(mysteryId);
+              setTimeout(() => {
+                const el = document.getElementById(`mystery-${mysteryId}`);
+                el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }, 120);
+            }}
+          />
+        </Suspense>
       )}
 
       {/* ========================================================================= */}

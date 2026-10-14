@@ -25,7 +25,9 @@ import {
   PenTool,
   Calendar,
   Feather,
-  Globe
+  Globe,
+  FlaskConical,
+  Mic
 } from 'lucide-react';
 import { errorBankService } from '../services/errorBankService';
 import type { CultureSubTab } from './CultureHero';
@@ -50,6 +52,8 @@ export type AppNavTab =
   | 'moduletwo'
   | 'literature'
   | 'mathlab'
+  | 'sciencelab'
+  | 'oralexam'
   | 'atlas'
   | 'english'
   | 'civics'
@@ -184,6 +188,26 @@ export const Navbar: React.FC<NavbarProps> = ({
       )
     },
     {
+      tab: 'sciencelab',
+      label: 'Лаб Природни науки',
+      icon: <FlaskConical className="w-3.5 h-3.5 text-emerald-600" />,
+      badge: (
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
+          ДНК, Йони & Ом
+        </span>
+      )
+    },
+    {
+      tab: 'oralexam',
+      label: 'Устно изпитване',
+      icon: <Mic className="w-3.5 h-3.5 text-indigo-600" />,
+      badge: (
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+          Пред дъската
+        </span>
+      )
+    },
+    {
       tab: 'atlas',
       label: 'Атлас История & География',
       icon: <MapPin className="w-3.5 h-3.5 text-amber-600" />,
@@ -242,7 +266,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   const contextCultureNavItems: { subTab: CultureSubTab; label: string; icon: React.ReactNode }[] = [
-    { subTab: 'mysteries', label: 'Исторически казуси', icon: <Compass className="w-3.5 h-3.5 text-amber-600" /> },
+    { subTab: 'mysteries', label: 'Конспирации & Досиета', icon: <Compass className="w-3.5 h-3.5 text-amber-600" /> },
+    { subTab: 'mysticmap', label: 'Карта на мистичните зони', icon: <MapPin className="w-3.5 h-3.5 text-purple-600" /> },
     { subTab: 'heritage', label: 'Принос & ЮНЕСКО', icon: <Award className="w-3.5 h-3.5 text-orange-600" /> },
     { subTab: 'timeline', label: 'Хронология (681–1908)', icon: <Clock className="w-3.5 h-3.5 text-emerald-600" /> },
     { subTab: 'cases', label: 'Отворени казуси', icon: <Scale className="w-3.5 h-3.5 text-amber-700" /> },

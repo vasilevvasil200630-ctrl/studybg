@@ -36,6 +36,8 @@ const HistoryGeoAtlasLab = lazy(() => import('./components/HistoryGeoAtlasLab').
 const EnglishDziLab = lazy(() => import('./components/EnglishDziLab').then(m => ({ default: m.EnglishDziLab })));
 const CivicsEuLab = lazy(() => import('./components/CivicsEuLab').then(m => ({ default: m.CivicsEuLab })));
 const SpeedBlitzLab = lazy(() => import('./components/SpeedBlitzLab').then(m => ({ default: m.SpeedBlitzLab })));
+const ScienceDziLab = lazy(() => import('./components/ScienceDziLab').then(m => ({ default: m.ScienceDziLab })));
+const OralExamSimulatorLab = lazy(() => import('./components/OralExamSimulatorLab').then(m => ({ default: m.OralExamSimulatorLab })));
 import { errorBankService } from './services/errorBankService';
 
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
@@ -60,14 +62,16 @@ import {
   Feather,
   Compass,
   MapPin,
-  Globe
+  Globe,
+  FlaskConical,
+  Mic
 } from 'lucide-react';
 import './App.css';
 
 const STUDY_TABS: AppNavTab[] = [
   'home', 'planner', 'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
   'simulator', 'errorbank', 'generator', 'catalog', 'calculator',
-  'grammar', 'moduletwo', 'literature', 'mathlab', 'atlas', 'english', 'civics', 'blitz'
+  'grammar', 'moduletwo', 'literature', 'mathlab', 'sciencelab', 'oralexam', 'atlas', 'english', 'civics', 'blitz'
 ];
 
 const ViewLoadingSkeleton = () => (
@@ -185,6 +189,11 @@ export function App() {
         setCultureSubTab('mysteries');
         const el = document.getElementById('workspace');
         el?.scrollIntoView({ behavior: 'smooth' });
+      } else if (hash === 'mysticmap') {
+        setPortalMode('culture');
+        setCultureSubTab('mysticmap');
+        const el = document.getElementById('workspace');
+        el?.scrollIntoView({ behavior: 'smooth' });
       } else if (hash === 'timeline') {
         setPortalMode('culture');
         setCultureSubTab('timeline');
@@ -271,11 +280,13 @@ export function App() {
     { tab: 'home', label: 'Начало', icon: <Home className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'planner', label: 'План за 6.00', icon: <Calendar className="w-3.5 h-3.5 text-emerald-600" /> },
     { tab: 'summary', label: 'Конспект', icon: <BookOpen className="w-3.5 h-3.5" /> },
+    { tab: 'oralexam', label: 'Устен изпит', icon: <Mic className="w-3.5 h-3.5 text-indigo-600" /> },
     { tab: 'cases', label: 'Казуси ДЗИ', icon: <Scale className="w-3.5 h-3.5 text-purple-600" /> },
     { tab: 'grammar', label: 'Тренажор БЕЛ', icon: <PenTool className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'moduletwo', label: 'Модул 2 БЕЛ', icon: <Feather className="w-3.5 h-3.5 text-purple-600" /> },
     { tab: 'literature', label: 'Литературен Канон', icon: <BookMarked className="w-3.5 h-3.5 text-purple-600" /> },
     { tab: 'mathlab', label: 'Математика & STEM', icon: <Compass className="w-3.5 h-3.5 text-cyan-600" /> },
+    { tab: 'sciencelab', label: 'Природни науки Лаб', icon: <FlaskConical className="w-3.5 h-3.5 text-emerald-600" /> },
     { tab: 'atlas', label: 'Атлас Ист. & Гео.', icon: <MapPin className="w-3.5 h-3.5 text-amber-600" /> },
     { tab: 'english', label: 'Английски ДЗИ', icon: <Globe className="w-3.5 h-3.5 text-sky-600" /> },
     { tab: 'civics', label: 'Конституция & ЕС', icon: <Scale className="w-3.5 h-3.5 text-indigo-600" /> },
@@ -397,6 +408,10 @@ export function App() {
                     <span className="text-purple-700 font-semibold">Литературен Канон & Тези (41. задача ДЗИ)</span>
                   ) : activeTab === 'mathlab' ? (
                     <span className="text-cyan-700 font-semibold">Математика & STEM Лаб (НВО 10 & ДЗИ)</span>
+                  ) : activeTab === 'sciencelab' ? (
+                    <span className="text-emerald-700 font-semibold">Лаборатория Природни науки (Биология, Химия и Физика)</span>
+                  ) : activeTab === 'oralexam' ? (
+                    <span className="text-indigo-700 font-semibold">Устно изпитване пред дъската (Гласов и текстов тренажор за 6.00)</span>
                   ) : activeTab === 'atlas' ? (
                     <span className="text-amber-700 font-semibold">Атлас История & География (Договори & NUTS 2)</span>
                   ) : activeTab === 'english' ? (
@@ -459,6 +474,20 @@ export function App() {
                         Задачи 16–17 НВО & 26–28 ДЗИ
                       </span>
                     </h2>
+                  ) : activeTab === 'sciencelab' ? (
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                      <span>Виртуална Лаборатория по Природни науки (Биология, Химия и Физика)</span>
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
+                        ДНК Синтез • Йонни реакции • Закон на Ом & Фотоефект
+                      </span>
+                    </h2>
+                  ) : activeTab === 'oralexam' ? (
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                      <span>Гласов Симулатор „Устно изпитване пред дъската за 6.00“</span>
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                        Глас & Микрофон • Радар на термини • Бележник
+                      </span>
+                    </h2>
                   ) : activeTab === 'atlas' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Интерактивен Атлас по История и География</span>
@@ -517,7 +546,7 @@ export function App() {
                 </div>
 
                 {/* Direct Referral to Matura+ if user browses a 5-7th grade lesson */}
-                {!['planner', 'grammar', 'moduletwo', 'literature', 'mathlab', 'atlas', 'english', 'civics', 'blitz', 'cases', 'calculator'].includes(activeTab) &&
+                {!['planner', 'grammar', 'moduletwo', 'literature', 'mathlab', 'sciencelab', 'oralexam', 'atlas', 'english', 'civics', 'blitz', 'cases', 'calculator'].includes(activeTab) &&
                   (currentLesson.grade.includes('7.') || currentLesson.grade.includes('6.') || currentLesson.grade.includes('5.')) && (
                   <div className="pt-2">
                     <MaturaPlusBridgeBanner compact={true} source="lesson-breadcrumb" />
@@ -692,6 +721,18 @@ export function App() {
                       <MathStemLab onOpenFormulaModal={() => setIsFormulaModalOpen(true)} />
                     )}
 
+                    {activeTab === 'sciencelab' && (
+                      <ScienceDziLab onOpenFormulaModal={() => setIsFormulaModalOpen(true)} />
+                    )}
+
+                    {activeTab === 'oralexam' && (
+                      <OralExamSimulatorLab
+                        lessons={lessons}
+                        currentLesson={currentLesson}
+                        onSelectLesson={(l) => setCurrentLesson(l)}
+                      />
+                    )}
+
                     {activeTab === 'atlas' && (
                       <HistoryGeoAtlasLab />
                     )}
@@ -750,6 +791,8 @@ export function App() {
                     ? '🏆 Български принос & ЮНЕСКО (16)'
                     : cultureSubTab === 'mysteries'
                     ? '🕵️ Конспирации, секретни досиета & загадки (33)'
+                    : cultureSubTab === 'mysticmap'
+                    ? '🛸 Карта на мистичните и секретни зони (12 координати)'
                     : cultureSubTab === 'timeline'
                     ? '⏳ Интерактивна хронология (681–1908 г.)'
                     : cultureSubTab === 'cases'
@@ -769,6 +812,7 @@ export function App() {
             <div className="lg:hidden mb-6 p-1.5 rounded-xl bg-white border border-slate-200 shadow-xs overflow-x-auto no-scrollbar flex items-center gap-1.5">
               {[
                 { tab: 'mysteries', label: '🕵️ Конспирации & Загадки (33)' },
+                { tab: 'mysticmap', label: '🛸 Карта на мистичните зони (12)' },
                 { tab: 'heritage', label: 'Принос & ЮНЕСКО (16)' },
                 { tab: 'wonders', label: 'Природни чудеса (18)' },
                 { tab: 'trivia', label: 'Куиз за ерудити (42)' },

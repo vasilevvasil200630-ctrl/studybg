@@ -20,7 +20,9 @@ import {
   Calendar,
   Feather,
   MapPin,
-  Globe
+  Globe,
+  FlaskConical,
+  Mic
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -80,6 +82,18 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           sublabel: '',
           icon: BookOpen,
           accentColor: 'text-blue-600'
+        },
+        {
+          tab: 'oralexam',
+          label: 'Устно изпитване пред дъската',
+          sublabel: '',
+          icon: Mic,
+          accentColor: 'text-indigo-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+              Глас & 6.00
+            </span>
+          )
         },
         {
           tab: 'cases',
@@ -163,6 +177,18 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           badge: (
             <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-cyan-100 text-cyan-800 font-bold border border-cyan-200">
               НВО & ДЗИ
+            </span>
+          )
+        },
+        {
+          tab: 'sciencelab',
+          label: 'Лаб Природни науки',
+          sublabel: '',
+          icon: FlaskConical,
+          accentColor: 'text-emerald-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
+              ДНК, Йони & Ом
             </span>
           )
         },

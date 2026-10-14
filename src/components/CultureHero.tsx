@@ -1,7 +1,7 @@
 import React from 'react';
-import { Compass, ArrowRight, GraduationCap, Award, Sparkles, HelpCircle, Clock } from 'lucide-react';
+import { Compass, ArrowRight, GraduationCap, Award, Sparkles, HelpCircle, Clock, MapPin } from 'lucide-react';
 
-export type CultureSubTab = 'mysteries' | 'heritage' | 'wonders' | 'trivia' | 'myths' | 'timeline' | 'cases' | 'wisdom';
+export type CultureSubTab = 'mysteries' | 'mysticmap' | 'heritage' | 'wonders' | 'trivia' | 'myths' | 'timeline' | 'cases' | 'wisdom';
 
 interface CultureHeroProps {
   onSwitchToStudy: () => void;
@@ -36,7 +36,7 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
 
         {/* Subtitle */}
         <p className="mt-3 text-xs sm:text-sm md:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
-          Зона за обща култура, конспиративни теории, секретни експедиции и древни мистерии: 33 разследвания (Царичина, Странджа-Бастет, подземни тунели, богомилски шифри, Тесла), 18 природни феномена, 16 световни открития и 24 развенчани мита.
+          Зона за обща култура, конспиративни теории, секретни експедиции и древни мистерии: 33 разследвания (Царичина, Странджа-Бастет, подземни тунели, богомилски шифри, Тесла), интерактивна гео-радарна карта на 12 мистични зони, 18 природни феномена, 16 световни открития и 24 развенчани мита.
         </p>
 
         {/* Quick Highlights Row */}
@@ -47,6 +47,14 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
           >
             <Compass className="w-3.5 h-3.5 text-amber-600" />
             <span>🕵️ 33 конспирации & загадки</span>
+          </button>
+
+          <button
+            onClick={() => onSelectSubTab?.('mysticmap')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100/80 border border-purple-200 text-purple-900 text-xs font-semibold shadow-2xs transition-colors"
+          >
+            <MapPin className="w-3.5 h-3.5 text-purple-600" />
+            <span>🛸 Карта на мистичните зони (12)</span>
           </button>
 
           <button

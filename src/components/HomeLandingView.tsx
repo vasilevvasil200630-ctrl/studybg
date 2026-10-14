@@ -225,6 +225,20 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               </button>
               <button
                 type="button"
+                onClick={() => onNavigateTab('sciencelab')}
+                className="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-bold transition-colors cursor-pointer"
+              >
+                🧬 Природни науки Лаб (ДНК, Йони, Ом)
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigateTab('oralexam')}
+                className="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 border border-indigo-300 text-indigo-900 font-bold transition-colors cursor-pointer"
+              >
+                🎙️ Устен изпит пред дъската (Глас)
+              </button>
+              <button
+                type="button"
                 onClick={() => onNavigateTab('atlas')}
                 className="px-2.5 py-1 rounded-lg bg-white hover:bg-amber-50 border border-slate-200 hover:border-amber-300 text-slate-700 hover:text-amber-800 font-medium transition-colors cursor-pointer"
               >
@@ -243,6 +257,13 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 className="px-2.5 py-1 rounded-lg bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 text-slate-700 hover:text-indigo-800 font-medium transition-colors cursor-pointer"
               >
                 Конституция & ЕС (ГО / ДЗИ)
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigateCultureTab?.('mysticmap')}
+                className="px-2.5 py-1 rounded-lg bg-purple-50 hover:bg-purple-100 border border-purple-300 text-purple-900 font-bold transition-colors cursor-pointer"
+              >
+                🛸 Карта на мистичните зони (12)
               </button>
               <button
                 type="button"

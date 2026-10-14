@@ -52,7 +52,8 @@ export type AppNavTab =
   | 'mathlab'
   | 'atlas'
   | 'english'
-  | 'civics';
+  | 'civics'
+  | 'blitz';
 
 interface NavbarProps {
   portalMode: 'study' | 'culture';
@@ -209,6 +210,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       badge: (
         <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
           ГО & ДЗИ
+        </span>
+      )
+    },
+    {
+      tab: 'blitz',
+      label: 'Блиц за 60 сек.',
+      icon: <Zap className="w-3.5 h-3.5 text-amber-600" />,
+      badge: (
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
+          Combo x5
         </span>
       )
     },

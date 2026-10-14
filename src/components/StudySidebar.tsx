@@ -208,6 +208,18 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
       title: 'Проверка на знанията',
       items: [
         {
+          tab: 'blitz',
+          label: 'Блиц за 60 сек. (Speed Blitz)',
+          sublabel: '',
+          icon: Zap,
+          accentColor: 'text-amber-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
+              Combo x5
+            </span>
+          )
+        },
+        {
           tab: 'flashcards',
           label: 'Флаш карти',
           sublabel: '',

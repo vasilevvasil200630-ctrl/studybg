@@ -11,7 +11,8 @@ interface MonFormulaSheetsModalProps {
 }
 
 export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ onClose }) => {
-  const [activeTab, setActiveTab] = useState<'math' | 'literature' | 'science'>('math');
+  const [activeTab, setActiveTab] = useState<'math' | 'literature' | 'science' | 'posters'>('math');
+  const [selectedPoster, setSelectedPoster] = useState<'bel_dzi' | 'math_all' | 'history_dates' | 'civics_eu'>('bel_dzi');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedText, setCopiedText] = useState<string | null>(null);
 
@@ -61,24 +62,24 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
               <span>Официален свитък по стандартите на МОН</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-              Справочник с формули и изпитни матрици
+              Справочник с формули, матрици и A4 Табла за Стена
             </h2>
             <p className="text-xs text-slate-600 mt-0.5">
-              Официално разрешените формули и матрици за НВО (7. клас) и ДЗИ (12. клас).
+              Официално разрешените формули, литературни матрици и принтируеми A4 шпаргалки за бюрото.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-xs font-medium text-slate-700 border border-slate-300 shadow-2xs transition-colors"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-xs font-bold text-white shadow-2xs transition-colors cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>Печат</span>
+              <span>Принтирай A4</span>
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition-colors"
+              className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
               aria-label="Затвори"
             >
               <X className="w-4 h-4" />
@@ -90,10 +91,10 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
         <div className="px-5 py-3 border-b border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
           
           {/* Segmented Controls */}
-          <div className="flex items-center gap-1 p-1 rounded-lg bg-white border border-slate-200 w-full sm:w-auto shadow-2xs">
+          <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg bg-white border border-slate-200 w-full sm:w-auto shadow-2xs">
             <button
               onClick={() => setActiveTab('math')}
-              className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
                 activeTab === 'math'
                   ? 'bg-blue-600 text-white font-semibold shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
@@ -105,7 +106,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
 
             <button
               onClick={() => setActiveTab('literature')}
-              className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
                 activeTab === 'literature'
                   ? 'bg-blue-600 text-white font-semibold shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
@@ -117,7 +118,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
 
             <button
               onClick={() => setActiveTab('science')}
-              className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
                 activeTab === 'science'
                   ? 'bg-blue-600 text-white font-semibold shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
@@ -125,6 +126,18 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
             >
               <Layers className="w-3.5 h-3.5" />
               <span>Физика & Химия</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('posters')}
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-colors cursor-pointer ${
+                activeTab === 'posters'
+                  ? 'bg-amber-600 text-white shadow-xs'
+                  : 'text-amber-800 bg-amber-50 hover:bg-amber-100'
+              }`}
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>A4 Табла за Стена (4)</span>
             </button>
           </div>
 
@@ -319,6 +332,254 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* PRINTABLE A4 WALL POSTERS TAB */}
+          {activeTab === 'posters' && (
+            <div className="space-y-5">
+              {/* Poster Selector Bar */}
+              <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-xl bg-amber-50/80 border border-amber-200 print:hidden">
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { id: 'bel_dzi', label: '1. Табло БЕЛ ДЗИ (9 блока / 27 творби)' },
+                    { id: 'math_all', label: '2. Табло Математика (НВО & ДЗИ)' },
+                    { id: 'history_dates', label: '3. Табло История (681–2007 г.)' },
+                    { id: 'civics_eu', label: '4. Табло Конституция & ЕС' }
+                  ].map(p => (
+                    <button
+                      key={p.id}
+                      onClick={() => setSelectedPoster(p.id as any)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        selectedPoster === p.id
+                          ? 'bg-slate-900 text-white shadow-xs'
+                          : 'bg-white text-slate-700 border border-amber-200 hover:bg-amber-100'
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={handlePrint}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-extrabold shadow-xs cursor-pointer"
+                >
+                  <Printer className="w-3.5 h-3.5" />
+                  <span>Принтирай това A4 табло</span>
+                </button>
+              </div>
+
+              {/* POSTER 1: BEL DZI 27 WORKS & 9 THEMATIC BLOCKS */}
+              {selectedPoster === 'bel_dzi' && (
+                <div className="border-2 border-slate-900 rounded-xl p-5 bg-white space-y-4">
+                  <div className="text-center border-b-2 border-slate-900 pb-3">
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                      StudyBG • Едностранично A4 Табло за Стена • ДЗИ Български език и литература (11.–12. клас)
+                    </div>
+                    <h3 className="text-lg font-extrabold text-slate-900 font-serif mt-0.5">
+                      Пълна Матрица на 9-те Тематични Блока за Матурата по БЕЛ (Задача 41)
+                    </h3>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse text-xs">
+                      <thead>
+                        <tr className="bg-slate-900 text-white">
+                          <th className="p-2 border border-slate-700">Тематичен блок (11.–12. кл.)</th>
+                          <th className="p-2 border border-slate-700">Задължителни произведения и автори</th>
+                          <th className="p-2 border border-slate-700">Жанрове & Ключова теза за 6.00</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-200">
+                        <tr>
+                          <td className="p-2 font-bold text-slate-900 border border-slate-200">1. Родното и чуждото</td>
+                          <td className="p-2 border border-slate-200">„Железният светилник“ (Д. Талев), „Бай Ганьо журналист“ (Ал. Константинов), „Балкански синдром“ (Ст. Стратиев)</td>
+                          <td className="p-2 border border-slate-200">Роман, фейлетон, комедия • Домът и родът срещу духовната деформация и криворазбраната модернизация</td>
+                        </tr>
+                        <tr className="bg-slate-50/70">
+                          <td className="p-2 font-bold text-slate-900 border border-slate-200">2. Миналото и паметта</td>
+                          <td className="p-2 border border-slate-200">„Паисий“ (Ив. Вазов), „История“ (Н. Вапцаров), „Ноев ковчег“ (Й. Радичков)</td>
+                          <td className="p-2 border border-slate-200">Ода, стихотворение, роман • Историческата памет като спасителен ковчег на духа</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 font-bold text-slate-900 border border-slate-200">3. Обществото и властта</td>
+                          <td className="p-2 border border-slate-200">„Борба“ (Хр. Ботев), „Андрешко“ (Елин Пелин), „Приказка за стълбата“ (Хр. Смирненски)</td>
+                          <td className="p-2 border border-slate-200">Стихотворение, разказ, алегория • Бунтът срещу тиранията и моралната слепота на властта</td>
+                        </tr>
+                        <tr className="bg-slate-50/70">
+                          <td className="p-2 font-bold text-slate-900 border border-slate-200">4. Животът и смъртта</td>
+                          <td className="p-2 border border-slate-200">„До моето първо либе“ (Хр. Ботев), „Новото гробище над Сливница“ (Ив. Вазов), „Крадецът на праскови“ (Ем. Станев)</td>
+                          <td className="p-2 border border-slate-200">Елегия/ода, повест • Героичната саможертва и спасителната сила на любовта по време на война</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 font-bold text-slate-900 border border-slate-200">5. Природата</td>
+                          <td className="p-2 border border-slate-200">„При Рилския манастир“ (Ив. Вазов), „Градушка“ (П. Яворов), „Спи езерото“ (П. П. Славейков)</td>
+                          <td className="p-2 border border-slate-200">Стихотворение, поема, лирическа миниатюра • Природата като храм, стихия и огледало на съзерцанието</td>
+                        </tr>
+                        <tr className="bg-slate-50/70">
+                          <td className="p-2 font-bold text-slate-900 border border-slate-200">6. Любовта</td>
+                          <td className="p-2 border border-slate-200">„Аз искам да те помня все така...“ (Д. Дебелянов), „Колко си хубава!“ (Хр. Фотев), „Посвещение“ (П. Дубарова)</td>
+                          <td className="p-2 border border-slate-200">Елегия, интимна лирика • Любовта като вечен духовен спомен, преображение и младежко доверие</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 font-bold text-slate-900 border border-slate-200">7. Вярата и надеждата</td>
+                          <td className="p-2 border border-slate-200">„Молитва“ (Ат. Далчев), „Вяра“ (Н. Вапцаров), „Спасова могила“ (Елин Пелин)</td>
+                          <td className="p-2 border border-slate-200">Стихотворение, разказ • Екзистенциалната вяра в живота и страданието, търсещо чудо</td>
+                        </tr>
+                        <tr className="bg-slate-50/70">
+                          <td className="p-2 font-bold text-slate-900 border border-slate-200">8. Трудът и творчеството</td>
+                          <td className="p-2 border border-slate-200">„Песента на колелетата“ (Й. Йовков), „Балада за Георг Хених“ (В. Пасков), „Честен кръст“ (Б. Христов)</td>
+                          <td className="p-2 border border-slate-200">Разказ, повест, поема • Творчеството като благословия (себап) и съпротива срещу бездуховността</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2 font-bold text-slate-900 border border-slate-200">9. Изборът и раздвоението</td>
+                          <td className="p-2 border border-slate-200">„Две души“ (П. Яворов), „Потомка“ (Ел. Багряна), „Нежната спирала“ (Й. Радичков)</td>
+                          <td className="p-2 border border-slate-200">Стихотворение, разказ • Драматичното раздвоение на модерния човек и свободният нравствен избор</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* POSTER 2: MATH ALL-IN-ONE A4 POSTER */}
+              {selectedPoster === 'math_all' && (
+                <div className="border-2 border-slate-900 rounded-xl p-5 bg-white space-y-4">
+                  <div className="text-center border-b-2 border-slate-900 pb-3">
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                      StudyBG • Едностранично A4 Табло за Стена • Математика (НВО 7. & 10. клас и ДЗИ)
+                    </div>
+                    <h3 className="text-lg font-extrabold text-slate-900 font-serif mt-0.5">
+                      Златни Формули по Алгебра, Тригонометрия и Геометрия на 1 лист
+                    </h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div className="p-3.5 rounded-xl border border-slate-300 space-y-1.5">
+                      <h4 className="font-bold text-blue-900 uppercase">1. Формули за съкратено умножение (7. клас)</h4>
+                      <div className="font-mono space-y-1 text-slate-800">
+                        <div>(a ± b)² = a² ± 2ab + b²</div>
+                        <div>a² - b² = (a - b)(a + b)</div>
+                        <div>(a ± b)³ = a³ ± 3a²b + 3ab² ± b³</div>
+                        <div>a³ ± b³ = (a ± b)(a² ∓ ab + b²)</div>
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl border border-slate-300 space-y-1.5">
+                      <h4 className="font-bold text-blue-900 uppercase">2. Квадратно уравнение & Формули на Виет (8. клас)</h4>
+                      <div className="font-mono space-y-1 text-slate-800">
+                        <div>ax² + bx + c = 0 (a ≠ 0), D = b² - 4ac</div>
+                        <div>x₁,₂ = (-b ± √D) / (2a)</div>
+                        <div>Виет: x₁ + x₂ = -b / a  |  x₁ · x₂ = c / a</div>
+                        <div>Връх на парабола: x_v = -b / (2a)</div>
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl border border-slate-300 space-y-1.5">
+                      <h4 className="font-bold text-blue-900 uppercase">3. Аритметична и Геометрична прогресия (10. клас)</h4>
+                      <div className="font-mono space-y-1 text-slate-800">
+                        <div>АП: a_n = a₁ + (n - 1)d  |  S_n = ((a₁ + a_n)/2) · n</div>
+                        <div>Свойство АП: 2a_k = a_{'{k-1}'} + a_{'{k+1}'}</div>
+                        <div>ГП: b_n = b₁ · q^(n - 1) | S_n = b₁(q^n - 1)/(q - 1)</div>
+                        <div>Свойство ГП: b_k² = b_{'{k-1}'} · b_{'{k+1}'}</div>
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl border border-slate-300 space-y-1.5">
+                      <h4 className="font-bold text-blue-900 uppercase">4. Тригонометрия и Теореми в триъгълник (9.–10. клас)</h4>
+                      <div className="font-mono space-y-1 text-slate-800">
+                        <div>sin² α + cos² α = 1  |  tg α = sin α / cos α</div>
+                        <div>sin 30° = 1/2 | sin 45° = √2 / 2 | sin 60° = √3 / 2</div>
+                        <div>Синусова т-ма: a / sin α = b / sin β = 2R</div>
+                        <div>Косинусова т-ма: c² = a² + b² - 2ab · cos γ</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* POSTER 3: HISTORY DATES 681-2007 A4 POSTER */}
+              {selectedPoster === 'history_dates' && (
+                <div className="border-2 border-slate-900 rounded-xl p-5 bg-white space-y-4">
+                  <div className="text-center border-b-2 border-slate-900 pb-3">
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                      StudyBG • Едностранично A4 Табло за Стена • История и цивилизации (НВО & ДЗИ)
+                    </div>
+                    <h3 className="text-lg font-extrabold text-slate-900 font-serif mt-0.5">
+                      Златна Хронология на Българската История (681 – 2007 г.)
+                    </h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                    {[
+                      ['681 г.', 'Създаване на Дунавска България (хан Аспарух) — мирен договор с Византия'],
+                      ['716 г.', 'Договор на хан Тервел с Византия (областта Загоре, данък и първи търговски клаузи)'],
+                      ['864 г.', 'Покръстване на българите при княз Борис I Покръстител'],
+                      ['886 г.', 'Княз Борис I приема учениците на Кирил и Методий (Климент, Наум, Ангеларий)'],
+                      ['893 г.', 'Преславски народен събор — старобългарският език става официален, Симеон поема трона'],
+                      ['917 г.', 'Битката при р. Ахелой — блестяща победа на цар Симеон Велики'],
+                      ['1018 г.', 'Падане на България под византийска власт при император Василий II'],
+                      ['1185 г.', 'Въстание на Асен и Петър в Търново — възстановяване на българската държава'],
+                      ['1205 г.', 'Битката при Одрин — цар Калоян разгромява кръстоносците на имп. Балдуин I'],
+                      ['9 март 1230 г.', 'Битката при Клокотница — цар Иван Асен II побеждава Теодор Комнин'],
+                      ['1762 г.', 'Паисий Хилендарски завършва „История славянобългарска“ — начало на Възраждането'],
+                      ['28 февр. 1870 г.', 'Султански ферман за учредяване на самостоятелна Българска екзархия'],
+                      ['Април 1876 г.', 'Априлско въстание — връх на българското националноосвободително движение'],
+                      ['3 март 1878 г.', 'Санстефански прелиминарен договор — възстановяване на Третата българска държава'],
+                      ['16 април 1879 г.', 'Приемане на Търновската конституция от Учредителното събрание'],
+                      ['6 септ. 1885 г.', 'Съединение на Княжество България и Източна Румелия в Пловдив'],
+                      ['22 септ. 1908 г.', 'Провъзгласяване на Независимостта на България във Велико Търново'],
+                      ['7 септ. 1940 г.', 'Крайовска спогодба — мирно връщане на Южна Добруджа на България'],
+                      ['12 юли 1991 г.', 'Приемане на действащата Конституция на Република България от VII ВНС'],
+                      ['29 март 2004 / 1 ян. 2007', 'Членство на Република България в НАТО (2004 г.) и в Европейския съюз (2007 г.)']
+                    ].map(([year, event], idx) => (
+                      <div key={idx} className="p-2.5 rounded-lg border border-slate-200 bg-slate-50/70 flex items-start gap-2.5">
+                        <span className="font-mono font-extrabold text-blue-800 shrink-0 min-w-[95px]">{year}</span>
+                        <span className="text-slate-800">{event}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* POSTER 4: CIVICS & EU A4 POSTER */}
+              {selectedPoster === 'civics_eu' && (
+                <div className="border-2 border-slate-900 rounded-xl p-5 bg-white space-y-4">
+                  <div className="text-center border-b-2 border-slate-900 pb-3">
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                      StudyBG • Едностранично A4 Табло за Стена • Гражданско образование и Философия
+                    </div>
+                    <h3 className="text-lg font-extrabold text-slate-900 font-serif mt-0.5">
+                      Разделение на властите в Република България и Институции на ЕС
+                    </h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div className="p-3.5 rounded-xl border border-slate-300 space-y-2">
+                      <h4 className="font-bold text-blue-900 uppercase">Конституция на РБ (1991 г.) — Държавни органи</h4>
+                      <ul className="space-y-1.5 text-slate-800">
+                        <li><strong>Народно събрание (Законодателна власт):</strong> 240 депутати (4 г. мандат). Гласува закони, бюджета и избира/освобождава МС. Велико НС = 400 депутати.</li>
+                        <li><strong>Министерски съвет (Изпълнителна власт):</strong> Премиер и министри. Ръководи вътрешната и външната политика, приема постановления.</li>
+                        <li><strong>Съдебна власт (Независима):</strong> Съдилища (ВКС, ВАС), Прокуратура и Следствие; кадрови орган — ВСС.</li>
+                        <li><strong>Президент на РБ (Държавен глава):</strong> Пряк избор за 5 г. Върховен главнокомандващ, обнародва законите, има <strong>отлагателно вето</strong> (преодолява се с &gt;120 гласа).</li>
+                        <li><strong>Конституционен съд:</strong> 12 съдии (9 г. мандат, без повторен избор). Тълкува Конституцията и обявява закони за противоконституционни.</li>
+                      </ul>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl border border-slate-300 space-y-2">
+                      <h4 className="font-bold text-indigo-900 uppercase">Институционален триъгълник на Европейския съюз</h4>
+                      <ul className="space-y-1.5 text-slate-800">
+                        <li><strong>Европейска комисия (Брюксел):</strong> 27 комисари (1 от България). Изпълнителен орган, <strong>единствен има законодателна инициатива</strong>.</li>
+                        <li><strong>Европейски парламент (Страсбург/Брюксел):</strong> 720 пряко избрани евродепутати (<strong>17 от България</strong>). Съзаконодател заедно със Съвета на ЕС.</li>
+                        <li><strong>Съвет на ЕС (Брюксел):</strong> Националните министри по ресори от 27-те страни членки. Приема законите и бюджета заедно с ЕП.</li>
+                        <li><strong>Европейски съвет (Брюксел):</strong> Лидерите (премиери/президенти) на 27-те държави. Задава политическата стратегия (НЕ приема закони).</li>
+                        <li><strong>Съд на ЕС (Люксембург) vs. ЕСПЧ (Страсбург):</strong> СЕС в Люксембург е съдът на ЕС; ЕСПЧ в Страсбург е орган на <em>Съвета на Европа</em> (46 държави).</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

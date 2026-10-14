@@ -239,6 +239,13 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               >
                 Конституция & ЕС (ГО / ДЗИ)
               </button>
+              <button
+                type="button"
+                onClick={() => onNavigateTab('blitz')}
+                className="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-bold transition-colors cursor-pointer"
+              >
+                ⚡ Блиц за 60 сек. (Combo x5)
+              </button>
             </div>
           </div>
 

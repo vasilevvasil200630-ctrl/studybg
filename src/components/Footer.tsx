@@ -200,6 +200,15 @@ export const Footer: React.FC<FooterProps> = ({
                   <span>Конституция на РБ & ЕС (ГО / ДЗИ)</span>
                 </button>
               </li>
+              <li>
+                <button
+                  onClick={() => handleOpenStudyTab('blitz')}
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2"
+                >
+                  <Zap className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Блиц за 60 сек. (Speed Blitz 6.00)</span>
+                </button>
+              </li>
             </ul>
           </div>
 

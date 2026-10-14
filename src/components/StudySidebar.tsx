@@ -65,6 +65,18 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
       title: 'Учебна подготовка',
       items: [
         {
+          tab: 'specialties',
+          label: 'Училища & Специалности 8–12 кл.',
+          sublabel: '',
+          icon: GraduationCap,
+          accentColor: 'text-indigo-600',
+          badge: (
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+              8.–12. кл.
+            </span>
+          )
+        },
+        {
           tab: 'planner',
           label: 'Моят План за 6.00',
           sublabel: '',

@@ -38,6 +38,7 @@ const CivicsEuLab = lazy(() => import('./components/CivicsEuLab').then(m => ({ d
 const SpeedBlitzLab = lazy(() => import('./components/SpeedBlitzLab').then(m => ({ default: m.SpeedBlitzLab })));
 const ScienceDziLab = lazy(() => import('./components/ScienceDziLab').then(m => ({ default: m.ScienceDziLab })));
 const OralExamSimulatorLab = lazy(() => import('./components/OralExamSimulatorLab').then(m => ({ default: m.OralExamSimulatorLab })));
+const SchoolsSpecialtiesHub = lazy(() => import('./components/SchoolsSpecialtiesHub').then(m => ({ default: m.SchoolsSpecialtiesHub })));
 import { errorBankService } from './services/errorBankService';
 
 import { CURRICULUM_LESSONS } from './data/curriculumDatabase';
@@ -69,7 +70,7 @@ import {
 import './App.css';
 
 const STUDY_TABS: AppNavTab[] = [
-  'home', 'planner', 'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
+  'home', 'specialties', 'planner', 'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
   'simulator', 'errorbank', 'generator', 'catalog', 'calculator',
   'grammar', 'moduletwo', 'literature', 'mathlab', 'sciencelab', 'oralexam', 'atlas', 'english', 'civics', 'blitz'
 ];
@@ -297,6 +298,7 @@ export function App() {
     { tab: 'grammar', label: 'Тренажор БЕЛ', icon: <PenTool className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'moduletwo', label: 'Модул 2 БЕЛ', icon: <Feather className="w-3.5 h-3.5 text-purple-600" /> },
     { tab: 'literature', label: 'Литературен Канон', icon: <BookMarked className="w-3.5 h-3.5 text-purple-600" /> },
+    { tab: 'specialties', label: 'Училища & Специалности 8–12', icon: <GraduationCap className="w-3.5 h-3.5 text-indigo-600" /> },
     { tab: 'mathlab', label: 'Математика & STEM', icon: <Compass className="w-3.5 h-3.5 text-cyan-600" /> },
     { tab: 'sciencelab', label: 'Природни науки Лаб', icon: <FlaskConical className="w-3.5 h-3.5 text-emerald-600" /> },
     { tab: 'atlas', label: 'Атлас Ист. & Гео.', icon: <MapPin className="w-3.5 h-3.5 text-amber-600" /> },
@@ -412,7 +414,9 @@ export function App() {
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   <span className="text-blue-700 font-semibold">Гимназиална академия (8.–12. кл)</span>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                  {activeTab === 'planner' ? (
+                  {activeTab === 'specialties' ? (
+                    <span className="text-indigo-700 font-semibold">Специални секции по училища, специалности и класове (8.–12. клас)</span>
+                  ) : activeTab === 'planner' ? (
                     <span className="text-emerald-700 font-semibold">Моят План за 6.00 (Хронометър & Седмичен график)</span>
                   ) : activeTab === 'grammar' ? (
                     <span className="text-indigo-700 font-semibold">Тренажор БЕЛ (Модул 1 • Норми на БАН)</span>
@@ -453,7 +457,14 @@ export function App() {
 
                 {/* Lesson or Specialized Module Title */}
                 <div className="flex flex-wrap items-center gap-3 pt-1">
-                  {activeTab === 'planner' ? (
+                  {activeTab === 'specialties' ? (
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                      <span>Специални секции по училища, специалности и класове (8.–12. клас)</span>
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                        Раздел А (ООП) • Раздел Б (ДЗИ) • Раздел В (ДИППК)
+                      </span>
+                    </h2>
+                  ) : activeTab === 'planner' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Моят План за Отличен 6.00 & Изпитен Календар</span>
                       <span className="text-xs px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
@@ -560,7 +571,7 @@ export function App() {
                 </div>
 
                 {/* Direct Referral to Matura+ if user browses a 5-7th grade lesson */}
-                {!['planner', 'grammar', 'moduletwo', 'literature', 'mathlab', 'sciencelab', 'oralexam', 'atlas', 'english', 'civics', 'blitz', 'cases', 'calculator'].includes(activeTab) &&
+                {!['specialties', 'planner', 'grammar', 'moduletwo', 'literature', 'mathlab', 'sciencelab', 'oralexam', 'atlas', 'english', 'civics', 'blitz', 'cases', 'calculator'].includes(activeTab) &&
                   (currentLesson.grade.includes('7.') || currentLesson.grade.includes('6.') || currentLesson.grade.includes('5.')) && (
                   <div className="pt-2">
                     <MaturaPlusBridgeBanner compact={true} source="lesson-breadcrumb" />
@@ -633,6 +644,13 @@ export function App() {
                 <div className="rounded-2xl bg-white border border-slate-200 p-4 sm:p-6 lg:p-7 shadow-xs transition-all">
                   
                   <Suspense fallback={<ViewLoadingSkeleton />}>
+                    {activeTab === 'specialties' && (
+                      <SchoolsSpecialtiesHub
+                        allLessons={lessons}
+                        onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+                      />
+                    )}
+
                     {activeTab === 'scan' && (
                       <SmartScan
                         onScanComplete={handleScanCompleted}

@@ -25,10 +25,16 @@ export default defineConfig({
           if (id.includes('node_modules/lucide-react/')) {
             return 'vendor-icons';
           }
-          if (id.includes('src/data/curriculumDatabase') || id.includes('src/data/curriculumExpansionLessons')) {
+          if (id.includes('curriculumExpansionLessons')) {
+            return 'data-curriculum-expansion';
+          }
+          if (id.includes('curriculumDatabase')) {
             return 'data-curriculum';
           }
-          if (id.includes('src/data/bulgarianCurriculumTree')) {
+          if (id.includes('schoolsSpecialtiesDatabase')) {
+            return 'data-schools-specialties';
+          }
+          if (id.includes('bulgarianCurriculumTree')) {
             return 'data-curriculum-tree';
           }
           if (id.includes('src/data/generalKnowledgeData') || id.includes('src/data/cultureExpansionData')) {

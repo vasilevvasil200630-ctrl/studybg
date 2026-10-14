@@ -60,7 +60,8 @@ export type AppNavTab =
   | 'atlas'
   | 'english'
   | 'civics'
-  | 'blitz';
+  | 'blitz'
+  | 'specialties';
 
 interface NavbarProps {
   portalMode: 'study' | 'culture';
@@ -87,7 +88,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onScrollToCatalog,
   onOpenFormulaModal,
   onOpenQuickSearch,
-  totalLessonsCount = 60
+  totalLessonsCount = 70
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLabsDropdownOpen, setIsLabsDropdownOpen] = useState(false);
@@ -134,6 +135,14 @@ export const Navbar: React.FC<NavbarProps> = ({
     icon: React.ReactNode;
     accentBg: string;
   }[] = [
+    {
+      tab: 'specialties',
+      label: 'Училища & Специалности 8.–12. клас',
+      desc: 'ПМГ, ЕГ, ТУЕС/ИТ, НТБГ/Бизнес, СГСАГ, Мехатроника, Медицина и Туризъм',
+      badge: '8.–12. КЛАС',
+      icon: <GraduationCap className="w-4 h-4 text-indigo-600" />,
+      accentBg: 'bg-indigo-50 border-indigo-200 text-indigo-800'
+    },
     {
       tab: 'oralexam',
       label: 'Устно изпитване пред дъската',
@@ -234,6 +243,16 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const highSchoolNavItems: { tab: AppNavTab; label: string; icon: React.ReactNode; badge?: React.ReactNode }[] = [
     { tab: 'home', label: 'Начална страница', icon: <Home className="w-3.5 h-3.5 text-blue-600" /> },
+    {
+      tab: 'specialties',
+      label: 'Училища & Специалности 8–12 кл.',
+      icon: <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />,
+      badge: (
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+          Всички предмети
+        </span>
+      )
+    },
     {
       tab: 'planner',
       label: 'Моят План за 6.00',

@@ -1,6 +1,15 @@
+import {
+  EXTRA_UNSOLVED_MYSTERIES,
+  EXTRA_TRIVIA_QUESTIONS,
+  EXTRA_FACT_OR_MYTH,
+  EXTRA_NATURAL_WONDERS,
+  EXTRA_WISDOM_QUOTES,
+  EXTRA_BULGARIAN_HERITAGE
+} from './cultureExpansionData';
+
 export interface UnsolvedMysteryItem {
   id: string;
-  category: 'history' | 'ancient' | 'geography';
+  category: 'history' | 'ancient' | 'geography' | 'conspiracy';
   categoryLabel: string;
   tag: string;
   title: string;
@@ -24,7 +33,7 @@ export interface TriviaQuestion {
   correctIndex: number;
   explanation: string;
   didYouKnow: string;
-  category: 'history' | 'ancient' | 'geography' | 'culture';
+  category: 'history' | 'ancient' | 'geography' | 'culture' | 'conspiracy';
   difficulty: 'Лесен' | 'Среден' | 'Предизвикателен';
 }
 
@@ -35,7 +44,7 @@ export interface FactOrMythItem {
   verdictTitle: string;
   detailedExplanation: string;
   evidenceSource: string;
-  category: 'history' | 'ancient' | 'geography';
+  category: 'history' | 'ancient' | 'geography' | 'conspiracy';
 }
 
 export interface NaturalWonderItem {
@@ -63,9 +72,10 @@ export interface WisdomQuoteItem {
 }
 
 // ==========================================
-// 1. НЕРАЗГАДАНИ СЛУЧКИ И МИСТЕРИИ (14 БРОЯ)
+// 1. НЕРАЗГАДАНИ СЛУЧКИ, КОНСПИРАЦИИ И МИСТЕРИИ
 // ==========================================
 export const UNSOLVED_MYSTERIES_DATA: UnsolvedMysteryItem[] = [
+  ...EXTRA_UNSOLVED_MYSTERIES,
   // 1. ИСТОРИЧЕСКИ НЕРАЗГАДАНИ СЛУЧКИ
   {
     id: 'mystery-levski-grave',
@@ -599,6 +609,7 @@ export const UNSOLVED_MYSTERIES_DATA: UnsolvedMysteryItem[] = [
 // 2. ПРИРОДНИ ЧУДЕСА НА БЪЛГАРИЯ (12 ОБЕКТА)
 // ==========================================
 export const NATURAL_WONDERS_DATA: NaturalWonderItem[] = [
+  ...EXTRA_NATURAL_WONDERS,
   {
     id: 'wonder-rila-lakes',
     name: 'Седемте рилски езера',
@@ -749,6 +760,7 @@ export const NATURAL_WONDERS_DATA: NaturalWonderItem[] = [
 // 3. ЗЛАТЕН ФОНД & МЪДРОСТ НА ЕПОХИТЕ (10 УРОКА)
 // ==========================================
 export const WISDOM_QUOTES_DATA: WisdomQuoteItem[] = [
+  ...EXTRA_WISDOM_QUOTES,
   {
     id: 'wisdom-paisiy',
     quote: 'О, неразумни и юроде! Поради что се срамиш да се наречеш болгарин и не четеш, и не говориш на своя язик?',
@@ -855,6 +867,7 @@ export const WISDOM_QUOTES_DATA: WisdomQuoteItem[] = [
 // 4. ТЕСТ ЗА ОБЩА КУЛТУРА (TRIVIA - 30 ВЪПРОСА)
 // ==========================================
 export const GENERAL_KNOWLEDGE_TRIVIA: TriviaQuestion[] = [
+  ...EXTRA_TRIVIA_QUESTIONS,
   {
     id: 'trivia-1',
     question: 'Къде е открито най-старото технологично обработено злато в цялата човешка история?',
@@ -1161,6 +1174,7 @@ export const GENERAL_KNOWLEDGE_TRIVIA: TriviaQuestion[] = [
 // 5. ФАКТ ИЛИ МИТ? (16 РАЗВЕНЧАНИ ТЕМИ)
 // ==========================================
 export const FACT_OR_MYTH_DATA: FactOrMythItem[] = [
+  ...EXTRA_FACT_OR_MYTH,
   {
     id: 'myth-krum-skull-cup',
     statement: 'Хан Крум наистина е направил обкована със сребро ритуална чаша от черепа на византийския император Никифор I Геник.',
@@ -1325,6 +1339,7 @@ export interface HeritageItem {
 }
 
 export const BULGARIAN_HERITAGE_DATA: HeritageItem[] = [
+  ...EXTRA_BULGARIAN_HERITAGE,
   {
     id: 'heritage-john-atanasoff',
     title: 'Джон Атанасов и първият електронен цифров компютър (ABC)',

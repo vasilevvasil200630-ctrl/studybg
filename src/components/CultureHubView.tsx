@@ -82,7 +82,8 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
   const [copiedMysteryId, setCopiedMysteryId] = useState<string | null>(null);
 
   const mysteryCategories = [
-    { id: 'all', label: `Всички загадки (${UNSOLVED_MYSTERIES_DATA.length})` },
+    { id: 'all', label: `Всички досиета (${UNSOLVED_MYSTERIES_DATA.length})` },
+    { id: 'conspiracy', label: '🕵️ Конспирации & Секретни досиета' },
     { id: 'history', label: 'Исторически случки' },
     { id: 'ancient', label: 'Древни цивилизации' },
     { id: 'geography', label: 'Географски бездни' }
@@ -208,6 +209,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
 
   const mythCategories = [
     { id: 'all', label: `Всички митове (${FACT_OR_MYTH_DATA.length})` },
+    { id: 'conspiracy', label: '🕵️ Конспирации & Тайни' },
     { id: 'history', label: 'История' },
     { id: 'ancient', label: 'Древност' },
     { id: 'geography', label: 'География' }
@@ -242,13 +244,13 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
             <div>
               <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-amber-50 border border-amber-200 text-amber-800 mb-1">
                 <Compass className="w-3.5 h-3.5" />
-                <span>Досиета на неизвестното • 14 детайлни загадки</span>
+                <span>Досиета на неизвестното • {UNSOLVED_MYSTERIES_DATA.length} конспирации, секретни архиви и загадки</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-                Неразгадани години, събития и български съкровища
+                Конспиративни теории, секретни експедиции, древни кодове и мистерии
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
-                Документирани исторически факти, съпоставени с най-авторитетните научни хипотези. Натиснете бутона за звук, за да слушате разказа с аудио глас.
+                Засекретени военни операции, подземни тунели, богомилски шифри, енергийни триъгълници и исторически загадки — разгледайте както конспиративните теории, така и документираните факти.
               </p>
             </div>
 
@@ -638,6 +640,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
               <div className="flex flex-wrap gap-2 mt-4">
                 {[
                   { id: 'all', label: 'Всички категории' },
+                  { id: 'conspiracy', label: '🕵️ Конспирации & Тайни' },
                   { id: 'history', label: 'История на България' },
                   { id: 'ancient', label: 'Древност & Археология' },
                   { id: 'geography', label: 'География & Природа' },
@@ -848,7 +851,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
             <div>
               <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-800 mb-1">
                 <HelpCircle className="w-3.5 h-3.5" />
-                <span>Развенчаване на исторически и народни митове (16 теми)</span>
+                <span>Развенчаване на конспирации, исторически и народни митове ({FACT_OR_MYTH_DATA.length} теми)</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
                 Факт или Мит: Познавате ли истината зад популярните вярвания?

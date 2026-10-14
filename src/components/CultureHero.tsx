@@ -36,7 +36,7 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
 
         {/* Subtitle */}
         <p className="mt-3 text-xs sm:text-sm md:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
-          Академичен контекстен модул към историята и литературата за 8.–12. клас. 14 исторически разследвания с академични източници, хронология (681–1908 г.), ЮНЕСКО паметници и първични извори за аргументация в изпитните теми на МОН.
+          Зона за обща култура, конспиративни теории, секретни експедиции и древни мистерии: 29 разследвания (Царичина, Странджа-Бастет, подземни тунели, богомилски шифри, Тесла), 18 природни феномена, 16 световни открития и 24 развенчани мита.
         </p>
 
         {/* Quick Highlights Row */}
@@ -46,7 +46,7 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100/80 border border-amber-200 text-amber-900 text-xs font-semibold shadow-2xs transition-colors"
           >
             <Compass className="w-3.5 h-3.5 text-amber-600" />
-            <span>14 исторически казуса</span>
+            <span>🕵️ 29 конспирации & загадки</span>
           </button>
 
           <button
@@ -62,7 +62,7 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-50 hover:bg-orange-100/80 border border-orange-200 text-orange-900 text-xs font-semibold shadow-2xs transition-colors"
           >
             <Award className="w-3.5 h-3.5 text-orange-600" />
-            <span>10 ЮНЕСКО обекта & световен принос</span>
+            <span>16 ЮНЕСКО обекта & световни патенти</span>
           </button>
 
           <button
@@ -70,7 +70,7 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100/80 border border-sky-200 text-sky-900 text-xs font-semibold shadow-2xs transition-colors"
           >
             <Sparkles className="w-3.5 h-3.5 text-sky-600" />
-            <span>Куиз за ерудити (30 въпроса)</span>
+            <span>Куиз за ерудити (42 въпроса)</span>
           </button>
 
           <button
@@ -78,7 +78,7 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100/80 border border-rose-200 text-rose-900 text-xs font-semibold shadow-2xs transition-colors"
           >
             <HelpCircle className="w-3.5 h-3.5 text-rose-600" />
-            <span>Факт или Мит в историята</span>
+            <span>Факт или Конспирация (24 теми)</span>
           </button>
 
           <button

@@ -25,13 +25,13 @@ export default defineConfig({
           if (id.includes('node_modules/lucide-react/')) {
             return 'vendor-icons';
           }
-          if (id.includes('src/data/curriculumDatabase')) {
+          if (id.includes('src/data/curriculumDatabase') || id.includes('src/data/curriculumExpansionLessons')) {
             return 'data-curriculum';
           }
           if (id.includes('src/data/bulgarianCurriculumTree')) {
             return 'data-curriculum-tree';
           }
-          if (id.includes('src/data/generalKnowledgeData')) {
+          if (id.includes('src/data/generalKnowledgeData') || id.includes('src/data/cultureExpansionData')) {
             return 'data-culture';
           }
           if (id.includes('src/data/historicalCasesData')) {

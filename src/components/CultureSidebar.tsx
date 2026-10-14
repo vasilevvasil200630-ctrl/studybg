@@ -33,36 +33,36 @@ export const CultureSidebar: React.FC<CultureSidebarProps> = ({
   }[] = [
     {
       tab: 'mysteries',
-      label: 'Неразгадани случки',
-      sublabel: '14 исторически загадки',
+      label: 'Конспирации & Мистерии',
+      sublabel: '29 секретни досиета & загадки',
       icon: Compass,
       accentColor: 'text-amber-600'
     },
     {
       tab: 'heritage',
       label: 'Български принос & ЮНЕСКО',
-      sublabel: '10 световни обекта & открития',
+      sublabel: '16 световни обекта & открития',
       icon: Award,
       accentColor: 'text-orange-600'
     },
     {
       tab: 'wonders',
-      label: 'Природни чудеса',
-      sublabel: '12 феномена на България',
+      label: 'Природни чудеса & Зони',
+      sublabel: '18 феномена на България',
       icon: MapPin,
       accentColor: 'text-teal-600'
     },
     {
       tab: 'trivia',
       label: 'Куиз за ерудити',
-      sublabel: '30 въпроса за самопроверка',
+      sublabel: '42 въпроса за самопроверка',
       icon: Sparkles,
       accentColor: 'text-sky-600'
     },
     {
       tab: 'myths',
-      label: 'Факт или Мит?',
-      sublabel: '16 развенчани мита',
+      label: 'Факт, Мит или Конспирация?',
+      sublabel: '24 развенчани мита и тайни',
       icon: HelpCircle,
       accentColor: 'text-rose-600'
     },
@@ -76,7 +76,7 @@ export const CultureSidebar: React.FC<CultureSidebarProps> = ({
     {
       tab: 'wisdom',
       label: 'Златен фонд & Мъдрост',
-      sublabel: '10 вечни национални урока',
+      sublabel: '16 вечни национални урока',
       icon: Quote,
       accentColor: 'text-indigo-600'
     }

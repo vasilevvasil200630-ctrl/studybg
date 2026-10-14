@@ -1,4 +1,5 @@
 import type { LessonData, GradeLevel, SubjectName } from '../types';
+import { EXTRA_CURRICULUM_LESSONS } from './curriculumExpansionLessons';
 
 export const GRADES_LIST: GradeLevel[] = [
   'Всички класове',
@@ -5374,5 +5375,6 @@ export const CURRICULUM_LESSONS: LessonData[] = [
     "Какви са правомощията на Княза и министрите?",
     "Защо консерваторите са искали имуществен ценз?"
   ]
-}
+},
+  ...EXTRA_CURRICULUM_LESSONS
 ];

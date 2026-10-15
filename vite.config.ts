@@ -41,8 +41,11 @@ export default defineConfig({
           if (id.includes('curriculumExpansionLessons')) {
             return 'data-curriculum-exp1a';
           }
+          if (id.includes('curriculumCorePack')) {
+            return 'data-curriculum-core-pack';
+          }
           if (id.includes('curriculumDatabase')) {
-            return 'data-curriculum-core';
+            return 'data-curriculum-seed';
           }
           if (id.includes('schoolsSpecialtiesDatabase')) {
             return 'data-schools-specialties';

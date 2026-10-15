@@ -35,6 +35,15 @@ class PwaManager {
       return;
     }
 
+    if (import.meta.env.DEV) {
+      navigator.serviceWorker.getRegistrations().then((regs) => {
+        for (const r of regs) {
+          void r.unregister();
+        }
+      });
+      return;
+    }
+
     window.addEventListener('load', () => {
       navigator.serviceWorker
         .register('/sw.js')

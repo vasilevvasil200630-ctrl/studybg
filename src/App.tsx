@@ -10,8 +10,9 @@ import { CookieConsentBanner } from './components/CookieConsentBanner';
 import type { LegalPolicyTab } from './components/LegalPoliciesModal';
 import { MaturaPlusBridgeBanner } from './components/MaturaPlusBridgeBanner';
 
+import { HomeLandingView } from './components/HomeLandingView';
+
 // Code-split heavy interactive modules for optimal bundle size and instant initial load
-const HomeLandingView = lazy(() => import('./components/HomeLandingView').then(m => ({ default: m.HomeLandingView })));
 const SummaryView = lazy(() => import('./components/SummaryView').then(m => ({ default: m.SummaryView })));
 const LegalPoliciesModal = lazy(() => import('./components/LegalPoliciesModal').then(m => ({ default: m.LegalPoliciesModal })));
 const CultureHubView = lazy(() => import('./components/CultureHubView').then(m => ({ default: m.CultureHubView })));
@@ -41,7 +42,11 @@ const OralExamSimulatorLab = lazy(() => import('./components/OralExamSimulatorLa
 const SchoolsSpecialtiesHub = lazy(() => import('./components/SchoolsSpecialtiesHub').then(m => ({ default: m.SchoolsSpecialtiesHub })));
 import { errorBankService } from './services/errorBankService';
 
-import { CURRICULUM_LESSONS, loadFullCurriculumLessons } from './data/curriculumDatabase';
+import {
+  CURRICULUM_LESSONS,
+  TOTAL_CURRICULUM_LESSONS_COUNT,
+  loadFullCurriculumLessons
+} from './data/curriculumDatabase';
 import type { LessonData, QuizQuestion } from './types';
 import {
   Camera,
@@ -77,7 +82,6 @@ const STUDY_TABS: AppNavTab[] = [
 
 function prefetchStudyTabChunk(tab: AppNavTab): void {
   switch (tab) {
-    case 'home': void import('./components/HomeLandingView'); break;
     case 'specialties': void import('./components/SchoolsSpecialtiesHub'); break;
     case 'planner': void import('./components/StudyPlannerDashboard'); break;
     case 'summary': void import('./components/SummaryView'); break;
@@ -124,40 +128,57 @@ export function App() {
 
   const [lessons, setLessons] = useState<LessonData[]>(CURRICULUM_LESSONS);
   const [currentLesson, setCurrentLesson] = useState<LessonData>(CURRICULUM_LESSONS[0]);
-
-  useEffect(() => {
-    let isMounted = true;
-    loadFullCurriculumLessons().then((fullLessons) => {
-      if (!isMounted) return;
-      startTabTransition(() => {
-        setLessons((prev) => {
-          const customScans = prev.filter((l) => !fullLessons.some((fl) => fl.id === l.id));
-          return [...customScans, ...fullLessons];
-        });
-      });
-      // Pre-warm the most frequently visited workspace modules during browser idle time
-      const warmChunks = () => {
-        if (!isMounted) return;
-        void import('./components/SummaryView');
-        void import('./components/StudyPlannerDashboard');
-        void import('./components/SubjectCatalog');
-      };
-      if ('requestIdleCallback' in window) {
-        (window as unknown as { requestIdleCallback: (cb: () => void) => number }).requestIdleCallback(warmChunks);
-      } else {
-        setTimeout(warmChunks, 800);
-      }
-    });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const totalLessonsDisplayCount = Math.max(lessons.length, TOTAL_CURRICULUM_LESSONS_COUNT);
 
   const [activeTab, setActiveTab] = useState<AppNavTab>('home');
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
   const [isFormulaModalOpen, setIsFormulaModalOpen] = useState(false);
   const [isQuickLessonModalOpen, setIsQuickLessonModalOpen] = useState(false);
   const [practiceQuestions, setPracticeQuestions] = useState<QuizQuestion[] | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    let triggered = false;
+
+    const hydrateFullCurriculum = () => {
+      if (triggered) return;
+      triggered = true;
+      window.removeEventListener('pointerdown', hydrateFullCurriculum);
+      window.removeEventListener('keydown', hydrateFullCurriculum);
+      window.removeEventListener('touchstart', hydrateFullCurriculum);
+      window.removeEventListener('scroll', hydrateFullCurriculum);
+      window.removeEventListener('wheel', hydrateFullCurriculum);
+
+      loadFullCurriculumLessons().then((fullLessons) => {
+        if (!isMounted) return;
+        startTabTransition(() => {
+          setLessons((prev) => {
+            const customScans = prev.filter((l) => !fullLessons.some((fl) => fl.id === l.id));
+            return [...customScans, ...fullLessons];
+          });
+        });
+      });
+    };
+
+    if (activeTab !== 'home' || isQuickLessonModalOpen || isScanModalOpen) {
+      hydrateFullCurriculum();
+    } else {
+      window.addEventListener('pointerdown', hydrateFullCurriculum, { passive: true, once: true });
+      window.addEventListener('keydown', hydrateFullCurriculum, { passive: true, once: true });
+      window.addEventListener('touchstart', hydrateFullCurriculum, { passive: true, once: true });
+      window.addEventListener('scroll', hydrateFullCurriculum, { passive: true, once: true });
+      window.addEventListener('wheel', hydrateFullCurriculum, { passive: true, once: true });
+    }
+
+    return () => {
+      isMounted = false;
+      window.removeEventListener('pointerdown', hydrateFullCurriculum);
+      window.removeEventListener('keydown', hydrateFullCurriculum);
+      window.removeEventListener('touchstart', hydrateFullCurriculum);
+      window.removeEventListener('scroll', hydrateFullCurriculum);
+      window.removeEventListener('wheel', hydrateFullCurriculum);
+    };
+  }, [activeTab, isQuickLessonModalOpen, isScanModalOpen]);
 
   // Dynamic document.title synchronization for SEO, accessibility, and multi-tab clarity
   useEffect(() => {
@@ -206,8 +227,6 @@ export function App() {
   const handleSelectPortalMode = (mode: 'study' | 'culture') => {
     if (mode === 'culture') {
       void import('./components/CultureHubView');
-    } else {
-      void import('./components/HomeLandingView');
     }
     startTabTransition(() => {
       setPortalMode(mode);
@@ -444,7 +463,7 @@ export function App() {
         onScrollToCatalog={scrollToCatalog}
         onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
         onOpenQuickSearch={() => setIsQuickLessonModalOpen(true)}
-        totalLessonsCount={lessons.length}
+        totalLessonsCount={totalLessonsDisplayCount}
       />
 
       {/* Culture Portal Hero (shown only when in Culture mode) */}
@@ -490,16 +509,14 @@ export function App() {
       {/* Main Content Area: Spacious Full-Width Homepage vs Focused Workspace */}
       {portalMode === 'study' && activeTab === 'home' ? (
         <main className="flex-1 w-full bg-slate-50">
-          <Suspense fallback={<ViewLoadingSkeleton />}>
-            <HomeLandingView
-              lessons={lessons}
-              onSelectLesson={handleLessonSelected}
-              onNavigateTab={handleNavigateStudyTab}
-              onOpenScan={() => setIsScanModalOpen(true)}
-              onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
-              onNavigateCultureTab={handleNavigateCultureTab}
-            />
-          </Suspense>
+          <HomeLandingView
+            lessons={lessons}
+            onSelectLesson={handleLessonSelected}
+            onNavigateTab={handleNavigateStudyTab}
+            onOpenScan={() => setIsScanModalOpen(true)}
+            onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
+            onNavigateCultureTab={handleNavigateCultureTab}
+          />
         </main>
       ) : (
         <main id="workspace" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
@@ -556,7 +573,7 @@ export function App() {
                   ) : activeTab === 'errorbank' ? (
                     <span className="text-rose-700 font-semibold">Интерактивна банка с грешки</span>
                   ) : activeTab === 'catalog' ? (
-                    <span className="text-blue-700 font-semibold">Пълна учебна програма ({lessons.length} теми)</span>
+                    <span className="text-blue-700 font-semibold">Пълна учебна програма ({totalLessonsDisplayCount} теми)</span>
                   ) : (
                     <>
                       <span className="text-emerald-700 font-medium">{currentLesson.subject}</span>
@@ -742,7 +759,7 @@ export function App() {
                   activeTab={activeTab}
                   onSelectTab={handleNavigateStudyTab}
                   unresolvedErrorCount={unresolvedErrorCount}
-                  totalLessonsCount={lessons.length}
+                  totalLessonsCount={totalLessonsDisplayCount}
                   onOpenQuickLessonPicker={() => setIsQuickLessonModalOpen(true)}
                   onOpenScan={() => setIsScanModalOpen(true)}
                   onOpenFormulaModal={() => setIsFormulaModalOpen(true)}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   GraduationCap,
   Clock,
@@ -55,26 +55,54 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
   onOpenFormulaModal,
   onNavigateCultureTab
 }) => {
+  const totalLessonsCount = Math.max(lessons.length, 108);
   const [selectedCurriculumTrack, setSelectedCurriculumTrack] = useState<'dzi' | 'nvo' | 'stem' | 'dippk' | 'all'>('dzi');
   const [showAllInTrack, setShowAllInTrack] = useState(false);
   const [schoolSections, setSchoolSections] = useState<SchoolCategorySection[]>([]);
   const [gradeMatrices, setGradeMatrices] = useState<GradeCurriculumMatrix[]>([]);
   const [activeHomeSchoolId, setActiveHomeSchoolId] = useState<string>('pmg-smg-npmg');
   const [activeHomeGrade, setActiveHomeGrade] = useState<'8. клас' | '9. клас' | '10. клас' | '11. клас' | '12. клас'>('8. клас');
+  const schoolsSectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     let active = true;
-    import('../data/schoolsSpecialtiesDatabase').then((mod) => {
-      if (!active) return;
-      setSchoolSections(mod.SCHOOL_SPECIALTIES_SECTIONS);
-      setGradeMatrices(mod.GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX);
-      if (mod.SCHOOL_SPECIALTIES_SECTIONS.length > 0) {
-        setActiveHomeSchoolId((prev) => prev || mod.SCHOOL_SPECIALTIES_SECTIONS[0].id);
-      }
-    });
-    return () => {
-      active = false;
+    let loaded = false;
+
+    const loadSchoolsData = () => {
+      if (loaded) return;
+      loaded = true;
+      import('../data/schoolsSpecialtiesDatabase').then((mod) => {
+        if (!active) return;
+        setSchoolSections(mod.SCHOOL_SPECIALTIES_SECTIONS);
+        setGradeMatrices(mod.GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX);
+        if (mod.SCHOOL_SPECIALTIES_SECTIONS.length > 0) {
+          setActiveHomeSchoolId((prev) => prev || mod.SCHOOL_SPECIALTIES_SECTIONS[0].id);
+        }
+      });
     };
+
+    const el = schoolsSectionRef.current;
+    if (el && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            loadSchoolsData();
+            observer.disconnect();
+          }
+        },
+        { rootMargin: '450px' }
+      );
+      observer.observe(el);
+      return () => {
+        active = false;
+        observer.disconnect();
+      };
+    } else {
+      loadSchoolsData();
+      return () => {
+        active = false;
+      };
+    }
   }, []);
 
   // 5. University & Career Admission Compass State
@@ -374,7 +402,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               МОН Програми 2026/2027
             </span>
             <span className="text-slate-300">•</span>
-            <span>{lessons.length} академични урока</span>
+            <span>{totalLessonsCount} академични урока</span>
             <span className="text-slate-300">•</span>
             <span className="text-amber-800 font-bold">40 секретни досиета</span>
             <span className="text-slate-300 hidden sm:inline">•</span>
@@ -399,7 +427,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 type="text"
                 value={omniSearchQuery}
                 onChange={(e) => setOmniSearchQuery(e.target.value)}
-                placeholder={`Търси мигновено сред ${lessons.length} урока, 40 мистерии, формули или автори (напр. Талев, производна, митоза, Царичина)...`}
+                placeholder={`Търси мигновено сред ${totalLessonsCount} урока, 40 мистерии, формули или автори (напр. Талев, производна, митоза, Царичина)...`}
                 className="w-full py-3.5 px-3 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none bg-transparent"
               />
               {omniSearchQuery && (
@@ -952,7 +980,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 >
                   <div className="text-[10px] text-slate-400 uppercase font-bold">Усвоени теми</div>
                   <div className="text-base sm:text-lg font-black text-emerald-400 mt-0.5">
-                    {telemetry.masteredCount} / {lessons.length}
+                    {telemetry.masteredCount} / {totalLessonsCount}
                   </div>
                   <div className="text-[10px] text-slate-400 mt-0.5">Отвори Планера →</div>
                 </button>
@@ -1001,7 +1029,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       {/* ========================================================================= */}
       {/* 2.5 SPECIAL SECTIONS: ALL HIGH SCHOOLS, SPECIALTIES & GRADES 8-12 MATRIX */}
       {/* ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
+      <section ref={schoolsSectionRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
         <div className="rounded-3xl bg-white border-2 border-indigo-200/90 shadow-sm p-5 sm:p-8 space-y-7">
           {/* Header */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-100">
@@ -1676,7 +1704,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 Устно изпитване пред дъската
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Симулатор с микрофон (Web Speech API) за всички {lessons.length} урока, автоматичен одит на ключовите термини и бележник.
+                Симулатор с микрофон (Web Speech API) за всички {totalLessonsCount} урока, автоматичен одит на ключовите термини и бележник.
               </p>
             </div>
             <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-indigo-700">
@@ -1890,7 +1918,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 <span>Пълна учебна база по предмети (8.–12. клас)</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-                Учебни конспекти, устно изпитване и тестове ({lessons.length} урока)
+                Учебни конспекти, устно изпитване и тестове ({totalLessonsCount} урока)
               </h2>
               <p className="text-xs sm:text-sm text-slate-500 mt-1">
                 Избери урок и стартирай директно конспект с личен бележник, гласово устно изпитване или изпитен тест.
@@ -1962,7 +1990,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Всички предмети ({lessons.length})
+                Всички предмети ({totalLessonsCount})
               </button>
             </div>
           </div>
@@ -2069,7 +2097,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-800 text-xs font-semibold transition-colors cursor-pointer"
             >
               <BookMarked className="w-4 h-4 text-blue-600" />
-              <span>Отвори пълния каталог с всички {lessons.length} теми по програмите на МОН за 8.–12. клас</span>
+              <span>Отвори пълния каталог с всички {totalLessonsCount} теми по програмите на МОН за 8.–12. клас</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

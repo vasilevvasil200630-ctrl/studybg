@@ -2,6 +2,21 @@ import type { LessonData } from '../types';
 
 const GEMINI_MODEL = 'gemini-3.8-flash';
 
+const getEnvGeminiKey = (): string => {
+  const env = import.meta.env as Record<string, string | undefined>;
+  const candidates = [
+    env.VITE_GEMINI_API_KEY,
+    env.GEMINI_API_KEY,
+    env.NEXT_PUBLIC_GEMINI_API_KEY
+  ];
+  for (const c of candidates) {
+    if (c && typeof c === 'string' && c.trim().length > 10 && c.trim() !== 'undefined') {
+      return c.trim();
+    }
+  }
+  return '';
+};
+
 export const getActiveGeminiApiKey = (): string => {
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem('studybg_gemini_api_key');
@@ -9,7 +24,7 @@ export const getActiveGeminiApiKey = (): string => {
       return stored.trim();
     }
   }
-  return '';
+  return getEnvGeminiKey();
 };
 
 export const setStoredGeminiApiKey = (key: string): void => {
@@ -29,25 +44,17 @@ export const removeStoredGeminiApiKey = (): void => {
   }
 };
 
-/**
- * Returns true because StudyBG uses the server-side /api/gemini proxy on Vercel
- * (keeping the paid key hidden from the browser), or a user-supplied localStorage key.
- */
 export const isGeminiConfigured = (): boolean => {
-  return true;
+  return getActiveGeminiApiKey().length > 10;
 };
 
-export const getGeminiApiUrl = (): string => {
-  const customKey = getActiveGeminiApiKey();
-  if (customKey.length > 10) {
-    return `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${customKey}`;
-  }
-  return '/api/gemini';
+export const getGeminiApiUrl = (customKey?: string): string => {
+  const apiKey = (customKey || getActiveGeminiApiKey()).trim();
+  return `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
 };
 
 /**
- * Central helper that calls the secure Vercel serverless proxy (/api/gemini)
- * so the production API key is never exposed in client-side JavaScript bundles.
+ * Central helper that calls Google Gemini 3.8 Flash API directly from the static Vite app.
  */
 async function callGeminiContent(
   requestBody: {
@@ -56,36 +63,12 @@ async function callGeminiContent(
   },
   explicitCustomKey?: string
 ): Promise<any> {
-  const customKey = (explicitCustomKey || getActiveGeminiApiKey()).trim();
-
-  // 1. Primary path: Server-side proxy /api/gemini (hides production key on server)
-  try {
-    const proxyRes = await fetch('/api/gemini', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...requestBody,
-        ...(customKey.length > 10 ? { customApiKey: customKey } : {})
-      })
-    });
-
-    if (proxyRes.ok) {
-      return await proxyRes.json();
-    }
-
-    // If proxy returned a structured error and we don't have a custom key, surface it
-    if (customKey.length <= 10) {
-      const errText = await proxyRes.text();
-      throw new Error(`Gemini API грешка (${proxyRes.status}): ${errText.slice(0, 140)}`);
-    }
-  } catch (err) {
-    if (customKey.length <= 10) {
-      throw err;
-    }
+  const apiKey = (explicitCustomKey || getActiveGeminiApiKey()).trim();
+  if (!apiKey || apiKey.length < 10) {
+    throw new Error('Липсва Gemini API ключ. Моля, проверете настройките.');
   }
 
-  // 2. Fallback path: Direct call only if the user explicitly configured a personal key in localStorage
-  const directUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${customKey}`;
+  const directUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
   const res = await fetch(directUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -94,7 +77,7 @@ async function callGeminiContent(
 
   if (!res.ok) {
     const errText = await res.text();
-    throw new Error(`Gemini API грешка: ${errText.slice(0, 140)}`);
+    throw new Error(`Gemini API грешка (${res.status}): ${errText.slice(0, 140)}`);
   }
 
   return await res.json();

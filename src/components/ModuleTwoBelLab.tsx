@@ -14,7 +14,8 @@ import {
   Check,
   AlertTriangle,
   FileText,
-  Feather
+  Feather,
+  Loader2
 } from 'lucide-react';
 import {
   FIGURES_AND_TROPES,
@@ -28,6 +29,7 @@ import {
   type Task41Blueprint
 } from '../data/moduleTwoBelDatabase';
 import { studyProgressService } from '../services/studyProgressService';
+import { evaluateBelModuleTwoWithGemini, type BelModuleTwoAiEvaluation } from '../services/geminiService';
 
 export const ModuleTwoBelLab: React.FC = () => {
   const [activeSubTab, setActiveSubTab] = useState<'figures' | 'lexicology' | 'synthesis' | 'task41' | 'quiz'>('figures');
@@ -45,6 +47,9 @@ export const ModuleTwoBelLab: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [streak, setStreak] = useState<number>(0);
+  const [aiBelEval, setAiBelEval] = useState<BelModuleTwoAiEvaluation | null>(null);
+  const [isAiBelLoading, setIsAiBelLoading] = useState<boolean>(false);
+  const [aiBelError, setAiBelError] = useState<string | null>(null);
 
   const activeFigure: FigureOrTropeItem =
     FIGURES_AND_TROPES.find(f => f.id === selectedFigureId) || FIGURES_AND_TROPES[0];
@@ -492,6 +497,65 @@ export const ModuleTwoBelLab: React.FC = () => {
                     </span>
                   </div>
                 )}
+
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!trimmedDraft || isAiBelLoading) return;
+                      setIsAiBelLoading(true);
+                      setAiBelError(null);
+                      try {
+                        const res = await evaluateBelModuleTwoWithGemini({
+                          mode: 'synthesis',
+                          topic: `${activeSynthesis.title} (${activeSynthesis.examType}) — ${activeSynthesis.taskPrompt}`,
+                          referenceText: activeSynthesis.modelAnswer,
+                          studentDraft: trimmedDraft
+                        });
+                        setAiBelEval(res);
+                      } catch (err) {
+                        setAiBelError(err instanceof Error ? err.message : 'Грешка при свързване с Gemini 3.8 Flash.');
+                      } finally {
+                        setIsAiBelLoading(false);
+                      }
+                    }}
+                    disabled={!trimmedDraft || isAiBelLoading}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-40 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+                  >
+                    {isAiBelLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                    <span>{isAiBelLoading ? 'Проверява се по МОН...' : '🤖 Провери с Gemini 3.8 Flash (Оценител МОН)'}</span>
+                  </button>
+                </div>
+
+                {aiBelError && (
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800">
+                    {aiBelError}
+                  </div>
+                )}
+
+                {aiBelEval && (
+                  <div className="p-4 rounded-2xl bg-indigo-950 text-white border border-indigo-700 space-y-2.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-black uppercase tracking-wider text-purple-300 flex items-center gap-1.5">
+                        <Sparkles className="w-4 h-4 text-amber-400" />
+                        <span>Оценка от Gemini 3.8 Flash (Критерии на МОН):</span>
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-black">
+                        {aiBelEval.verdict}
+                      </span>
+                    </div>
+                    <p className="text-xs text-indigo-100 leading-relaxed">{aiBelEval.feedback}</p>
+                    <div className="space-y-1">
+                      {aiBelEval.improvements.map((imp, idx) => (
+                        <div key={idx} className="text-xs text-amber-200">• {imp}</div>
+                      ))}
+                    </div>
+                    <div className="p-3 rounded-xl bg-white/10 border border-white/10 text-xs text-emerald-200">
+                      <strong className="block text-white mb-0.5">✨ Редактиран еталонен вариант:</strong>
+                      {aiBelEval.modelImprovedVersion}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -711,6 +775,48 @@ export const ModuleTwoBelLab: React.FC = () => {
                   <span>Думи в черновата: {wordCount}</span>
                   <span>Изречения: {sentenceCount}</span>
                 </div>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!trimmedDraft || isAiBelLoading) return;
+                    setIsAiBelLoading(true);
+                    setAiBelError(null);
+                    try {
+                      const res = await evaluateBelModuleTwoWithGemini({
+                        mode: 'task41',
+                        topic: `${activeTask41.examTopic} (${activeTask41.workAndAuthor})`,
+                        referenceText: `${activeTask41.mainThesis} | ${activeTask41.conclusion}`,
+                        studentDraft: trimmedDraft
+                      });
+                      setAiBelEval(res);
+                    } catch (err) {
+                      setAiBelError(err instanceof Error ? err.message : 'Грешка при свързване с Gemini 3.8 Flash.');
+                    } finally {
+                      setIsAiBelLoading(false);
+                    }
+                  }}
+                  disabled={!trimmedDraft || isAiBelLoading}
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-40 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+                >
+                  {isAiBelLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                  <span>{isAiBelLoading ? 'Проверява се по МОН (30 т.)...' : '🤖 Провери черновата с Gemini 3.8 Flash (30 т.)'}</span>
+                </button>
+
+                {aiBelEval && (
+                  <div className="p-4 rounded-2xl bg-indigo-950 text-white border border-indigo-700 space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-black uppercase text-purple-300">Gemini 3.8 Flash Рецензия:</span>
+                      <span className="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-black">
+                        {aiBelEval.verdict}
+                      </span>
+                    </div>
+                    <p className="text-xs text-indigo-100 leading-relaxed">{aiBelEval.feedback}</p>
+                    <div className="p-2.5 rounded-xl bg-white/10 text-xs text-emerald-200">
+                      <strong className="block text-white mb-0.5">✨ Надградена теза (30/30 т.):</strong>
+                      {aiBelEval.modelImprovedVersion}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

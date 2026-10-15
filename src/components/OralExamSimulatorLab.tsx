@@ -11,10 +11,12 @@ import {
   BookOpen,
   RotateCcw,
   Sparkles,
-  Send
+  Send,
+  Loader2
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import { SUBJECTS_LIST } from '../data/curriculumDatabase';
+import { evaluateOralAnswerWithGemini, type OralExamAiEvaluation } from '../services/geminiService';
 
 interface OralExamSimulatorLabProps {
   lessons: LessonData[];
@@ -351,12 +353,17 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
   const [isListening, setIsListening] = useState<boolean>(false);
   const [isSpeakingQuestion, setIsSpeakingQuestion] = useState<boolean>(false);
   const [micMessage, setMicMessage] = useState<string | null>(null);
+  const [aiOralEval, setAiOralEval] = useState<OralExamAiEvaluation | null>(null);
+  const [isAiEvaluating, setIsAiEvaluating] = useState<boolean>(false);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   useEffect(() => {
     setActiveLessonId(currentLesson.id);
     setQuestionIndex(0);
     setStudentAnswer('');
     setIsSubmitted(false);
+    setAiOralEval(null);
+    setAiError(null);
   }, [currentLesson.id]);
 
   const activeSpecialTicket = useMemo(() => {
@@ -959,7 +966,39 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
             className="w-full p-4 rounded-xl bg-slate-50 border border-slate-300 text-xs sm:text-sm text-slate-900 focus:outline-none focus:bg-white focus:border-indigo-600 leading-relaxed"
           />
 
-          <div className="flex items-center justify-end">
+          <div className="flex flex-wrap items-center justify-end gap-2.5">
+            <button
+              type="button"
+              onClick={async () => {
+                if (!studentAnswer.trim() || isAiEvaluating) return;
+                if (isListening) {
+                  recognitionRef.current?.stop();
+                  setIsListening(false);
+                }
+                setIsSubmitted(true);
+                setIsAiEvaluating(true);
+                setAiError(null);
+                try {
+                  const res = await evaluateOralAnswerWithGemini({
+                    subject: oralMode === 'lesson' ? `${activeLesson.subject} (${activeLesson.grade}) — ${activeLesson.title}` : `${activeSpecialTicket.code} — ${activeSpecialTicket.title}`,
+                    question: activeQuestion,
+                    goldenAnswer: oralMode === 'lesson' ? activeLesson.summary.examGoldenRule : activeSpecialTicket.goldenDefense,
+                    studentAnswer: studentAnswer.trim()
+                  });
+                  setAiOralEval(res);
+                } catch (err) {
+                  setAiError(err instanceof Error ? err.message : 'Грешка при свързване с Gemini 3.8 Flash.');
+                } finally {
+                  setIsAiEvaluating(false);
+                }
+              }}
+              disabled={!studentAnswer.trim() || isAiEvaluating}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white text-xs sm:text-sm font-bold shadow-xs transition-all cursor-pointer"
+            >
+              {isAiEvaluating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+              <span>{isAiEvaluating ? 'Комисията оценява...' : '🤖 AI Оценка с Gemini 3.8 Flash (Комисия МОН)'}</span>
+            </button>
+
             <button
               type="button"
               onClick={handleSubmitOralAnswer}
@@ -978,13 +1017,53 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
               <div className="flex items-center gap-3">
                 <span className={`px-3.5 py-1.5 rounded-xl text-sm font-black ${evaluation.color}`}>
-                  {evaluation.label}
+                  {aiOralEval ? aiOralEval.gradeLabel : evaluation.label}
                 </span>
                 <span className="text-xs text-slate-600 font-medium">
                   Покрити {matchedKeywords.length} от {rubricKeywords.length} ключови критерия на Комисията
                 </span>
               </div>
             </div>
+
+            {aiError && (
+              <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800 font-medium">
+                {aiError}
+              </div>
+            )}
+
+            {aiOralEval && (
+              <div className="p-4 rounded-xl bg-indigo-950 text-white border border-indigo-700 space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-black uppercase tracking-wider text-indigo-300 flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span>Рецензия от Председателя на Комисията (Google Gemini 3.8 Flash):</span>
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-black">
+                    {aiOralEval.gradeLabel}
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-indigo-100 leading-relaxed">
+                  {aiOralEval.commissionComment}
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                  <div className="p-3 rounded-xl bg-white/10 border border-white/10 space-y-1">
+                    <div className="text-[11px] font-bold text-emerald-300 uppercase">✅ Силни страни в защитата:</div>
+                    {aiOralEval.strengths.map((s, idx) => (
+                      <div key={idx} className="text-xs text-slate-200">• {s}</div>
+                    ))}
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/10 border border-white/10 space-y-1">
+                    <div className="text-[11px] font-bold text-amber-300 uppercase">⚠️ Какво да добавиш за 6.00:</div>
+                    {aiOralEval.missingPoints.map((m, idx) => (
+                      <div key={idx} className="text-xs text-slate-200">• {m}</div>
+                    ))}
+                  </div>
+                </div>
+                <div className="p-3 rounded-xl bg-amber-500/20 border border-amber-400/40 text-xs text-amber-200 font-semibold">
+                  ⚡ Допълнителен контравъпрос от комисията: „{aiOralEval.followUpQuestion}“
+                </div>
+              </div>
+            )}
 
             <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 space-y-2">
               <div className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-1.5">

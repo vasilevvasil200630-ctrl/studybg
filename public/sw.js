@@ -1,4 +1,4 @@
-const CACHE_NAME = 'studybg-pwa-v1';
+const CACHE_NAME = 'studybg-pwa-v2';
 const CORE_STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -39,7 +39,7 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
   if (url.hostname.includes('generativelanguage.googleapis.com')) return;
 
-  // Navigation requests (HTML pages): Stale-while-revalidate with index.html fallback
+  // Navigation requests (HTML pages): NetworkFirst with index.html offline fallback
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
@@ -59,7 +59,24 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Same-origin static assets (JS chunks, CSS, SVG icons): Stale-while-revalidate
+  // Immutable content-hashed bundles (/assets/*.js, /assets/*.css): CacheFirst (0ms network overhead)
+  if (url.origin === self.location.origin && url.pathname.startsWith('/assets/')) {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) return cachedResponse;
+        return fetch(request).then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+          }
+          return networkResponse;
+        });
+      })
+    );
+    return;
+  }
+
+  // Other same-origin static assets (favicon.svg, manifest.webmanifest): Stale-while-revalidate
   if (url.origin === self.location.origin) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {

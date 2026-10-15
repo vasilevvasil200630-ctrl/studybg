@@ -32,9 +32,9 @@ import type { AppNavTab } from './Navbar';
 import type { CultureSubTab } from './CultureHero';
 import { MaturaPlusBridgeBanner } from './MaturaPlusBridgeBanner';
 import type { UnsolvedMysteryItem } from '../data/generalKnowledgeData';
-import {
-  SCHOOL_SPECIALTIES_SECTIONS,
-  GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX
+import type {
+  SchoolCategorySection,
+  GradeCurriculumMatrix
 } from '../data/schoolsSpecialtiesDatabase';
 import { errorBankService } from '../services/errorBankService';
 
@@ -57,8 +57,25 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
 }) => {
   const [selectedCurriculumTrack, setSelectedCurriculumTrack] = useState<'dzi' | 'nvo' | 'stem' | 'dippk' | 'all'>('dzi');
   const [showAllInTrack, setShowAllInTrack] = useState(false);
-  const [activeHomeSchoolId, setActiveHomeSchoolId] = useState<string>(SCHOOL_SPECIALTIES_SECTIONS[0].id);
+  const [schoolSections, setSchoolSections] = useState<SchoolCategorySection[]>([]);
+  const [gradeMatrices, setGradeMatrices] = useState<GradeCurriculumMatrix[]>([]);
+  const [activeHomeSchoolId, setActiveHomeSchoolId] = useState<string>('pmg-smg-npmg');
   const [activeHomeGrade, setActiveHomeGrade] = useState<'8. клас' | '9. клас' | '10. клас' | '11. клас' | '12. клас'>('8. клас');
+
+  useEffect(() => {
+    let active = true;
+    import('../data/schoolsSpecialtiesDatabase').then((mod) => {
+      if (!active) return;
+      setSchoolSections(mod.SCHOOL_SPECIALTIES_SECTIONS);
+      setGradeMatrices(mod.GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX);
+      if (mod.SCHOOL_SPECIALTIES_SECTIONS.length > 0) {
+        setActiveHomeSchoolId((prev) => prev || mod.SCHOOL_SPECIALTIES_SECTIONS[0].id);
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // 5. University & Career Admission Compass State
   const [selectedUniId, setSelectedUniId] = useState<
@@ -991,7 +1008,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             <div className="space-y-1.5 max-w-3xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-extrabold uppercase tracking-wider">
                 <GraduationCap className="w-4 h-4 text-indigo-600" />
-                <span>{SCHOOL_SPECIALTIES_SECTIONS.length} Специални секции • 64+ професии и специалности (8.–12. клас)</span>
+                <span>{schoolSections.length || 16} Специални секции • 64+ професии и специалности (8.–12. клас)</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                 Всеки предмет от всеки клас (8.–12.) за всяко училище и специалност
@@ -1013,7 +1030,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
           {/* Part A: 16 School & Vocational Specialty Tabs */}
           <div className="space-y-4">
             <div className="flex flex-wrap gap-2">
-              {SCHOOL_SPECIALTIES_SECTIONS.map((school) => {
+              {schoolSections.map((school) => {
                 const isSelected = school.id === activeHomeSchoolId;
                 return (
                   <button
@@ -1034,8 +1051,9 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
 
             {(() => {
               const activeSchool =
-                SCHOOL_SPECIALTIES_SECTIONS.find((s) => s.id === activeHomeSchoolId) ||
-                SCHOOL_SPECIALTIES_SECTIONS[0];
+                schoolSections.find((s) => s.id === activeHomeSchoolId) ||
+                schoolSections[0];
+              if (!activeSchool) return null;
               return (
                 <div className="rounded-2xl bg-slate-50 border border-slate-200/90 p-4 sm:p-6 space-y-5">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
@@ -1139,8 +1157,9 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
 
             {(() => {
               const gradeMatrix =
-                GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX.find((g) => g.grade === activeHomeGrade) ||
-                GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX[0];
+                gradeMatrices.find((g) => g.grade === activeHomeGrade) ||
+                gradeMatrices[0];
+              if (!gradeMatrix) return null;
               return (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {gradeMatrix.subjects.map((subj, idx) => {

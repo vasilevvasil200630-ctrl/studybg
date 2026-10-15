@@ -11,8 +11,7 @@ import {
   Database,
   Trash2
 } from 'lucide-react';
-import { examHistoryService, type ExamAnalyticsSummary } from '../services/examHistoryService';
-import { isSupabaseConfigured } from '../services/supabaseClient';
+import { examHistoryService, isCloudSyncEnabled, type ExamAnalyticsSummary } from '../services/examHistoryService';
 
 interface ExamHistoryModalProps {
   isOpen: boolean;
@@ -45,7 +44,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
     }
   };
 
-  const isCloudActive = isSupabaseConfigured();
+  const isCloudActive = isCloudSyncEnabled();
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">

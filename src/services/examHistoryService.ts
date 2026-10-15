@@ -1,5 +1,3 @@
-import { supabase, isSupabaseConfigured } from './supabaseClient';
-
 export interface ExamAttemptRecord {
   id: string;
   timestamp: string;
@@ -32,6 +30,8 @@ export interface ExamAnalyticsSummary {
 }
 
 const STORAGE_KEY = 'studybg_exam_history';
+
+export const isCloudSyncEnabled = (): boolean => true;
 
 export const examHistoryService = {
   /**
@@ -82,9 +82,10 @@ export const examHistoryService = {
       console.warn('LocalStorage save failed:', err);
     }
 
-    // 2. Asynchronously sync to Supabase if credentials exist
-    if (isSupabaseConfigured()) {
-      try {
+    // 2. Asynchronously sync to Supabase via lazy dynamic import (zero upfront bundle cost)
+    try {
+      const { supabase, isSupabaseConfigured } = await import('./supabaseClient');
+      if (isSupabaseConfigured()) {
         const { error } = await supabase.from('exam_attempts').insert({
           id: newRecord.id,
           lesson_id: newRecord.lessonId,
@@ -108,9 +109,9 @@ export const examHistoryService = {
           // Table might not be migrated yet or RLS policy, ignore non-fatal error
           console.info('Supabase sync note (handled gracefully):', error.message);
         }
-      } catch (err) {
-        console.info('Supabase network sync skipped:', err);
       }
+    } catch (err) {
+      console.info('Supabase network sync skipped:', err);
     }
 
     return newRecord;

@@ -45,7 +45,34 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
     }
   }, [forceOpen]);
 
+  useEffect(() => {
+    if (!analyticsConsent || typeof window === 'undefined') return;
+    const gaId = (import.meta.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || import.meta.env.VITE_GA_MEASUREMENT_ID || '').trim();
+    const clarityId = (import.meta.env.NEXT_PUBLIC_CLARITY_PROJECT_ID || import.meta.env.VITE_CLARITY_PROJECT_ID || '').trim();
+
+    if (gaId && !document.getElementById('studybg-ga-script')) {
+      const s = document.createElement('script');
+      s.id = 'studybg-ga-script';
+      s.async = true;
+      s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}`;
+      document.head.appendChild(s);
+      const inline = document.createElement('script');
+      inline.text = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`;
+      document.head.appendChild(inline);
+    }
+
+    if (clarityId && !document.getElementById('studybg-clarity-script')) {
+      const c = document.createElement('script');
+      c.id = 'studybg-clarity-script';
+      c.async = true;
+      c.text = `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "${clarityId}");`;
+      document.head.appendChild(c);
+    }
+  }, [analyticsConsent]);
+
   const saveConsent = (prefs: CookiePreferences) => {
+    setFunctionalConsent(prefs.functional);
+    setAnalyticsConsent(prefs.analytics);
     if (typeof window !== 'undefined') {
       localStorage.setItem(COOKIE_STORAGE_KEY, JSON.stringify(prefs));
     }

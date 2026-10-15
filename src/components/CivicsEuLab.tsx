@@ -41,7 +41,7 @@ export const CivicsEuLab: React.FC = () => {
   );
 
   // Tab 3: Quiz state
-  const [quizFilter, setQuizFilter] = useState<'all' | 'constitution' | 'eu' | 'human_rights'>('all');
+  const [quizFilter, setQuizFilter] = useState<'all' | 'constitution' | 'eu' | 'human_rights' | 'labor_dippk'>('all');
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({});
 
   const filteredQuestions = useMemo(() => {
@@ -501,14 +501,15 @@ export const CivicsEuLab: React.FC = () => {
           {/* Filter Pills */}
           <div className="flex flex-wrap gap-2">
             {[
-              { id: 'all', label: 'Всички въпроси' },
+              { id: 'all', label: 'Всички въпроси (12)' },
               { id: 'constitution', label: 'Конституция на РБ' },
               { id: 'eu', label: 'Европейски съюз' },
-              { id: 'human_rights', label: 'Философия & Права на човека' }
+              { id: 'human_rights', label: 'Философия & Права на човека' },
+              { id: 'labor_dippk', label: '🛠️ Трудово право, ЗБУТ & ТЗ (Трета СПК)' }
             ].map(f => (
               <button
                 key={f.id}
-                onClick={() => setQuizFilter(f.id as any)}
+                onClick={() => setQuizFilter(f.id as typeof quizFilter)}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   quizFilter === f.id
                     ? 'bg-slate-900 text-white'

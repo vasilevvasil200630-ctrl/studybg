@@ -21,17 +21,20 @@ import {
   PARONYMS_AND_IDIOMS,
   MODULE_TWO_QUESTIONS,
   READING_SYNTHESIS_TASKS,
+  TASK_41_BLUEPRINTS,
   type FigureOrTropeItem,
   type ModuleTwoQuestion,
-  type SynthesisTaskTemplate
+  type SynthesisTaskTemplate,
+  type Task41Blueprint
 } from '../data/moduleTwoBelDatabase';
 import { studyProgressService } from '../services/studyProgressService';
 
 export const ModuleTwoBelLab: React.FC = () => {
-  const [activeSubTab, setActiveSubTab] = useState<'figures' | 'lexicology' | 'synthesis' | 'quiz'>('figures');
+  const [activeSubTab, setActiveSubTab] = useState<'figures' | 'lexicology' | 'synthesis' | 'task41' | 'quiz'>('figures');
   const [selectedFigureId, setSelectedFigureId] = useState<string>(FIGURES_AND_TROPES[0].id);
   const [lexFilter, setLexFilter] = useState<'all' | 'paronym' | 'idiom'>('all');
   const [selectedSynthesisId, setSelectedSynthesisId] = useState<string>(READING_SYNTHESIS_TASKS[0].id);
+  const [selectedTask41Id, setSelectedTask41Id] = useState<string>(TASK_41_BLUEPRINTS[0].id);
   const [studentDraft, setStudentDraft] = useState<string>('');
   const [copiedText, setCopiedText] = useState<string | null>(null);
 
@@ -53,6 +56,9 @@ export const ModuleTwoBelLab: React.FC = () => {
 
   const activeSynthesis: SynthesisTaskTemplate =
     READING_SYNTHESIS_TASKS.find(t => t.id === selectedSynthesisId) || READING_SYNTHESIS_TASKS[0];
+
+  const activeTask41: Task41Blueprint =
+    TASK_41_BLUEPRINTS.find(b => b.id === selectedTask41Id) || TASK_41_BLUEPRINTS[0];
 
   const filteredQuestions =
     quizFilter === 'all'
@@ -159,6 +165,7 @@ export const ModuleTwoBelLab: React.FC = () => {
             { id: 'figures', label: 'Тропи и фигури (8 групи)', icon: Feather },
             { id: 'lexicology', label: 'Пароними и фразеологизми', icon: BookOpen },
             { id: 'synthesis', label: 'Задача 40 (Теза) & Резюме', icon: FileText },
+            { id: 'task41', label: 'Задача 41 (ИС / Есе — 30 т.)', icon: Award },
             { id: 'quiz', label: 'Изпитен тренажор Модул 2', icon: Sparkles }
           ].map(tab => {
             const Icon = tab.icon;
@@ -549,6 +556,163 @@ export const ModuleTwoBelLab: React.FC = () => {
 
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* SUB-TAB 3B: TASK 41 (30-POINT DZI INTERPRETATIVE ESSAY & ESSAY BUILDER) */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'task41' && (
+        <div className="space-y-6">
+          {/* Selector for Task 41 Blueprints */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {TASK_41_BLUEPRINTS.map(bp => {
+              const isSelected = bp.id === activeTask41.id;
+              return (
+                <button
+                  key={bp.id}
+                  onClick={() => setSelectedTask41Id(bp.id)}
+                  className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                      : 'bg-white text-slate-800 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  <span
+                    className={`inline-block text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded mb-1.5 ${
+                      isSelected ? 'bg-white/20 text-white' : 'bg-purple-50 text-purple-800'
+                    }`}
+                  >
+                    {bp.thematicCluster}
+                  </span>
+                  <div className="text-xs sm:text-sm font-bold leading-snug line-clamp-2">{bp.workAndAuthor}</div>
+                  <div className={`text-[11px] mt-1 line-clamp-1 ${isSelected ? 'text-indigo-100' : 'text-slate-500'}`}>
+                    {bp.examTopic}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Left 7 cols: Full Architectural Blueprint (Introduction -> Thesis -> 3 Arguments -> Conclusion) */}
+            <div className="lg:col-span-7 p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-5">
+              <div className="space-y-1 border-b border-slate-100 pb-4">
+                <div className="text-xs font-bold uppercase tracking-wider text-indigo-600">
+                  {activeTask41.genreAndPeriod}
+                </div>
+                <h2 className="text-xl font-black text-slate-900">
+                  Тема за 41. задача: „{activeTask41.examTopic}“
+                </h2>
+                <p className="text-xs text-slate-600 font-semibold">{activeTask41.workAndAuthor}</p>
+              </div>
+
+              {/* 1. Увод и Основна Теза */}
+              <div className="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-200 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-wider text-indigo-900">
+                    1. Увод и Основна Теза (Критерий за 7 т. по литературни компетентности):
+                  </span>
+                  <button
+                    onClick={() => handleCopy(`${activeTask41.introductionHook} ${activeTask41.mainThesis}`)}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-indigo-200 text-indigo-700 hover:bg-indigo-100 text-[11px] font-bold cursor-pointer"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Копирай тезата</span>
+                  </button>
+                </div>
+                <p className="text-xs text-slate-700 italic leading-relaxed">
+                  <strong>Уводна рамка:</strong> {activeTask41.introductionHook}
+                </p>
+                <p className="text-xs sm:text-sm text-indigo-950 font-bold leading-relaxed bg-white p-3.5 rounded-xl border border-indigo-100">
+                  <strong>Основна теза:</strong> {activeTask41.mainThesis}
+                </p>
+              </div>
+
+              {/* 2. Верига от 3 Аргументативни абзаца */}
+              <div className="space-y-3">
+                <div className="text-xs font-black uppercase tracking-wider text-slate-700">
+                  2. Доказателствена част (3 микротези + художествени наблюдения и цитати):
+                </div>
+                {activeTask41.arguments.map((arg, aIdx) => (
+                  <div key={aIdx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                    <div className="text-xs font-extrabold text-purple-900">{arg.title}</div>
+                    <p className="text-xs text-slate-800 leading-relaxed font-medium">{arg.microThesis}</p>
+                    <div className="text-[11px] text-indigo-800 bg-white px-3 py-2 rounded-xl border border-slate-200">
+                      <strong>Цитати и тропи за опора:</strong> {arg.evidenceAndQuotes}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* 3. Заключение и Мост за Есе */}
+              <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-2">
+                <div className="text-xs font-black uppercase tracking-wider text-emerald-900">
+                  3. Обобщаващо заключение и Насока за Есе:
+                </div>
+                <p className="text-xs sm:text-sm text-emerald-950 font-semibold leading-relaxed">
+                  {activeTask41.conclusion}
+                </p>
+                <div className="pt-2 border-t border-emerald-200/70 text-xs text-slate-700">
+                  <strong className="text-amber-900">💡 Морална и съвременна перспектива (ако избираш Есе):</strong>{' '}
+                  {activeTask41.essayParallel}
+                </div>
+              </div>
+            </div>
+
+            {/* Right 5 cols: Official МОН 30-Point Rubric & Student Practice Pad */}
+            <div className="lg:col-span-5 space-y-5">
+              <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-3">
+                <div className="text-xs font-black uppercase tracking-wider text-purple-800">
+                  Официална скала на МОН за Задача 41 (Общо 30 точки):
+                </div>
+                <div className="space-y-2 text-xs text-slate-700">
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <span>1. Литературни / аргументативни компетентности (теза, анализ, опори):</span>
+                    <strong className="font-mono text-indigo-700">15 т.</strong>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <span>2. Композиционна цялост, логическа свързаност и стил:</span>
+                    <strong className="font-mono text-purple-700">6 т.</strong>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <span>3. Езикови норми (правопис, пунктуация, граматика, лексика):</span>
+                    <strong className="font-mono text-emerald-700">9 т.</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-3">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-slate-900">Чернова за твоята теза и аргументи:</span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setStudentDraft(
+                        `${activeTask41.introductionHook}\n\n${activeTask41.mainThesis}\n\n${activeTask41.arguments
+                          .map(a => `• ${a.microThesis}`)
+                          .join('\n')}\n\n${activeTask41.conclusion}`
+                      )
+                    }
+                    className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 cursor-pointer"
+                  >
+                    Зареди скелета в черновата ➔
+                  </button>
+                </div>
+                <textarea
+                  rows={8}
+                  value={studentDraft}
+                  onChange={e => setStudentDraft(e.target.value)}
+                  placeholder="Състави тук своя увод, теза и микротези за Задача 41 или използвай бутона „Зареди скелета в черновата“..."
+                  className="w-full p-4 rounded-2xl bg-slate-50 focus:bg-white border border-slate-200 focus:border-indigo-500 text-xs sm:text-sm text-slate-900 focus:outline-none leading-relaxed"
+                />
+                <div className="flex items-center justify-between text-[11px] text-slate-500 font-mono">
+                  <span>Думи в черновата: {wordCount}</span>
+                  <span>Изречения: {sentenceCount}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

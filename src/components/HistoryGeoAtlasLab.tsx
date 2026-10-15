@@ -20,6 +20,7 @@ import {
   HISTORICAL_FIGURES_BY_SOURCE,
   BULGARIA_GEO_REGIONS,
   HISTORY_GEO_QUIZ_QUESTIONS,
+  STRATEGIC_ENERGY_TECH_HUBS,
   type HistoricalTreatyEntry,
   type GeoPlanningRegion,
 } from '../data/historyGeoDatabase';
@@ -705,6 +706,65 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                   {activeRegion.examHighlight}
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Strategic Energy, Metallurgy & High-Tech Hubs of Bulgaria */}
+          <div className="mt-6 rounded-2xl bg-slate-900 text-white p-5 border border-slate-800 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+              <div>
+                <div className="text-xs uppercase font-bold tracking-wider text-amber-400 flex items-center gap-1.5">
+                  <Factory className="w-4 h-4" />
+                  <span>Индустриално-енергиен и технологичен атлас на България</span>
+                </div>
+                <h4 className="text-base sm:text-lg font-extrabold text-white mt-0.5">
+                  Стратегически енергийни, металургични и високотехнологични комплекси (ДЗИ & Трета СПК)
+                </h4>
+              </div>
+              <span className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold">
+                {STRATEGIC_ENERGY_TECH_HUBS.length} стратегически центъра
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              {STRATEGIC_ENERGY_TECH_HUBS.map((hub) => (
+                <div
+                  key={hub.id}
+                  className="rounded-xl bg-slate-800/90 border border-slate-700 p-4 flex flex-col justify-between space-y-3 hover:border-amber-400/60 transition-all"
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[10px] font-bold">
+                        {hub.regionCode}
+                      </span>
+                      <span className="text-[10px] font-bold text-amber-300 uppercase tracking-wide">
+                        {hub.sector}
+                      </span>
+                    </div>
+
+                    <div className="font-extrabold text-sm text-white leading-snug">
+                      {hub.name}
+                    </div>
+
+                    <div className="text-[11px] font-semibold text-sky-300 bg-sky-950/60 border border-sky-800/60 rounded-lg px-2.5 py-1.5">
+                      ⚡ Капацитет / Продукция: {hub.capacityOrOutput}
+                    </div>
+
+                    <div className="text-[11px] text-slate-300">
+                      <strong className="text-slate-100">Локализация:</strong> {hub.location}
+                    </div>
+
+                    <p className="text-[11px] text-slate-300 leading-relaxed">
+                      {hub.technicalProfile}
+                    </p>
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-700/80 text-[11px] text-amber-200/90 leading-relaxed">
+                    <strong className="text-amber-400">Изпитен / ДИППК фокус:</strong>{' '}
+                    {hub.dippkAndExamRelevance}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

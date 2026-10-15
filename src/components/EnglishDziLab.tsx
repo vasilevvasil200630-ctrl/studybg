@@ -56,7 +56,7 @@ export const EnglishDziLab: React.FC = () => {
   const [activeTab, setActiveTab] = useState<EnglishLabTab>('transformations');
 
   // Tab 1: Sentence Transformations state
-  const [selectedCefr, setSelectedCefr] = useState<'ALL' | 'B1.1' | 'B2'>('ALL');
+  const [selectedCefr, setSelectedCefr] = useState<'ALL' | 'B1.1' | 'B2' | 'C1 / ESP'>('ALL');
   const [trAnswers, setTrAnswers] = useState<Record<string, number>>({});
 
   // Tab 2: Phrasal Verbs state
@@ -245,7 +245,7 @@ export const EnglishDziLab: React.FC = () => {
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider mr-1">
                 Ниво по CEFR:
               </span>
-              {(['ALL', 'B1.1', 'B2'] as const).map((lvl) => (
+              {(['ALL', 'B1.1', 'B2', 'C1 / ESP'] as const).map((lvl) => (
                 <button
                   key={lvl}
                   onClick={() => setSelectedCefr(lvl)}
@@ -256,10 +256,12 @@ export const EnglishDziLab: React.FC = () => {
                   }`}
                 >
                   {lvl === 'ALL'
-                    ? 'Всички нива (B1.1 + B2)'
+                    ? 'Всички нива (B1.1 + B2 + C1/ESP)'
                     : lvl === 'B1.1'
                     ? 'Ниво B1.1 (Общообр. ДЗИ / НВО 10)'
-                    : 'Ниво B2 (Профилирана ДЗИ)'}
+                    : lvl === 'B2'
+                    ? 'Ниво B2 (Профилирана ДЗИ)'
+                    : 'Ниво C1 / ESP (Професионален ИТ & Инженерен)'}
                 </button>
               ))}
             </div>

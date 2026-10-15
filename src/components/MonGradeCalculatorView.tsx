@@ -11,6 +11,7 @@ import {
   Percent
 } from 'lucide-react';
 import type { AppNavTab } from './Navbar';
+import { ExcellenceCertificateModal } from './ExcellenceCertificateModal';
 
 interface MonGradeCalculatorViewProps {
   onNavigateTab?: (tab: AppNavTab) => void;
@@ -20,6 +21,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
   onNavigateTab
 }) => {
   const [calculatorMode, setCalculatorMode] = useState<'pointsToGrade' | 'gradeToPoints' | 'universityBal' | 'dippkCalc'>('pointsToGrade');
+  const [showSpkCertificateModal, setShowSpkCertificateModal] = useState<boolean>(false);
   
   // Mode 1: Points to Grade
   const [points, setPoints] = useState<number>(78);
@@ -795,6 +797,15 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               </div>
             </div>
 
+            <button
+              type="button"
+              onClick={() => setShowSpkCertificateModal(true)}
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-xs transition-all cursor-pointer"
+            >
+              <Award className="w-4 h-4" />
+              <span>📜 Издай Свидетелство за Трета СПК + EUROPASS (A4 PDF)</span>
+            </button>
+
             {onNavigateTab && (
               <button
                 onClick={() => onNavigateTab('specialties')}
@@ -884,6 +895,20 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
         </div>
       </div>
 
+      <ExcellenceCertificateModal
+        isOpen={showSpkCertificateModal}
+        onClose={() => setShowSpkCertificateModal(false)}
+        achievementTitle="Държавен изпит за придобиване на професионална квалификация (ДИППК)"
+        examOrTrackLabel="Трета СПК • Наредба № 1 на МОН"
+        scoreText={`Теория: ${dippkResult.theoryGrade.toFixed(2)} | Практика: ${dippkResult.practiceGrade.toFixed(2)}`}
+        gradeLabel={`${dippkResult.verbal} (${dippkResult.certificateFinalGrade.toFixed(2)})`}
+        highlights={[
+          `ДИППК Средна: ${dippkResult.dippkExamAvg.toFixed(2)}`,
+          `ЗПП Среден успех: ${dippkSubjectsAvg.toFixed(2)}`,
+          'EUROPASS EQF Level 4'
+        ]}
+        initialDocMode="spk_europass"
+      />
     </div>
   );
 };

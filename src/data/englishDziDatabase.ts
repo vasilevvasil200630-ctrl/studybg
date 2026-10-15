@@ -1,13 +1,14 @@
 export interface SentenceTransformationItem {
   id: string;
-  cefrLevel: 'B1.1' | 'B2';
+  cefrLevel: 'B1.1' | 'B2' | 'C1 / ESP';
   category:
     | 'Conditionals & Wishes'
     | 'Passive & Causative'
     | 'Reported Speech'
     | 'Inversion (B2)'
     | 'Modals & Past Deduction'
-    | 'Comparison & Clauses';
+    | 'Comparison & Clauses'
+    | 'C1 / Technical ESP';
   originalSentence: string;
   keyWord: string;
   promptPrefix: string;
@@ -21,7 +22,7 @@ export interface SentenceTransformationItem {
 
 export interface PhrasalVerbItem {
   id: string;
-  cefrLevel: 'B1.1' | 'B2';
+  cefrLevel: 'B1.1' | 'B2' | 'C1 / ESP';
   phrasalVerb: string;
   formalEquivalent: string;
   meaningBg: string;
@@ -35,7 +36,7 @@ export interface WritingBlueprint {
   id: string;
   genre: string;
   titleBg: string;
-  cefrLevel: 'B1.1' | 'B2';
+  cefrLevel: 'B1.1' | 'B2' | 'C1 / ESP';
   wordCountRange: { min: number; max: number; label: string };
   register: 'formal' | 'semi-formal';
   monCriteria: string[];
@@ -238,6 +239,82 @@ export const ENGLISH_TRANSFORMATIONS: SentenceTransformationItem[] = [
     grammarRule: 'would rather + Different Subject + Past Simple (for present/future preference)',
     monExamTrap: 'Когато след "would rather" има нов подлог ("you"), за настояще и бъдеще се използва Past Simple ("didn\'t use"), а не Present Simple!',
     explanationBg: 'Конструкцията "I\'d rather you + Past Simple" изразява учтива молба или предпочитание спрямо действията на друг човек в настоящето.'
+  },
+  {
+    id: 'eng-tr-11',
+    cefrLevel: 'C1 / ESP',
+    category: 'C1 / Technical ESP',
+    originalSentence: 'If the firewall had not blocked the malicious packet, the entire database would be compromised now.',
+    keyWord: 'BUT',
+    promptPrefix: 'But for',
+    promptSuffix: ', the entire database would be compromised now.',
+    options: [
+      'the firewall blocking the malicious packet',
+      'the firewall had blocked the malicious packet',
+      'blocking the firewall the malicious packet',
+      'if the firewall blocked the malicious packet'
+    ],
+    correctIndex: 0,
+    grammarRule: 'Mixed Conditional with "But for" / "Were it not for" / "Had it not been for" + Noun Phrase / Gerund',
+    monExamTrap: 'След израза "But for" (Ако не беше...) ЗАДЪЛЖИТЕЛНО следва съществително име или герундий (Noun Phrase), а НЕ глаголно изречение с "had"!',
+    explanationBg: 'В смесено условно изречение (минала причина -> настоящ резултат) "If it had not been for..." се трансформира на ниво C1 чрез "But for + the firewall blocking...".'
+  },
+  {
+    id: 'eng-tr-12',
+    cefrLevel: 'C1 / ESP',
+    category: 'C1 / Technical ESP',
+    originalSentence: 'The lead DevOps engineer insisted that we deploy the security patch immediately.',
+    keyWord: 'DEPLOYED',
+    promptPrefix: 'The lead DevOps engineer insisted that the security patch',
+    promptSuffix: 'immediately.',
+    options: [
+      'be deployed',
+      'is deployed',
+      'was deployed',
+      'would be deployed'
+    ],
+    correctIndex: 0,
+    grammarRule: 'Mandative Subjunctive (C1): insist / demand / recommend / suggest + that + Subject + (should) + bare infinitive (be + V3)',
+    monExamTrap: 'След глаголи като insist, demand, recommend, essential that в официален технически и юридически стил се използва Subjunctive Mood — основна форма "be deployed" без спрягане по време!',
+    explanationBg: 'В официалния английски (C1 / ESP) след "insisted that" в страдателен залог се използва Subjunctive форма: "(should) be deployed".'
+  },
+  {
+    id: 'eng-tr-13',
+    cefrLevel: 'C1 / ESP',
+    category: 'Inversion (B2)',
+    originalSentence: 'You must not share your private cryptographic key under any circumstances.',
+    keyWord: 'CIRCUMSTANCES',
+    promptPrefix: 'Under no circumstances',
+    promptSuffix: 'your private cryptographic key.',
+    options: [
+      'must you share',
+      'you must share',
+      'mustn\'t you share',
+      'do you must share'
+    ],
+    correctIndex: 0,
+    grammarRule: 'Negative Prepositional Phrase ("Under no circumstances") + Affirmative Auxiliary + Subject + Bare Infinitive',
+    monExamTrap: 'Тъй като "Under no circumstances" вече съдържа отрицанието "no", спомагателният глагол след него е в ПОЛОЖИТЕЛНА форма с инверсия ("must you share" / "should you share"), без второ отрицание!',
+    explanationBg: 'Отрицателният израз в началото изисква инверсия с положителен модален глагол: "Under no circumstances must you share...".'
+  },
+  {
+    id: 'eng-tr-14',
+    cefrLevel: 'C1 / ESP',
+    category: 'C1 / Technical ESP',
+    originalSentence: 'The unindexed SQL query caused the severe server latency.',
+    keyWord: 'WHAT',
+    promptPrefix: 'What caused the severe server latency',
+    promptSuffix: 'the unindexed SQL query.',
+    options: [
+      'was',
+      'it was',
+      'has been',
+      'were'
+    ],
+    correctIndex: 0,
+    grammarRule: 'Wh-Cleft Sentence for Emphasis: What + Clause + is/was + Emphasised Noun Phrase',
+    monExamTrap: 'При Wh-Cleft изречение ("What caused ... was ...") цялата подчинена част с "What" играе ролята на подлог, затова след нея следва директно "was", БЕЗ допълнително местоимение "it"!',
+    explanationBg: 'Емфатичната Cleft конструкция акцентира върху причината: "What caused the severe server latency was the unindexed SQL query."'
   }
 ];
 
@@ -303,7 +380,7 @@ export const ENGLISH_PHRASAL_VERBS: PhrasalVerbItem[] = [
     phrasalVerb: 'make up for',
     formalEquivalent: 'compensate for',
     meaningBg: 'компенсирам, наваксвам',
-    contextSentence: 'Nothing can ________ the time lost during the primeros months of preparation.',
+    contextSentence: 'Nothing can ________ the time lost during the first months of preparation.',
     options: ['make up for', 'make out with', 'do up for', 'get over with'],
     correctIndex: 0,
     monTip: 'Често се пада при Sentence Transformations с ключова дума MAKE в значение на "compensate for".'
@@ -329,6 +406,50 @@ export const ENGLISH_PHRASAL_VERBS: PhrasalVerbItem[] = [
     options: ['bring about', 'bring up', 'bring round', 'bring back'],
     correctIndex: 0,
     monTip: 'Отличен академичен израз за есе на ДЗИ! Не го бъркайте с "bring up" (отглеждам дете / повдигам тема за разговор).'
+  },
+  {
+    id: 'pv-9',
+    cefrLevel: 'C1 / ESP',
+    phrasalVerb: 'carry out',
+    formalEquivalent: 'conduct / perform / execute',
+    meaningBg: 'провеждам, извършвам (експеримент, одит, тест, разследване)',
+    contextSentence: 'The cybersecurity team will ________ a comprehensive penetration test on the production cluster.',
+    options: ['carry out', 'carry on', 'carry off', 'carry over'],
+    correctIndex: 0,
+    monTip: 'Ключова колокация за STEM и ДИППК: "carry out an experiment / an audit / a test / research".'
+  },
+  {
+    id: 'pv-10',
+    cefrLevel: 'C1 / ESP',
+    phrasalVerb: 'phase out',
+    formalEquivalent: 'gradually discontinue / decommission',
+    meaningBg: 'поетапно извеждам от употреба (остаряла технология, система)',
+    contextSentence: 'The company plans to ________ legacy IPv4 routers and migrate entirely to IPv6 by next quarter.',
+    options: ['phase out', 'phase in', 'wipe out', 'rule out'],
+    correctIndex: 0,
+    monTip: 'Антонимът е "phase in" (въвеждам поетапно в експлоатация).'
+  },
+  {
+    id: 'pv-11',
+    cefrLevel: 'C1 / ESP',
+    phrasalVerb: 'back up',
+    formalEquivalent: 'substantiate (a claim) / create a redundant data copy',
+    meaningBg: 'подкрепям с доказателства (теза); правя резервно копие на данни',
+    contextSentence: 'In an academic essay, you must always ________ your arguments with verifiable empirical evidence.',
+    options: ['back up', 'back down', 'back out', 'fall back'],
+    correctIndex: 0,
+    monTip: 'Двойно значение за матура и ИТ: 1) подкрепям твърдение с факти; 2) архивирам база данни.'
+  },
+  {
+    id: 'pv-12',
+    cefrLevel: 'C1 / ESP',
+    phrasalVerb: 'draw up',
+    formalEquivalent: 'draft / prepare an official document or contract',
+    meaningBg: 'изготвям, съставям (договор, техническа спецификация, план)',
+    contextSentence: 'Our legal and engineering departments have been asked to ________ a detailed technical specification.',
+    options: ['draw up', 'draw in', 'draw out', 'draw back'],
+    correctIndex: 0,
+    monTip: 'Стандартна бизнес и юридическа колокация: "draw up a contract / a specification / a budget".'
   }
 ];
 
@@ -430,6 +551,96 @@ export const ENGLISH_WRITING_BLUEPRINTS: WritingBlueprint[] = [
     ],
     modelPrompt: 'You have seen an advertisement for an European Youth Leadership Exchange in Brussels. Write a formal email asking about the programme dates, accommodation, and eligibility criteria.',
     modelOpening: 'Dear Sir or Madam,\n\nI am writing with regard to the advertisement for the European Youth Leadership Exchange in Brussels, which I recently saw on your official website. As a twelfth-grade student with a keen interest in European affairs, I would be grateful if you could provide me with some additional details.'
+  },
+  {
+    id: 'wb-tech-report',
+    genre: 'Technical Proposal / Audit Report (C1 / ESP)',
+    titleBg: 'Технически доклад / Proposal със секционни заглавия (ДЗИ Профил B2/C1 & ДИППК)',
+    cefrLevel: 'C1 / ESP',
+    wordCountRange: { min: 180, max: 250, label: '190–240 думи (B2/C1 Report & Proposal)' },
+    register: 'formal',
+    monCriteria: [
+      'Задължително използване на подзаглавия (Subheadings: Introduction, Current Infrastructure / Findings, Recommendations, Conclusion);',
+      'Безличен, обективен тон с честа употреба на Passive Voice ("It is recommended that...", "A vulnerability was identified in...");',
+      'Употреба на Mandative Subjunctive и модални конструкции за препоръки ("It is imperative that the system be upgraded...");',
+      'Ясно разграничаване между констатирани факти и конкретни инженерни/организационни мерки.'
+    ],
+    structureBlocks: [
+      {
+        paragraphTitle: '1. Title & Introduction (Заглавие и цел на доклада)',
+        purposeBg: 'Формулирайте точна цел на доклада (напр. одит на информационната сигурност, модернизация на лаборатория или енергийна ефективност).',
+        phrasesEn: [
+          'Subject: Technical Assessment and Modernisation Proposal for the School STEM Infrastructure',
+          'The purpose of this report is to evaluate the current state of ... and to outline actionable recommendations for...',
+          'This assessment is based on recent performance metrics and feedback collected from...'
+        ]
+      },
+      {
+        paragraphTitle: '2. Key Findings & Bottlenecks (Констатирано състояние и проблеми)',
+        purposeBg: 'Опишете обективно установените дефицити, рискове или технически ограничения.',
+        phrasesEn: [
+          'During the initial audit, several critical bottlenecks were identified regarding network latency and...',
+          'Furthermore, a significant proportion of the existing hardware fails to comply with modern ISO standards.',
+          'What caused the recent service interruption was the lack of automated backup redundancy.'
+        ]
+      },
+      {
+        paragraphTitle: '3. Actionable Recommendations (Конкретни препоръки и мерки)',
+        purposeBg: 'Предложете 2–3 измерими решения с очаквания положителен ефект.',
+        phrasesEn: [
+          'In light of these findings, it is strongly recommended that legacy servers be phased out immediately.',
+          'Moreover, implementing multi-factor authentication (MFA) would substantially reduce security risks.',
+          'Were the institution to invest in cloud-based simulation tools, student engagement would increase markedly.'
+        ]
+      }
+    ],
+    modelPrompt: 'Your school principal has asked you to write a formal report evaluating the school\'s computer and STEM laboratories and proposing specific technical upgrades for the upcoming academic year.',
+    modelOpening: 'Subject: Technical Assessment and Upgrade Proposal for the STEM Laboratories\n\nIntroduction\nThe purpose of this report is to evaluate the current hardware and software infrastructure of our school\'s STEM laboratories and to propose strategic upgrades for the upcoming academic year.'
+  },
+  {
+    id: 'wb-cover-letter',
+    genre: 'EUROPASS Internship & University Motivation Letter',
+    titleBg: 'Мотивационно писмо за стаж в ИТ/Инженерна компания или Университет (B2 / C1)',
+    cefrLevel: 'C1 / ESP',
+    wordCountRange: { min: 150, max: 220, label: '160–210 думи (B2/C1 Cover Letter)' },
+    register: 'formal',
+    monCriteria: [
+      'Ясно посочване на позицията/програмата, за която кандидатствате, и източника на информация;',
+      'Конкретно обвързване на придобитите компетентности (Трета СПК / профилирана подготовка, проекти, сертификати) с изискванията;',
+      'Използване на Present Perfect за постижения и опит ("I have developed...", "I have completed...") и висок академичен стил;',
+      'Официален финал с готовност за интервю и събеседване.'
+    ],
+    structureBlocks: [
+      {
+        paragraphTitle: '1. Opening & Position Reference (Откриващ абзац и позиция)',
+        purposeBg: 'Посочете точната стажантска програма или университетска специалност.',
+        phrasesEn: [
+          'Dear Hiring Manager, / Dear Admissions Committee,',
+          'I am writing to express my strong interest in the Junior Software Engineering Internship programme advertised on...',
+          'As a graduating twelfth-grade student specialising in Applied Programming (EQF Level 4), I am eager to contribute to...'
+        ]
+      },
+      {
+        paragraphTitle: '2. Academic & Technical Competencies (Професионални умения и проекти)',
+        purposeBg: 'Представете дипломния си проект, техническите умения и резултатите от олимпиади/практика.',
+        phrasesEn: [
+          'Throughout my vocational training, I have acquired hands-on experience in designing relational databases and RESTful APIs.',
+          'In addition, my diploma thesis involved carrying out a full security audit and implementing automated CI/CD pipelines.',
+          'Not only have these projects strengthened my analytical skills, but they have also taught me how to collaborate effectively.'
+        ]
+      },
+      {
+        paragraphTitle: '3. Call to Action & Formal Sign-off (Готовност за интервю и финал)',
+        purposeBg: 'Заявете готовност за техническо интервю и благодарете за отделеното време.',
+        phrasesEn: [
+          'I would welcome the opportunity to discuss how my technical background aligns with your team\'s objectives during an interview.',
+          'Thank you for considering my application. I look forward to hearing from you.',
+          'Yours faithfully,'
+        ]
+      }
+    ],
+    modelPrompt: 'Write a formal motivation letter applying for a summer engineering or IT internship at an international company, highlighting your technical skills, diploma project, and career goals.',
+    modelOpening: 'Dear Hiring Manager,\n\nI am writing to apply for the Summer Engineering Internship Programme recently advertised on your corporate portal. As a final-year vocational high school student completing my Third Degree of Professional Qualification (EQF Level 4), I am keen to apply my technical knowledge in a dynamic industrial environment.'
   }
 ];
 

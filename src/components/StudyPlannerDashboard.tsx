@@ -13,7 +13,8 @@ import {
   ArrowRight,
   Sparkles,
   TrendingUp,
-  ShieldCheck
+  ShieldCheck,
+  Printer
 } from 'lucide-react';
 import {
   studyProgressService,
@@ -704,6 +705,15 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                 </button>
               ))}
             </div>
+
+            <button
+              onClick={() => window.print()}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-2xs cursor-pointer print:hidden"
+              title="Разпечатай седмичния план-график и чеклиста във формат A4 за бюрото"
+            >
+              <Printer className="w-3.5 h-3.5 text-amber-400" />
+              <span>Принтирай A4 График</span>
+            </button>
           </div>
         </div>
 
@@ -926,6 +936,71 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
           </div>
         )}
 
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 5. TARGET SCORE & DIPLOMA STRATEGY MATRIX (НВО / ДЗИ / ТРЕТА СПК)         */}
+      {/* ========================================================================= */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white border border-slate-800 shadow-lg space-y-5">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div>
+            <div className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+              <Target className="w-4 h-4" />
+              <span>Стратегическа матрица за целева оценка ({progress.targetGrade.toFixed(2)})</span>
+            </div>
+            <h3 className="text-lg sm:text-xl font-black text-white mt-0.5">
+              Точкова разбивка по модули за постигане на Цел: Отличен {progress.targetGrade.toFixed(2)}
+            </h3>
+          </div>
+
+          <button
+            onClick={() => setIsCertModalOpen(true)}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition-all cursor-pointer shrink-0"
+          >
+            <Award className="w-4 h-4" />
+            <span>📜 Издай Грамота / Свидетелство Трета СПК + EUROPASS</span>
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 space-y-2">
+            <div className="text-amber-300 font-bold uppercase text-[11px]">
+              1. ДЗИ Матура (БЕЛ / Профил — 100 т.)
+            </div>
+            <div className="text-xl font-black font-mono text-white">
+              Минимум {progress.targetGrade >= 5.95 ? '95' : progress.targetGrade >= 5.5 ? '82' : '68'} / 100 т.
+            </div>
+            <p className="text-slate-300 leading-relaxed">
+              • Модул 1 (Тест): цел ≥ 28/30 т.<br />
+              • Модул 2 (Практически задачи): цел ≥ 36/40 т.<br />
+              • Модул 3 (Задача 41 ИС/Есе): цел ≥ 27/30 т.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 space-y-2">
+            <div className="text-emerald-300 font-bold uppercase text-[11px]">
+              2. ДИППК Трета СПК (Наредба № 1 — 100 т.)
+            </div>
+            <div className="text-xl font-black font-mono text-white">
+              Минимум {progress.targetGrade >= 5.95 ? '98' : progress.targetGrade >= 5.5 ? '92' : '84'} / 100 т.
+            </div>
+            <p className="text-slate-300 leading-relaxed">
+              По чл. 38 от ЗПОО прагът за Среден 3.00 е 50 т., а за Отличен 5.50 са нужни <strong>91,67 т.</strong> (Теория + Защита на дипломен проект пред комисия).
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 space-y-2">
+            <div className="text-sky-300 font-bold uppercase text-[11px]">
+              3. НВО 7. и 10. клас (БЕЛ + МАТ — 100 т.)
+            </div>
+            <div className="text-xl font-black font-mono text-white">
+              Минимум {progress.targetGrade >= 5.95 ? '96' : progress.targetGrade >= 5.5 ? '86' : '74'} / 100 т.
+            </div>
+            <p className="text-slate-300 leading-relaxed">
+              Осигурява състезателен бал над <strong>465 / 500 т.</strong> за прием в първо желание (СМГ, ТУЕС, НПМГ, 91. НЕГ, НТБГ, СГСАГ).
+            </p>
+          </div>
+        </div>
       </div>
 
       <ExcellenceCertificateModal

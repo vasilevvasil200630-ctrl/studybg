@@ -402,6 +402,93 @@ const SCIENCE_QUIZ = [
     ],
     correctIndex: 0,
     explanation: 'Пълно вътрешно отражение настъпва при преминаване от оптически по-плътна (n₁) към по-рядка среда (n₂) при ъгъл над граничния: sin θ_crit = n₂ / n₁ = 1,47 / 1,50 = 0,98.'
+  },
+  {
+    id: 13,
+    subject: 'Биология',
+    question: 'При пълно аеробно разграждане на 3 mol глюкоза (гликолиза + цикъл на Кребс + окислително фосфорилиране) колко мола АТФ се синтезират сумарно (при добив 38 mol АТФ/mol глюкоза) и колко от тях се падат само на гликолизата (субстратно фосфорилиране)?',
+    options: [
+      'Общо 114 mol АТФ (3 × 38), от които 6 mol АТФ са чистият енергиен добив от гликолизата (3 × 2 mol АТФ)',
+      'Общо 38 mol АТФ, от които 2 mol от гликолизата',
+      'Общо 72 mol АТФ, от които 36 mol от гликолизата',
+      'Общо 6 mol АТФ, защото цикълът на Кребс не произвежда редуцирани коензими'
+    ],
+    correctIndex: 0,
+    explanation: 'От 1 mol глюкоза при гликолизата чистият добив е 2 mol АТФ (плюс 2 mol NADH), а сумарният аеробен добив достига 36–38 mol АТФ. За 3 mol глюкоза това прави 3 × 38 = 114 mol АТФ общо и 3 × 2 = 6 mol АТФ пряко от гликолизата.'
+  },
+  {
+    id: 14,
+    subject: 'Химия',
+    question: 'Какъв обем разтвор на натриева основа (NaOH) с моларна концентрация c₂ = 0,20 mol/L е необходим за пълна неутрализация (до еквивалентна точка) на V₁ = 25 mL разтвор на сярна киселина (H₂SO₄) с концентрация c₁ = 0,10 mol/L?',
+    options: [
+      'V₂ = 25 mL NaOH (защото H₂SO₄ е двуосновна киселина: H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O)',
+      'V₂ = 12,5 mL NaOH',
+      'V₂ = 50 mL NaOH',
+      'V₂ = 100 mL NaOH'
+    ],
+    correctIndex: 0,
+    explanation: 'По закона за еквивалентите при титруване на двуосновната сярна киселина (z₁ = 2) с еднокиселата основа NaOH (z₂ = 1): c₁·V₁·z₁ = c₂·V₂·z₂ ➔ 0,10 × 25 × 2 = 0,20 × V₂ × 1 ➔ 5,0 = 0,20·V₂ ➔ V₂ = 25 mL.'
+  },
+  {
+    id: 15,
+    subject: 'Химия',
+    question: 'Прясно утаен меден дихидроксид Cu(OH)₂ се добавя към разтвор на глюкоза при стайна температура и след това сместа се нагрява. Какви цветови промени се наблюдават и кои функционални групи на глюкозата се доказват?',
+    options: [
+      'При стайна температура се образува бистър тъмносин комплексен разтвор (доказва поливалентен алкохол с -OH групи), а при нагряване пада керемиденочервена утайка от Cu₂O↓ (доказва алдехидна група -CHO)',
+      'При стайна температура пада бяла утайка, а при нагряване разтворът става виолетов',
+      'Отделя се сребърно огледало по стените на епруветката',
+      'Разтворът се обезцветява мигновено като при бромна вода'
+    ],
+    correctIndex: 0,
+    explanation: 'Глюкозата е алдозахексоза (полихидроксиалдехид): на студено с Cu(OH)₂ дава тъмносин комплекс (качествена реакция за вицинални -OH групи), а при кипене редуцира Cu²⁺ до керемиденочервен Cu₂O↓ (доказва алдехидната група -CHO).'
+  },
+  {
+    id: 16,
+    subject: 'Физика',
+    question: 'Идеална топлинна машина работи по цикъл на Карно между нагревател с температура t₁ = 227 °C (T₁ = 500 K) и охладител с температура t₂ = 27 °C (T₂ = 300 K). Колко е максималният термичен КПД η_max на машината?',
+    options: [
+      'η_max = (T₁ - T₂) / T₁ = (500 - 300) / 500 = 0,40 (40%)',
+      'η_max = (227 - 27) / 227 = 88,1%',
+      'η_max = 300 / 500 = 60%',
+      'η_max = 100%'
+    ],
+    correctIndex: 0,
+    explanation: 'Във формулата на Карно температурите ЗАДЪЛЖИТЕЛНО се заместват в абсолютни келвини (T[K] = t[°C] + 273): T₁ = 500 K, T₂ = 300 K ➔ η = (500 - 300) / 500 = 200 / 500 = 40%.'
+  }
+];
+
+const ORGANIC_QUALITATIVE_REACTIONS = [
+  {
+    id: 'org-silver-mirror',
+    compoundClass: 'Алдехиди (R-CHO) и Глюкоза',
+    reagent: 'Амонячен разтвор на Ag₂O — Реактив на Толенс [Ag(NH₃)₂]OH при нагряване',
+    equation: 'R-CHO + 2[Ag(NH₃)₂]OH → R-COONH₄ + 2Ag↓ + 3NH₃ + H₂O',
+    visualEffect: 'По стените на чистата епруветка се отлага блестящ слой метално сребро („Сребърно огледало“).',
+    muExamTip: 'Кетоните (напр. ацетон и фруктоза в неалкална среда без енолизация) НЕ дават реакция сребърно огледало, но мравчената киселина (HCOOH) и нейните соли/естери я дават, защото съдържат алдехиден фрагмент!'
+  },
+  {
+    id: 'org-cuoh2-dual',
+    compoundClass: 'Поливалентни алкохоли (Глицерол/Глюкоза) vs Алдехиди',
+    reagent: 'Прясно утаен меден дихидроксид Cu(OH)₂ (на студено и при кипене)',
+    equation: 'На студено: тъмносин хелатен комплекс • При кипене с R-CHO: R-CHO + 2Cu(OH)₂ → R-COOH + Cu₂O↓ (керемиденочервен) + 2H₂O',
+    visualEffect: 'На студено: разтваряне на светлосинята утайка до бистър василевосин разтвор. При нагряване с алдехид: жълта (CuOH) до керемиденочервена утайка (Cu₂O↓).',
+    muExamTip: 'Глюкозата дава И ДВЕТЕ реакции последователно с един и същ реактив Cu(OH)₂ — ключово доказателство за двойствената ѝ функция в темите за МУ!'
+  },
+  {
+    id: 'org-biuret',
+    compoundClass: 'Белтъци и Пептиди (Пептидна група -CO-NH-)',
+    reagent: 'Биуретова реакция (NaOH + разреден CuSO₄) & Ксантопротеинова реакция (конц. HNO₃)',
+    equation: 'Пептидна връзка (-CO-NH-) + Cu²⁺ + OH⁻ → Виолетов медно-пептиден комплекс',
+    visualEffect: 'Биуретова реакция: характерно виолетово оцветяване. Ксантопротеинова реакция: жълто оцветяване (оранжево с NH₃) при наличие на ароматни аминокиселини (Фенилаланин, Тирозин, Триптофан).',
+    muExamTip: 'Свободните аминокиселини НЕ дават биуретова реакция (тя изисква поне две пептидни връзки, т.е. трипептид или полипептид).'
+  },
+  {
+    id: 'org-bromine-water',
+    compoundClass: 'Алкени/Алкини (C=C / C≡C), Фенол (C₆H₅OH) и Анилин (C₆H₅NH₂)',
+    reagent: 'Бромна вода (Br₂/H₂O)',
+    equation: 'C₆H₅OH + 3Br₂ → C₆H₂Br₃OH↓ (2,4,6-трибромофенол — бяла утайка) + 3HBr',
+    visualEffect: 'При алкени/алкини: само обезцветяване на кафявата бромна вода (присъединяване). При фенол и анилин: обезцветяване + падане на БЯЛА утайка от 2,4,6-трибромофенол / трибромоанилин!',
+    muExamTip: 'Бензенът (C₆H₆) НЕ обезцветява бромна вода без катализатор (FeBr₃), докато фенолът и анилинът реагират мигновено поради +M ефекта на -OH и -NH₂ групите.'
   }
 ];
 
@@ -409,12 +496,15 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
   const [activeTab, setActiveTab] = useState<ScienceLabTab>('biology');
 
   // =========================================================================
-  // TAB 1: BIOLOGY (DNA -> mRNA -> Protein & Blood Groups Punnett)
+  // TAB 1: BIOLOGY (DNA -> mRNA -> Protein, Blood Groups & Bioenergetics/PCR)
   // =========================================================================
   const [dnaInput, setDnaInput] = useState<string>(DNA_PRESETS[0].dnaTemplate);
   const [activePresetNote, setActivePresetNote] = useState<string>(DNA_PRESETS[0].note);
   const [parent1Blood, setParent1Blood] = useState<'IAIA' | 'IAi' | 'IBIB' | 'IBi' | 'IAIB' | 'ii'>('IAi');
   const [parent2Blood, setParent2Blood] = useState<'IAIA' | 'IAi' | 'IBIB' | 'IBi' | 'IAIB' | 'ii'>('IBi');
+  const [glucoseMoles, setGlucoseMoles] = useState<number>(2);
+  const [pcrInitialCopies, setPcrInitialCopies] = useState<number>(1);
+  const [pcrCycles, setPcrCycles] = useState<number>(10);
 
   const cleanedDna = useMemo(() => {
     return dnaInput.toUpperCase().replace(/[^ATGC]/g, '');
@@ -484,16 +574,33 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
   const p2Alleles = getAlleles(parent2Blood);
 
   // =========================================================================
-  // TAB 2: CHEMISTRY STATE
+  // TAB 2: CHEMISTRY STATE (Qualitative, Hydrolysis, Titration & Organic)
   // =========================================================================
   const [selectedReactionId, setSelectedReactionId] = useState<string>(ION_REACTIONS[0].id);
   const [selectedSaltIdx, setSelectedSaltIdx] = useState<number>(0);
+  const [selectedOrganicId, setSelectedOrganicId] = useState<string>(ORGANIC_QUALITATIVE_REACTIONS[0].id);
+
+  // Acid-Base Titration Calculator State
+  const [acidType, setAcidType] = useState<'HCl' | 'H2SO4' | 'CH3COOH'>('H2SO4');
+  const [baseType, setBaseType] = useState<'NaOH' | 'KOH' | 'Ba(OH)2'>('NaOH');
+  const [acidConc, setAcidConc] = useState<number>(0.1);
+  const [acidVolMl, setAcidVolMl] = useState<number>(25);
+  const [baseConc, setBaseConc] = useState<number>(0.2);
 
   const currentReaction = ION_REACTIONS.find((r) => r.id === selectedReactionId) || ION_REACTIONS[0];
   const currentSalt = HYDROLYSIS_SALTS[selectedSaltIdx] || HYDROLYSIS_SALTS[0];
+  const currentOrganic = ORGANIC_QUALITATIVE_REACTIONS.find((o) => o.id === selectedOrganicId) || ORGANIC_QUALITATIVE_REACTIONS[0];
+
+  const acidProtonsZ1 = acidType === 'H2SO4' ? 2 : 1;
+  const baseHydroxylsZ2 = baseType === 'Ba(OH)2' ? 2 : 1;
+  const eqBaseVolMl = +((acidConc * acidVolMl * acidProtonsZ1) / (baseConc * baseHydroxylsZ2)).toFixed(2);
+  const eqIndicatorInfo =
+    acidType === 'CH3COOH'
+      ? 'Фенолфталеин (екв. точка е в слабоалкална среда pH ≈ 8,7 поради хидролиза на ацетатния анион)'
+      : 'Бромтимол синьо или Фенолфталеин / Метилоранж (силна киселина + силна основа ➔ неутрална екв. точка pH = 7,0)';
 
   // =========================================================================
-  // TAB 3: PHYSICS STATE
+  // TAB 3: PHYSICS STATE (Ohm, Photoeffect, Carnot & Three-Phase Power)
   // =========================================================================
   const [circuitMode, setCircuitMode] = useState<'series' | 'parallel'>('parallel');
   const [r1, setR1] = useState<number>(6);
@@ -502,6 +609,12 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
 
   const [selectedMetalIdx, setSelectedMetalIdx] = useState<number>(0);
   const [wavelengthNm, setWavelengthNm] = useState<number>(400);
+
+  // Carnot & 3-Phase Industrial Power State
+  const [carnotHotC, setCarnotHotC] = useState<number>(227); // 500 K
+  const [carnotColdC, setCarnotColdC] = useState<number>(27); // 300 K
+  const [threePhaseLineCurrentA, setThreePhaseLineCurrentA] = useState<number>(50);
+  const [threePhaseCosPhi, setThreePhaseCosPhi] = useState<number>(0.8);
 
   const rEq = circuitMode === 'series' ? r1 + r2 : (r1 * r2) / (r1 + r2);
   const totalCurrent = voltage / rEq;
@@ -512,6 +625,16 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
   const photonEnergyEv = +(1240 / wavelengthNm).toFixed(2);
   const isPhotoeffectActive = photonEnergyEv >= currentMetal.workFunctionEv;
   const maxKineticEv = isPhotoeffectActive ? +(photonEnergyEv - currentMetal.workFunctionEv).toFixed(2) : 0;
+
+  const t1Kelvin = carnotHotC + 273;
+  const t2Kelvin = Math.min(t1Kelvin - 10, carnotColdC + 273);
+  const carnotEfficiencyPct = +(((t1Kelvin - t2Kelvin) / t1Kelvin) * 100).toFixed(1);
+
+  // 3-phase 400 V line voltage calculations: S = sqrt(3)*U_L*I_L, P = S*cos(phi), Q = S*sin(phi)
+  const apparentPowerKva = +((Math.sqrt(3) * 400 * threePhaseLineCurrentA) / 1000).toFixed(2);
+  const activePowerKw = +(apparentPowerKva * threePhaseCosPhi).toFixed(2);
+  const sinPhi = Math.sqrt(Math.max(0, 1 - threePhaseCosPhi * threePhaseCosPhi));
+  const reactivePowerKvar = +(apparentPowerKva * sinPhi).toFixed(2);
 
   // =========================================================================
   // TAB 4: QUIZ STATE
@@ -833,6 +956,131 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
               ))}
             </div>
           </div>
+
+          {/* Module 1C: Bioenergetics (ATP Cellular Respiration) & PCR Exponential Amplifier */}
+          <div className="p-5 sm:p-6 rounded-2xl bg-slate-900 text-white border border-slate-800 shadow-xs space-y-5">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
+                  Кандидат-студентски модул МУ (София / Пловдив / Варна) • Биохимия и Молекулярна биология
+                </span>
+                <h3 className="text-base sm:text-lg font-extrabold text-white mt-0.5">
+                  Калкулатор за Клетъчно Дишане (Добив на АТФ) & PCR Амплификация на ДНК
+                </h3>
+              </div>
+              <span className="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold">
+                C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + 38 АТФ
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              {/* Left: Cellular Respiration ATP Calculator */}
+              <div className="p-4 rounded-xl bg-slate-800/90 border border-slate-700 space-y-3.5">
+                <div className="flex items-center justify-between text-xs font-bold">
+                  <span className="text-emerald-300 uppercase">1. Разграждане на глюкоза (n mol):</span>
+                  <span className="font-mono text-base text-white bg-emerald-600/40 px-2.5 py-0.5 rounded-lg border border-emerald-400/40">
+                    {glucoseMoles} mol глюкоза ({glucoseMoles * 180} g)
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={1}
+                  max={15}
+                  value={glucoseMoles}
+                  onChange={(e) => setGlucoseMoles(Number(e.target.value))}
+                  className="w-full accent-emerald-500"
+                />
+
+                <div className="grid grid-cols-2 gap-2.5 text-xs">
+                  <div className="p-2.5 rounded-lg bg-slate-900/90 border border-slate-700">
+                    <span className="text-slate-400 block text-[10px]">Гликолиза (цитозол — субстратно)</span>
+                    <strong className="font-mono text-emerald-300 text-sm">
+                      {glucoseMoles * 2} mol АТФ (+ {glucoseMoles * 2} NADH)
+                    </strong>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-slate-900/90 border border-slate-700">
+                    <span className="text-slate-400 block text-[10px]">Цикъл на Кребс (митохондриен матрикс)</span>
+                    <strong className="font-mono text-cyan-300 text-sm">
+                      {glucoseMoles * 2} mol АТФ (+ {glucoseMoles * 8} NADH)
+                    </strong>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-slate-900/90 border border-slate-700">
+                    <span className="text-slate-400 block text-[10px]">Окислително фосфорилиране (кристи)</span>
+                    <strong className="font-mono text-amber-300 text-sm">
+                      {glucoseMoles * 34} mol АТФ (от 10 NADH + 2 FADH₂/mol)
+                    </strong>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-emerald-950/80 border border-emerald-500/50">
+                    <span className="text-emerald-200 block text-[10px] font-bold">СУМАРЕН АЕРОБЕН ДОБИВ:</span>
+                    <strong className="font-mono text-white text-base">
+                      {glucoseMoles * 36}–{glucoseMoles * 38} mol АТФ
+                    </strong>
+                  </div>
+                </div>
+                <div className="text-[11px] text-slate-300 leading-relaxed">
+                  <strong>Контраст за ДЗИ/МУ:</strong> При анаеробна гликолиза (млечнокисела или алкохолна ферментация) от{' '}
+                  {glucoseMoles} mol глюкоза се получават само <strong>{glucoseMoles * 2} mol АТФ</strong> (19 пъти по-нисък добив).
+                </div>
+              </div>
+
+              {/* Right: PCR DNA Exponential Amplification Calculator */}
+              <div className="p-4 rounded-xl bg-slate-800/90 border border-slate-700 space-y-3.5">
+                <div className="flex items-center justify-between text-xs font-bold">
+                  <span className="text-cyan-300 uppercase">2. PCR Амплификация (N = N₀ · 2ⁿ):</span>
+                  <span className="font-mono text-sm text-white bg-cyan-600/40 px-2.5 py-0.5 rounded-lg border border-cyan-400/40">
+                    n = {pcrCycles} цикъла • N₀ = {pcrInitialCopies}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] text-slate-300 mb-1">
+                      Начални ДНК матрици (N₀): <strong>{pcrInitialCopies}</strong>
+                    </label>
+                    <input
+                      type="range"
+                      min={1}
+                      max={10}
+                      value={pcrInitialCopies}
+                      onChange={(e) => setPcrInitialCopies(Number(e.target.value))}
+                      className="w-full accent-cyan-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] text-slate-300 mb-1">
+                      Термални цикли (n): <strong>{pcrCycles}</strong>
+                    </label>
+                    <input
+                      type="range"
+                      min={1}
+                      max={30}
+                      value={pcrCycles}
+                      onChange={(e) => setPcrCycles(Number(e.target.value))}
+                      className="w-full accent-cyan-400"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-900 border border-cyan-500/40 flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] uppercase text-cyan-300 font-bold block">
+                      Получени ДНК копия след {pcrCycles} цикъла:
+                    </span>
+                    <span className="text-xs text-slate-300">
+                      N = {pcrInitialCopies} × 2^{pcrCycles}
+                    </span>
+                  </div>
+                  <div className="font-mono text-lg font-black text-cyan-300">
+                    {(pcrInitialCopies * Math.pow(2, pcrCycles)).toLocaleString('bg-BG')} копия
+                  </div>
+                </div>
+
+                <div className="text-[11px] text-slate-300 leading-relaxed">
+                  <strong>3 стъпки на всеки PCR цикъл:</strong> 1) Денатурация (94–96 °C — разкъсване на Н-връзките); 2) Анилинг / Хибридизация на праймерите (50–65 °C); 3) Елонгация с термостабилна <em>Taq</em> ДНК-полимераза (72 °C).
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -969,6 +1217,151 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
               </div>
               <div className="p-3 rounded-lg bg-purple-50 border border-purple-200 text-xs font-mono text-purple-950">
                 {currentSalt.hydrolysisIon}
+              </div>
+            </div>
+          </div>
+
+          {/* Module 2C: Acid-Base Titration Calculator & Module 2D: Organic Qualitative Reactions */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Acid-Base Titration Calculator */}
+            <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-4">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-teal-700">
+                  Обемно-аналитична химия • Трета СПК Лаборант (524010) & ДЗИ
+                </span>
+                <h3 className="text-base font-extrabold text-slate-900">
+                  Интерактивен Киселинно-Основен Титратор (c₁·V₁·z₁ = c₂·V₂·z₂)
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Титрувана киселина:</label>
+                  <select
+                    value={acidType}
+                    onChange={(e) => setAcidType(e.target.value as typeof acidType)}
+                    className="w-full px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-300 font-bold text-slate-900"
+                  >
+                    <option value="HCl">HCl (едноосновна, z₁ = 1)</option>
+                    <option value="H2SO4">H₂SO₄ (двуосновна, z₁ = 2)</option>
+                    <option value="CH3COOH">CH₃COOH (слаба киселина, z₁ = 1)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Титрант (Основа в бюретата):</label>
+                  <select
+                    value={baseType}
+                    onChange={(e) => setBaseType(e.target.value as typeof baseType)}
+                    className="w-full px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-300 font-bold text-slate-900"
+                  >
+                    <option value="NaOH">NaOH (еднокисела, z₂ = 1)</option>
+                    <option value="KOH">KOH (еднокисела, z₂ = 1)</option>
+                    <option value="Ba(OH)2">Ba(OH)₂ (двукисела, z₂ = 2)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2.5 text-xs">
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <span className="block text-[10px] text-slate-500">c₁ киселина (mol/L)</span>
+                  <input
+                    type="number"
+                    min={0.01}
+                    max={2}
+                    step={0.05}
+                    value={acidConc}
+                    onChange={(e) => setAcidConc(Math.max(0.01, Number(e.target.value)))}
+                    className="w-full font-mono font-bold text-sm text-slate-900 bg-transparent mt-0.5 focus:outline-none"
+                  />
+                </div>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <span className="block text-[10px] text-slate-500">V₁ проба (mL)</span>
+                  <input
+                    type="number"
+                    min={5}
+                    max={250}
+                    step={5}
+                    value={acidVolMl}
+                    onChange={(e) => setAcidVolMl(Math.max(1, Number(e.target.value)))}
+                    className="w-full font-mono font-bold text-sm text-slate-900 bg-transparent mt-0.5 focus:outline-none"
+                  />
+                </div>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <span className="block text-[10px] text-slate-500">c₂ титрант (mol/L)</span>
+                  <input
+                    type="number"
+                    min={0.01}
+                    max={2}
+                    step={0.05}
+                    value={baseConc}
+                    onChange={(e) => setBaseConc(Math.max(0.01, Number(e.target.value)))}
+                    className="w-full font-mono font-bold text-sm text-slate-900 bg-transparent mt-0.5 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-teal-50 border border-teal-300 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-teal-800 block">
+                    Еквивалентен обем на основата V₂ (от бюретата):
+                  </span>
+                  <span className="text-xs text-teal-900 font-mono">
+                    V₂ = ({acidConc} × {acidVolMl} × {acidProtonsZ1}) / ({baseConc} × {baseHydroxylsZ2})
+                  </span>
+                </div>
+                <div className="text-xl font-black font-mono text-teal-950">
+                  {eqBaseVolMl} mL
+                </div>
+              </div>
+
+              <div className="text-xs text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <strong>Препоръчителен индикатор:</strong> {eqIndicatorInfo}
+              </div>
+            </div>
+
+            {/* Organic Qualitative Reactions for MU Entrance Exam */}
+            <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-4">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-rose-700">
+                  Органична Химия за МУ (София / Пловдив / Варна) & ДЗИ
+                </span>
+                <h3 className="text-base font-extrabold text-slate-900">
+                  Качествени реакции за разпознаване на органични съединения
+                </h3>
+              </div>
+
+              <div className="flex flex-wrap gap-1.5">
+                {ORGANIC_QUALITATIVE_REACTIONS.map((org) => (
+                  <button
+                    key={org.id}
+                    onClick={() => setSelectedOrganicId(org.id)}
+                    className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
+                      selectedOrganicId === org.id
+                        ? 'bg-rose-600 text-white border-rose-600'
+                        : 'bg-slate-50 hover:bg-rose-50 text-slate-700 border-slate-200'
+                    }`}
+                  >
+                    {org.compoundClass.split(' ')[0]}
+                  </button>
+                ))}
+              </div>
+
+              <div className="p-4 rounded-xl bg-rose-50/60 border border-rose-200 space-y-2.5 text-xs">
+                <div className="font-extrabold text-sm text-rose-950">
+                  {currentOrganic.compoundClass}
+                </div>
+                <div>
+                  <strong className="text-slate-900">Реактив и условия:</strong> {currentOrganic.reagent}
+                </div>
+                <div className="p-2.5 rounded-lg bg-white border border-rose-200 font-mono text-rose-950 font-bold">
+                  {currentOrganic.equation}
+                </div>
+                <div>
+                  <strong className="text-slate-900">Визуален ефект:</strong> {currentOrganic.visualEffect}
+                </div>
+                <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-950">
+                  <strong>Изпитен капан за МУ/ДЗИ:</strong> {currentOrganic.muExamTip}
+                </div>
               </div>
             </div>
           </div>
@@ -1163,6 +1556,126 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
               <div className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-center shrink-0">
                 <div className="text-[10px] uppercase font-bold text-slate-500">Макс. кинетична енергия Ek,max</div>
                 <div className="text-lg font-black font-mono text-slate-900">{maxKineticEv} eV</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Module 3C: Carnot Heat Engine & Three-Phase Power Simulator (DIPPK 522010) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Carnot Heat Engine */}
+            <div className="p-5 rounded-2xl bg-slate-900 text-white border border-slate-800 space-y-4">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400">
+                  Термодинамика и Топлотехника • ДЗИ Физика & Енергетика
+                </span>
+                <h3 className="text-base font-extrabold text-white mt-0.5">
+                  Топлинна Машина на Карно: η_max = (T₁ - T₂) / T₁
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="p-3 rounded-xl bg-slate-800 border border-slate-700 space-y-1.5">
+                  <div className="flex justify-between">
+                    <span className="text-slate-300">Нагревател t₁:</span>
+                    <strong className="font-mono text-amber-300">{carnotHotC} °C ({t1Kelvin} K)</strong>
+                  </div>
+                  <input
+                    type="range"
+                    min={100}
+                    max={600}
+                    step={5}
+                    value={carnotHotC}
+                    onChange={(e) => setCarnotHotC(Number(e.target.value))}
+                    className="w-full accent-amber-400"
+                  />
+                </div>
+                <div className="p-3 rounded-xl bg-slate-800 border border-slate-700 space-y-1.5">
+                  <div className="flex justify-between">
+                    <span className="text-slate-300">Охладител t₂:</span>
+                    <strong className="font-mono text-sky-300">{carnotColdC} °C ({t2Kelvin} K)</strong>
+                  </div>
+                  <input
+                    type="range"
+                    min={-20}
+                    max={90}
+                    step={5}
+                    value={carnotColdC}
+                    onChange={(e) => setCarnotColdC(Number(e.target.value))}
+                    className="w-full accent-sky-400"
+                  />
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-between">
+                <div className="text-xs">
+                  <span className="font-bold text-amber-300 block">Максимален термичен КПД η_max:</span>
+                  <span className="font-mono text-slate-300">
+                    ({t1Kelvin} K - {t2Kelvin} K) / {t1Kelvin} K
+                  </span>
+                </div>
+                <div className="text-2xl font-black font-mono text-amber-300">
+                  {carnotEfficiencyPct}%
+                </div>
+              </div>
+            </div>
+
+            {/* Three-Phase Power Triangle Simulator */}
+            <div className="p-5 rounded-2xl bg-slate-900 text-white border border-slate-800 space-y-4">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-sky-400">
+                  Трифазна Електротехника (U_L = 400 V) • Трета СПК Електротехник (522010)
+                </span>
+                <h3 className="text-base font-extrabold text-white mt-0.5">
+                  Триъгълник на Мощностите (P, Q, S) & Корекция на cos φ
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="p-3 rounded-xl bg-slate-800 border border-slate-700 space-y-1.5">
+                  <div className="flex justify-between">
+                    <span className="text-slate-300">Линеен ток I_L:</span>
+                    <strong className="font-mono text-sky-300">{threePhaseLineCurrentA} A</strong>
+                  </div>
+                  <input
+                    type="range"
+                    min={10}
+                    max={250}
+                    step={5}
+                    value={threePhaseLineCurrentA}
+                    onChange={(e) => setThreePhaseLineCurrentA(Number(e.target.value))}
+                    className="w-full accent-sky-400"
+                  />
+                </div>
+                <div className="p-3 rounded-xl bg-slate-800 border border-slate-700 space-y-1.5">
+                  <div className="flex justify-between">
+                    <span className="text-slate-300">Фактор cos φ:</span>
+                    <strong className="font-mono text-emerald-300">{threePhaseCosPhi.toFixed(2)}</strong>
+                  </div>
+                  <input
+                    type="range"
+                    min={0.5}
+                    max={1.0}
+                    step={0.02}
+                    value={threePhaseCosPhi}
+                    onChange={(e) => setThreePhaseCosPhi(Number(e.target.value))}
+                    className="w-full accent-emerald-400"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                <div className="p-2.5 rounded-xl bg-emerald-950/80 border border-emerald-500/40">
+                  <span className="text-[10px] text-emerald-300 block">Активна P (kW)</span>
+                  <strong className="font-mono text-sm text-white">{activePowerKw} kW</strong>
+                </div>
+                <div className="p-2.5 rounded-xl bg-rose-950/80 border border-rose-500/40">
+                  <span className="text-[10px] text-rose-300 block">Реактивна Q (kVAr)</span>
+                  <strong className="font-mono text-sm text-white">{reactivePowerKvar} kVAr</strong>
+                </div>
+                <div className="p-2.5 rounded-xl bg-sky-950/80 border border-sky-500/40">
+                  <span className="text-[10px] text-sky-300 block">Пълна S (kVA)</span>
+                  <strong className="font-mono text-sm text-white">{apparentPowerKva} kVA</strong>
+                </div>
               </div>
             </div>
           </div>

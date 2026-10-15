@@ -462,6 +462,15 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
   const [dippkPracticeGrade, setDippkPracticeGrade] = useState<number>(6.00);
   const [selectedDefenseId, setSelectedDefenseId] = useState<string>(DIPLOMA_DEFENSE_ASSIGNMENTS[0].id);
 
+  // Секция 5: Калкулатор за Приемен Бал след 7. клас (НВО max 500 т.) и ВУЗ (СУ, МУ, ТУ, УАСГ, УНСС)
+  const [admissionCalcTab, setAdmissionCalcTab] = useState<'grade7_nvo' | 'university_vuz'>('grade7_nvo');
+  const [nvoBelPts, setNvoBelPts] = useState<number>(88);
+  const [nvoMathPts, setNvoMathPts] = useState<number>(92);
+  const [grade7Subj1Pts, setGrade7Subj1Pts] = useState<number>(50); // Отличен 6 = 50 т.
+  const [grade7Subj2Pts, setGrade7Subj2Pts] = useState<number>(50); // Отличен 6 = 50 т.
+  const [uniKsi1Grade, setUniKsi1Grade] = useState<number>(5.70); // Изпит 1 (Математика / Биология)
+  const [uniKsi2Grade, setUniKsi2Grade] = useState<number>(5.60); // Изпит 2 (Химия / Физика / Икономика)
+
   const selectedSchool: SchoolCategorySection = useMemo(() => {
     return (
       SCHOOL_SPECIALTIES_SECTIONS.find((s) => s.id === selectedSchoolId) ||
@@ -1446,6 +1455,351 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
             </div>
           );
         })()}
+      </div>
+
+      {/* СЕКЦИЯ 5: Интерактивен Калкулатор за Приемен Бал след 7. клас (НВО max 500 т.) и Кандидат-студентски Бал за ВУЗ */}
+      <div className="rounded-3xl bg-slate-900/90 border border-indigo-500/30 p-6 sm:p-8 shadow-2xl space-y-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-bold uppercase tracking-wider">
+              <GraduationCap className="w-3.5 h-3.5" />
+              Национално класиране & Университетски прием
+            </div>
+            <h2 className="text-xl sm:text-2xl font-extrabold text-white">
+              5. Калкулатор за Приемен Бал след 7. клас (max 500 т.) & ВУЗ (СУ, МУ, ТУ, УАСГ, УНСС)
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-400">
+              Симулирай състезателния си бал по официалните формули на МОН и провери в кои елитни гимназии и университетски специалности се класираш.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800 self-start">
+            <button
+              onClick={() => setAdmissionCalcTab('grade7_nvo')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                admissionCalcTab === 'grade7_nvo'
+                  ? 'bg-indigo-600 text-white shadow-sm'
+                  : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              Прием след 7. клас (НВО — max 500 т.)
+            </button>
+            <button
+              onClick={() => setAdmissionCalcTab('university_vuz')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                admissionCalcTab === 'university_vuz'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              Кандидат-студентски Бал за ВУЗ (след 12. клас)
+            </button>
+          </div>
+        </div>
+
+        {admissionCalcTab === 'grade7_nvo' ? (
+          (() => {
+            // Формула А (2×БЕЛ + 2×МАТ + Оценка1 + Оценка2) -> ЕГ, НТБГ, НФСГ, СГСАГ
+            const scoreFormula2x2 = 2 * nvoBelPts + 2 * nvoMathPts + grade7Subj1Pts + grade7Subj2Pts;
+            // Формула Б (1×БЕЛ + 3×МАТ + Оценка1 + Оценка2) -> СМГ, НПМГ, МГ, ТУЕС, ПГКНМА
+            const scoreFormula1x3 = 1 * nvoBelPts + 3 * nvoMathPts + grade7Subj1Pts + grade7Subj2Pts;
+
+            const highSchoolCutoffs = [
+              {
+                name: 'СМГ / МГ (Варна, Пловдив, Бургас) — Математически профил',
+                formulaType: '1×БЕЛ + 3×МАТ',
+                userScore: scoreFormula1x3,
+                minCutoff: 472
+              },
+              {
+                name: 'ТУЕС към ТУ-София / ПГКНМА — Системно програмиране (Трета СПК)',
+                formulaType: '1×БЕЛ + 3×МАТ',
+                userScore: scoreFormula1x3,
+                minCutoff: 462
+              },
+              {
+                name: '91. НЕГ / 164. ГПИЕ / Първа АЕГ / ЕГ Пловдив и Варна',
+                formulaType: '2×БЕЛ + 2×МАТ',
+                userScore: scoreFormula2x2,
+                minCutoff: 455
+              },
+              {
+                name: 'НПМГ „Акад. Л. Чакалов“ — Природни науки, Биохимия и Софтуер',
+                formulaType: '1×БЕЛ + 3×МАТ',
+                userScore: scoreFormula1x3,
+                minCutoff: 445
+              },
+              {
+                name: 'НТБГ / НФСГ — Банково дело, Финанси и Електронна търговия (Трета СПК)',
+                formulaType: '2×БЕЛ + 2×МАТ',
+                userScore: scoreFormula2x2,
+                minCutoff: 425
+              },
+              {
+                name: 'СГСАГ „Христо Ботев“ / Водещи ПГ по Строителство, Мехатроника и Енергетика',
+                formulaType: '2×БЕЛ + 2×МАТ',
+                userScore: scoreFormula2x2,
+                minCutoff: 395
+              }
+            ];
+
+            return (
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <div className="lg:col-span-6 space-y-4">
+                  <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2">
+                    <div className="flex justify-between text-xs sm:text-sm font-bold text-slate-200">
+                      <span>НВО Български език и литература (0–100 т.):</span>
+                      <span className="font-mono text-indigo-400 text-base">{nvoBelPts} т.</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={30}
+                      max={100}
+                      value={nvoBelPts}
+                      onChange={(e) => setNvoBelPts(Number(e.target.value))}
+                      className="w-full accent-indigo-500 cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2">
+                    <div className="flex justify-between text-xs sm:text-sm font-bold text-slate-200">
+                      <span>НВО Математика (0–100 т.):</span>
+                      <span className="font-mono text-emerald-400 text-base">{nvoMathPts} т.</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={30}
+                      max={100}
+                      value={nvoMathPts}
+                      onChange={(e) => setNvoMathPts(Number(e.target.value))}
+                      className="w-full accent-emerald-500 cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2">
+                      <label className="block text-xs font-bold text-slate-300">
+                        1-ви предмет от свидетелството (7. клас):
+                      </label>
+                      <select
+                        value={grade7Subj1Pts}
+                        onChange={(e) => setGrade7Subj1Pts(Number(e.target.value))}
+                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white"
+                      >
+                        <option value={50}>Отличен (6) = 50 точки</option>
+                        <option value={39}>Много добър (5) = 39 точки</option>
+                        <option value={26}>Добър (4) = 26 точки</option>
+                        <option value={15}>Среден (3) = 15 точки</option>
+                      </select>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2">
+                      <label className="block text-xs font-bold text-slate-300">
+                        2-ри предмет от свидетелството (7. клас):
+                      </label>
+                      <select
+                        value={grade7Subj2Pts}
+                        onChange={(e) => setGrade7Subj2Pts(Number(e.target.value))}
+                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white"
+                      >
+                        <option value={50}>Отличен (6) = 50 точки</option>
+                        <option value={39}>Много добър (5) = 39 точки</option>
+                        <option value={26}>Добър (4) = 26 точки</option>
+                        <option value={15}>Среден (3) = 15 точки</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-4 rounded-2xl bg-indigo-950/60 border border-indigo-500/40 text-center">
+                      <div className="text-[11px] font-bold uppercase text-indigo-300">
+                        Бал за ЕГ / НТБГ / СГСАГ (2×БЕЛ + 2×МАТ)
+                      </div>
+                      <div className="text-2xl sm:text-3xl font-black font-mono text-white mt-1">
+                        {scoreFormula2x2} / 500 т.
+                      </div>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-center">
+                      <div className="text-[11px] font-bold uppercase text-emerald-300">
+                        Бал за СМГ / ТУЕС / НПМГ (1×БЕЛ + 3×МАТ)
+                      </div>
+                      <div className="text-2xl sm:text-3xl font-black font-mono text-white mt-1">
+                        {scoreFormula1x3} / 500 т.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-6 rounded-2xl bg-slate-950/90 border border-slate-800 p-5 space-y-3">
+                  <div className="text-xs font-bold uppercase tracking-wider text-indigo-300">
+                    Ориентировъчно класиране за 1-ви етап по минимални балове:
+                  </div>
+                  <div className="space-y-2.5">
+                    {highSchoolCutoffs.map((hs, idx) => {
+                      const admitted = hs.userScore >= hs.minCutoff;
+                      return (
+                        <div
+                          key={idx}
+                          className={`p-3 rounded-xl border flex items-center justify-between gap-3 ${
+                            admitted
+                              ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-100'
+                              : 'bg-slate-900/80 border-slate-800 text-slate-400'
+                          }`}
+                        >
+                          <div className="space-y-0.5">
+                            <div className="text-xs font-bold text-white">{hs.name}</div>
+                            <div className="text-[11px] opacity-80">
+                              Формула: {hs.formulaType} • Праг ~{hs.minCutoff} т. (Твой бал: <strong>{hs.userScore} т.</strong>)
+                            </div>
+                          </div>
+                          <span
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 ${
+                              admitted
+                                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40'
+                                : 'bg-rose-500/20 text-rose-300 border border-rose-400/40'
+                            }`}
+                          >
+                            {admitted ? '✓ ПРИЕТ' : `Недостигат ${hs.minCutoff - hs.userScore} т.`}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            );
+          })()
+        ) : (
+          (() => {
+            // СУ ФМИ (Софтуерно инженерство / КН) max 24.00: 3 × Мат (КСИ/ДЗИ) + 1 × ДЗИ БЕЛ
+            const suFmiScore24 = +(3 * uniKsi1Grade + dziBelGrade).toFixed(2);
+            // МУ-София / Пловдив / Варна (Медицина / Дентална / Фармация) max 36.00: Диплома Био + Диплома Хим + 2×КСИ Био + 2×КСИ Хим
+            const muMedicineScore36 = +(2 * specAverage + 2 * uniKsi1Grade + 2 * uniKsi2Grade).toFixed(2);
+            // ТУ-София & УАСГ (КСИ / Архитектура / ССС) max 24.00: 2 × Мат + 1 × Физика/Чертане + 1 × Диплома
+            const tuUasgScore24 = +(2 * uniKsi1Grade + uniKsi2Grade + oopAverage).toFixed(2);
+            // СУ Право & УНСС Финанси max 24.00: 2 × ДЗИ БЕЛ + 1 × История/Икономика + 1 × Диплома
+            const unssLawScore24 = +(2 * dziBelGrade + uniKsi2Grade + oopAverage).toFixed(2);
+
+            const universityTracks = [
+              {
+                uni: 'СУ „Св. Климент Охридски“ — ФМИ (Софтуерно инженерство & КН)',
+                formula: '3 × Изпит Математика + 1 × ДЗИ БЕЛ (макс. 24.00)',
+                score: suFmiScore24,
+                maxScore: 24,
+                cutoff: 22.40
+              },
+              {
+                uni: 'Медицински университет (МУ-София / Пловдив / Варна) — Медицина и Фармация',
+                formula: '2 × Диплома (Био+Хим) + 2 × КСИ Биология + 2 × КСИ Химия (макс. 36.00)',
+                score: muMedicineScore36,
+                maxScore: 36,
+                cutoff: 33.20
+              },
+              {
+                uni: 'ТУ-София (КСИ / ИКТ) & УАСГ (Архитектура / Строителство на сгради и съоръжения)',
+                formula: '2 × Математика + 1 × Профилен изпит + Общ дипломен успех (макс. 24.00)',
+                score: tuUasgScore24,
+                maxScore: 24,
+                cutoff: 21.20
+              },
+              {
+                uni: 'СУ Юридически факултет (Право) & УНСС (Финанси, Счетоводство и контрол)',
+                formula: '2 × ДЗИ БЕЛ + 1 × ДЗИ 2 / Конкурсен изпит + Дипломен успех (макс. 24.00)',
+                score: unssLawScore24,
+                maxScore: 24,
+                cutoff: 21.50
+              }
+            ];
+
+            return (
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <div className="lg:col-span-5 space-y-4">
+                  <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2">
+                    <div className="flex justify-between text-xs sm:text-sm font-bold text-slate-200">
+                      <span>1-ви Конкурсен изпит / Профилна матура (Математика / Биология):</span>
+                      <span className="font-mono text-emerald-400 text-base">{uniKsi1Grade.toFixed(2)}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={3.0}
+                      max={6.0}
+                      step={0.05}
+                      value={uniKsi1Grade}
+                      onChange={(e) => setUniKsi1Grade(Number(e.target.value))}
+                      className="w-full accent-emerald-500 cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2">
+                    <div className="flex justify-between text-xs sm:text-sm font-bold text-slate-200">
+                      <span>2-ри Конкурсен изпит (Химия / Физика / История / Икономика):</span>
+                      <span className="font-mono text-cyan-400 text-base">{uniKsi2Grade.toFixed(2)}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={3.0}
+                      max={6.0}
+                      step={0.05}
+                      value={uniKsi2Grade}
+                      onChange={(e) => setUniKsi2Grade(Number(e.target.value))}
+                      className="w-full accent-cyan-500 cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 text-xs text-slate-300 space-y-1.5">
+                    <div className="font-bold text-white">Автоматично синхронизирани от Секция 3:</div>
+                    <div className="flex justify-between">
+                      <span>• Оценка от ДЗИ БЕЛ:</span>
+                      <strong className="text-amber-300">{dziBelGrade.toFixed(2)}</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>• Балообразуващи предмети от дипломата:</span>
+                      <strong className="text-indigo-300">{specAverage.toFixed(2)}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-7 space-y-3">
+                  {universityTracks.map((tr, i) => {
+                    const admitted = tr.score >= tr.cutoff;
+                    return (
+                      <div
+                        key={i}
+                        className={`p-4 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                          admitted
+                            ? 'bg-emerald-950/40 border-emerald-500/40'
+                            : 'bg-slate-950/90 border-slate-800'
+                        }`}
+                      >
+                        <div className="space-y-1">
+                          <div className="text-xs sm:text-sm font-bold text-white">{tr.uni}</div>
+                          <div className="text-[11px] text-slate-400">{tr.formula}</div>
+                          <div className="text-[11px] text-amber-300 font-semibold">
+                            Минимален праг (ориентир): {tr.cutoff.toFixed(2)} / {tr.maxScore.toFixed(2)}
+                          </div>
+                        </div>
+
+                        <div className="text-right shrink-0">
+                          <div className="font-mono text-xl font-black text-white">
+                            {tr.score.toFixed(2)} / {tr.maxScore}
+                          </div>
+                          <span
+                            className={`inline-block mt-1 px-2.5 py-0.5 rounded-lg text-[11px] font-bold ${
+                              admitted
+                                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40'
+                                : 'bg-rose-500/20 text-rose-300 border border-rose-400/40'
+                            }`}
+                          >
+                            {admitted ? '✓ КЛАСИРАН (Държавна поръчка)' : 'Под минималния праг'}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()
+        )}
       </div>
     </div>
   );

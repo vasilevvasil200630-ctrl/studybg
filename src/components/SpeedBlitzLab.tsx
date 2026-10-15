@@ -13,7 +13,7 @@ import {
   Keyboard
 } from 'lucide-react';
 
-export type BlitzCategory = 'all' | 'bel' | 'math' | 'history' | 'english' | 'civics' | 'dippk';
+export type BlitzCategory = 'all' | 'bel' | 'math' | 'history' | 'english' | 'civics' | 'dippk' | 'science' | 'stem_code';
 
 interface BlitzQuestion {
   id: string;
@@ -374,6 +374,128 @@ const BLITZ_QUESTIONS: BlitzQuestion[] = [
     options: ['pH 1.5 – 2.0', 'Слабо кисело: pH 4.5 – 5.5', 'Неутрално: pH 7.0', 'Алкално: pH 9.5 – 10.5'],
     correctIndex: 1,
     quickRule: 'Киселинната мантия на кожата (pH 4.5–5.5) потиска развитието на патогенни бактерии.'
+  },
+
+  // 7. Природни науки (Биология, Химия и Физика — ДЗИ & МУ)
+  {
+    id: 'bl-sci-1',
+    category: 'science',
+    categoryLabel: 'Биология • МУ & ДЗИ',
+    prompt: 'Кой триплет в иРНК изпълнява ролята на универсален СТАРТ кодон за начало на транслацията и кодира аминокиселината Метионин?',
+    options: ['5\'-УАА-3\'', '5\'-АУГ-3\' (AUG)', '5\'-УГА-3\'', '5\'-ТАЦ-3\''],
+    correctIndex: 1,
+    quickRule: 'АУГ (AUG) е универсалният СТАРТ кодон в иРНК (кодира Метионин), а УАА, УАГ и УГА са СТОП кодони.'
+  },
+  {
+    id: 'bl-sci-2',
+    category: 'science',
+    categoryLabel: 'Биология • Биоенергетика',
+    prompt: 'Колко мола АТФ е чистият енергиен добив от гликолизата (субстратно фосфорилиране в цитозола) при разграждане на 1 mol глюкоза?',
+    options: ['2 mol АТФ (изразходват се 2 и се синтезират 4 mol АТФ)', '38 mol АТФ', '34 mol АТФ', '0 mol АТФ'],
+    correctIndex: 0,
+    quickRule: 'В подготвителната фаза на гликолизата се влагат 2 АТФ, а в крайната се синтезират 4 АТФ ➔ чист добив 2 mol АТФ.'
+  },
+  {
+    id: 'bl-sci-3',
+    category: 'science',
+    categoryLabel: 'Химия • Качествени реакции',
+    prompt: 'С кой реактив се доказват хлоридни йони (Cl⁻) във воден разтвор чрез образуване на бяла сиреновидна утайка?',
+    options: ['Бариев дихлорид (BaCl₂)', 'Сребърен нитрат (AgNO₃) ➔ пада AgCl↓', 'Натриева основа (NaOH)', 'Фенолфталеин'],
+    correctIndex: 1,
+    quickRule: 'Ag⁺ + Cl⁻ → AgCl↓ (бяла сиреновидна утайка, неразтворима в HNO₃, но разтворима в NH₃).'
+  },
+  {
+    id: 'bl-sci-4',
+    category: 'science',
+    categoryLabel: 'Органична Химия • МУ',
+    prompt: 'Кое от следните съединения дава реакция „Сребърно огледало“ с амонячен разтвор на сребърен оксид [Ag(NH₃)₂]OH?',
+    options: ['Етанол (C₂H₅OH)', 'Ацетон (CH₃COCH₃)', 'Етанал / Ацеталдехид (CH₃CHO) и Глюкоза', 'Бензен (C₆H₆)'],
+    correctIndex: 2,
+    quickRule: 'Реакцията на Толенс („Сребърно огледало“) е качествена реакция за алдехидна група (-CHO), каквато имат етаналът, глюкозата и HCOOH.'
+  },
+  {
+    id: 'bl-sci-5',
+    category: 'science',
+    categoryLabel: 'Физика • Термодинамика',
+    prompt: 'Топлинна машина на Карно работи при T₁ = 600 K (нагревател) и T₂ = 300 K (охладител). Колко е нейният КПД η?',
+    options: ['25%', '50% — η = (600 - 300) / 600 = 0,50', '75%', '100%'],
+    correctIndex: 1,
+    quickRule: 'КПД на цикъл на Карно е η = (T₁ - T₂) / T₁ = (600 - 300) / 600 = 300 / 600 = 50%.'
+  },
+  {
+    id: 'bl-sci-6',
+    category: 'science',
+    categoryLabel: 'Физика • Електротехника',
+    prompt: 'По коя формула се изчислява АКТИВНАТА мощност P в симетрична трифазна електрическа мрежа?',
+    options: ['P = U · I', 'P = √3 · U_L · I_L · cos φ', 'P = √3 · U_L · I_L · sin φ', 'P = I² / R'],
+    correctIndex: 1,
+    quickRule: 'В трифазна система активната мощност е P = √3 · U_L · I_L · cos φ [W], а реактивната е Q = √3 · U_L · I_L · sin φ [VAr].'
+  },
+
+  // 8. Информатика, Алгоритми, SQL & Мрежи (ДЗИ Информатика & Трета СПК Програмист)
+  {
+    id: 'bl-code-1',
+    category: 'stem_code',
+    categoryLabel: 'Алгоритми • ДЗИ Информатика',
+    prompt: 'Каква е времевата сложност (Big-O) на алгоритъма Двоично търсене (Binary Search) в сортиран масив с N елемента?',
+    options: ['O(N)', 'O(N²)', 'O(log₂ N)', 'O(N · log N)'],
+    correctIndex: 2,
+    quickRule: 'Двоичното търсене разполовява интервала на всяка стъпка ➔ логаритмична сложност O(log₂ N).'
+  },
+  {
+    id: 'bl-code-2',
+    category: 'stem_code',
+    categoryLabel: 'Бази данни • SQL (ДИППК)',
+    prompt: 'Коя клауза в SQL се използва за филтриране на ГРУПИРАНИ записи след агрегатна функция (COUNT, SUM, AVG) и GROUP BY?',
+    options: ['WHERE', 'HAVING', 'ORDER BY', 'INNER JOIN'],
+    correctIndex: 1,
+    quickRule: 'WHERE филтрира отделни редове ПРЕДИ групирането, а HAVING филтрира вече агрегираните групи СЛЕД GROUP BY.'
+  },
+  {
+    id: 'bl-code-3',
+    category: 'stem_code',
+    categoryLabel: 'Структури от данни • Стек & Опашка',
+    prompt: 'По кой принцип работи линейната структура от данни СТЕК (Stack), използвана при рекурсивни извиквания на функции?',
+    options: [
+      'FIFO (First In, First Out — Първи влязъл, първи излязъл)',
+      'LIFO (Last In, First Out — Последен влязъл, първи излязъл)',
+      'Произволен достъп по индекс O(1)',
+      'Дървовидна йерархия'
+    ],
+    correctIndex: 1,
+    quickRule: 'Стекът (Stack) работи по принципа LIFO (push / pop от върха), докато Опашката (Queue) работи по FIFO.'
+  },
+  {
+    id: 'bl-code-4',
+    category: 'stem_code',
+    categoryLabel: 'Компютърни мрежи • TCP/IP',
+    prompt: 'Колко използваеми IP адреса за хостове има в локална подмрежа с префикс /24 (маска 255.255.255.0)?',
+    options: ['256 хоста', '254 хоста (2⁸ - 2, без адреса на мрежата и broadcast адреса)', '126 хоста', '512 хоста'],
+    correctIndex: 1,
+    quickRule: 'Формулата за хостове е 2^(32 - префикс) - 2. За /24: 2⁸ - 2 = 256 - 2 = 254 използваеми хоста.'
+  },
+  {
+    id: 'bl-code-5',
+    category: 'stem_code',
+    categoryLabel: 'ООП • Програмиране',
+    prompt: 'Кой от 4-те стълба на ООП позволява един и същ метод да има различно поведение в базовия и производните класове (override)?',
+    options: ['Капсулация (Encapsulation)', 'Полиморфизъм (Polymorphism)', 'Компилация', 'Нормализация'],
+    correctIndex: 1,
+    quickRule: 'Полиморфизмът позволява обекти от различни производни класове да се обработват през общ интерфейс със специфична имплементация (virtual/override).'
+  },
+  {
+    id: 'bl-code-6',
+    category: 'stem_code',
+    categoryLabel: 'Киберсигурност • Уеб защита',
+    prompt: 'Кой механизъм защитава най-надеждно релационната база данни от SQL Injection (SQLi) атаки?',
+    options: [
+      'Скриване на формата с CSS',
+      'Параметризирани заявки (Prepared Statements) със строго типизирани плейсхолдъри',
+      'Проверка само с JavaScript във фронтенда',
+      'Използване на HTTP вместо HTTPS'
+    ],
+    correctIndex: 1,
+    quickRule: 'Prepared Statements компилират структурата на SQL заявката предварително и третират входа единствено като литерална стойност.'
   }
 ];
 
@@ -390,12 +512,15 @@ function shuffleArray<T>(items: T[]): T[] {
 
 export const SpeedBlitzLab: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<BlitzCategory>('all');
+  const [matchMode, setMatchMode] = useState<'solo' | 'duel'>('solo');
   const [gameState, setGameState] = useState<'idle' | 'playing' | 'finished'>('idle');
   const [secondsLeft, setSecondsLeft] = useState<number>(60);
   const [deck, setDeck] = useState<BlitzQuestion[]>(BLITZ_QUESTIONS);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   const [score, setScore] = useState<number>(0);
+  const [teamAScore, setTeamAScore] = useState<number>(0);
+  const [teamBScore, setTeamBScore] = useState<number>(0);
   const [streak, setStreak] = useState<number>(0);
   const [maxStreak, setMaxStreak] = useState<number>(0);
   const [correctCount, setCorrectCount] = useState<number>(0);
@@ -424,6 +549,7 @@ export const SpeedBlitzLab: React.FC = () => {
   }, [selectedCategory]);
 
   const currentQuestion = deck[currentIndex % deck.length] || BLITZ_QUESTIONS[0];
+  const activeDuelTeam: 'A' | 'B' = currentIndex % 2 === 0 ? 'A' : 'B';
 
   const multiplier = useMemo(() => {
     if (streak >= 8) return 5;
@@ -438,6 +564,8 @@ export const SpeedBlitzLab: React.FC = () => {
     setCurrentIndex(0);
     setSecondsLeft(60);
     setScore(0);
+    setTeamAScore(0);
+    setTeamBScore(0);
     setStreak(0);
     setMaxStreak(0);
     setCorrectCount(0);
@@ -500,6 +628,11 @@ export const SpeedBlitzLab: React.FC = () => {
         const earned = 100 * nextMult;
 
         setScore(prev => prev + earned);
+        if (currentIndex % 2 === 0) {
+          setTeamAScore(prev => prev + earned);
+        } else {
+          setTeamBScore(prev => prev + earned);
+        }
         setStreak(nextStreak);
         setMaxStreak(nextMaxStreak);
         setCorrectCount(prev => prev + 1);
@@ -525,7 +658,7 @@ export const SpeedBlitzLab: React.FC = () => {
 
       setCurrentIndex(prev => prev + 1);
     },
-    [gameState, currentQuestion, streak, maxStreak]
+    [gameState, currentQuestion, streak, maxStreak, currentIndex]
   );
 
   // Keyboard shortcuts 1, 2, 3, 4 during active play
@@ -544,12 +677,14 @@ export const SpeedBlitzLab: React.FC = () => {
   const currentBest = highScores[selectedCategory];
 
   const categories: { id: BlitzCategory; label: string; badge: string }[] = [
-    { id: 'all', label: 'Пълен Микс за 6.00', badge: '33 въпроса' },
+    { id: 'all', label: 'Пълен Микс за 6.00', badge: `${BLITZ_QUESTIONS.length} въпроса` },
     { id: 'bel', label: 'БЕЛ Правопис & Канон', badge: 'ДЗИ & НВО' },
     { id: 'math', label: 'Математика & STEM', badge: 'Формули' },
+    { id: 'science', label: 'Природни науки (Био/Хим/Физ)', badge: 'МУ & ДЗИ' },
+    { id: 'stem_code', label: 'Информатика, Алгоритми & SQL', badge: 'ТУЕС & ДЗИ' },
     { id: 'history', label: 'История & География', badge: '681–2007' },
-    { id: 'english', label: 'Английски език', badge: 'B1.1 & B2' },
-    { id: 'civics', label: 'Конституция & ЕС', badge: 'ГО & ДЗИ' },
+    { id: 'english', label: 'Английски език', badge: 'B1.1–C1' },
+    { id: 'civics', label: 'Конституция, КТ & ЕС', badge: 'ГО & ЗБУТ' },
     { id: 'dippk', label: 'Профили & ДИППК (III СПК)', badge: 'ИТ • Финанси • Инженерство' }
   ];
 
@@ -559,9 +694,37 @@ export const SpeedBlitzLab: React.FC = () => {
       <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="space-y-2.5 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider">
-              <Zap className="w-3.5 h-3.5 text-amber-600" />
-              <span>Speed Blitz 6.00 • 60-секунден състезателен тренажор</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider">
+                <Zap className="w-3.5 h-3.5 text-amber-600" />
+                <span>Speed Blitz 6.00 • 60-секунден състезателен тренажор</span>
+              </div>
+
+              {/* Solo vs Classroom Team Duel Switcher */}
+              <div className="inline-flex p-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold">
+                <button
+                  disabled={gameState === 'playing'}
+                  onClick={() => setMatchMode('solo')}
+                  className={`px-3 py-1 rounded-lg cursor-pointer transition-all ${
+                    matchMode === 'solo'
+                      ? 'bg-slate-900 text-white shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  👤 Индивидуален Спринт
+                </button>
+                <button
+                  disabled={gameState === 'playing'}
+                  onClick={() => setMatchMode('duel')}
+                  className={`px-3 py-1 rounded-lg cursor-pointer transition-all ${
+                    matchMode === 'duel'
+                      ? 'bg-indigo-600 text-white shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  ⚔️ Отборен Дуел (Отбор А vs Отбор Б)
+                </button>
+              </div>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-serif">
               Аркаден Блиц за 60 секунди (Speed Blitz 6.00)
@@ -628,11 +791,15 @@ export const SpeedBlitzLab: React.FC = () => {
           </div>
           <div className="max-w-xl mx-auto space-y-2">
             <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-              Готов ли си за 60-секундния Блиц?
+              {matchMode === 'duel'
+                ? '⚔️ Отборен Дуел за Класна Стая: Отбор А (Сини) срещу Отбор Б (Златни)'
+                : 'Готов ли си за 60-секундния Блиц?'}
             </h2>
             <p className="text-sm text-slate-600">
               Избрана категория: <strong className="text-slate-900">{categories.find(c => c.id === selectedCategory)?.label}</strong>.
-              Можеш да отговаряш както с мишка/докосване, така и светкавично с клавишите <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded text-xs font-mono">1</kbd> – <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded text-xs font-mono">4</kbd>.
+              {matchMode === 'duel'
+                ? ' Въпросите се редуват автоматично между Отбор А и Отбор Б на всеки ход!'
+                : ' Можеш да отговаряш както с мишка/докосване, така и светкавично с клавишите 1 – 4.'}
             </p>
           </div>
 
@@ -641,7 +808,9 @@ export const SpeedBlitzLab: React.FC = () => {
             className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-base shadow-sm transition-all cursor-pointer"
           >
             <Play className="w-5 h-5 fill-current" />
-            <span>СТАРТИРАЙ 60 СЕКУНДИ БЛИЦ</span>
+            <span>
+              {matchMode === 'duel' ? 'СТАРТИРАЙ ОТБОРНИЯ ДУЕЛ (60 СЕК.)' : 'СТАРТИРАЙ 60 СЕКУНДИ БЛИЦ'}
+            </span>
           </button>
         </div>
       )}
@@ -649,6 +818,51 @@ export const SpeedBlitzLab: React.FC = () => {
       {/* GAME STATE 2: ACTIVE 60-SECOND GAMEPLAY */}
       {gameState === 'playing' && (
         <div className="bg-white border-2 border-blue-600 rounded-2xl p-5 sm:p-8 shadow-sm space-y-6">
+          {/* Team Duel Live Banner */}
+          {matchMode === 'duel' && (
+            <div className="grid grid-cols-2 gap-3">
+              <div
+                className={`p-3.5 rounded-xl border-2 flex items-center justify-between transition-all ${
+                  activeDuelTeam === 'A'
+                    ? 'bg-blue-50 border-blue-600 ring-2 ring-blue-400/40'
+                    : 'bg-slate-50 border-slate-200 opacity-75'
+                }`}
+              >
+                <div>
+                  <span className="text-[10px] font-bold uppercase text-blue-700 block">
+                    {activeDuelTeam === 'A' ? '👉 НА ХОД СЕГА: ОТБОР А (СИНИ)' : 'Отбор А (Сини)'}
+                  </span>
+                  <strong className="text-lg font-black text-blue-950 font-mono">{teamAScore} т.</strong>
+                </div>
+                {activeDuelTeam === 'A' && (
+                  <span className="px-2.5 py-1 rounded-lg bg-blue-600 text-white text-xs font-bold">
+                    Твой ред!
+                  </span>
+                )}
+              </div>
+
+              <div
+                className={`p-3.5 rounded-xl border-2 flex items-center justify-between transition-all ${
+                  activeDuelTeam === 'B'
+                    ? 'bg-amber-50 border-amber-500 ring-2 ring-amber-400/40'
+                    : 'bg-slate-50 border-slate-200 opacity-75'
+                }`}
+              >
+                <div>
+                  <span className="text-[10px] font-bold uppercase text-amber-800 block">
+                    {activeDuelTeam === 'B' ? '👉 НА ХОД СЕГА: ОТБОР Б (ЗЛАТНИ)' : 'Отбор Б (Златни)'}
+                  </span>
+                  <strong className="text-lg font-black text-amber-950 font-mono">{teamBScore} т.</strong>
+                </div>
+                {activeDuelTeam === 'B' && (
+                  <span className="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 text-xs font-bold">
+                    Твой ред!
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Top HUD: Timer, Score, Streak Multiplier */}
           <div className="grid grid-cols-3 gap-3">
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3">
@@ -672,7 +886,7 @@ export const SpeedBlitzLab: React.FC = () => {
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3">
               <Award className="w-6 h-6 text-emerald-600 shrink-0" />
               <div>
-                <div className="text-[10px] font-bold uppercase text-slate-400">Точки</div>
+                <div className="text-[10px] font-bold uppercase text-slate-400">Общо Точки</div>
                 <div className="text-xl sm:text-2xl font-black font-mono text-emerald-700">
                   {score}
                 </div>
@@ -788,6 +1002,19 @@ export const SpeedBlitzLab: React.FC = () => {
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-serif">
               Краен резултат: {score} точки
             </h2>
+
+            {matchMode === 'duel' && (
+              <div className="max-w-lg mx-auto p-4 rounded-2xl bg-indigo-50 border border-indigo-200 space-y-2">
+                <div className="text-sm font-extrabold text-indigo-950">
+                  {teamAScore > teamBScore
+                    ? `🏆 ПОБЕДИТЕЛ: ОТБОР А (СИНИ) — ${teamAScore} срещу ${teamBScore} т.!`
+                    : teamBScore > teamAScore
+                    ? `🏆 ПОБЕДИТЕЛ: ОТБОР Б (ЗЛАТНИ) — ${teamBScore} срещу ${teamAScore} т.!`
+                    : `🤝 РАВЕНСТВО В ДУЕЛА: ${teamAScore} на ${teamBScore} т.!`}
+                </div>
+              </div>
+            )}
+
             <p className="text-sm text-slate-600">
               Верни отговори: <strong className="text-emerald-700">{correctCount}</strong> • Грешни:{' '}
               <strong className="text-rose-600">{wrongCount}</strong> • Най-дълга серия:{' '}

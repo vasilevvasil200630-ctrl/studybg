@@ -1194,7 +1194,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                       <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                         <span>Официален AI протокол за оценка на есето</span>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                          {aiEssayEvaluation.isAiGenerated ? 'Gemini 1.5 Flash МОН Проверител' : 'МОН Евристичен анализ'}
+                          {aiEssayEvaluation.isAiGenerated ? 'Gemini 3.8 Flash МОН Проверител' : 'МОН Евристичен анализ'}
                         </span>
                       </h5>
                       <p className="text-xs text-slate-500 mt-0.5">

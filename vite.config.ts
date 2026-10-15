@@ -56,8 +56,11 @@ export default defineConfig({
           if (id.includes('src/data/monFormulaSheets')) {
             return 'data-formula-sheets';
           }
-          if (id.includes('src/data/generalKnowledgeData') || id.includes('src/data/cultureExpansionData')) {
-            return 'data-culture';
+          if (id.includes('cultureExpansionData')) {
+            return 'data-culture-expansion';
+          }
+          if (id.includes('generalKnowledgeData')) {
+            return 'data-culture-core';
           }
           if (id.includes('src/data/historicalCasesData')) {
             return 'data-cases';

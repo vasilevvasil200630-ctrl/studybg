@@ -125,7 +125,7 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
 
             {/* Matura+ Referral Pill */}
             <a
-              href="https://maturaplus.bg"
+              href="https://maturaplus.eu"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-all shrink-0 shadow-2xs"

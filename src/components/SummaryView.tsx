@@ -17,12 +17,16 @@ import {
   BookOpen,
   PenTool,
   CheckCircle2,
-  Trash2
+  Trash2,
+  Sparkles,
+  Send,
+  RefreshCw
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import { AudioReader } from './AudioReader';
 import { EmailShareModal } from './EmailShareModal';
+import { askGeminiMentor, isGeminiConfigured } from '../services/geminiService';
 
 interface SummaryViewProps {
   lesson: LessonData;
@@ -43,11 +47,20 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
   const [personalNote, setPersonalNote] = useState('');
   const [noteSavedToast, setNoteSavedToast] = useState(false);
 
+  // Interactive Gemini AI Mentor State
+  const [mentorQuestion, setMentorQuestion] = useState('');
+  const [mentorHistory, setMentorHistory] = useState<{ sender: 'user' | 'assistant'; text: string }[]>([]);
+  const [isMentorLoading, setIsMentorLoading] = useState(false);
+  const [mentorError, setMentorError] = useState<string | null>(null);
+
   const { summary } = lesson;
   const noteStorageKey = `studybg_lesson_notes_v1_${lesson.id}`;
 
   // Sync mastered status and personal note when lesson changes
   useEffect(() => {
+    setMentorHistory([]);
+    setMentorQuestion('');
+    setMentorError(null);
     try {
       const rawMastered = localStorage.getItem(MASTERED_STORAGE_KEY);
       if (rawMastered) {
@@ -64,6 +77,34 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
       setPersonalNote('');
     }
   }, [lesson.id, noteStorageKey]);
+
+  const handleAskMentor = async (customPrompt?: string) => {
+    const q = (customPrompt ?? mentorQuestion).trim();
+    if (!q || isMentorLoading) return;
+    setMentorError(null);
+    if (!customPrompt) setMentorQuestion('');
+
+    const nextHistory: { sender: 'user' | 'assistant'; text: string }[] = [
+      ...mentorHistory,
+      { sender: 'user', text: q }
+    ];
+    setMentorHistory(nextHistory);
+    setIsMentorLoading(true);
+
+    try {
+      if (isGeminiConfigured()) {
+        const aiReply = await askGeminiMentor(lesson, mentorHistory, q);
+        setMentorHistory([...nextHistory, { sender: 'assistant', text: aiReply }]);
+      } else {
+        const fallbackReply = `📌 Синтез по МОН за „${lesson.title}“:\n• Основен акцент: ${lesson.summary.overview}\n• Златно правило за Отличен 6.00: ${lesson.summary.examGoldenRule}\n• Ключов капан на изпит: ${lesson.summary.commonTraps?.[0] || 'Внимавайте за точното използване на терминологията.'}`;
+        setMentorHistory([...nextHistory, { sender: 'assistant', text: fallbackReply }]);
+      }
+    } catch (err: any) {
+      setMentorError(err?.message || 'Възникна временна грешка при връзка с AI ментора.');
+    } finally {
+      setIsMentorLoading(false);
+    }
+  };
 
   const handleToggleMastered = () => {
     try {
@@ -307,6 +348,122 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
             </div>
           </div>
         )}
+
+        {/* Interactive Gemini AI Academic Mentor */}
+        <div className="my-6 p-4 sm:p-5 rounded-xl bg-indigo-50/70 border border-indigo-200/90 space-y-3.5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-indigo-600" />
+              <h4 className="text-xs font-extrabold uppercase tracking-wider text-indigo-950">
+                🤖 Попитай AI Ментора за този урок (Google Gemini 3.8 Flash)
+              </h4>
+            </div>
+            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200">
+              {isGeminiConfigured() ? '● Gemini 3.8 Flash Активен' : '● МОН Академичен Асистент'}
+            </span>
+          </div>
+
+          {/* 1-Click Quick Academic Prompts */}
+          <div className="flex flex-wrap gap-1.5">
+            {[
+              {
+                label: '🎯 Какво най-често се пада на изпит?',
+                prompt: `Кои са най-важните акценти, формули или въпроси от урока „${lesson.title}“, които най-често се падат на матура (ДЗИ) или контролно по МОН, и как да гарантирам Отличен 6.00?`
+              },
+              {
+                label: '🧠 Обясни ми най-трудните понятия лесно',
+                prompt: `Обясни ми по най-ясен и запомнящ се начин (с конкретен пример) най-трудните понятия от урока „${lesson.title}“.`
+              },
+              {
+                label: '✍️ Формулирай ми силна теза за 6.00',
+                prompt: `Формулирай ми кратка, академично издържана теза (или структурен план за писмен отговор за 6.00) по темата „${lesson.title}“.`
+              },
+              {
+                label: '❓ Изпитай ме с 1 отворен въпрос',
+                prompt: `Задай ми 1 отворен изпитен въпрос за Отличен 6.00 върху урока „${lesson.title}“ и посочи 3-те ключови критерия, които трябва да съдържа моят отговор.`
+              }
+            ].map((chip) => (
+              <button
+                key={chip.label}
+                type="button"
+                disabled={isMentorLoading}
+                onClick={() => handleAskMentor(chip.prompt)}
+                className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-indigo-600 text-indigo-900 hover:text-white border border-indigo-200 hover:border-indigo-600 text-[11px] font-bold transition-all cursor-pointer disabled:opacity-50 shadow-2xs"
+              >
+                {chip.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Conversation Thread */}
+          {mentorHistory.length > 0 && (
+            <div className="space-y-2.5 max-h-96 overflow-y-auto p-3 rounded-xl bg-white border border-indigo-100">
+              {mentorHistory.map((msg, idx) => (
+                <div
+                  key={idx}
+                  className={`p-3 rounded-xl text-xs leading-relaxed ${
+                    msg.sender === 'user'
+                      ? 'bg-indigo-600 text-white ml-6 font-medium'
+                      : 'bg-slate-50 border border-slate-200 text-slate-800 mr-2 space-y-2'
+                  }`}
+                >
+                  <div className="whitespace-pre-wrap">{msg.text}</div>
+                  {msg.sender === 'assistant' && (
+                    <div className="pt-1.5 border-t border-slate-200/70 flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const nextVal = personalNote ? `${personalNote}\n\n🤖 AI Ментор:\n${msg.text}` : `🤖 AI Ментор:\n${msg.text}`;
+                          handleNoteChange(nextVal);
+                        }}
+                        className="text-[11px] font-bold text-indigo-700 hover:text-indigo-900 cursor-pointer"
+                      >
+                        + Запиши в личния бележник ↓
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+              {isMentorLoading && (
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-indigo-700 font-semibold flex items-center gap-2">
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-indigo-600" />
+                  <span>Gemini 3.8 Flash подготвя академичен отговор по стандартите на МОН...</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {mentorError && (
+            <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-xs">
+              {mentorError}
+            </div>
+          )}
+
+          {/* Custom Question Input Bar */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              void handleAskMentor();
+            }}
+            className="flex items-center gap-2"
+          >
+            <input
+              type="text"
+              value={mentorQuestion}
+              onChange={(e) => setMentorQuestion(e.target.value)}
+              placeholder={`Попитай AI ментора всичко за „${lesson.title.slice(0, 42)}...“`}
+              className="flex-1 px-3.5 py-2 rounded-xl bg-white border border-indigo-200 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500"
+            />
+            <button
+              type="submit"
+              disabled={isMentorLoading || !mentorQuestion.trim()}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-colors cursor-pointer disabled:opacity-50 shrink-0"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>Попитай</span>
+            </button>
+          </form>
+        </div>
 
         {/* Interactive Personal Study Notes / Scratchpad */}
         <div className="my-6 p-4 sm:p-5 rounded-xl bg-amber-50/60 border border-amber-200/90 space-y-3">

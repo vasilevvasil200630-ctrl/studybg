@@ -744,7 +744,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
           
           {/* Widget A: Live Interactive "Question of the Day" (7 cols on lg) */}
-          <div className="lg:col-span-7 p-5 sm:p-6 rounded-3xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between space-y-4">
+          <div className="lg:col-span-7 p-5 sm:p-6 rounded-3xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between space-y-4 cv-widget">
             <div className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
                 <div className="flex items-center gap-2">
@@ -897,7 +897,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
           </div>
 
           {/* Widget B: Live Study Focus Timer (Pomodoro) & Student Telemetry (5 cols on lg) */}
-          <div className="lg:col-span-5 p-5 sm:p-6 rounded-3xl bg-slate-900 text-white shadow-sm flex flex-col justify-between space-y-5">
+          <div className="lg:col-span-5 p-5 sm:p-6 rounded-3xl bg-slate-900 text-white shadow-sm flex flex-col justify-between space-y-5 cv-widget">
             
             {/* Pomodoro Focus Timer Header */}
             <div className="space-y-4">

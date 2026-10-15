@@ -174,7 +174,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
     // 2. Image with active Gemini Key: Run OCR and present in transparent review
     if (hasGemini && file.type.startsWith('image/')) {
       setIsScanning(true);
-      setScanStep('Google Gemini 1.5 Flash Vision разчита ръкописа от снимката...');
+      setScanStep('Google Gemini 3.8 Flash Vision разчита ръкописа от снимката...');
       try {
         const geminiExtracted = await extractNotebookTextWithGemini(file);
         setIsScanning(false);
@@ -553,7 +553,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
               ))}
 
               <a
-                href="https://maturaplus.bg"
+                href="https://maturaplus.eu"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-[11px] font-semibold transition-all shadow-2xs"
@@ -708,7 +708,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
               </span>
               {hasGemini ? (
                 <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">
-                  Google Gemini 1.5 Flash Vision активен
+                  Google Gemini 3.8 Flash Vision активен
                 </span>
               ) : (
                 <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-[10px]">

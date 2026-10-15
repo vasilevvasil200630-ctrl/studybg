@@ -60,6 +60,18 @@ body {
   contain-intrinsic-size: auto none auto 220px;
 }
 
+/* Isolate high-frequency interactive widgets (Pomodoro timer, live trainers) to prevent global reflows */
+.cv-widget {
+  contain: layout style paint;
+}
+
+@supports not (content-visibility: auto) {
+  .cv-auto,
+  .cv-card {
+    contain: layout style paint;
+  }
+}
+
 /* Official A4 Print Engine: Preserve colors, badges, and prevent page-break clipping */
 @media print {
   @page {

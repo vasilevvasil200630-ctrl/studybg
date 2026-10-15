@@ -36,7 +36,7 @@ export const isGeminiConfigured = (): boolean => {
   return getActiveGeminiApiKey().length > 10;
 };
 
-const GEMINI_MODEL = 'gemini-1.5-flash';
+const GEMINI_MODEL = 'gemini-3.8-flash';
 
 export const getGeminiApiUrl = (): string => {
   return `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${getActiveGeminiApiKey()}`;
@@ -58,7 +58,7 @@ export const testGeminiApiKey = async (customKey?: string): Promise<{ success: b
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: 'Отговори с точно една дума: „Готов“.' }] }],
-        generationConfig: { maxOutputTokens: 10 }
+        generationConfig: { maxOutputTokens: 512 }
       })
     });
 
@@ -67,7 +67,7 @@ export const testGeminiApiKey = async (customKey?: string): Promise<{ success: b
       return { success: false, message: `Грешка при връзка с Google Gemini: ${err.slice(0, 100)}` };
     }
 
-    return { success: true, message: 'Google Gemini Vision е успешно свързан и готов за работа!' };
+    return { success: true, message: 'Google Gemini 3.8 Flash Vision е успешно свързан и готов за работа!' };
   } catch (err: any) {
     return { success: false, message: `Мрежова грешка при свързване с Gemini: ${err?.message || 'Опитайте отново'}` };
   }
@@ -123,7 +123,7 @@ export const extractNotebookTextWithGemini = async (file: File): Promise<string>
     ],
     generationConfig: {
       temperature: 0.2,
-      maxOutputTokens: 1024
+      maxOutputTokens: 4096
     }
   };
 
@@ -198,7 +198,7 @@ export const askGeminiMentor = async (
     contents,
     generationConfig: {
       temperature: 0.5,
-      maxOutputTokens: 800
+      maxOutputTokens: 2048
     }
   };
 
@@ -375,7 +375,7 @@ ${trimmed}
       ],
       generationConfig: {
         temperature: 0.2,
-        maxOutputTokens: 1500
+        maxOutputTokens: 4096
       }
     };
 

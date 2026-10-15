@@ -49,10 +49,45 @@ body {
   scrollbar-width: none;
 }
 
-/* Modern Web CWV Optimization: Defer layout & paint for offscreen sections */
+/* Modern Web CWV Optimization: Defer layout & paint for offscreen sections and cards */
 .cv-auto {
   content-visibility: auto;
-  contain-intrinsic-size: auto 480px;
+  contain-intrinsic-size: auto none auto 480px;
+}
+
+.cv-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto none auto 220px;
+}
+
+/* Official A4 Print Engine: Preserve colors, badges, and prevent page-break clipping */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .cv-auto,
+  .cv-card {
+    content-visibility: visible !important;
+    contain-intrinsic-size: none !important;
+  }
+
+  section,
+  article,
+  table,
+  tr,
+  .print-avoid-break {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
 }
 
 /* Respect user motion preferences for accessibility and GPU efficiency */
@@ -66,4 +101,5 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
 

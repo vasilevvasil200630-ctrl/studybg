@@ -31,7 +31,7 @@ import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import type { CultureSubTab } from './CultureHero';
 import { MaturaPlusBridgeBanner } from './MaturaPlusBridgeBanner';
-import { UNSOLVED_MYSTERIES_DATA } from '../data/generalKnowledgeData';
+import type { UnsolvedMysteryItem } from '../data/generalKnowledgeData';
 import {
   SCHOOL_SPECIALTIES_SECTIONS,
   GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX
@@ -249,6 +249,21 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
     };
   }, [selectedOptionIdx]);
 
+  const [mysteriesPool, setMysteriesPool] = useState<UnsolvedMysteryItem[]>([]);
+
+  useEffect(() => {
+    if (!omniSearchQuery.trim() || mysteriesPool.length > 0) return;
+    let active = true;
+    import('../data/generalKnowledgeData').then((m) => {
+      if (active) {
+        setMysteriesPool(m.UNSOLVED_MYSTERIES_DATA);
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [omniSearchQuery, mysteriesPool.length]);
+
   // Omni-search filtered results
   const omniResults = useMemo(() => {
     const q = omniSearchQuery.trim().toLowerCase();
@@ -264,7 +279,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       )
       .slice(0, 6);
 
-    const matchedMysteries = UNSOLVED_MYSTERIES_DATA.filter(
+    const matchedMysteries = mysteriesPool.filter(
       (m) =>
         m.title.toLowerCase().includes(q) ||
         m.subtitle.toLowerCase().includes(q) ||
@@ -277,7 +292,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       matchedMysteries,
       total: matchedLessons.length + matchedMysteries.length
     };
-  }, [omniSearchQuery, lessons]);
+  }, [omniSearchQuery, lessons, mysteriesPool]);
 
   // Curated DZI 12 High-Yield Lessons
   const dziLessons = lessons.filter(
@@ -969,7 +984,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       {/* ========================================================================= */}
       {/* 2.5 SPECIAL SECTIONS: ALL HIGH SCHOOLS, SPECIALTIES & GRADES 8-12 MATRIX */}
       {/* ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
         <div className="rounded-3xl bg-white border-2 border-indigo-200/90 shadow-sm p-5 sm:p-8 space-y-7">
           {/* Header */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-100">
@@ -1193,7 +1208,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       {/* ========================================================================= */}
       {/* 2.8 UNIVERSITY ADMISSION COMPASS & LIVE FLASHCARD FLIP-DECK */}
       {/* ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
           
           {/* Left Panel (7 cols): Interactive University & Career Admission Compass */}
@@ -1608,7 +1623,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       {/* ========================================================================= */}
       {/* 3. INTERACTIVE LABORATORIES & SPECIALIZED MODULES GRID */}
       {/* ========================================================================= */}
-      <section id="pillars" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="pillars" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
         <div className="text-center max-w-2xl mx-auto mb-8">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-bold mb-2">
             <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
@@ -1846,7 +1861,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       {/* ========================================================================= */}
       {/* 4. CURATED EXAM PATHWAYS: ALL 108 MON LESSONS WITH MULTI-ACTION LAUNCH */}
       {/* ========================================================================= */}
-      <section id="curriculum" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="curriculum" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
         <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-xs">
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
@@ -2046,7 +2061,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       {/* ========================================================================= */}
       {/* 5. SMARTSCAN AI BANNER: NOTEBOOK CAMERA DIAGNOSTIC */}
       {/* ========================================================================= */}
-      <section id="smartscan" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="smartscan" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
         <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-3 max-w-2xl text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-400/30">
@@ -2085,7 +2100,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       {/* ========================================================================= */}
       {/* 6. CULTURAL CONTEXT & HISTORICAL MYSTERIES (PORTAL 2 BRIDGE) */}
       {/* ========================================================================= */}
-      <section id="culture-preview" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="culture-preview" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
         <div className="p-6 sm:p-8 rounded-3xl bg-amber-50/70 border border-amber-200/90 shadow-xs flex flex-col md:flex-row items-center justify-between gap-6 text-left">
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-200/70 text-amber-900 border border-amber-300">
@@ -2124,7 +2139,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       {/* ========================================================================= */}
       {/* 7. PARTNERSHIP / SYNERGY BRIDGE TO MATURA+ (https://maturaplus.eu) */}
       {/* ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
         <MaturaPlusBridgeBanner source="hero" />
       </section>
 

@@ -922,7 +922,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
       </div>
 
       {/* СЕКЦИЯ 2: Пълна матрица на ВСИЧКИ предмети по класове (8., 9., 10., 11. и 12. клас) */}
-      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 space-y-6 shadow-xl">
+      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 space-y-6 shadow-xl cv-auto">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
           <div className="space-y-1">
             <h2 className="text-xl sm:text-2xl font-extrabold text-white flex items-center gap-2.5">
@@ -1081,7 +1081,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
       </div>
 
       {/* СЕКЦИЯ 3: Интерактивен калкулатор за Диплома за средно образование (8.–12. клас) и ДИППК (Трета СПК) */}
-      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 space-y-6 shadow-xl">
+      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 space-y-6 shadow-xl cv-auto">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
           <div className="space-y-1">
             <h2 className="text-xl sm:text-2xl font-extrabold text-white flex items-center gap-2.5">
@@ -1331,7 +1331,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
       </div>
 
       {/* СЕКЦИЯ 4: Интерактивен Тренажор за Защита на Дипломен проект пред Държавна изпитна комисия (ДИППК — Трета СПК) */}
-      <div className="rounded-3xl bg-slate-900/90 border border-emerald-500/30 p-6 sm:p-8 shadow-2xl space-y-6">
+      <div className="rounded-3xl bg-slate-900/90 border border-emerald-500/30 p-6 sm:p-8 shadow-2xl space-y-6 cv-auto">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
           <div className="space-y-1.5">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold uppercase tracking-wider">
@@ -1458,7 +1458,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
       </div>
 
       {/* СЕКЦИЯ 5: Интерактивен Калкулатор за Приемен Бал след 7. клас (НВО max 500 т.) и Кандидат-студентски Бал за ВУЗ */}
-      <div className="rounded-3xl bg-slate-900/90 border border-indigo-500/30 p-6 sm:p-8 shadow-2xl space-y-6">
+      <div className="rounded-3xl bg-slate-900/90 border border-indigo-500/30 p-6 sm:p-8 shadow-2xl space-y-6 cv-auto">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
           <div className="space-y-1">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-bold uppercase tracking-wider">

@@ -1,7 +1,7 @@
 import { BULGARIAN_CURRICULUM_TREE, type CurriculumSubDomain, type CurriculumDomain } from '../data/bulgarianCurriculumTree';
 import type { LessonData } from '../types';
 import { generateLessonFromInput } from './aiGenerator';
-import { CURRICULUM_LESSONS } from '../data/curriculumDatabase';
+import { getCachedOrCoreLessons } from '../data/curriculumDatabase';
 
 export interface NotebookDiagnosis {
   isMatched: boolean;
@@ -20,6 +20,7 @@ export interface NotebookDiagnosis {
 
 export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): NotebookDiagnosis {
   const combined = `${fileName} ${inputText}`.toLowerCase().trim();
+  const activeLessonsPool = getCachedOrCoreLessons();
   
   if (!combined || combined.length < 3) {
     return {
@@ -34,7 +35,7 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
       missingCrucialPoints: ['Моля въведете текст от вашите записки или изберете тема от каталога.'],
       detectedTraps: [],
       teacherAdvice: 'За да извършим точен одит, са необходими ключови понятия или заглавие на урок.',
-      lessonData: CURRICULUM_LESSONS[0]
+      lessonData: activeLessonsPool[0]
     };
   }
 
@@ -82,9 +83,9 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
     }
   }
 
-  // 2. If no strong match in tree, search CURRICULUM_LESSONS database directly
+  // 2. If no strong match in tree, search full activeLessonsPool database directly
   if (!bestMatch || bestMatch.score < 2) {
-    for (const lesson of CURRICULUM_LESSONS) {
+    for (const lesson of activeLessonsPool) {
       let lessonScore = 0;
       const matched: string[] = [];
       const titleClean = lesson.title.toLowerCase();
@@ -138,7 +139,7 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
       missingCrucialPoints: ['Не са открити съвпадения с държавните образователни стандарти на МОН в предоставения текст.'],
       detectedTraps: ['Въведете конкретни термини, формули или исторически личности от учебника.'],
       teacherAdvice: 'Препоръчва се да изберете конкретен предмет и тема от каталога на МОН за провеждане на структуриран одит.',
-      lessonData: CURRICULUM_LESSONS[0]
+      lessonData: activeLessonsPool[0]
     };
   }
 
@@ -167,7 +168,7 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
   else gradeEstimate = 'Начално ниво (Препоръчва се попълване на пропуските)';
 
   // Check if we have an existing rich lesson in curriculum database
-  const existing = CURRICULUM_LESSONS.find(
+  const existing = activeLessonsPool.find(
     l => l.title.toLowerCase().includes(matched.subDomain.name.toLowerCase().slice(0, 15)) ||
          matched.subDomain.name.toLowerCase().includes(l.title.toLowerCase().slice(0, 15))
   );

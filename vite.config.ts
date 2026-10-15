@@ -12,6 +12,9 @@ export default defineConfig({
   build: {
     target: 'es2022',
     cssMinify: true,
+    modulePreload: {
+      polyfill: false,
+    },
     chunkSizeWarningLimit: 525,
     rollupOptions: {
       output: {
@@ -46,6 +49,9 @@ export default defineConfig({
           }
           if (id.includes('bulgarianCurriculumTree')) {
             return 'data-curriculum-tree';
+          }
+          if (id.includes('src/data/monFormulaSheets')) {
+            return 'data-formula-sheets';
           }
           if (id.includes('src/data/generalKnowledgeData') || id.includes('src/data/cultureExpansionData')) {
             return 'data-culture';

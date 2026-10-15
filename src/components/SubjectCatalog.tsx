@@ -240,7 +240,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
             <div
               key={lesson.id}
               onClick={() => onSelectLesson(lesson)}
-              className={`p-4 sm:p-5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between group ${
+              className={`cv-card p-4 sm:p-5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between group ${
                 isCurrent
                   ? 'bg-blue-50/70 border-blue-400 shadow-xs ring-1 ring-blue-400/40'
                   : isJuniorLesson

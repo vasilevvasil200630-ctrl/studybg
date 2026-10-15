@@ -5877,6 +5877,10 @@ export const CURRICULUM_LESSONS: LessonData[] = buildInterleavedCurriculum(
 
 let cachedFullCurriculum: LessonData[] | null = null;
 
+export function getCachedOrCoreLessons(): LessonData[] {
+  return cachedFullCurriculum || CURRICULUM_LESSONS;
+}
+
 export async function loadFullCurriculumLessons(): Promise<LessonData[]> {
   if (cachedFullCurriculum) {
     return cachedFullCurriculum;
@@ -5897,4 +5901,5 @@ export async function loadFullCurriculumLessons(): Promise<LessonData[]> {
   cachedFullCurriculum = buildInterleavedCurriculum(fullRaw);
   return cachedFullCurriculum;
 }
+
 

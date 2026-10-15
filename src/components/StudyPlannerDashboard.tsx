@@ -655,7 +655,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
       {/* ========================================================================= */}
       {/* 3. INTERACTIVE WEEKLY SCHEDULE GENERATOR ("МОЯТ СЕДМИЧЕН ГРАФИК ЗА 6.00") */}
       {/* ========================================================================= */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-xs space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-xs space-y-6 cv-auto">
         
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-100">
           <div className="space-y-1">
@@ -808,7 +808,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
       {/* ========================================================================= */}
       {/* 4. INTERACTIVE MASTERY CHECKLIST: AUTHORS (15) & CURRICULUM LESSONS */}
       {/* ========================================================================= */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-xs space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-xs space-y-6 cv-auto">
         
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
           <div>
@@ -896,7 +896,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
               return (
                 <div
                   key={lesson.id}
-                  className={`p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3 ${
+                  className={`cv-card p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3 ${
                     isMastered
                       ? 'bg-blue-50/60 border-blue-300'
                       : 'bg-slate-50/60 border-slate-200'
@@ -941,7 +941,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
       {/* ========================================================================= */}
       {/* 5. TARGET SCORE & DIPLOMA STRATEGY MATRIX (НВО / ДЗИ / ТРЕТА СПК)         */}
       {/* ========================================================================= */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white border border-slate-800 shadow-lg space-y-5">
+      <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white border border-slate-800 shadow-lg space-y-5 cv-auto">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
           <div>
             <div className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">

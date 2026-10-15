@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useTransition, lazy, Suspense } from 'react';
 import { Navbar, type AppNavTab } from './components/Navbar';
 import { CultureHero, type CultureSubTab } from './components/CultureHero';
 import { Footer } from './components/Footer';
@@ -75,6 +75,36 @@ const STUDY_TABS: AppNavTab[] = [
   'grammar', 'moduletwo', 'literature', 'mathlab', 'sciencelab', 'oralexam', 'atlas', 'english', 'civics', 'blitz'
 ];
 
+function prefetchStudyTabChunk(tab: AppNavTab): void {
+  switch (tab) {
+    case 'home': void import('./components/HomeLandingView'); break;
+    case 'specialties': void import('./components/SchoolsSpecialtiesHub'); break;
+    case 'planner': void import('./components/StudyPlannerDashboard'); break;
+    case 'summary': void import('./components/SummaryView'); break;
+    case 'oralexam': void import('./components/OralExamSimulatorLab'); break;
+    case 'simulator': void import('./components/ExamSimulatorView'); break;
+    case 'sciencelab': void import('./components/ScienceDziLab'); break;
+    case 'mathlab': void import('./components/MathStemLab'); break;
+    case 'grammar': void import('./components/GrammarTrainerLab'); break;
+    case 'moduletwo': void import('./components/ModuleTwoBelLab'); break;
+    case 'literature': void import('./components/LiteratureCanonView'); break;
+    case 'english': void import('./components/EnglishDziLab'); break;
+    case 'civics': void import('./components/CivicsEuLab'); break;
+    case 'atlas': void import('./components/HistoryGeoAtlasLab'); break;
+    case 'blitz': void import('./components/SpeedBlitzLab'); break;
+    case 'generator': void import('./components/ExamTestPaperGenerator'); break;
+    case 'calculator': void import('./components/MonGradeCalculatorView'); break;
+    case 'catalog': void import('./components/SubjectCatalog'); break;
+    case 'quiz': void import('./components/QuizView'); break;
+    case 'flashcards': void import('./components/FlashcardsView'); break;
+    case 'audit': void import('./components/NotebookAuditor'); break;
+    case 'cases': void import('./components/HistoricalCasesView'); break;
+    case 'errorbank': void import('./components/ErrorBankView'); break;
+    case 'scan': void import('./components/SmartScan'); break;
+    default: break;
+  }
+}
+
 const ViewLoadingSkeleton = () => (
   <div className="p-8 rounded-2xl bg-white border border-slate-200 animate-pulse flex items-center justify-center min-h-[300px] shadow-xs">
     <div className="flex items-center gap-3 text-slate-500 text-xs sm:text-sm font-medium">
@@ -85,6 +115,9 @@ const ViewLoadingSkeleton = () => (
 );
 
 export function App() {
+  // Non-blocking transition state for smooth INP (Interaction to Next Paint)
+  const [isPendingTab, startTabTransition] = useTransition();
+
   // Top-level portal partition: 'study' (Academic Academy & OCR) vs 'culture' (General Knowledge & Mysteries)
   const [portalMode, setPortalMode] = useState<'study' | 'culture'>('study');
   const [cultureSubTab, setCultureSubTab] = useState<CultureSubTab>('mysteries');
@@ -96,10 +129,24 @@ export function App() {
     let isMounted = true;
     loadFullCurriculumLessons().then((fullLessons) => {
       if (!isMounted) return;
-      setLessons((prev) => {
-        const customScans = prev.filter((l) => !fullLessons.some((fl) => fl.id === l.id));
-        return [...customScans, ...fullLessons];
+      startTabTransition(() => {
+        setLessons((prev) => {
+          const customScans = prev.filter((l) => !fullLessons.some((fl) => fl.id === l.id));
+          return [...customScans, ...fullLessons];
+        });
       });
+      // Pre-warm the most frequently visited workspace modules during browser idle time
+      const warmChunks = () => {
+        if (!isMounted) return;
+        void import('./components/SummaryView');
+        void import('./components/StudyPlannerDashboard');
+        void import('./components/SubjectCatalog');
+      };
+      if ('requestIdleCallback' in window) {
+        (window as unknown as { requestIdleCallback: (cb: () => void) => number }).requestIdleCallback(warmChunks);
+      } else {
+        setTimeout(warmChunks, 800);
+      }
     });
     return () => {
       isMounted = false;
@@ -111,6 +158,38 @@ export function App() {
   const [isFormulaModalOpen, setIsFormulaModalOpen] = useState(false);
   const [isQuickLessonModalOpen, setIsQuickLessonModalOpen] = useState(false);
   const [practiceQuestions, setPracticeQuestions] = useState<QuizQuestion[] | null>(null);
+
+  // Dynamic document.title synchronization for SEO, accessibility, and multi-tab clarity
+  useEffect(() => {
+    if (portalMode === 'culture') {
+      document.title = 'Обща култура, 40 Секретни досиета & Мистична карта | StudyBG';
+      return;
+    }
+    const tabTitleMap: Partial<Record<AppNavTab, string>> = {
+      home: 'StudyBG — Национална дигитална академия за НВО, ДЗИ и Трета СПК (8.–12. клас)',
+      specialties: 'Училища, 64+ Специалности, ДИППК & Калкулатор за Бал (7. и 12. кл.) | StudyBG',
+      planner: 'Моят План за Отличен 6.00, Стратегия & Седмичен График | StudyBG',
+      oralexam: 'Гласов Симулатор: Устен изпит, Защита на Дипломен проект (ДИППК) & ВУЗ | StudyBG',
+      sciencelab: 'STEM Лаборатория: Биология (ДНК/PCR), Химия (pH/ОХ) и Физика (Карно/3Ф) | StudyBG',
+      mathlab: 'Математика & STEM Лаборатория за НВО 10 и ДЗИ 12 | StudyBG',
+      moduletwo: 'Модул 2 БЕЛ & Архитект за Задача 41 (Есе и ИС — 30 т.) | StudyBG',
+      grammar: 'Тренажор по Граматика, Правопис и Пунктуация (Модул 1 БЕЛ) | StudyBG',
+      literature: 'Литературен Канон (15 автори за ДЗИ) & Генератор на Тези | StudyBG',
+      english: 'Английски език (CEFR B1.1, B2 & C1 + Технически ESP за Трета СПК) | StudyBG',
+      civics: 'Конституция на РБ, ЕС & Кодекс на труда / ЗБУТ (ДИППК) | StudyBG',
+      atlas: 'Интерактивен Атлас: История (681–1947), NUTS 2 & Енергетика/ИКТ | StudyBG',
+      blitz: 'Speed Blitz 6.00 (45 въпроса & Отборен Дуел за 2 играчи) | StudyBG',
+      simulator: '100-точков Изпитен Симулатор за ДЗИ, НВО и Трета СПК | StudyBG',
+      generator: 'Генератор на Тестове (Група А/Б) & Държавни изпитни билети за ДИППК | StudyBG',
+      calculator: 'МОН Калкулатор за Оценка, ВУЗ Бал и Свидетелство Трета СПК (EUROPASS) | StudyBG',
+      catalog: `Пълен Учебен Каталог (${lessons.length} теми за 8.–12. клас) | StudyBG`,
+      cases: 'Академични Казуси с Архивни Извори (11.–12. клас) | StudyBG',
+      errorbank: 'Интерактивна Банка с Грешки и Персонален Тест | StudyBG',
+    };
+    document.title =
+      tabTitleMap[activeTab] ||
+      `${currentLesson.title} (${currentLesson.grade} • ${currentLesson.subject}) | StudyBG`;
+  }, [portalMode, activeTab, cultureSubTab, currentLesson, lessons.length]);
 
   // Legal Policies and Cookie Consent State
   const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
@@ -125,9 +204,18 @@ export function App() {
   const unresolvedErrorCount = errorBankService.getUnresolvedCount();
 
   const handleSelectPortalMode = (mode: 'study' | 'culture') => {
-    setPortalMode(mode);
+    if (mode === 'culture') {
+      void import('./components/CultureHubView');
+    } else {
+      void import('./components/HomeLandingView');
+    }
+    startTabTransition(() => {
+      setPortalMode(mode);
+      if (mode === 'study') {
+        setActiveTab('home');
+      }
+    });
     if (mode === 'study') {
-      setActiveTab('home');
       if (window.location.hash) {
         window.history.pushState(null, '', window.location.pathname);
       }
@@ -142,8 +230,11 @@ export function App() {
   };
 
   const handleNavigateStudyTab = (tab: AppNavTab) => {
-    setPortalMode('study');
-    setActiveTab(tab);
+    prefetchStudyTabChunk(tab);
+    startTabTransition(() => {
+      setPortalMode('study');
+      setActiveTab(tab);
+    });
     if (tab === 'home') {
       if (window.location.hash) {
         window.history.pushState(null, '', window.location.pathname);
@@ -159,8 +250,11 @@ export function App() {
   };
 
   const handleNavigateCultureTab = (subTab: CultureSubTab) => {
-    setPortalMode('culture');
-    setCultureSubTab(subTab);
+    void import('./components/CultureHubView');
+    startTabTransition(() => {
+      setPortalMode('culture');
+      setCultureSubTab(subTab);
+    });
     if (window.location.hash !== `#${subTab}`) {
       window.history.pushState(null, '', `#${subTab}`);
     }
@@ -169,9 +263,12 @@ export function App() {
   };
 
   const handleLessonSelected = (lesson: LessonData, preferredTab: AppNavTab = 'summary') => {
-    setPortalMode('study');
-    setCurrentLesson(lesson);
-    setActiveTab(preferredTab);
+    prefetchStudyTabChunk(preferredTab);
+    startTabTransition(() => {
+      setPortalMode('study');
+      setCurrentLesson(lesson);
+      setActiveTab(preferredTab);
+    });
     if (window.location.hash !== `#${preferredTab}`) {
       window.history.pushState(null, '', `#${preferredTab}`);
     }
@@ -655,7 +752,11 @@ export function App() {
 
               {/* Right Column: Clean Main Content Area Strictly Scoped to Active Tab */}
               <div className="lg:col-span-8 xl:col-span-9 min-w-0">
-                <div className="rounded-2xl bg-white border border-slate-200 p-4 sm:p-6 lg:p-7 shadow-xs transition-all">
+                <div
+                  className={`rounded-2xl bg-white border border-slate-200 p-4 sm:p-6 lg:p-7 shadow-xs transition-opacity duration-150 ${
+                    isPendingTab ? 'opacity-80' : 'opacity-100'
+                  }`}
+                >
                   
                   <Suspense fallback={<ViewLoadingSkeleton />}>
                     {activeTab === 'specialties' && (

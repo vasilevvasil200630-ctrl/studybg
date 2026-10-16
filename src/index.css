@@ -21,6 +21,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Маркиране на текст в академичното синьо */
+::selection {
+  background-color: var(--color-blue-100);
+  color: var(--color-blue-900);
+}
+
 /* Custom subtle scrollbars */
 ::-webkit-scrollbar {
   width: 7px;

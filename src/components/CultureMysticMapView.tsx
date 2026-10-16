@@ -248,7 +248,7 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
           onClick={() => setShowLeyLines(!showLeyLines)}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all shrink-0 cursor-pointer ${
             showLeyLines
-              ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-sm'
+              ? 'bg-amber-500 text-amber-950 border-amber-400 shadow-sm'
               : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
           }`}
         >
@@ -332,7 +332,7 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
                   <polygon
                     points="48,77 57,82 52,85"
                     fill="rgba(168, 85, 247, 0.18)"
-                    stroke="#c084fc"
+                    stroke="#94a3b8"
                     strokeWidth="0.7"
                   />
                   {/* 3. Thracian Solar Axis: Starosel (51,53) -> Perperikon (57,82) -> Strandzha Bastet (82,79) -> Black Sea (91,50) */}
@@ -355,9 +355,9 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
                 zone.clearance === 'top_secret'
                   ? 'bg-rose-500 border-rose-200 text-white'
                   : zone.clearance === 'anomaly'
-                  ? 'bg-purple-500 border-purple-200 text-white'
+                  ? 'bg-slate-500 border-slate-200 text-white'
                   : zone.clearance === 'ancient_code'
-                  ? 'bg-amber-500 border-amber-200 text-slate-950'
+                  ? 'bg-amber-500 border-amber-200 text-amber-950'
                   : 'bg-sky-500 border-sky-200 text-white';
 
               return (
@@ -383,7 +383,7 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
                   <span
                     className={`mt-1 block px-1.5 py-0.5 rounded text-[9px] font-mono font-bold whitespace-nowrap shadow-sm ${
                       isSelected
-                        ? 'bg-amber-400 text-slate-950'
+                        ? 'bg-amber-400 text-amber-950'
                         : 'bg-slate-900/90 text-slate-200 border border-slate-700'
                     }`}
                   >
@@ -402,7 +402,7 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
                 <span>Военни/Секретни</span>
               </span>
               <span className="inline-flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-purple-500" />
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-500" />
                 <span>Енергийни/Магнитни</span>
               </span>
               <span className="inline-flex items-center gap-1">

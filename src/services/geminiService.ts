@@ -1,10 +1,15 @@
 import type { LessonData } from '../types';
 import { verbalGrade } from '../lib/monGradeScale';
+import { isSupabaseConfigured } from './supabaseConfig';
 
-// Основният модел може да се смени с VITE_GEMINI_MODEL без промяна в кода.
-const PRIMARY_MODEL = (import.meta.env.VITE_GEMINI_MODEL as string | undefined)?.trim() || 'gemini-3.8-flash';
-// Стабилен модел, към който минаваме автоматично, ако основният върне 404.
+// Стабилен модел, към който минаваме автоматично, ако зададеният с VITE_GEMINI_MODEL върне 404.
 const FALLBACK_MODEL = 'gemini-2.5-flash';
+// Основният модел може да се смени с VITE_GEMINI_MODEL без промяна в кода.
+const PRIMARY_MODEL = (import.meta.env.VITE_GEMINI_MODEL as string | undefined)?.trim() || FALLBACK_MODEL;
+
+// Етикети за интерфейса — без твърдо закодирани версии на модела в компонентите
+export const AI_EXAMINER_LABEL = 'AI Екзаминатор';
+export const AI_PROVIDER_LABEL = 'Google Gemini';
 const REQUEST_TIMEOUT_MS = 30_000;
 const MAX_RETRIES = 2;
 const API_KEY_STORAGE_KEY = 'studybg_gemini_api_key';
@@ -72,6 +77,19 @@ export const removeStoredGeminiApiKey = (): void => {
 
 export const isGeminiConfigured = (): boolean => getActiveGeminiApiKey().length > 10;
 
+/** Моделът, който реално се използва (след евентуален 404 fallback). */
+export const getActiveGeminiModel = (): string => resolvedModel ?? PRIMARY_MODEL;
+
+// Причина, поради която Supabase proxy-то е недостъпно в тази сесия (недеплойната функция и т.н.)
+let proxyUnavailableReason: string | null = null;
+
+/** Без собствен ключ, но с истински Supabase проект → опитваме Edge Function `gemini-proxy`. */
+export const isAiProxyCandidate = (): boolean =>
+  !isGeminiConfigured() && isSupabaseConfigured() && proxyUnavailableReason === null;
+
+/** Има ли път до AI: собствен ключ или (неизпробвано/работещо) Supabase proxy. */
+export const isAiAvailable = (): boolean => isGeminiConfigured() || isAiProxyCandidate();
+
 // ---------------------------------------------------------------------------
 // Централен HTTP helper: timeout, retry при 429/5xx, ключ в хедър, fallback модел
 // ---------------------------------------------------------------------------
@@ -96,9 +114,59 @@ interface GeminiRequest {
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
+// Supabase Edge Function `gemini-proxy`: ключът е на сървъра, лимитът е на потребител (ai_usage)
+async function callGeminiViaProxy(body: GeminiRequest): Promise<GeminiResponse> {
+  if (proxyUnavailableReason) throw new GeminiError(proxyUnavailableReason);
+
+  const { supabase, ensureSupabaseSession } = await import('./supabaseClient');
+  const session = await ensureSupabaseSession();
+  if (!session) {
+    proxyUnavailableReason = 'AI сървърът изисква сесия в Supabase (анонимният вход не е включен).';
+    throw new GeminiError(proxyUnavailableReason);
+  }
+
+  for (let attempt = 0; ; attempt++) {
+    const { data, error } = await supabase.functions.invoke<GeminiResponse>('gemini-proxy', {
+      body: { ...body, model: PRIMARY_MODEL },
+      timeout: REQUEST_TIMEOUT_MS
+    });
+    if (!error && data) {
+      resolvedModel = resolvedModel ?? PRIMARY_MODEL;
+      return data;
+    }
+
+    const response = (error as { context?: unknown } | null)?.context;
+    const status = response instanceof Response ? response.status : undefined;
+    const detail =
+      response instanceof Response ? ((await response.json().catch(() => null)) as { error?: string } | null) : null;
+
+    if (status === 404 || status === 503 || detail?.error === 'proxy_not_configured') {
+      // Функцията не е деплойната или няма GEMINI_API_KEY — не опитваме повече в тази сесия
+      proxyUnavailableReason = 'AI сървърът (Supabase Edge Function) още не е включен.';
+      throw new GeminiError(proxyUnavailableReason, status);
+    }
+    if (status === 401) {
+      proxyUnavailableReason = 'AI сървърът не прие сесията.';
+      throw new GeminiError(proxyUnavailableReason, status);
+    }
+    if (detail?.error === 'daily_limit_reached') {
+      throw new GeminiError('Достигнахте дневния лимит за AI оценки. Опитайте отново утре.', 429);
+    }
+
+    const retryable = status === undefined || status === 429 || status >= 500;
+    if (!retryable || attempt >= MAX_RETRIES) {
+      throw new GeminiError(`AI сървърът върна грешка${status ? ` (${status})` : ''}.`, status, retryable);
+    }
+    await sleep(800 * 2 ** attempt + Math.random() * 300);
+  }
+}
+
 async function callGeminiContent(body: GeminiRequest, explicitKey?: string): Promise<GeminiResponse> {
   const apiKey = (explicitKey || getActiveGeminiApiKey()).trim();
   if (apiKey.length < 10) {
+    if (!explicitKey && isSupabaseConfigured()) {
+      return callGeminiViaProxy(body);
+    }
     throw new GeminiError('Липсва Gemini API ключ. Добавете ключ в „OCR Настройки“.');
   }
 
@@ -472,8 +540,8 @@ export const evaluateEssayWithGemini = async (
     throw new Error(`Текстът е прекалено кратък за оценяване (минимум ${ESSAY_MIN_LENGTH} знака).`);
   }
 
-  if (!isGeminiConfigured()) {
-    return buildStructuralEssayAnalysis(trimmed, rubricCriteria, 'Няма въведен Gemini API ключ.');
+  if (!isAiAvailable()) {
+    return buildStructuralEssayAnalysis(trimmed, rubricCriteria, proxyUnavailableReason ?? 'Няма въведен Gemini API ключ.');
   }
 
   const maxTotal = rubricCriteria.reduce((sum, c) => sum + c.maxPoints, 0);

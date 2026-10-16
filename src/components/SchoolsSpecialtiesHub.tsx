@@ -43,8 +43,8 @@ interface SchoolsSpecialtiesHubProps {
 }
 
 const SECTION_ICON_MAP: Record<string, React.ReactNode> = {
-  'pmg-smg-npmg': <Atom className="w-5 h-5 text-indigo-400" />,
-  'language-humanities-eg': <Languages className="w-5 h-5 text-violet-400" />,
+  'pmg-smg-npmg': <Atom className="w-5 h-5 text-blue-400" />,
+  'language-humanities-eg': <Languages className="w-5 h-5 text-slate-400" />,
   'tech-it-tues-pgknma': <Code2 className="w-5 h-5 text-emerald-400" />,
   'economics-banking-ntbg-nfsg': <TrendingUp className="w-5 h-5 text-amber-400" />,
   'architecture-construction-sgsag': <Compass className="w-5 h-5 text-cyan-400" />,
@@ -57,7 +57,7 @@ const SECTION_ICON_MAP: Record<string, React.ReactNode> = {
   'classical-languages-russian-italian-oriental': <Globe2 className="w-5 h-5 text-teal-400" />,
   'mining-metallurgy-chemical-geology': <Flame className="w-5 h-5 text-cyan-400" />,
   'security-interior-criminalistics-law': <ShieldCheck className="w-5 h-5 text-amber-400" />,
-  'applied-arts-stone-woodcarving-ceramics-cinema': <Film className="w-5 h-5 text-purple-400" />,
+  'applied-arts-stone-woodcarving-ceramics-cinema': <Film className="w-5 h-5 text-slate-400" />,
   'pedagogy-social-work-beauty-wellness-spa': <HeartHandshake className="w-5 h-5 text-pink-400" />
 };
 
@@ -528,10 +528,10 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
   return (
     <div className="space-y-8 animate-fadeIn pb-12">
       {/* Главна заглавна секция */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950/90 to-slate-900 border border-indigo-500/30 p-6 sm:p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-blue-950/90 to-slate-900 border border-blue-500/30 p-6 sm:p-8 shadow-2xl">
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="space-y-3 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-semibold tracking-wide uppercase">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-semibold tracking-wide uppercase">
               <Building2 className="w-4 h-4" />
               Национален академичен и професионален справочник • 8. – 12. клас
             </div>
@@ -545,7 +545,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
 
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3 shrink-0">
             <div className="rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3.5 text-center">
-              <div className="text-2xl font-black text-indigo-400">16</div>
+              <div className="text-2xl font-black text-blue-300">16</div>
               <div className="text-[11px] text-slate-300 font-medium">Вида гимназии & техникуми</div>
             </div>
             <div className="rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3.5 text-center">
@@ -569,7 +569,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h2 className="text-xl font-bold text-white flex items-center gap-2.5">
-              <GraduationCap className="w-6 h-6 text-indigo-400" />
+              <GraduationCap className="w-6 h-6 text-blue-400" />
               1. Изберете специална секция по вид гимназия и професионално направление (16 направления)
             </h2>
             <p className="text-xs sm:text-sm text-slate-400">
@@ -588,7 +588,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 onClick={() => setSelectedSchoolId(school.id)}
                 className={`text-left p-4 rounded-2xl border transition-all duration-200 flex flex-col justify-between gap-3 ${
                   isSelected
-                    ? 'bg-indigo-600/20 border-indigo-400 shadow-lg shadow-indigo-950/50 ring-1 ring-indigo-400/50'
+                    ? 'bg-blue-600/20 border-blue-400 shadow-lg shadow-blue-950/50 ring-1 ring-blue-400/50'
                     : 'bg-slate-900/75 border-slate-800 hover:border-slate-700 hover:bg-slate-900'
                 }`}
               >
@@ -609,7 +609,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                   </p>
                 </div>
                 <div className="flex items-center justify-between pt-2 border-t border-slate-800/80 text-xs">
-                  <span className="text-indigo-300 font-medium">
+                  <span className="text-blue-300 font-medium">
                     {school.specialties.length} специалности
                   </span>
                   <span className="inline-flex items-center gap-1 text-slate-300 font-semibold">
@@ -626,7 +626,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
           {/* Заглавие и примерни училища */}
           <div className="flex flex-col lg:flex-row justify-between gap-6 border-b border-slate-800 pb-6">
             <div className="space-y-3 max-w-3xl">
-              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-400">
+              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-400">
                 {SECTION_ICON_MAP[selectedSchool.id]}
                 <span>Специална секция • {selectedSchool.badgeText}</span>
               </div>
@@ -649,7 +649,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               <ul className="space-y-1.5 text-xs text-slate-300">
                 {selectedSchool.exampleSchools.map((ex, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="text-indigo-400 font-bold">•</span>
+                    <span className="text-blue-400 font-bold">•</span>
                     <span>{ex}</span>
                   </li>
                 ))}
@@ -669,11 +669,11 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 return (
                   <div
                     key={spec.code}
-                    className="rounded-2xl bg-slate-950/70 border border-slate-800 p-5 flex flex-col justify-between gap-4 hover:border-indigo-500/40 transition-colors"
+                    className="rounded-2xl bg-slate-950/70 border border-slate-800 p-5 flex flex-col justify-between gap-4 hover:border-blue-500/40 transition-colors"
                   >
                     <div className="space-y-3">
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="px-2.5 py-1 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-mono font-bold">
+                        <span className="px-2.5 py-1 rounded-lg bg-blue-500/15 border border-blue-500/30 text-blue-300 text-xs font-mono font-bold">
                           Код МОН: {spec.code}
                         </span>
                         <span className="text-[11px] text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
@@ -706,7 +706,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                       </span>
                       <button
                         onClick={() => handleOpenLessonById(spec.linkedLessonId)}
-                        className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors"
+                        className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors"
                       >
                         <BookOpen className="w-3.5 h-3.5" />
                         Към урока
@@ -732,7 +732,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="px-3 py-1 rounded-xl bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 font-extrabold text-sm">
+                      <span className="px-3 py-1 rounded-xl bg-blue-500/20 border border-blue-400/30 text-blue-300 font-extrabold text-sm">
                         {gp.grade}
                       </span>
                     </div>
@@ -781,7 +781,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="space-y-3">
               <h4 className="text-base font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-indigo-400" />
+                <Sparkles className="w-5 h-5 text-blue-400" />
                 Златни формули, закони и правила за специалността
               </h4>
               <div className="space-y-2.5">
@@ -790,10 +790,10 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                     key={idx}
                     className="rounded-2xl bg-slate-950/90 border border-slate-800 p-4 space-y-1.5"
                   >
-                    <div className="text-xs font-bold text-indigo-300">
+                    <div className="text-xs font-bold text-blue-300">
                       {rule.title}
                     </div>
-                    <div className="px-3 py-2 rounded-xl bg-slate-900 border border-indigo-500/30 font-mono text-xs sm:text-sm text-white font-semibold">
+                    <div className="px-3 py-2 rounded-xl bg-slate-900 border border-blue-500/30 font-mono text-xs sm:text-sm text-white font-semibold">
                       {rule.formulaOrRule}
                     </div>
                     <p className="text-xs text-slate-400">
@@ -822,7 +822,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                       className="rounded-2xl bg-slate-950/90 border border-slate-800 p-4 space-y-3"
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+                        <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/30">
                           {q.specialtyTag}
                         </span>
                         {isAnswered && (
@@ -851,7 +851,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                       <div className="grid grid-cols-1 gap-2">
                         {q.options.map((opt, optIdx) => {
                           let btnStyle =
-                            'bg-slate-900 border-slate-800 text-slate-200 hover:border-indigo-500/50';
+                            'bg-slate-900 border-slate-800 text-slate-200 hover:border-blue-500/50';
                           if (isAnswered) {
                             if (optIdx === q.correctAnswer) {
                               btnStyle =
@@ -882,7 +882,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
 
                       {isAnswered && (
                         <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-700/80 text-xs text-slate-300 leading-relaxed">
-                          <strong className="text-indigo-300">Обяснение: </strong>
+                          <strong className="text-blue-300">Обяснение: </strong>
                           {q.explanation}
                         </div>
                       )}
@@ -903,17 +903,17 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 <button
                   key={lesson.id}
                   onClick={() => onSelectLesson(lesson)}
-                  className="text-left p-3.5 rounded-2xl bg-slate-950 hover:bg-indigo-950/40 border border-slate-800 hover:border-indigo-500/50 transition-all flex items-center justify-between gap-3 group"
+                  className="text-left p-3.5 rounded-2xl bg-slate-950 hover:bg-blue-950/40 border border-slate-800 hover:border-blue-500/50 transition-all flex items-center justify-between gap-3 group"
                 >
                   <div className="min-w-0">
-                    <div className="text-[11px] font-semibold text-indigo-400 truncate">
+                    <div className="text-[11px] font-semibold text-blue-400 truncate">
                       {lesson.subject} • {lesson.grade}
                     </div>
-                    <div className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-indigo-200">
+                    <div className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-blue-200">
                       {lesson.title}
                     </div>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-300 shrink-0" />
+                  <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-blue-300 shrink-0" />
                 </button>
               ))}
             </div>
@@ -942,7 +942,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Търси предмет, специалност, тема..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
             />
           </div>
         </div>
@@ -963,7 +963,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 onClick={() => setActiveGradeFilter(gradeTab)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
                   activeGradeFilter === gradeTab
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-950/60'
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-950/60'
                     : 'bg-slate-950 text-slate-300 border border-slate-800 hover:border-slate-700'
                 }`}
               >
@@ -1008,10 +1008,10 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               key={gradeBlock.grade}
               className="rounded-2xl bg-slate-950/80 border border-slate-800/90 overflow-hidden"
             >
-              <div className="p-4 sm:p-5 bg-gradient-to-r from-indigo-950/60 via-slate-900 to-slate-900 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-950/60 via-slate-900 to-slate-900 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <div className="flex items-center gap-2.5">
-                    <span className="px-3 py-1 rounded-lg bg-indigo-500 text-white font-black text-xs sm:text-sm">
+                    <span className="px-3 py-1 rounded-lg bg-blue-500 text-white font-black text-xs sm:text-sm">
                       {gradeBlock.grade}
                     </span>
                     <span className="text-sm sm:text-base font-bold text-white">
@@ -1041,7 +1041,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                                 ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
                                 : isSectionB
                                 ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
-                                : 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30'
+                                : 'bg-blue-500/15 text-blue-300 border-blue-500/30'
                             }`}
                           >
                             {subj.category}
@@ -1065,7 +1065,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                       <div className="shrink-0 flex items-center gap-2">
                         <button
                           onClick={() => handleOpenLessonById(subj.linkedLessonId)}
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600/90 hover:bg-indigo-500 text-white text-xs font-bold transition-all shadow-sm"
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600/90 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-sm"
                         >
                           <BookOpen className="w-4 h-4" />
                           Отвори учебния модул
@@ -1098,7 +1098,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               onClick={() => setCalcSchoolMode('vocational')}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                 calcSchoolMode === 'vocational'
-                  ? 'bg-amber-500 text-slate-950 shadow-sm'
+                  ? 'bg-amber-500 text-amber-950 shadow-sm'
                   : 'text-slate-300 hover:text-white'
               }`}
             >
@@ -1108,7 +1108,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               onClick={() => setCalcSchoolMode('profiled')}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                 calcSchoolMode === 'profiled'
-                  ? 'bg-indigo-600 text-white shadow-sm'
+                  ? 'bg-blue-600 text-white shadow-sm'
                   : 'text-slate-300 hover:text-white'
               }`}
             >
@@ -1125,7 +1125,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 <span className="font-bold text-slate-200">
                   1. Среден успех от Раздел А — Задължителни предмети ООП (8.–12. клас)
                 </span>
-                <span className="font-mono font-black text-indigo-400 text-base">
+                <span className="font-mono font-black text-blue-400 text-base">
                   {oopAverage.toFixed(2)}
                 </span>
               </div>
@@ -1136,7 +1136,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 step={0.05}
                 value={oopAverage}
                 onChange={(e) => setOopAverage(parseFloat(e.target.value))}
-                className="w-full accent-indigo-500 cursor-pointer"
+                className="w-full accent-blue-500 cursor-pointer"
               />
               <div className="text-[11px] text-slate-400">
                 Включва годишните оценки от 8. до 12. клас по БЕЛ, Математика, Чужди езици, История, География, Биология, Хизика, Физика, Философия и Гражданско образование.
@@ -1234,7 +1234,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
           </div>
 
           {/* Табло с изчислени резултати */}
-          <div className="lg:col-span-5 rounded-3xl bg-gradient-to-br from-indigo-950 via-slate-950 to-slate-900 border border-indigo-500/40 p-6 space-y-5">
+          <div className="lg:col-span-5 rounded-3xl bg-gradient-to-br from-blue-950 via-slate-950 to-slate-900 border border-blue-500/40 p-6 space-y-5">
             {(() => {
               const dippkCombined =
                 calcSchoolMode === 'vocational'
@@ -1248,7 +1248,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               return (
                 <>
                   <div className="space-y-1 border-b border-slate-800 pb-4">
-                    <div className="text-xs font-bold uppercase tracking-wider text-indigo-300">
+                    <div className="text-xs font-bold uppercase tracking-wider text-blue-300">
                       Официална симулация на дипломиране (12. клас)
                     </div>
                     <div className="text-sm text-slate-300">
@@ -1259,8 +1259,8 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="p-4 rounded-2xl bg-slate-900/90 border border-indigo-500/40">
-                      <div className="text-[11px] font-bold uppercase text-indigo-300">
+                    <div className="p-4 rounded-2xl bg-slate-900/90 border border-blue-500/40">
+                      <div className="text-[11px] font-bold uppercase text-blue-300">
                         Общ успех — Диплома
                       </div>
                       <div className="text-3xl font-black text-white mt-1">
@@ -1306,7 +1306,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                     <div className="font-bold text-white">Разбивка по компоненти:</div>
                     <div className="flex justify-between">
                       <span>• Раздел А (ООП 8.–12. клас):</span>
-                      <strong className="text-indigo-300">{oopAverage.toFixed(2)}</strong>
+                      <strong className="text-blue-300">{oopAverage.toFixed(2)}</strong>
                     </div>
                     <div className="flex justify-between">
                       <span>• Раздел Б/В (Профил / Специалност):</span>
@@ -1384,8 +1384,8 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                   </h3>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-indigo-950/40 border border-indigo-500/30 space-y-1">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-indigo-300">
+                <div className="p-3.5 rounded-xl bg-blue-950/40 border border-blue-500/30 space-y-1">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-blue-300">
                     Изходни данни по задание:
                   </div>
                   <p className="text-xs sm:text-sm text-slate-200 font-mono">
@@ -1458,10 +1458,10 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
       </div>
 
       {/* СЕКЦИЯ 5: Интерактивен Калкулатор за Приемен Бал след 7. клас (НВО max 500 т.) и Кандидат-студентски Бал за ВУЗ */}
-      <div className="rounded-3xl bg-slate-900/90 border border-indigo-500/30 p-6 sm:p-8 shadow-2xl space-y-6 cv-auto">
+      <div className="rounded-3xl bg-slate-900/90 border border-blue-500/30 p-6 sm:p-8 shadow-2xl space-y-6 cv-auto">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 border border-blue-500/30 text-blue-300 text-xs font-bold uppercase tracking-wider">
               <GraduationCap className="w-3.5 h-3.5" />
               Национално класиране & Университетски прием
             </div>
@@ -1478,7 +1478,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               onClick={() => setAdmissionCalcTab('grade7_nvo')}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 admissionCalcTab === 'grade7_nvo'
-                  ? 'bg-indigo-600 text-white shadow-sm'
+                  ? 'bg-blue-600 text-white shadow-sm'
                   : 'text-slate-300 hover:text-white'
               }`}
             >
@@ -1549,7 +1549,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                   <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2">
                     <div className="flex justify-between text-xs sm:text-sm font-bold text-slate-200">
                       <span>НВО Български език и литература (0–100 т.):</span>
-                      <span className="font-mono text-indigo-400 text-base">{nvoBelPts} т.</span>
+                      <span className="font-mono text-blue-400 text-base">{nvoBelPts} т.</span>
                     </div>
                     <input
                       type="range"
@@ -1557,7 +1557,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                       max={100}
                       value={nvoBelPts}
                       onChange={(e) => setNvoBelPts(Number(e.target.value))}
-                      className="w-full accent-indigo-500 cursor-pointer"
+                      className="w-full accent-blue-500 cursor-pointer"
                     />
                   </div>
 
@@ -1610,8 +1610,8 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="p-4 rounded-2xl bg-indigo-950/60 border border-indigo-500/40 text-center">
-                      <div className="text-[11px] font-bold uppercase text-indigo-300">
+                    <div className="p-4 rounded-2xl bg-blue-950/60 border border-blue-500/40 text-center">
+                      <div className="text-[11px] font-bold uppercase text-blue-300">
                         Бал за ЕГ / НТБГ / СГСАГ (2×БЕЛ + 2×МАТ)
                       </div>
                       <div className="text-2xl sm:text-3xl font-black font-mono text-white mt-1">
@@ -1630,7 +1630,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 </div>
 
                 <div className="lg:col-span-6 rounded-2xl bg-slate-950/90 border border-slate-800 p-5 space-y-3">
-                  <div className="text-xs font-bold uppercase tracking-wider text-indigo-300">
+                  <div className="text-xs font-bold uppercase tracking-wider text-blue-300">
                     Ориентировъчно класиране за 1-ви етап по минимални балове:
                   </div>
                   <div className="space-y-2.5">
@@ -1753,7 +1753,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                     </div>
                     <div className="flex justify-between">
                       <span>• Балообразуващи предмети от дипломата:</span>
-                      <strong className="text-indigo-300">{specAverage.toFixed(2)}</strong>
+                      <strong className="text-blue-300">{specAverage.toFixed(2)}</strong>
                     </div>
                   </div>
                 </div>

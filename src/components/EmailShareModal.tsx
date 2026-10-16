@@ -43,6 +43,8 @@ export const EmailShareModal: React.FC<EmailShareModalProps> = ({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [prepared, setPrepared] = useState<{ mailtoUrl: string; plainText: string; html: string } | null>(null);
+  const [copied, setCopied] = useState(false);
 
   if (!isOpen) return null;
 
@@ -73,11 +75,11 @@ export const EmailShareModal: React.FC<EmailShareModalProps> = ({
 
     try {
       const res = await mailingService.sendEmail(params);
-      if (res.success) {
+      if (res.success && res.mailtoUrl && res.plainText) {
+        setPrepared({ mailtoUrl: res.mailtoUrl, plainText: res.plainText, html: res.previewHtml ?? '' });
         setSuccessMessage(res.message);
-        setTimeout(() => {
-          // Keep success visible for a moment then allow closing
-        }, 1500);
+        // Имейлът се изпраща от собствения имейл клиент на потребителя
+        window.location.href = res.mailtoUrl;
       } else {
         setErrorMessage(res.message);
       }
@@ -86,6 +88,29 @@ export const EmailShareModal: React.FC<EmailShareModalProps> = ({
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleCopyText = async () => {
+    if (!prepared) return;
+    try {
+      await navigator.clipboard.writeText(prepared.plainText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setErrorMessage('Браузърът не позволи копиране — маркирайте текста от прегледа ръчно.');
+    }
+  };
+
+  const handleDownloadHtml = () => {
+    if (!prepared) return;
+    const blob = new Blob([prepared.html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const baseName = (testResult?.lessonTitle || lesson?.title || 'konspekt').slice(0, 40).replace(/[^\p{L}\p{N}]+/gu, '-');
+    a.href = url;
+    a.download = `studybg-${baseName}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const previewHtml = testResult
@@ -141,11 +166,35 @@ export const EmailShareModal: React.FC<EmailShareModalProps> = ({
               <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
                 <Check className="w-6 h-6 stroke-[2.5]" />
               </div>
-              <h4 className="text-base font-bold text-slate-900">Имейлът е изпратен!</h4>
+              <h4 className="text-base font-bold text-slate-900">Писмото е готово в имейл клиента ви</h4>
               <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
                 {successMessage}
               </p>
-              <div className="pt-4 flex justify-center gap-2">
+              <div className="pt-4 flex flex-wrap justify-center gap-2">
+                {prepared && (
+                  <>
+                    <a
+                      href={prepared.mailtoUrl}
+                      className="px-4 py-2 rounded-xl bg-white text-blue-700 text-xs font-semibold border border-blue-200 hover:border-blue-400 transition-colors"
+                    >
+                      Отвори имейл клиента отново
+                    </a>
+                    <button
+                      type="button"
+                      onClick={handleCopyText}
+                      className="px-4 py-2 rounded-xl bg-white text-slate-700 text-xs font-semibold border border-slate-200 hover:border-slate-400 transition-colors"
+                    >
+                      {copied ? 'Копирано ✓' : 'Копирай текста'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDownloadHtml}
+                      className="px-4 py-2 rounded-xl bg-white text-slate-700 text-xs font-semibold border border-slate-200 hover:border-slate-400 transition-colors"
+                    >
+                      Изтегли като HTML
+                    </button>
+                  </>
+                )}
                 <button
                   onClick={onClose}
                   className="px-5 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors shadow-xs"
@@ -159,7 +208,7 @@ export const EmailShareModal: React.FC<EmailShareModalProps> = ({
                   }}
                   className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-medium hover:bg-slate-200 transition-colors"
                 >
-                  Виж изпратения имейл
+                  Виж прегледа на писмото
                 </button>
               </div>
             </div>
@@ -343,7 +392,7 @@ export const EmailShareModal: React.FC<EmailShareModalProps> = ({
                     ) : (
                       <>
                         <Send className="w-3.5 h-3.5" />
-                        <span>Изпрати сега</span>
+                        <span>Отвори в имейл клиента</span>
                       </>
                     )}
                   </button>

@@ -142,9 +142,9 @@ export const Footer: React.FC<FooterProps> = ({
               <li>
                 <button
                   onClick={() => handleOpenStudyTab('oralexam')}
-                  className="hover:text-blue-700 transition-colors flex items-center gap-2 font-semibold text-indigo-800"
+                  className="hover:text-blue-700 transition-colors flex items-center gap-2 font-semibold text-blue-800"
                 >
-                  <Mic className="w-3.5 h-3.5 text-indigo-600" />
+                  <Mic className="w-3.5 h-3.5 text-blue-600" />
                   <span>Устно изпитване пред дъската (Глас)</span>
                 </button>
               </li>
@@ -153,7 +153,7 @@ export const Footer: React.FC<FooterProps> = ({
                   onClick={() => handleOpenStudyTab('grammar')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
-                  <PenTool className="w-3.5 h-3.5 text-indigo-600" />
+                  <PenTool className="w-3.5 h-3.5 text-blue-600" />
                   <span>Тренажор Правопис (Модул 1 БЕЛ)</span>
                 </button>
               </li>
@@ -162,7 +162,7 @@ export const Footer: React.FC<FooterProps> = ({
                   onClick={() => handleOpenStudyTab('moduletwo')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
-                  <Feather className="w-3.5 h-3.5 text-violet-600" />
+                  <Feather className="w-3.5 h-3.5 text-slate-600" />
                   <span>Тропи, Пароними & Резюме (Модул 2)</span>
                 </button>
               </li>
@@ -216,7 +216,7 @@ export const Footer: React.FC<FooterProps> = ({
                   onClick={() => handleOpenStudyTab('civics')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
-                  <Scale className="w-3.5 h-3.5 text-indigo-600" />
+                  <Scale className="w-3.5 h-3.5 text-blue-600" />
                   <span>Конституция на РБ & ЕС (ГО / ДЗИ)</span>
                 </button>
               </li>
@@ -262,7 +262,7 @@ export const Footer: React.FC<FooterProps> = ({
                   onClick={() => handleOpenStudyTab('cases')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
-                  <Scale className="w-3.5 h-3.5 text-purple-600" />
+                  <Scale className="w-3.5 h-3.5 text-slate-600" />
                   <span>Казуси за ДЗИ (11.–12. клас)</span>
                 </button>
               </li>
@@ -333,9 +333,9 @@ export const Footer: React.FC<FooterProps> = ({
               <li>
                 <button
                   onClick={() => handleOpenCultureTab('mysticmap')}
-                  className="hover:text-purple-800 transition-colors flex items-center gap-2 font-semibold text-purple-900"
+                  className="hover:text-slate-800 transition-colors flex items-center gap-2 font-semibold text-slate-900"
                 >
-                  <MapPin className="w-3.5 h-3.5 text-purple-600" />
+                  <MapPin className="w-3.5 h-3.5 text-slate-600" />
                   <span>Карта на мистичните зони (12 обекта)</span>
                 </button>
               </li>
@@ -383,7 +383,7 @@ export const Footer: React.FC<FooterProps> = ({
             <span>•</span>
             <button
               onClick={() => onOpenPolicyModal?.('ai_act')}
-              className="hover:text-indigo-600 transition-colors font-medium"
+              className="hover:text-blue-600 transition-colors font-medium"
             >
               Прозрачност за ИИ (EU AI Act)
             </button>

@@ -182,7 +182,7 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
             onClick={() => setActiveTab('ai_act')}
             className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === 'ai_act'
-                ? 'bg-indigo-600 text-white shadow-xs'
+                ? 'bg-blue-600 text-white shadow-xs'
                 : 'bg-slate-100 text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -326,7 +326,7 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                     <strong>Локални учебни данни (LocalStorage на вашето устройство):</strong> Напредъкът в „Моят План за 6.00“, хронологията на 100-точковите симулации, сгрешените въпроси в Банката с грешки и отбелязаните чеклисти се съхраняват локално във вашия браузър (чл. 6, ал. 1, б. „б“ от GDPR — изпълнение на функционалността на образователната услуга).
                   </li>
                   <li>
-                    <strong>Имейл адрес за Седмичен бюлетин и споделяне на конспекти (Чл. 6, ал. 1, б. „а“ от GDPR — изрично съгласие):</strong> Когато доброволно въведете имейл адрес във формата за седмичен изпитен бюлетин или за изпращане на учебен конспект/резултат по имейл, ние обработваме този имейл единствено за изпращане на заявените образователни материали. Можете да оттеглите съгласието си с <strong>1 клик („Отпиши се“)</strong> по всяко време.
+                    <strong>Имейл адрес за Седмичен бюлетин и споделяне на конспекти (Чл. 6, ал. 1, б. „а“ от GDPR — изрично съгласие):</strong> Когато доброволно въведете имейл адрес във формата за седмичен изпитен бюлетин или за изпращане на учебен конспект/резултат по имейл, ние обработваме този имейл единствено за заявената цел. <strong>Споделянето на конспект или резултат не минава през наш сървър:</strong> StudyBG подготвя писмото и го отваря в <strong>вашия собствен имейл клиент</strong> (mailto:), откъдето го изпращате сами; можете и да копирате текста или да изтеглите локално копие (HTML). Имейлът за бюлетина се съхранява в Supabase. Можете да оттеглите съгласието си с <strong>1 клик („Отпиши се“)</strong> по всяко време.
                   </li>
                   <li>
                     <strong>Анонимизирана облачна синхронизация на трудни въпроси:</strong> За подобряване на учебната база сгрешените въпроси могат да се синхронизират с облачната база данни без лични имена или профили.
@@ -343,16 +343,18 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                   StudyBG не продава и не предоставя данни на рекламни мрежи. За техническото функциониране на облачните и ИИ функции използваме следните сертифицирани инфраструктурни партньори при спазване на Стандартните договорни клаузи на Европейската комисия (SCCs):
                 </p>
                 <ul className="list-disc list-inside space-y-1 pl-1">
-                  <li><strong>Supabase Inc.</strong> — защитена база данни за съхранение на абонатите за седмичния бюлетин;</li>
-                  <li><strong>Vercel Inc.</strong> — облачен хостинг, глобална доставка (CDN) и изпълнение на безсървърни функции за изпращане на имейли;</li>
-                  <li><strong>Google Ireland Limited (Google Gemini API)</strong> — обработка на текст и оптично разпознаване на ръкопис по заявка на потребителя.</li>
+                  <li><strong>Supabase Inc.</strong> — база данни за абонатите на бюлетина и за облачно копие на историята на изпитните симулации, свързано с <strong>анонимен идентификатор</strong> (без име и имейл); изпълнява и AI сървъра (Edge Function), чрез който заявките към Google Gemini минават без ключ в браузъра и с дневен лимит на потребител;</li>
+                  <li><strong>Vercel Inc.</strong> — статичен хостинг и глобална доставка (CDN); сайтът няма сървърни функции и не изпраща имейли от свое име;</li>
+                  <li><strong>Google Ireland Limited (Google Gemini API)</strong> — обработка на текст и оптично разпознаване на ръкопис по заявка на потребителя;</li>
+                  <li><strong>Google Ireland Limited (Google Analytics 4)</strong> — статистика за посещенията, само след съгласие за аналитика;</li>
+                  <li><strong>Microsoft Ireland Operations Limited (Microsoft Clarity)</strong> — записи на сесии и топлинни карти, само след съгласие за аналитика.</li>
                 </ul>
               </section>
 
               <section className="space-y-2">
                 <h3 className="text-base font-bold text-slate-900">4. Защита на ученици под 14 години (Чл. 8 от GDPR и чл. 25в от ЗЗЛД)</h3>
                 <p>
-                  Съгласно <strong>чл. 25в от българския Закон за защита на личните данни (ЗЗЛД)</strong> минималната възраст за самостоятелно даване на съгласие за услуги на информационното общество в Република България е <strong>14 години</strong>. Ученици под 14-годишна възраст (напр. 5.–7. клас) могат да използват свободно всички учебни модули без регистрация, а при абонамент за имейл бюлетин се изисква потвърждение за съгласие от родител или законен настойник.
+                  Съгласно <strong>чл. 25в от българския Закон за защита на личните данни (ЗЗЛД)</strong> минималната възраст за самостоятелно даване на съгласие за услуги на информационното общество в Република България е <strong>14 години</strong>. Ученици под 14-годишна възраст (напр. 5.–7. клас) могат да използват свободно всички учебни модули без регистрация, а при абонамент за имейл бюлетин се изисква потвърждение за съгласие от родител или законен настойник. <strong>Съгласието за опционалната аналитика (Google Analytics 4 и Microsoft Clarity) за лица под 14 години се дава от родител или законен настойник</strong> — без такова съгласие изберете „Само необходими“.
                 </p>
               </section>
 
@@ -375,9 +377,9 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
           {/* ================================================================= */}
           {activeTab === 'ai_act' && (
             <div className="space-y-6">
-              <div className="p-4 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-950 text-xs">
+              <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-950 text-xs">
                 <div className="flex items-center gap-2 font-bold text-sm mb-1">
-                  <Cpu className="w-4 h-4 text-indigo-600" />
+                  <Cpu className="w-4 h-4 text-blue-600" />
                   <span>Декларация за прозрачност съгласно Европейския акт за изкуствения интелект (EU AI Act — Регламент (ЕС) 2024/1689)</span>
                 </div>
                 <p>
@@ -389,10 +391,10 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                 <h3 className="text-base font-bold text-slate-900">1. Кои модули използват Изкуствен Интелект</h3>
                 <ul className="list-disc list-inside space-y-1.5 pl-1">
                   <li>
-                    <strong>SmartScan („Снимай тетрадка“ и Одит на записки):</strong> Използва мултимодален модел <em>Google Gemini 3.8 Flash Vision</em> за оптично разпознаване на ръкописен текст (OCR) и съпоставянето му с ключовите точки от учебната програма на МОН.
+                    <strong>SmartScan („Снимай тетрадка“ и Одит на записки):</strong> Използва мултимодален модел <em>Google Gemini</em> за оптично разпознаване на ръкописен текст (OCR) и съпоставянето му с ключовите точки от учебната програма на МОН.
                   </li>
                   <li>
-                    <strong>AI Оценител на Есе и Интерпретативно съчинение (Задача 41 в 100т. Симулатор):</strong> Използва генеративен езиков модел (<em>Google Gemini 3.8 Flash</em>) за ориентировъчен анализ по 4-те критерия на МОН (К1: Литературни/философски компетентности, К2: Смислова свързаност, К3: Езикови норми, К4: Правопис и пунктуация).
+                    <strong>AI Оценител на Есе и Интерпретативно съчинение (Задача 41 в 100т. Симулатор):</strong> Използва генеративен езиков модел (<em>Google Gemini</em>) за ориентировъчен анализ по 4-те критерия на МОН (К1: Литературни/философски компетентности, К2: Смислова свързаност, К3: Езикови норми, К4: Правопис и пунктуация).
                   </li>
                   <li>
                     <strong>AI Ментор към учебните конспекти (8.–12. клас):</strong> Интерактивен академичен асистент във всеки от 108-те урока, който отговаря на въпроси на ученика, извежда тези и генерира примерни изпитни въпроси по темата.
@@ -471,7 +473,7 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
 
                   <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
                     <div className="flex items-center gap-1.5 font-bold text-slate-900 text-xs">
-                      <Eye className="w-4 h-4 text-indigo-600" />
+                      <Eye className="w-4 h-4 text-blue-600" />
                       <span>Висок контраст & Намалено движение</span>
                     </div>
                     <p className="text-[11px] text-slate-600">
@@ -510,7 +512,7 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                   <span>Прозрачност съгласно Директива 2002/58/ЕО (ePrivacy)</span>
                 </div>
                 <p>
-                  StudyBG <strong>не използва рекламни бисквитки, пиксели на социални мрежи или тракери на трети страни (Zero Ad-Tracking)</strong>. Използваме единствено локално хранилище на браузъра (Web LocalStorage) за запазване на вашия учебен прогрес и офлайн работа.
+                  StudyBG <strong>не използва рекламни бисквитки и пиксели на социални мрежи</strong>. Учебният прогрес се пази в локалното хранилище на браузъра (Web LocalStorage). <strong>Само с изрично съгласие</strong> („Приемам всички“) се зареждат Google Analytics 4 и Microsoft Clarity — аналитични услуги на трети страни, които използват бисквитките, описани в таблицата по-долу.
                 </p>
               </div>
 
@@ -564,10 +566,22 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                         <td className="p-3">До изчистване</td>
                       </tr>
                       <tr>
-                        <td className="p-3 font-mono text-blue-600">studybg-pwa-v1</td>
+                        <td className="p-3 font-mono text-blue-600">studybg-pwa-v4 / studybg-assets-v4</td>
                         <td className="p-3">Строго необходим</td>
                         <td className="p-3">Service Worker кеш за работа на конспектите и формулите без интернет</td>
                         <td className="p-3">До обновяване</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3 font-mono text-blue-600">_ga, _ga_EE8QCTTSKD</td>
+                        <td className="p-3">Аналитичен (само със съгласие)</td>
+                        <td className="p-3">Google Analytics 4 — статистика за посещенията (Google Ireland Limited)</td>
+                        <td className="p-3">До 2 години</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3 font-mono text-blue-600">_clck, _clsk</td>
+                        <td className="p-3">Аналитичен (само със съгласие)</td>
+                        <td className="p-3">Microsoft Clarity — записи на сесии и топлинни карти (Microsoft Ireland Operations Limited)</td>
+                        <td className="p-3">До 1 година / 1 ден</td>
                       </tr>
                     </tbody>
                   </table>

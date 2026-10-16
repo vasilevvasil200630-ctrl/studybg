@@ -26,10 +26,12 @@ import { classifyAndDiagnoseNotebook, type NotebookDiagnosis } from '../services
 import {
   extractNotebookTextWithGemini,
   isGeminiConfigured,
+  isAiProxyCandidate,
   getActiveGeminiApiKey,
   setStoredGeminiApiKey,
   removeStoredGeminiApiKey,
-  testGeminiApiKey
+  testGeminiApiKey,
+  AI_PROVIDER_LABEL
 } from '../services/geminiService';
 
 interface SmartScanProps {
@@ -172,9 +174,10 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
     }
 
     // 2. Image with active Gemini Key: Run OCR and present in transparent review
-    if (hasGemini && file.type.startsWith('image/')) {
+    // Собствен ключ или Supabase AI proxy (ключът е на сървъра)
+    if ((hasGemini || isAiProxyCandidate()) && file.type.startsWith('image/')) {
       setIsScanning(true);
-      setScanStep('Google Gemini 3.8 Flash Vision разчита ръкописа от снимката...');
+      setScanStep(`${AI_PROVIDER_LABEL} разчита ръкописа от снимката...`);
       try {
         const geminiExtracted = await extractNotebookTextWithGemini(file);
         setIsScanning(false);
@@ -543,7 +546,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
                   type="button"
                   key={idx}
                   onClick={() => handleApplyPreset(preset)}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 text-[11px] font-medium transition-all"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-100 hover:text-blue-700 text-slate-700 border border-slate-200 text-[11px] font-medium transition-all"
                 >
                   <span className="text-[9px] px-1 py-0.2 rounded bg-white text-slate-600 font-bold border border-slate-200">
                     {preset.badge}
@@ -708,7 +711,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
               </span>
               {hasGemini ? (
                 <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">
-                  Google Gemini 3.8 Flash Vision активен
+                  Разпознаване на снимки с {AI_PROVIDER_LABEL} е активно
                 </span>
               ) : (
                 <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-[10px]">

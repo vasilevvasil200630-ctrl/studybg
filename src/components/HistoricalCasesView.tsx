@@ -174,10 +174,10 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
       <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="max-w-3xl space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 border border-purple-200 text-purple-900">
-              <Scale className="w-3.5 h-3.5 text-purple-700" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-slate-50 border border-slate-200 text-slate-900">
+              <Scale className="w-3.5 h-3.5 text-slate-700" />
               <span>Казуси за ДЗИ (11.–12. кл.) • Анализ на исторически извори & Есе</span>
-              <span className="text-[10px] bg-purple-200/70 text-purple-950 font-bold px-1.5 py-0.5 rounded">
+              <span className="text-[10px] bg-slate-200/70 text-slate-950 font-bold px-1.5 py-0.5 rounded">
                 {HISTORICAL_CASES_DATA.length} академични казуса
               </span>
             </div>
@@ -288,7 +288,7 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
                           ? 'bg-emerald-100 text-emerald-800'
                           : c.epoch === 'revival'
                           ? 'bg-rose-100 text-rose-800'
-                          : 'bg-indigo-100 text-indigo-800'
+                          : 'bg-blue-100 text-blue-800'
                       }`}
                     >
                       {c.epochLabel.split(' ')[0]}
@@ -562,12 +562,12 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
             <div className="p-6 sm:p-7 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2">
-                  <Library className="w-4 h-4 text-purple-700" />
+                  <Library className="w-4 h-4 text-slate-700" />
                   <h3 className="text-sm sm:text-base font-bold text-slate-900">
                     Академична библиография & Първични извори
                   </h3>
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 w-fit">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-700 bg-slate-50 px-2 py-0.5 rounded border border-slate-200 w-fit">
                   Препоръчана литература за ДЗИ & Олимпиада
                 </span>
               </div>
@@ -578,7 +578,7 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
                     key={idx}
                     className="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs text-slate-800 font-serif leading-relaxed"
                   >
-                    <BookMarked className="w-3.5 h-3.5 text-purple-600 mt-0.5 flex-shrink-0" />
+                    <BookMarked className="w-3.5 h-3.5 text-slate-600 mt-0.5 flex-shrink-0" />
                     <span>{item}</span>
                   </div>
                 ))}
@@ -641,7 +641,7 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
               className="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-sans leading-relaxed"
             />
 
-            {/* Gemini 3.8 Flash Historical Essay Evaluator */}
+            {/* AI Historical Essay Evaluator */}
             <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
               <button
                 onClick={async () => {
@@ -666,7 +666,7 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
                   }
                 }}
                 disabled={isAiHistoryLoading || essayDraft.trim().length < ESSAY_MIN_LENGTH}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
               >
                 {isAiHistoryLoading ? (
                   <>
@@ -694,16 +694,16 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
             {aiHistoryEval && (
               <div
                 className={`p-4 rounded-xl border space-y-3 ${
-                  aiHistoryEval.mode === 'ai' ? 'bg-indigo-50/90 border-indigo-200' : 'bg-amber-50/80 border-amber-200'
+                  aiHistoryEval.mode === 'ai' ? 'bg-blue-50/90 border-blue-200' : 'bg-amber-50/80 border-amber-200'
                 }`}
               >
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-200 pb-2.5">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-indigo-950 flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-indigo-600" />
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-blue-200 pb-2.5">
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-blue-950 flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-blue-600" />
                     {aiHistoryEval.mode === 'ai' ? 'AI рецензия (ориентировъчна) по 4-те критерия' : STRUCTURAL_ANALYSIS_LABEL}
                   </span>
                   {aiHistoryEval.mode === 'ai' && aiHistoryEval.totalScore !== null && (
-                    <span className="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-extrabold">
+                    <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-extrabold">
                       Резултат: {aiHistoryEval.totalScore} / 30 т.
                     </span>
                   )}

@@ -666,7 +666,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
 
         {/* Section 4: Teacher / Parent Answer Key (Optional display) */}
         {showAnswerKey && (
-          <div className="mt-8 pt-4 border-t-2 border-dashed border-black/60 bg-amber-50 p-4 rounded text-xs print:bg-white print:border-black space-y-3">
+          <div className="mt-8 pt-4 border-t-2 border-dashed border-black/60 bg-amber-50 p-4 text-xs print:bg-white print:border-black space-y-3">
             <div className="flex items-center gap-2 font-bold text-amber-900 print:text-black">
               <ShieldCheck className="w-4 h-4" />
               <span>Ключ с верните отговори, обосновки и критерии за оценка (Вариант {activeGroup}):</span>
@@ -845,7 +845,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
 
           {/* Commission Evaluation Answer Key */}
           {showAnswerKey && (
-            <div className="mt-6 pt-4 border-t-2 border-dashed border-black bg-amber-50 p-4 rounded text-xs print:bg-white space-y-2.5">
+            <div className="mt-6 pt-4 border-t-2 border-dashed border-black bg-amber-50 p-4 text-xs print:bg-white space-y-2.5">
               <div className="font-black text-amber-950 print:text-black uppercase flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4" />
                 <span>Методически ключ и точкови критерии за Държавната изпитна комисия (Вариант {activeGroup}):</span>

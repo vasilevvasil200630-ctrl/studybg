@@ -100,7 +100,7 @@ export const CivicsEuLab: React.FC = () => {
       case 'Изпълнителна власт':
         return 'bg-emerald-50 text-emerald-800 border-emerald-200';
       case 'Съдебна власт':
-        return 'bg-purple-50 text-purple-800 border-purple-200';
+        return 'bg-slate-50 text-slate-800 border-slate-200';
       case 'Държавен глава':
         return 'bg-amber-50 text-amber-800 border-amber-200';
       default:
@@ -133,7 +133,7 @@ export const CivicsEuLab: React.FC = () => {
               <div className="text-[11px] font-medium text-slate-500">Конституция на РБ</div>
             </div>
             <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-center">
-              <div className="text-lg font-extrabold text-indigo-700">6 институции</div>
+              <div className="text-lg font-extrabold text-blue-700">6 институции</div>
               <div className="text-[11px] font-medium text-slate-500">Архитектура на ЕС</div>
             </div>
             <div className="col-span-2 sm:col-span-1 bg-amber-50/70 border border-amber-200/80 rounded-xl p-3 text-center">
@@ -329,7 +329,7 @@ export const CivicsEuLab: React.FC = () => {
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-5">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-indigo-700">
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-700">
                   Чл. 13 от Договора за Европейския съюз (ДЕС) • България в ЕС от 1 януари 2007 г.
                 </span>
                 <h2 className="text-lg sm:text-xl font-bold text-slate-900 mt-0.5">
@@ -348,12 +348,12 @@ export const CivicsEuLab: React.FC = () => {
                     onClick={() => setSelectedEuInstId(inst.id)}
                     className={`text-left p-4 rounded-xl border transition-all cursor-pointer ${
                       isSelected
-                        ? 'bg-indigo-50/90 border-indigo-600 ring-2 ring-indigo-500/20 shadow-xs'
+                        ? 'bg-blue-50/90 border-blue-600 ring-2 ring-blue-500/20 shadow-xs'
                         : 'bg-slate-50/70 border-slate-200 hover:bg-white hover:border-slate-300'
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <span className="text-[11px] font-bold text-indigo-700 bg-indigo-100/80 px-2.5 py-0.5 rounded-md">
+                      <span className="text-[11px] font-bold text-blue-700 bg-blue-100/80 px-2.5 py-0.5 rounded-md">
                         {inst.seat.split(',')[0]}
                       </span>
                       <Building2 className="w-4 h-4 text-slate-400" />
@@ -369,15 +369,15 @@ export const CivicsEuLab: React.FC = () => {
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-5">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
-                  <span className="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-indigo-100 text-indigo-800 mb-1.5">
+                  <span className="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-blue-100 text-blue-800 mb-1.5">
                     {selectedEuInst.roleBadge}
                   </span>
                   <h3 className="text-xl font-extrabold text-slate-900 font-serif">{selectedEuInst.name}</h3>
                   <p className="text-xs text-slate-500 mt-0.5">Седалище: {selectedEuInst.seat}</p>
                 </div>
 
-                <div className="bg-white border border-indigo-200 rounded-xl px-4 py-2.5 max-w-md">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 block">
+                <div className="bg-white border border-blue-200 rounded-xl px-4 py-2.5 max-w-md">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 block">
                     Представителство на Република България
                   </span>
                   <span className="text-xs sm:text-sm font-bold text-slate-900">
@@ -402,7 +402,7 @@ export const CivicsEuLab: React.FC = () => {
                     <ul className="space-y-2">
                       {selectedEuInst.corePowers.map((power, idx) => (
                         <li key={idx} className="flex items-start gap-2.5 text-sm text-slate-700">
-                          <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+                          <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                           <span>{power}</span>
                         </li>
                       ))}

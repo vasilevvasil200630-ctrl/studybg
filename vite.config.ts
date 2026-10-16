@@ -87,6 +87,9 @@ export default defineConfig({
           if (id.includes('src/data/civicsEuDatabase')) {
             return 'data-civics-eu';
           }
+          if (id.includes('src/data/examModulesData')) {
+            return 'data-exam-modules';
+          }
         }
       }
     }

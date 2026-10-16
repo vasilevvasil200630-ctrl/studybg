@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useTransition, lazy, Suspense } from 'react';
+import { useState, useEffect, useCallback, useRef, useTransition, lazy, Suspense } from 'react';
 import { Navbar, type AppNavTab } from './components/Navbar';
 import { CultureHero, type CultureSubTab } from './components/CultureHero';
 import { Footer } from './components/Footer';
@@ -10,6 +10,7 @@ import { CookieConsentBanner } from './components/CookieConsentBanner';
 import type { LegalPolicyTab } from './components/LegalPoliciesModal';
 import { MaturaPlusBridgeBanner } from './components/MaturaPlusBridgeBanner';
 import { ChunkErrorBoundary } from './components/ChunkErrorBoundary';
+import { parseLocation, pushRoute, routeToPath, syncCanonicalUrl } from './lib/routing';
 
 import { HomeLandingView } from './components/HomeLandingView';
 
@@ -81,6 +82,11 @@ const STUDY_TABS: AppNavTab[] = [
   'grammar', 'moduletwo', 'literature', 'mathlab', 'sciencelab', 'oralexam', 'atlas', 'english', 'civics', 'blitz'
 ];
 
+// Изгледи, които показват или търсят във всички уроци
+const FULL_CURRICULUM_TABS: ReadonlySet<AppNavTab> = new Set<AppNavTab>([
+  'catalog', 'simulator', 'generator', 'blitz', 'specialties', 'errorbank', 'oralexam', 'planner', 'scan'
+]);
+
 function prefetchStudyTabChunk(tab: AppNavTab): void {
   switch (tab) {
     case 'specialties': void import('./components/SchoolsSpecialtiesHub'); break;
@@ -138,76 +144,54 @@ export function App() {
   const [practiceQuestions, setPracticeQuestions] = useState<QuizQuestion[] | null>(null);
 
   const curriculumHydratedRef = useRef(false);
+  // Търсачката на началната страница иска пълния каталог едва при фокус
+  const [fullCurriculumRequested, setFullCurriculumRequested] = useState(false);
+  const requestFullCurriculum = useCallback(() => setFullCurriculumRequested(true), []);
+
+  // Пълният каталог (~2 MB) се сваля САМО когато е реално нужен — не при всяко отваряне на началната
+  const needsFullCurriculum =
+    (portalMode === 'study' && FULL_CURRICULUM_TABS.has(activeTab)) ||
+    isQuickLessonModalOpen ||
+    isScanModalOpen ||
+    fullCurriculumRequested;
 
   useEffect(() => {
-    if (curriculumHydratedRef.current) return;
+    if (curriculumHydratedRef.current || !needsFullCurriculum) return;
     let isMounted = true;
-    let triggered = false;
-    let idleHandle: number | null = null;
-    let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
 
-    const cancelScheduled = () => {
-      window.removeEventListener('pointerdown', hydrateFullCurriculum);
-      window.removeEventListener('keydown', hydrateFullCurriculum);
-      if (idleHandle !== null && 'cancelIdleCallback' in window) window.cancelIdleCallback(idleHandle);
-      if (timeoutHandle !== null) clearTimeout(timeoutHandle);
-      idleHandle = null;
-      timeoutHandle = null;
-    };
-
-    function hydrateFullCurriculum() {
-      if (triggered) return;
-      triggered = true;
-      cancelScheduled();
-
-      loadFullCurriculumLessons()
-        .then((fullLessons) => {
-          if (!isMounted) return;
-          curriculumHydratedRef.current = true;
-          startTabTransition(() => {
-            setLessons((prev) => {
-              const fullIds = new Set(fullLessons.map((fl) => fl.id));
-              const customScans = prev.filter((l) => !fullIds.has(l.id));
-              return [...customScans, ...fullLessons];
-            });
+    loadFullCurriculumLessons()
+      .then((fullLessons) => {
+        if (!isMounted) return;
+        curriculumHydratedRef.current = true;
+        startTabTransition(() => {
+          setLessons((prev) => {
+            const fullIds = new Set(fullLessons.map((fl) => fl.id));
+            const customScans = prev.filter((l) => !fullIds.has(l.id));
+            return [...customScans, ...fullLessons];
           });
-        })
-        .catch((err: unknown) => {
-          // Мрежова грешка/остарял chunk — следващата навигация опитва отново
-          console.warn('Full curriculum load failed:', err);
         });
-    }
-
-    if (activeTab !== 'home' || isQuickLessonModalOpen || isScanModalOpen) {
-      hydrateFullCurriculum();
-    } else {
-      // Намерение за навигация → веднага; иначе във времето на бездействие (без скрол тригер,
-      // за да не парсваме ~2 MB данни точно докато ученикът скролва на телефона)
-      window.addEventListener('pointerdown', hydrateFullCurriculum, { passive: true, once: true });
-      window.addEventListener('keydown', hydrateFullCurriculum, { passive: true, once: true });
-      if ('requestIdleCallback' in window) {
-        idleHandle = window.requestIdleCallback(hydrateFullCurriculum, { timeout: 5000 });
-      } else {
-        // Safari няма requestIdleCallback
-        timeoutHandle = setTimeout(hydrateFullCurriculum, 3000);
-      }
-    }
+      })
+      .catch((err: unknown) => {
+        // Мрежова грешка/остарял chunk — следващото поискване опитва отново
+        console.warn('Full curriculum load failed:', err);
+      });
 
     return () => {
       isMounted = false;
-      cancelScheduled();
     };
-  }, [activeTab, isQuickLessonModalOpen, isScanModalOpen]);
+  }, [needsFullCurriculum]);
 
   // Dynamic document.title synchronization for SEO, accessibility, and multi-tab clarity
   useEffect(() => {
     const w = window as unknown as { gtag?: (...args: unknown[]) => void };
+    // Каноничният URL следва реалния път, иначе всички страници се броят за дубликати на „/“
+    syncCanonicalUrl(window.location.pathname);
     if (portalMode === 'culture') {
       document.title = 'Обща култура, 40 Секретни досиета & Мистична карта | StudyBG';
       if (typeof w.gtag === 'function') {
         w.gtag('event', 'page_view', {
           page_title: document.title,
-          page_path: `/culture/${cultureSubTab}`,
+          page_path: window.location.pathname,
         });
       }
       return;
@@ -240,7 +224,7 @@ export function App() {
     if (typeof w.gtag === 'function') {
       w.gtag('event', 'page_view', {
         page_title: document.title,
-        page_path: `/${activeTab}`,
+        page_path: window.location.pathname,
       });
     }
   }, [portalMode, activeTab, cultureSubTab, currentLesson, lessons.length]);
@@ -268,14 +252,10 @@ export function App() {
       }
     });
     if (mode === 'study') {
-      if (window.location.hash) {
-        window.history.pushState(null, '', window.location.pathname);
-      }
+      pushRoute({ portal: 'study', tab: 'home' });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      if (window.location.hash !== '#culture') {
-        window.history.pushState(null, '', '#culture');
-      }
+      pushRoute({ portal: 'culture', subTab: cultureSubTab });
       const el = document.getElementById('workspace');
       el?.scrollIntoView({ behavior: 'smooth' });
     }
@@ -287,15 +267,10 @@ export function App() {
       setPortalMode('study');
       setActiveTab(tab);
     });
+    pushRoute({ portal: 'study', tab });
     if (tab === 'home') {
-      if (window.location.hash) {
-        window.history.pushState(null, '', window.location.pathname);
-      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      if (window.location.hash !== `#${tab}`) {
-        window.history.pushState(null, '', `#${tab}`);
-      }
       const el = document.getElementById('workspace');
       el?.scrollIntoView({ behavior: 'smooth' });
     }
@@ -307,9 +282,7 @@ export function App() {
       setPortalMode('culture');
       setCultureSubTab(subTab);
     });
-    if (window.location.hash !== `#${subTab}`) {
-      window.history.pushState(null, '', `#${subTab}`);
-    }
+    pushRoute({ portal: 'culture', subTab });
     const el = document.getElementById('workspace');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -321,95 +294,88 @@ export function App() {
       setCurrentLesson(lesson);
       setActiveTab(preferredTab);
     });
-    if (window.location.hash !== `#${preferredTab}`) {
-      window.history.pushState(null, '', `#${preferredTab}`);
-    }
+    // Конспектът има собствен адрес /lesson/<id>; останалите изгледи — /<таб>
+    pushRoute(
+      preferredTab === 'summary'
+        ? { portal: 'study', tab: 'summary', lessonId: lesson.id }
+        : { portal: 'study', tab: preferredTab }
+    );
     const el = document.getElementById('workspace');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // URL Hash Sync for deep linking and browser back/forward buttons
+  // Path routing: /simulator, /lesson/<id>, /culture/<sub> + бутоните Назад/Напред.
+  // Старите /#tab линкове се превръщат в чист адрес с replaceState.
+  const lessonsRef = useRef(lessons);
+  lessonsRef.current = lessons;
+  const pendingLessonIdRef = useRef<string | null>(null);
+
   useEffect(() => {
-    const syncFromHash = () => {
-      const hash = window.location.hash.replace('#', '').trim();
-      if (!hash || hash === 'home' || hash === 'study') {
+    const applyLocation = () => {
+      const { route, fromLegacyHash } = parseLocation(window.location.pathname, window.location.hash, STUDY_TABS);
+
+      if (!route) {
+        // Непознат адрес → началната страница (без дублиран „soft 404“ URL)
+        window.history.replaceState(null, '', '/');
         setPortalMode('study');
         setActiveTab('home');
         return;
       }
+      if (fromLegacyHash) {
+        window.history.replaceState(null, '', routeToPath(route));
+      }
 
-      if (hash === 'culture') {
+      if (route.portal === 'culture') {
         setPortalMode('culture');
-        setCultureSubTab('mysteries');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'heritage' || hash === 'unesco' || hash === 'inventions') {
-        setPortalMode('culture');
-        setCultureSubTab('heritage');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'mysteries' || hash === 'knowledge') {
-        setPortalMode('culture');
-        setCultureSubTab('mysteries');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'mysticmap') {
-        setPortalMode('culture');
-        setCultureSubTab('mysticmap');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'timeline') {
-        setPortalMode('culture');
-        setCultureSubTab('timeline');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'cases' || hash === 'casestudies') {
+        setCultureSubTab(route.subTab);
+      } else if (route.lessonId) {
         setPortalMode('study');
-        setActiveTab('cases');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'trivia') {
-        setPortalMode('culture');
-        setCultureSubTab('trivia');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'myths') {
-        setPortalMode('culture');
-        setCultureSubTab('myths');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'wonders') {
-        setPortalMode('culture');
-        setCultureSubTab('wonders');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'wisdom') {
-        setPortalMode('culture');
-        setCultureSubTab('wisdom');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (STUDY_TABS.includes(hash as AppNavTab)) {
-        setPortalMode('study');
-        setActiveTab(hash as AppNavTab);
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'catalog') {
-        setPortalMode('study');
-        setActiveTab('catalog');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash.startsWith('lesson-')) {
-        const lessonId = hash.replace('lesson-', '');
-        const targetLesson = lessons.find(l => l.id === lessonId);
-        if (targetLesson) {
-          handleLessonSelected(targetLesson, 'summary');
+        const lesson = lessonsRef.current.find((l) => l.id === route.lessonId);
+        if (lesson) {
+          pendingLessonIdRef.current = null;
+          setCurrentLesson(lesson);
+          setActiveTab('summary');
+        } else {
+          // Урокът още не е зареден: каталогът пуска пълното зареждане, после го отваряме
+          pendingLessonIdRef.current = route.lessonId;
+          setActiveTab('catalog');
         }
+      } else {
+        setPortalMode('study');
+        setActiveTab(route.tab);
+        prefetchStudyTabChunk(route.tab);
+      }
+
+      if (route.portal === 'study' && route.tab === 'home' && !route.lessonId) {
+        window.scrollTo({ top: 0 });
+      } else {
+        document.getElementById('workspace')?.scrollIntoView({ behavior: 'smooth' });
       }
     };
 
-    syncFromHash();
-    window.addEventListener('hashchange', syncFromHash);
-    return () => window.removeEventListener('hashchange', syncFromHash);
+    applyLocation();
+    window.addEventListener('popstate', applyLocation);
+    window.addEventListener('hashchange', applyLocation);
+    return () => {
+      window.removeEventListener('popstate', applyLocation);
+      window.removeEventListener('hashchange', applyLocation);
+    };
+  }, []);
+
+  // Отложено отваряне на /lesson/<id>, когато пълният каталог се зареди
+  useEffect(() => {
+    const pendingId = pendingLessonIdRef.current;
+    if (!pendingId) return;
+    const lesson = lessons.find((l) => l.id === pendingId);
+    if (lesson) {
+      pendingLessonIdRef.current = null;
+      setCurrentLesson(lesson);
+      setActiveTab('summary');
+    } else if (curriculumHydratedRef.current) {
+      // Няма такъв урок — оставаме в каталога с чист адрес
+      pendingLessonIdRef.current = null;
+      window.history.replaceState(null, '', routeToPath({ portal: 'study', tab: 'catalog' }));
+    }
   }, [lessons]);
 
   // Global Ctrl+K / Cmd+K shortcut to open Quick Lesson Switcher from anywhere
@@ -436,9 +402,7 @@ export function App() {
   const scrollToCatalog = () => {
     setPortalMode('study');
     setActiveTab('catalog');
-    if (window.location.hash !== '#catalog') {
-      window.history.pushState(null, '', '#catalog');
-    }
+    pushRoute({ portal: 'study', tab: 'catalog' });
     const el = document.getElementById('workspace');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -456,17 +420,17 @@ export function App() {
     { tab: 'home', label: 'Начало', icon: <Home className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'planner', label: 'План за 6.00', icon: <Calendar className="w-3.5 h-3.5 text-emerald-600" /> },
     { tab: 'summary', label: 'Конспект', icon: <BookOpen className="w-3.5 h-3.5" /> },
-    { tab: 'oralexam', label: 'Устен изпит', icon: <Mic className="w-3.5 h-3.5 text-indigo-600" /> },
-    { tab: 'cases', label: 'Казуси ДЗИ', icon: <Scale className="w-3.5 h-3.5 text-purple-600" /> },
+    { tab: 'oralexam', label: 'Устен изпит', icon: <Mic className="w-3.5 h-3.5 text-blue-600" /> },
+    { tab: 'cases', label: 'Казуси ДЗИ', icon: <Scale className="w-3.5 h-3.5 text-slate-600" /> },
     { tab: 'grammar', label: 'Тренажор БЕЛ', icon: <PenTool className="w-3.5 h-3.5 text-blue-600" /> },
-    { tab: 'moduletwo', label: 'Модул 2 БЕЛ', icon: <Feather className="w-3.5 h-3.5 text-purple-600" /> },
-    { tab: 'literature', label: 'Литературен Канон', icon: <BookMarked className="w-3.5 h-3.5 text-purple-600" /> },
-    { tab: 'specialties', label: 'Училища & Специалности 8–12', icon: <GraduationCap className="w-3.5 h-3.5 text-indigo-600" /> },
+    { tab: 'moduletwo', label: 'Модул 2 БЕЛ', icon: <Feather className="w-3.5 h-3.5 text-slate-600" /> },
+    { tab: 'literature', label: 'Литературен Канон', icon: <BookMarked className="w-3.5 h-3.5 text-slate-600" /> },
+    { tab: 'specialties', label: 'Училища & Специалности 8–12', icon: <GraduationCap className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'mathlab', label: 'Математика & STEM', icon: <Compass className="w-3.5 h-3.5 text-cyan-600" /> },
     { tab: 'sciencelab', label: 'Природни науки Лаб', icon: <FlaskConical className="w-3.5 h-3.5 text-emerald-600" /> },
     { tab: 'atlas', label: 'Атлас Ист. & Гео.', icon: <MapPin className="w-3.5 h-3.5 text-amber-600" /> },
     { tab: 'english', label: 'Английски ДЗИ', icon: <Globe className="w-3.5 h-3.5 text-sky-600" /> },
-    { tab: 'civics', label: 'Конституция & ЕС', icon: <Scale className="w-3.5 h-3.5 text-indigo-600" /> },
+    { tab: 'civics', label: 'Конституция & ЕС', icon: <Scale className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'blitz', label: 'Блиц 60с.', icon: <Zap className="w-3.5 h-3.5 text-amber-600" /> },
     { tab: 'audit', label: 'Одит 6.00', icon: <CheckSquare className="w-3.5 h-3.5" /> },
     { tab: 'flashcards', label: 'Флаш карти', icon: <Zap className="w-3.5 h-3.5" /> },
@@ -479,7 +443,7 @@ export function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
       
       {/* Offline Status & PWA Install Banner */}
       <OfflineStatusBanner />
@@ -558,6 +522,7 @@ export function App() {
             onOpenScan={() => setIsScanModalOpen(true)}
             onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
             onNavigateCultureTab={handleNavigateCultureTab}
+            onRequestFullCurriculum={requestFullCurriculum}
           />
         </main>
       ) : (
@@ -571,7 +536,7 @@ export function App() {
                 {/* Breadcrumbs Trail */}
                 <nav aria-label="Хлябни трохи" className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-500">
                   <a
-                    href="#study"
+                    href="/"
                     onClick={(e) => {
                       e.preventDefault();
                       handleSelectPortalMode('study');
@@ -585,33 +550,33 @@ export function App() {
                   <span className="text-blue-700 font-semibold">Гимназиална академия (8.–12. кл)</span>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   {activeTab === 'specialties' ? (
-                    <span className="text-indigo-700 font-semibold">Специални секции по училища, специалности и класове (8.–12. клас)</span>
+                    <span className="text-blue-700 font-semibold">Специални секции по училища, специалности и класове (8.–12. клас)</span>
                   ) : activeTab === 'planner' ? (
                     <span className="text-emerald-700 font-semibold">Моят План за 6.00 (Хронометър & Седмичен график)</span>
                   ) : activeTab === 'grammar' ? (
-                    <span className="text-indigo-700 font-semibold">Тренажор БЕЛ (Модул 1 • Норми на БАН)</span>
+                    <span className="text-blue-700 font-semibold">Тренажор БЕЛ (Модул 1 • Норми на БАН)</span>
                   ) : activeTab === 'moduletwo' ? (
-                    <span className="text-purple-700 font-semibold">Модул 2 БЕЛ (Тропи, Пароними & Резюме)</span>
+                    <span className="text-slate-700 font-semibold">Модул 2 БЕЛ (Тропи, Пароними & Резюме)</span>
                   ) : activeTab === 'literature' ? (
-                    <span className="text-purple-700 font-semibold">Литературен Канон & Тези (41. задача ДЗИ)</span>
+                    <span className="text-slate-700 font-semibold">Литературен Канон & Тези (41. задача ДЗИ)</span>
                   ) : activeTab === 'mathlab' ? (
                     <span className="text-cyan-700 font-semibold">Математика & STEM Лаб (НВО 10 & ДЗИ)</span>
                   ) : activeTab === 'sciencelab' ? (
                     <span className="text-emerald-700 font-semibold">Лаборатория Природни науки (Биология, Химия и Физика)</span>
                   ) : activeTab === 'oralexam' ? (
-                    <span className="text-indigo-700 font-semibold">Устно изпитване пред дъската (Гласов и текстов тренажор за 6.00)</span>
+                    <span className="text-blue-700 font-semibold">Устно изпитване пред дъската (Гласов и текстов тренажор за 6.00)</span>
                   ) : activeTab === 'atlas' ? (
                     <span className="text-amber-700 font-semibold">Атлас История & География (Договори & NUTS 2)</span>
                   ) : activeTab === 'english' ? (
                     <span className="text-sky-700 font-semibold">Английски език ДЗИ & НВО (CEFR B1.1 & B2)</span>
                   ) : activeTab === 'civics' ? (
-                    <span className="text-indigo-700 font-semibold">Конституция на РБ, Власти & Европейски съюз (ГО & ДЗИ)</span>
+                    <span className="text-blue-700 font-semibold">Конституция на РБ, Власти & Европейски съюз (ГО & ДЗИ)</span>
                   ) : activeTab === 'blitz' ? (
                     <span className="text-amber-700 font-semibold">Speed Blitz 6.00 (Аркаден 60-секунден Блиц)</span>
                   ) : activeTab === 'cases' ? (
-                    <span className="text-purple-700 font-semibold">Казуси за ДЗИ (11.–12. клас)</span>
+                    <span className="text-slate-700 font-semibold">Казуси за ДЗИ (11.–12. клас)</span>
                   ) : activeTab === 'calculator' ? (
-                    <span className="text-indigo-700 font-semibold">МОН Калкулатор & Балообразуване</span>
+                    <span className="text-blue-700 font-semibold">МОН Калкулатор & Балообразуване</span>
                   ) : activeTab === 'errorbank' ? (
                     <span className="text-rose-700 font-semibold">Интерактивна банка с грешки</span>
                   ) : activeTab === 'catalog' ? (
@@ -630,7 +595,7 @@ export function App() {
                   {activeTab === 'specialties' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Специални секции по училища, специалности и класове (8.–12. клас)</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
                         Раздел А (ООП) • Раздел Б (ДЗИ) • Раздел В (ДИППК)
                       </span>
                     </h2>
@@ -644,21 +609,21 @@ export function App() {
                   ) : activeTab === 'grammar' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Тренажор по Граматика, Правопис и Пунктуация</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
                         ДЗИ Модул 1 • 20 задачи
                       </span>
                     </h2>
                   ) : activeTab === 'moduletwo' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Лаборатория за Тропи, Фигури, Пароними и Резюме</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-purple-50 text-purple-800 border border-purple-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-50 text-slate-800 border border-slate-200 font-semibold">
                         ДЗИ Модул 2 & НВО 10
                       </span>
                     </h2>
                   ) : activeTab === 'literature' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Литературен Канон (15 автори) & Генератор на Тези</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-purple-50 text-purple-800 border border-purple-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-50 text-slate-800 border border-slate-200 font-semibold">
                         41. задача • ЕСЕ & ЛИС
                       </span>
                     </h2>
@@ -679,7 +644,7 @@ export function App() {
                   ) : activeTab === 'oralexam' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Гласов Симулатор „Устно изпитване пред дъската за 6.00“</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
                         Глас & Микрофон • Радар на термини • Бележник
                       </span>
                     </h2>
@@ -700,7 +665,7 @@ export function App() {
                   ) : activeTab === 'civics' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Конституция на РБ, Разделение на властите и Европейски съюз</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
                         Гражданско образование & ДЗИ Философия
                       </span>
                     </h2>
@@ -714,14 +679,14 @@ export function App() {
                   ) : activeTab === 'cases' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Академични Казуси с Архивни Извори</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-purple-50 text-purple-800 border border-purple-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-50 text-slate-800 border border-slate-200 font-semibold">
                         ЦДА & ЛИБИ • 11.–12. клас
                       </span>
                     </h2>
                   ) : activeTab === 'calculator' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Официален МОН Калкулатор за Оценка и Бал</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
                         Наредба №11 • 0–100 точки
                       </span>
                     </h2>
@@ -981,7 +946,7 @@ export function App() {
             <div className="mb-6 pb-4 border-b border-slate-200">
               <nav aria-label="Хлябни трохи" className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-500">
                 <a
-                  href="#culture"
+                  href="/culture"
                   onClick={(e) => {
                     e.preventDefault();
                     handleSelectPortalMode('culture');

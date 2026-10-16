@@ -163,7 +163,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
             <polygon
               points="140,95 320,95 308,135 145,135"
               fill="rgba(168, 85, 247, 0.28)"
-              stroke="#c084fc"
+              stroke="#94a3b8"
               strokeWidth="2"
             />
             <text x="135" y="78" fill="#ecfdf5" fontSize="11" fontWeight="bold">Княжество България</text>
@@ -287,7 +287,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                 : 'bg-white/10 text-slate-200 hover:bg-white/20'
             }`}
           >
-            <ScrollText className="w-4 h-4 text-indigo-600" />
+            <ScrollText className="w-4 h-4 text-blue-600" />
             <span>2. Познай Личността по Извор ({HISTORICAL_FIGURES_BY_SOURCE.length})</span>
           </button>
 
@@ -311,7 +311,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                 : 'bg-white/10 text-slate-200 hover:bg-white/20'
             }`}
           >
-            <Sparkles className="w-4 h-4 text-purple-600" />
+            <Sparkles className="w-4 h-4 text-slate-600" />
             <span>4. Изпитен Тренажор ({HISTORY_GEO_QUIZ_QUESTIONS.length})</span>
           </button>
         </div>
@@ -395,8 +395,8 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                 </div>
 
                 <div className="p-4 rounded-xl bg-white border border-slate-200">
-                  <div className="text-xs font-bold uppercase text-indigo-800 mb-1.5 flex items-center gap-1.5">
-                    <Landmark className="w-4 h-4 text-indigo-600" />
+                  <div className="text-xs font-bold uppercase text-blue-800 mb-1.5 flex items-center gap-1.5">
+                    <Landmark className="w-4 h-4 text-blue-600" />
                     <span>Дипломатически, военни и финансови клаузи:</span>
                   </div>
                   <ul className="space-y-1 text-xs sm:text-sm text-slate-700 list-disc list-inside">
@@ -440,7 +440,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                 setBlindSourceMode((prev) => !prev);
                 setRevealedFigureIds({});
               }}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all cursor-pointer"
             >
               {blindSourceMode ? (
                 <>
@@ -487,7 +487,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                   </div>
 
                   {/* Primary Source Quote */}
-                  <blockquote className="p-4 rounded-xl bg-amber-50/60 border-l-4 border-amber-500 text-slate-800 italic text-sm sm:text-base leading-relaxed">
+                  <blockquote className="p-4 rounded-xl bg-amber-50/60 border border-amber-200 text-slate-800 italic text-sm sm:text-base leading-relaxed">
                     {fig.sourceExcerpt}
                   </blockquote>
 
@@ -505,18 +505,18 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                   </div>
 
                   {isRevealed && (
-                    <div className="p-4 rounded-xl bg-indigo-50/70 border border-indigo-200 space-y-2.5">
+                    <div className="p-4 rounded-xl bg-blue-50/70 border border-blue-200 space-y-2.5">
                       <div>
-                        <div className="text-xs font-bold uppercase text-indigo-700">
+                        <div className="text-xs font-bold uppercase text-blue-700">
                           Историческа личност и документ:
                         </div>
                         <div className="text-base sm:text-lg font-extrabold text-slate-900">
-                          {fig.personName} — <span className="text-indigo-900 font-semibold">{fig.sourceTitle}</span>
+                          {fig.personName} — <span className="text-blue-900 font-semibold">{fig.sourceTitle}</span>
                         </div>
                         <div className="text-xs text-slate-600 font-medium">{fig.roleAndYears}</div>
                       </div>
-                      <div className="pt-2 border-t border-indigo-200/70">
-                        <div className="text-xs font-bold text-indigo-900 mb-1">
+                      <div className="pt-2 border-t border-blue-200/70">
+                        <div className="text-xs font-bold text-blue-900 mb-1">
                           Какво задължително се пише в отговора на матурата:
                         </div>
                         <ul className="space-y-1 text-xs sm:text-sm text-slate-800 list-disc list-inside">
@@ -614,7 +614,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                       onClick={() => setSelectedRegionId(reg.id)}
                       className={`px-2.5 py-2 rounded-lg text-left text-xs font-bold transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-emerald-500 text-slate-950'
+                          ? 'bg-emerald-500 text-emerald-950'
                           : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
                       }`}
                     >
@@ -685,8 +685,8 @@ export const HistoryGeoAtlasLab: React.FC = () => {
 
               {/* Strategic Infrastructure */}
               <div className="p-4 rounded-xl bg-white border border-slate-200">
-                <div className="text-xs font-bold uppercase text-indigo-700 mb-1.5 flex items-center gap-1.5">
-                  <Navigation className="w-4 h-4 text-indigo-600" />
+                <div className="text-xs font-bold uppercase text-blue-700 mb-1.5 flex items-center gap-1.5">
+                  <Navigation className="w-4 h-4 text-blue-600" />
                   <span>Транспортна мрежа, пристанища и ГКПП:</span>
                 </div>
                 <ul className="space-y-1 text-xs sm:text-sm text-slate-700 list-disc list-inside">

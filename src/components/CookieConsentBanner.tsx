@@ -11,6 +11,19 @@ interface CookiePreferences {
 
 const COOKIE_STORAGE_KEY = 'studybg_cookie_consent';
 
+// Изтрива бисквитките на GA4 (_ga, _ga_*) и Clarity (_clck, _clsk) при оттегляне на съгласието
+const clearAnalyticsCookies = () => {
+  const host = window.location.hostname;
+  const domains = ['', host, `.${host}`, `.${host.split('.').slice(-2).join('.')}`];
+  document.cookie.split(';').forEach((cookie) => {
+    const name = cookie.split('=')[0].trim();
+    if (!/^(_ga|_gid|_gat|_clck|_clsk|CLID|MUID)/.test(name)) return;
+    domains.forEach((domain) => {
+      document.cookie = `${name}=; Max-Age=0; path=/${domain ? `; domain=${domain}` : ''}`;
+    });
+  });
+};
+
 interface CookieConsentBannerProps {
   onOpenPolicy: (tab: LegalPolicyTab) => void;
   forceOpen?: boolean;
@@ -26,7 +39,8 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
   const [showSettings, setShowSettings] = useState<boolean>(false);
 
   const [functionalConsent, setFunctionalConsent] = useState<boolean>(true);
-  const [analyticsConsent, setAnalyticsConsent] = useState<boolean>(true);
+  // Аналитиката е строго opt-in: GA4 и Clarity се зареждат САМО след изрично съгласие (GDPR / ePrivacy)
+  const [analyticsConsent, setAnalyticsConsent] = useState<boolean>(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -38,7 +52,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
           const parsed: Partial<CookiePreferences> | null = JSON.parse(stored);
           if (!parsed || typeof parsed !== 'object') throw new Error('invalid consent');
           setFunctionalConsent(parsed.functional ?? true);
-          setAnalyticsConsent(parsed.analytics ?? true);
+          setAnalyticsConsent(parsed.analytics === true);
         } catch {
           setIsVisible(true);
         }
@@ -72,6 +86,9 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
   }, [analyticsConsent]);
 
   const saveConsent = (prefs: CookiePreferences) => {
+    const analyticsWasLoaded = Boolean(
+      document.getElementById('studybg-ga-script') || document.getElementById('studybg-clarity-script')
+    );
     setFunctionalConsent(prefs.functional);
     setAnalyticsConsent(prefs.analytics);
     if (typeof window !== 'undefined') {
@@ -80,6 +97,13 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
     setIsVisible(false);
     setShowSettings(false);
     onCloseForceOpen?.();
+
+    // Оттегляне след като скриптовете вече са заредени: чистим бисквитките и презареждаме,
+    // за да не остане активен нито един тракер в текущата сесия
+    if (analyticsWasLoaded && !prefs.analytics) {
+      clearAnalyticsCookies();
+      window.location.reload();
+    }
   };
 
   const handleAcceptAll = () => {
@@ -130,7 +154,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
                 </span>
               </h3>
               <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                StudyBG уважава вашата неприкосновеност: използваме единствено функционални бисквитки и локално хранилище (LocalStorage) за съхранение на вашите конспекти, тестови грешки и офлайн PWA кеш, <strong>без рекламно профилиране или предаване на трети страни</strong>.
+                Вашите конспекти, грешки и офлайн кеш се пазят само в браузъра ви (LocalStorage). <strong>По избор</strong> и само ако натиснете „Приемам всички“, включваме <strong>Google Analytics 4</strong> и <strong>Microsoft Clarity</strong> — услуги на трети страни (Google и Microsoft), които събират статистика за посещенията и записи на сесиите, за да подобряваме сайта. Без реклами и без продажба на данни. Ако си под 14 години, съгласието за аналитика се дава от родител или настойник (чл. 25в ЗЗЛД).
               </p>
             </div>
           </div>
@@ -185,10 +209,10 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-start justify-between gap-3">
               <div className="space-y-0.5">
                 <div className="font-bold text-slate-900">
-                  Анонимен учебен анализ
+                  Аналитика (по избор): Google Analytics 4 и Microsoft Clarity
                 </div>
                 <p className="text-[11px] text-slate-500 leading-normal">
-                  Помага за анонимно оптимизиране на въпросите и времето на симулациите по МОН (без лични профили).
+                  Статистика за посещенията (GA4) и записи на сесии и топлинни карти (Clarity). Данните се обработват от Google и Microsoft като трети страни и се използват бисквитки (_ga, _clck, _clsk). Можете да оттеглите съгласието си по всяко време.
                 </p>
               </div>
               <input
@@ -213,7 +237,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
           <span>•</span>
           <button
             onClick={() => onOpenPolicy('ai_act')}
-            className="text-indigo-600 hover:underline font-medium"
+            className="text-blue-600 hover:underline font-medium"
           >
             Прозрачност за ИИ (EU AI Act)
           </button>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react';
 import {
   Clock,
   ShieldAlert,
@@ -24,7 +24,6 @@ import type { QuizQuestion, LessonData } from '../types';
 import { getExamModulesForLesson } from '../data/examModulesData';
 import { evaluateEssayWithGemini, STRUCTURAL_ANALYSIS_LABEL, type EssayEvaluationResult } from '../services/geminiService';
 import { examHistoryService } from '../services/examHistoryService';
-import { ExamHistoryModal } from './ExamHistoryModal';
 import { ExcellenceCertificateModal } from './ExcellenceCertificateModal';
 import { DZI_SCALE, formatGrade, pointsToGrade, type VerbalGrade } from '../lib/monGradeScale';
 
@@ -104,6 +103,9 @@ const clearExamDraft = (lessonId: string) => {
     // localStorage недостъпен (private mode) — няма какво да се изчисти
   }
 };
+
+// Историята на опитите се зарежда едва когато потребителят я отвори
+const ExamHistoryModal = lazy(() => import('./ExamHistoryModal').then((m) => ({ default: m.ExamHistoryModal })));
 
 interface ExamSimulatorViewProps {
   currentLesson: LessonData;
@@ -315,7 +317,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
     }));
   };
 
-  // AI Essay Evaluation with Gemini 1.5 Flash
+  // AI Essay Evaluation
   const handleEvaluateEssayWithAi = async () => {
     if (essayText.trim().length < 30) {
       setEvaluationError('Моля, напишете поне 2–3 изречения (теза или аргумент), за да може AI проверителят да анализира текста.');
@@ -576,7 +578,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
               onClick={() => handleSelectExamPreset('dippk-it-ai')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 activePreset.startsWith('dippk')
-                  ? 'bg-indigo-600 text-white shadow-xs'
+                  ? 'bg-blue-600 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -664,7 +666,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                 onClick={() => handleSelectExamPreset('dippk-it-ai')}
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
                   activePreset === 'dippk-it-ai'
-                    ? 'bg-indigo-100 text-indigo-900 border-indigo-300 font-bold'
+                    ? 'bg-blue-100 text-blue-900 border-blue-300 font-bold'
                     : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
@@ -675,7 +677,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                 onClick={() => handleSelectExamPreset('dippk-finance-ntbg')}
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
                   activePreset === 'dippk-finance-ntbg'
-                    ? 'bg-indigo-100 text-indigo-900 border-indigo-300 font-bold'
+                    ? 'bg-blue-100 text-blue-900 border-blue-300 font-bold'
                     : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
@@ -686,7 +688,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                 onClick={() => handleSelectExamPreset('dippk-arch-sgsag')}
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
                   activePreset === 'dippk-arch-sgsag'
-                    ? 'bg-indigo-100 text-indigo-900 border-indigo-300 font-bold'
+                    ? 'bg-blue-100 text-blue-900 border-blue-300 font-bold'
                     : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
@@ -697,7 +699,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                 onClick={() => handleSelectExamPreset('dippk-aviation-maritime')}
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
                   activePreset === 'dippk-aviation-maritime'
-                    ? 'bg-indigo-100 text-indigo-900 border-indigo-300 font-bold'
+                    ? 'bg-blue-100 text-blue-900 border-blue-300 font-bold'
                     : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
@@ -708,7 +710,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                 onClick={() => handleSelectExamPreset('dippk-nuclear-optics')}
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-medium border transition-colors ${
                   activePreset === 'dippk-nuclear-optics'
-                    ? 'bg-indigo-100 text-indigo-900 border-indigo-300 font-bold'
+                    ? 'bg-blue-100 text-blue-900 border-blue-300 font-bold'
                     : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
@@ -1120,7 +1122,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
             <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
                     Исторически извор / Документ
                   </span>
                   <h4 className="text-base font-bold text-slate-900 mt-1">
@@ -1290,7 +1292,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
             </div>
 
             {/* AI Essay Evaluation Action Bar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-gradient-to-r from-blue-50/90 to-indigo-50/90 border border-blue-200 shadow-2xs">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-gradient-to-r from-blue-50/90 to-blue-50/90 border border-blue-200 shadow-2xs">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
                   <Sparkles className="w-4 h-4 text-amber-300" />
@@ -1462,7 +1464,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                 
                 {/* Sample Thesis from МОН */}
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
                     Еталонна теза на МОН
                   </span>
                   <p className="text-xs sm:text-sm text-slate-800 mt-2 font-serif italic leading-relaxed">
@@ -1593,7 +1595,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
 
               <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 bg-purple-100 px-2 py-0.5 rounded">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 bg-slate-100 px-2 py-0.5 rounded">
                     Модул 2
                   </span>
                   <span className="text-xs font-mono font-bold text-slate-700">
@@ -1661,7 +1663,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
             </div>
 
             {/* Duration Selector & Launch Call-to-action */}
-            <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-50/50 via-white to-indigo-50/50 border border-blue-200 text-center space-y-4 max-w-xl mx-auto">
+            <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-50/50 via-white to-blue-50/50 border border-blue-200 text-center space-y-4 max-w-xl mx-auto">
               <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                 Изберете времеви регламент за изпита:
               </span>
@@ -1847,11 +1849,15 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
       )}
 
       {/* Exam History & Academic Progress Modal */}
-      <ExamHistoryModal
-        isOpen={isHistoryModalOpen}
-        onClose={() => setIsHistoryModalOpen(false)}
-        onRefresh={() => setHistoryCount(examHistoryService.getAllAttempts().length)}
-      />
+      {isHistoryModalOpen && (
+        <Suspense fallback={null}>
+          <ExamHistoryModal
+            isOpen={isHistoryModalOpen}
+            onClose={() => setIsHistoryModalOpen(false)}
+            onRefresh={() => setHistoryCount(examHistoryService.getAllAttempts().length)}
+          />
+        </Suspense>
+      )}
 
       {/* Digital Certificate of Academic Excellence Modal */}
       <ExcellenceCertificateModal

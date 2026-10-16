@@ -77,7 +77,7 @@ export const GrammarTrainerLab: React.FC = () => {
     <div className="space-y-8 animate-fadeIn">
       
       {/* Header Banner */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white shadow-md relative overflow-hidden">
+      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-blue-900 via-blue-900 to-slate-900 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-400/30">
@@ -135,7 +135,7 @@ export const GrammarTrainerLab: React.FC = () => {
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <BookOpen className="w-3.5 h-3.5 text-indigo-600" />
+            <BookOpen className="w-3.5 h-3.5 text-blue-600" />
             <span>Правила и капани на БАН</span>
           </button>
         </div>
@@ -243,12 +243,12 @@ export const GrammarTrainerLab: React.FC = () => {
 
             {/* Official Rule & Explanation Card upon submission */}
             {isAnswerSubmitted && (
-              <div className="p-5 rounded-2xl bg-indigo-50/70 border border-indigo-200 space-y-2.5 animate-fadeIn">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-900">
-                  <Lightbulb className="w-4 h-4 text-indigo-600" />
+              <div className="p-5 rounded-2xl bg-blue-50/70 border border-blue-200 space-y-2.5 animate-fadeIn">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-900">
+                  <Lightbulb className="w-4 h-4 text-blue-600" />
                   <span>Официално езиково правило на БАН & МОН:</span>
                 </div>
-                <p className="text-xs sm:text-sm text-indigo-950 leading-relaxed font-medium">
+                <p className="text-xs sm:text-sm text-blue-950 leading-relaxed font-medium">
                   {currentQ.explanation}
                 </p>
               </div>

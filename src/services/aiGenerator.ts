@@ -1,9 +1,9 @@
-import type { LessonData, Flashcard, QuizQuestion } from '../types';
+import type { LessonData, LessonSubject, Flashcard, QuizQuestion } from '../types';
 
 export function generateLessonFromInput(
   titleOrFileName: string,
   rawText: string,
-  subjectHint = 'Общообразователен предмет'
+  subjectHint: LessonSubject
 ): LessonData {
   const cleanTitle = titleOrFileName
     .replace(/\.(jpg|jpeg|png|heic|pdf|txt)$/i, '')

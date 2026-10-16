@@ -1,3 +1,5 @@
+import type { LessonSubject } from '../types';
+
 export interface CurriculumSubDomain {
   id: string;
   name: string; // Име на темата / под-дяла
@@ -20,7 +22,7 @@ export interface GradeCurriculum {
 }
 
 export interface SubjectCurriculumTree {
-  subject: string;
+  subject: LessonSubject;
   grades: GradeCurriculum[];
 }
 

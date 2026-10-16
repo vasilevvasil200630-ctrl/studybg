@@ -1,5 +1,5 @@
 import { BULGARIAN_CURRICULUM_TREE, type CurriculumSubDomain, type CurriculumDomain } from '../data/bulgarianCurriculumTree';
-import type { LessonData } from '../types';
+import type { LessonData, LessonSubject } from '../types';
 import { generateLessonFromInput } from './aiGenerator';
 import { getCachedOrCoreLessons } from '../data/curriculumDatabase';
 
@@ -40,7 +40,7 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
   }
 
   let bestMatch: {
-    subject: string;
+    subject: LessonSubject;
     grade: string;
     domain: CurriculumDomain;
     subDomain: CurriculumSubDomain;

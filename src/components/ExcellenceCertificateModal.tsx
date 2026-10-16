@@ -472,7 +472,7 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
 
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
-                <School className="w-3.5 h-3.5 text-indigo-600" />
+                <School className="w-3.5 h-3.5 text-blue-600" />
                 <span>Клас и гимназия (ТУЕС, НПМГ, СГСАГ, НТБГ, ПМГ...):</span>
               </label>
               <input
@@ -486,7 +486,7 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
           </div>
 
           {/* Live Certificate Preview Card */}
-          <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-br from-blue-950 via-indigo-950 to-slate-900 shadow-lg">
+          <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-br from-blue-950 via-blue-950 to-slate-900 shadow-lg">
             <div className="bg-white rounded-xl border-2 border-amber-400/90 p-5 sm:p-8 text-center space-y-4 relative overflow-hidden">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-800 border border-blue-200 text-[10px] sm:text-xs font-extrabold uppercase tracking-wider">
                 <GraduationCap className="w-3.5 h-3.5 text-blue-600" />

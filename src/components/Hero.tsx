@@ -146,7 +146,7 @@ export const Hero: React.FC<HeroProps> = ({
             <span className="font-medium text-slate-800">Официална рубрика за оценка на есе & ЛИС</span>
           </div>
           <div className="inline-flex items-center gap-1.5">
-            <Scale className="w-4 h-4 text-purple-600" />
+            <Scale className="w-4 h-4 text-slate-600" />
             <span className="font-medium text-slate-800">Казуси & исторически извори за 6.00</span>
           </div>
           <div className="inline-flex items-center gap-1.5">

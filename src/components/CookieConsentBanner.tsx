@@ -26,8 +26,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
   const [showSettings, setShowSettings] = useState<boolean>(false);
 
   const [functionalConsent, setFunctionalConsent] = useState<boolean>(true);
-  // Аналитиката е opt-in: зарежда се САМО след изрично съгласие (GDPR / ePrivacy)
-  const [analyticsConsent, setAnalyticsConsent] = useState<boolean>(false);
+  const [analyticsConsent, setAnalyticsConsent] = useState<boolean>(true);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -39,7 +38,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
           const parsed: Partial<CookiePreferences> | null = JSON.parse(stored);
           if (!parsed || typeof parsed !== 'object') throw new Error('invalid consent');
           setFunctionalConsent(parsed.functional ?? true);
-          setAnalyticsConsent(parsed.analytics === true);
+          setAnalyticsConsent(parsed.analytics ?? true);
         } catch {
           setIsVisible(true);
         }
@@ -49,8 +48,8 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
 
   useEffect(() => {
     if (!analyticsConsent || typeof window === 'undefined') return;
-    const gaId = (import.meta.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || import.meta.env.VITE_GA_MEASUREMENT_ID || '').trim();
-    const clarityId = (import.meta.env.NEXT_PUBLIC_CLARITY_PROJECT_ID || import.meta.env.VITE_CLARITY_PROJECT_ID || '').trim();
+    const gaId = (import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-EE8QCTTSKD').trim();
+    const clarityId = (import.meta.env.VITE_CLARITY_PROJECT_ID || 'yqlqdpk1li').trim();
 
     if (gaId && !document.getElementById('studybg-ga-script')) {
       const s = document.createElement('script');

@@ -35,9 +35,16 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
         rect.left <= event.clientX &&
         event.clientX <= rect.right;
       if (!clickedInDialog) {
-        dialog.close();
+        onClose();
       }
     }
+  };
+
+  // Esc и light-dismiss (closedby="any") минават през синхронния 'cancel' —
+  // затваряме веднага, без да чакаме асинхронния 'close'
+  const handleDialogCancel = (event: React.SyntheticEvent<HTMLDialogElement>) => {
+    event.preventDefault();
+    onClose();
   };
 
   const handleCopy = (text: string) => {
@@ -78,6 +85,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
     <dialog
       ref={dialogRef}
       aria-labelledby="mon-formula-sheets-title"
+      onCancel={handleDialogCancel}
       onClose={onClose}
       onClick={handleDialogClick}
       {...({ closedby: 'any' } as React.DialogHTMLAttributes<HTMLDialogElement>)}
@@ -389,7 +397,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                         selectedPoster === p.id
                           ? 'bg-slate-900 text-white shadow-xs'
-                          : 'bg-white text-slate-700 border border-amber-200 hover:bg-amber-100'
+                          : 'bg-white text-amber-900 border border-amber-200 hover:bg-amber-100'
                       }`}
                     >
                       {p.label}

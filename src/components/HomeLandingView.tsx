@@ -467,7 +467,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 <button
                   key={chip.label}
                   onClick={() => setOmniSearchQuery(chip.query)}
-                  className="px-2.5 py-1 rounded-full bg-white hover:bg-blue-50 text-slate-600 hover:text-blue-700 border border-slate-200 hover:border-blue-300 font-medium transition-colors cursor-pointer shadow-2xs"
+                  className="px-2.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-600 hover:text-blue-700 border border-slate-200 hover:border-blue-300 font-medium transition-colors cursor-pointer shadow-2xs"
                 >
                   {chip.label}
                 </button>
@@ -917,7 +917,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                   <button
                     onClick={() => handleSelectTimerMode(25)}
                     className={`px-2 py-0.5 rounded-md font-bold transition-colors cursor-pointer ${
-                      timerModeMinutes === 25 ? 'bg-emerald-500 text-slate-950' : 'text-slate-300 hover:text-white'
+                      timerModeMinutes === 25 ? 'bg-emerald-500 text-emerald-950' : 'text-slate-300 hover:text-white'
                     }`}
                   >
                     25 мин
@@ -925,7 +925,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                   <button
                     onClick={() => handleSelectTimerMode(45)}
                     className={`px-2 py-0.5 rounded-md font-bold transition-colors cursor-pointer ${
-                      timerModeMinutes === 45 ? 'bg-emerald-500 text-slate-950' : 'text-slate-300 hover:text-white'
+                      timerModeMinutes === 45 ? 'bg-emerald-500 text-emerald-950' : 'text-slate-300 hover:text-white'
                     }`}
                   >
                     45 мин (Урок)
@@ -948,8 +948,8 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                     onClick={() => setIsTimerRunning(!isTimerRunning)}
                     className={`px-3.5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
                       isTimerRunning
-                        ? 'bg-amber-500 hover:bg-amber-400 text-slate-950'
-                        : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950'
+                        ? 'bg-amber-500 hover:bg-amber-400 text-amber-950'
+                        : 'bg-emerald-500 hover:bg-emerald-400 text-emerald-950'
                     }`}
                   >
                     {isTimerRunning ? (
@@ -1421,7 +1421,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
                               isSel
                                 ? 'bg-emerald-700 text-white border-emerald-700 shadow-2xs'
-                                : 'bg-slate-50 hover:bg-emerald-50 text-slate-700 border-slate-200'
+                                : 'bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-emerald-800 border-slate-200 hover:border-emerald-300'
                             }`}
                           >
                             {uniConfigs[uKey].shortTitle}
@@ -1545,7 +1545,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
           </div>
 
           {/* Right Panel (5 cols): Live Interactive Flashcard Flip-Deck from all 108 Lessons */}
-          <div className="lg:col-span-5 p-5 sm:p-7 rounded-3xl bg-gradient-to-br from-indigo-950 via-slate-900 to-blue-950 text-white shadow-sm flex flex-col justify-between space-y-5">
+          <div className="lg:col-span-5 p-5 sm:p-7 rounded-3xl bg-slate-900 text-white shadow-sm flex flex-col justify-between space-y-5">
             <div className="space-y-4">
               <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10">
                 <div className="flex items-center gap-2">
@@ -1626,7 +1626,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                         setIsFlashcardFlipped(false);
                         setFlashcardIndex((prev) => (prev + 1) % Math.max(1, interleavedFlashcards.length));
                       }}
-                      className="py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold transition-colors cursor-pointer"
+                      className="py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-emerald-950 text-xs font-extrabold transition-colors cursor-pointer"
                     >
                       ✓ Знам го (+1)
                     </button>
@@ -1694,18 +1694,18 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
           {/* Lab 1: Oral Exam Simulator */}
           <div
             onClick={() => onNavigateTab('oralexam')}
-            className="p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-indigo-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
+            className="p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-slate-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
           >
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center border border-indigo-200">
+                <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center border border-slate-200">
                   <Mic className="w-5 h-5" />
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-900">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-800">
                   ГЛАС & ТЕКСТ
                 </span>
               </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-indigo-700 transition-colors">
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-blue-700 transition-colors">
                 Устно изпитване пред дъската
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed">
@@ -1775,18 +1775,18 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
           {/* Lab 4: Literature Canon & Thesis Builder */}
           <div
             onClick={() => onNavigateTab('literature')}
-            className="p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-purple-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
+            className="p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-stone-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
           >
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center border border-purple-200">
+                <div className="w-10 h-10 rounded-xl bg-stone-100 text-stone-700 flex items-center justify-center border border-stone-200">
                   <BookMarked className="w-5 h-5" />
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-900">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stone-200 text-stone-800">
                   41. ЗАДАЧА (30т.)
                 </span>
               </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-purple-700 transition-colors">
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-blue-700 transition-colors">
                 Литературен Канон & Тези
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed">
@@ -2071,7 +2071,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                         e.stopPropagation();
                         onSelectLesson?.(lesson, 'quiz');
                       }}
-                      className="font-mono text-[10px] px-2 py-0.5 rounded bg-slate-200/80 hover:bg-blue-100 text-slate-800 hover:text-blue-900 font-bold transition-colors cursor-pointer"
+                      className="font-mono text-[10px] px-2 py-0.5 rounded bg-slate-200/80 hover:bg-slate-300/80 text-slate-800 hover:text-blue-900 font-bold transition-colors cursor-pointer"
                     >
                       Тест ({lesson.quiz.length})
                     </button>
@@ -2099,7 +2099,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             <button
               type="button"
               onClick={() => onNavigateTab('catalog')}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-800 text-xs font-semibold transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/70 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-800 text-xs font-semibold transition-colors cursor-pointer"
             >
               <BookMarked className="w-4 h-4 text-blue-600" />
               <span>Отвори пълния каталог с всички {totalLessonsCount} теми по програмите на МОН за 8.–12. клас</span>

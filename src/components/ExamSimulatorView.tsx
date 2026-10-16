@@ -1138,7 +1138,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
               </div>
 
               {/* Source Text Box */}
-              <div className="p-4 rounded-xl bg-white border border-slate-300 shadow-2xs font-serif text-sm text-slate-900 italic leading-relaxed border-l-4 border-l-purple-500">
+              <div className="p-4 rounded-xl bg-amber-50/50 border border-amber-200 shadow-2xs font-serif text-sm text-slate-900 italic leading-relaxed">
                 {examData.module2.excerpt}
               </div>
 
@@ -1441,12 +1441,12 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
 
                 {/* Concrete Tips for 6.00 */}
                 {aiEssayEvaluation.concreteTipsForSix && aiEssayEvaluation.concreteTipsForSix.length > 0 && (
-                  <div className="p-4 rounded-xl bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 space-y-2">
-                    <div className="flex items-center gap-2 text-xs font-bold text-purple-900">
-                      <Lightbulb className="w-4 h-4 text-purple-600" />
+                  <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 space-y-2">
+                    <div className="flex items-center gap-2 text-xs font-bold text-amber-900">
+                      <Lightbulb className="w-4 h-4 text-amber-600" />
                       <span>3 Златни стъпки за вдигане до Отличен 6.00 на матурата:</span>
                     </div>
-                    <ul className="text-xs text-purple-950 space-y-1 list-decimal list-inside pl-1">
+                    <ul className="text-xs text-amber-950 space-y-1 list-decimal list-inside pl-1">
                       {aiEssayEvaluation.concreteTipsForSix.map((tip, idx) => (
                         <li key={idx} className="leading-snug">{tip}</li>
                       ))}

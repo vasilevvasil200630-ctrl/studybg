@@ -183,9 +183,9 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
         setIsScanning(false);
         setOcrReviewText(geminiExtracted);
         setOcrFileName(file.name);
-      } catch (err: any) {
+      } catch (err: unknown) {
         setIsScanning(false);
-        setUnmatchedError(`Грешка при разпознаване: ${err?.message || 'Опитайте отново или въведете текста ръчно'}.`);
+        setUnmatchedError(`Грешка при разпознаване: ${err instanceof Error && err.message ? err.message : 'Опитайте отново или въведете текста ръчно'}.`);
       }
       return;
     }

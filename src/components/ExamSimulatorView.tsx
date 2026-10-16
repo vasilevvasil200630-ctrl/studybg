@@ -1716,6 +1716,8 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                 <span>Официален протокол за провеждане на изпит</span>
               </div>
               <button
+                type="button"
+                aria-label="Затвори протокола"
                 onClick={() => setIsPrintModalOpen(false)}
                 className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors"
               >

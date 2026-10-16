@@ -14,9 +14,9 @@ const server = await createServer({
 let exitCode = 0;
 try {
   const { loadFullCurriculumLessons } = await server.ssrLoadModule('/src/data/curriculumDatabase.ts');
-  const { LESSON_SUBJECTS } = await server.ssrLoadModule('/src/types/index.ts');
+  const { LESSON_SUBJECTS, LESSON_GRADES } = await server.ssrLoadModule('/src/types/index.ts');
   const lessons = await loadFullCurriculumLessons();
-  const errors = validateLessons(lessons, { subjects: LESSON_SUBJECTS });
+  const errors = validateLessons(lessons, { subjects: LESSON_SUBJECTS, grades: LESSON_GRADES });
 
   if (errors.length > 0) {
     console.error(`✗ check:data — ${errors.length} проблема в ${lessons.length} урока:`);

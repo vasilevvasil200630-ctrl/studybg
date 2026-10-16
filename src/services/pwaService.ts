@@ -1,9 +1,15 @@
+// Събитието beforeinstallprompt още не е в стандартните DOM типове
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+}
+
 type ConnectionListener = (isOnline: boolean) => void;
 type UpdateListener = () => void;
 type InstallableListener = (canInstall: boolean) => void;
 
 class PwaManager {
-  private deferredPrompt: any = null;
+  private deferredPrompt: BeforeInstallPromptEvent | null = null;
   private connectionListeners: ConnectionListener[] = [];
   private updateListeners: UpdateListener[] = [];
   private installableListeners: InstallableListener[] = [];
@@ -19,7 +25,7 @@ class PwaManager {
       window.addEventListener('beforeinstallprompt', (e: Event) => {
         // Prevent default browser mini-infobar
         e.preventDefault();
-        this.deferredPrompt = e;
+        this.deferredPrompt = e as BeforeInstallPromptEvent;
         this.notifyInstallable(true);
       });
 

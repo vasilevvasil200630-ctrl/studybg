@@ -1948,7 +1948,8 @@ export const EXTRA_CURRICULUM_LESSONS_PART1B: LessonData[] = [
     id: 'cs-algorithms-oop-databases-8-12',
     title: 'Алгоритми, структури от данни, ООП, SQL бази данни и компютърни мрежи (8.–12. клас)',
     subject: 'Информатика, ИТ и Програмиране',
-    grade: '8.–12. клас (Профил & ДИППК)',
+    grade: '8.–12. клас',
+    audience: 'Профил & ДИППК',
     examType: 'ДИППК / Професионален изпит',
     sourceType: 'syllabus',
     originalNoteExcerpt:
@@ -2097,7 +2098,8 @@ export const EXTRA_CURRICULUM_LESSONS_PART1B: LessonData[] = [
     id: 'cs-web-cybersecurity-ai-10-12',
     title: 'Уеб технологии (HTML/CSS/JS), киберсигурност, криптография и изкуствен интелект (10.–12. клас)',
     subject: 'Информатика, ИТ и Програмиране',
-    grade: '10.–12. клас (ИТ & Програмиране)',
+    grade: '10.–12. клас',
+    audience: 'ИТ & Програмиране',
     examType: 'ДИППК / Професионален изпит',
     sourceType: 'syllabus',
     originalNoteExcerpt:
@@ -2251,7 +2253,8 @@ export const EXTRA_CURRICULUM_LESSONS_PART1B: LessonData[] = [
     id: 'econ-micro-macro-accounting-finance-8-12',
     title: 'Пазарна икономика, счетоводен баланс, банково дело, данъци и бизнес план (8.–12. клас)',
     subject: 'Икономика, Бизнес и Предприемачество',
-    grade: '8.–12. клас (НТБГ / НФСГ / ПГИ)',
+    grade: '8.–12. клас',
+    audience: 'НТБГ / НФСГ / ПГИ',
     examType: 'ДИППК / Професионален изпит',
     sourceType: 'syllabus',
     originalNoteExcerpt:
@@ -2410,7 +2413,8 @@ export const EXTRA_CURRICULUM_LESSONS_PART1B: LessonData[] = [
     id: 'econ-marketing-management-ecommerce-10-12',
     title: 'Маркетинг микс (4P), стратегически мениджмънт (SWOT), електронна търговия и финанси (10.–12. клас)',
     subject: 'Икономика, Бизнес и Предприемачество',
-    grade: '10.–12. клас (Профил & Професионални гимназии)',
+    grade: '10.–12. клас',
+    audience: 'Профил & Професионални гимназии',
     examType: 'ДИППК / Професионален изпит',
     sourceType: 'syllabus',
     originalNoteExcerpt:
@@ -2564,7 +2568,8 @@ export const EXTRA_CURRICULUM_LESSONS_PART1B: LessonData[] = [
     id: 'lang-german-french-spanish-b1-b2-8-12',
     title: 'Втори чужд език и профилирана матура: Немски, Френски и Испански език (8.–12. клас, нива B1–B2)',
     subject: 'Чужди езици (Немски, Френски, Испански)',
-    grade: '8.–12. клас (Езикови гимназии & ДЗИ)',
+    grade: '8.–12. клас',
+    audience: 'Езикови гимназии & ДЗИ',
     examType: 'ДЗИ / Матура',
     sourceType: 'syllabus',
     originalNoteExcerpt:
@@ -2723,7 +2728,8 @@ export const EXTRA_CURRICULUM_LESSONS_PART1B: LessonData[] = [
     id: 'voc-engineering-electronics-mechatronics-8-12',
     title: 'Електротехника, полупроводникова електроника, микроконтролери и мехатроника (8.–12. клас ДИППК)',
     subject: 'Професионални специалности и Инженерство',
-    grade: '8.–12. клас (ПГЕЕ / ПГМЕ / Технически гимназии)',
+    grade: '8.–12. клас',
+    audience: 'ПГЕЕ / ПГМЕ / Технически гимназии',
     examType: 'ДИППК / Професионален изпит',
     sourceType: 'syllabus',
     originalNoteExcerpt:
@@ -2872,7 +2878,8 @@ export const EXTRA_CURRICULUM_LESSONS_PART1B: LessonData[] = [
     id: 'voc-architecture-construction-cad-8-12',
     title: 'Строителна механика, архитектура, геодезия и CAD проектиране (8.–12. клас / СГСАГ & ПГАСГ)',
     subject: 'Професионални специалности и Инженерство',
-    grade: '8.–12. клас (СГСАГ / ПГАСГ / Строителни гимназии)',
+    grade: '8.–12. клас',
+    audience: 'СГСАГ / ПГАСГ / Строителни гимназии',
     examType: 'ДИППК / Професионален изпит',
     sourceType: 'syllabus',
     originalNoteExcerpt:
@@ -3026,7 +3033,8 @@ export const EXTRA_CURRICULUM_LESSONS_PART1B: LessonData[] = [
     id: 'voc-tourism-hospitality-design-arts-8-12',
     title: 'Туризъм и хотелиерство, графичен и интериорен дизайн, цветознание и композиция (8.–12. клас ДИППК)',
     subject: 'Професионални специалности и Инженерство',
-    grade: '8.–12. клас (ПГТ / НГПИ / Професионални гимназии)',
+    grade: '8.–12. клас',
+    audience: 'ПГТ / НГПИ / Професионални гимназии',
     examType: 'ДИППК / Професионален изпит',
     sourceType: 'syllabus',
     originalNoteExcerpt:

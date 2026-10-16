@@ -1,9 +1,10 @@
-import type { LessonData, LessonSubject, Flashcard, QuizQuestion } from '../types';
+import { toLessonGrade, type LessonData, type LessonSubject, type Flashcard, type QuizQuestion } from '../types';
 
 export function generateLessonFromInput(
   titleOrFileName: string,
   rawText: string,
-  subjectHint: LessonSubject
+  subjectHint: LessonSubject,
+  gradeHint = ''
 ): LessonData {
   const cleanTitle = titleOrFileName
     .replace(/\.(jpg|jpeg|png|heic|pdf|txt)$/i, '')
@@ -200,7 +201,7 @@ export function generateLessonFromInput(
     id: `custom-lesson-${Date.now()}`,
     title: cleanTitle,
     subject: subjectHint,
-    grade: 'Учебен материал',
+    grade: toLessonGrade(gradeHint),
     sourceType: 'notebook',
     originalNoteExcerpt: rawText.slice(0, 300) || 'Сканиран ръкопис от тетрадка',
     summary: {

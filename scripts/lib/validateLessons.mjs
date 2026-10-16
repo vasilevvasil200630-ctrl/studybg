@@ -8,13 +8,14 @@ const isNonEmptyArray = (v) => Array.isArray(v) && v.length > 0;
 
 /**
  * @param {Array<Record<string, any>>} lessons
- * @param {{ subjects: readonly string[] }} options
+ * @param {{ subjects: readonly string[]; grades: readonly string[] }} options
  * @returns {string[]} списък с грешки (празен = всичко е наред)
  */
-export function validateLessons(lessons, { subjects }) {
+export function validateLessons(lessons, { subjects, grades }) {
   const errors = [];
   const seenIds = new Set();
   const allowedSubjects = new Set(subjects);
+  const allowedGrades = new Set(grades);
 
   if (!Array.isArray(lessons) || lessons.length === 0) {
     return ['Няма заредени уроци.'];
@@ -39,8 +40,11 @@ export function validateLessons(lessons, { subjects }) {
         errors.push(`${where}: смесени латински и кирилски букви в „${field}“: „${lesson[field]}“`);
       }
     }
-    if (isNonEmptyString(lesson?.grade) && !/клас/.test(lesson.grade)) {
-      errors.push(`${where}: класът не съдържа „клас“: „${lesson.grade}“`);
+    if (isNonEmptyString(lesson?.grade) && !allowedGrades.has(lesson.grade)) {
+      errors.push(`${where}: непознат клас „${lesson.grade}“ (позволени: LESSON_GRADES)`);
+    }
+    if (lesson?.audience !== undefined && (!isNonEmptyString(lesson.audience) || MIXED_SCRIPT_WORD.test(lesson.audience))) {
+      errors.push(`${where}: невалидно поле „audience“: „${lesson.audience}“`);
     }
 
     if (!isNonEmptyString(lesson?.summary?.overview)) errors.push(`${where}: празен summary.overview`);

@@ -66,7 +66,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({ onOpenPoli
   };
 
   return (
-    <section aria-labelledby="newsletter-heading" className="my-12">
+    <section data-print-hide aria-labelledby="newsletter-heading" className="my-12">
       <div className="rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 lg:p-10 shadow-xs relative overflow-hidden">
         
         {/* Subtle decorative background gradient accent */}

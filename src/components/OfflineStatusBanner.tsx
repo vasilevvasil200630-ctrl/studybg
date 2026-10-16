@@ -34,7 +34,7 @@ export const OfflineStatusBanner: React.FC = () => {
   }
 
   return (
-    <aside aria-label="Системни известия за връзка" className="w-full bg-slate-900 text-white text-xs border-b border-slate-800 transition-all z-40">
+    <aside data-print-hide aria-label="Системни известия за връзка" className="w-full bg-slate-900 text-white text-xs border-b border-slate-800 transition-all z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-3">
         {/* Offline indicator */}
         {!isOnline && (

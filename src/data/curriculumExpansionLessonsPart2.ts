@@ -2037,7 +2037,7 @@ export const EXTRA_CURRICULUM_LESSONS_PART2: LessonData[] = [
   {
     id: 'voc-law-security-criminalistics-fire-safety-8-12',
     title: 'Основи на правото, Криминалистика, Охранителна дейност и Пожарна безопасност (8.–12. клас)',
-    subject: 'Философия и Гражданско образование',
+    subject: 'Гражданско образование и философия',
     grade: '12. клас (ДЗИ / Матура)',
     examType: 'ДИППК / Професионален изпит',
     sourceType: 'syllabus',

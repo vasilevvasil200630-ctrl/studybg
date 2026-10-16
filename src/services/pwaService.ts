@@ -73,13 +73,14 @@ class PwaManager {
           console.debug('ServiceWorker registration error:', err);
         });
 
-      // Reload page when new worker takes control
+      // Reload page only when an updated worker replaces an existing one.
+      // On a first visit clients.claim() also fires controllerchange — no reload then.
+      const hadController = Boolean(navigator.serviceWorker.controller);
       let refreshing = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!refreshing) {
-          refreshing = true;
-          window.location.reload();
-        }
+        if (!hadController || refreshing) return;
+        refreshing = true;
+        window.location.reload();
       });
     });
   }

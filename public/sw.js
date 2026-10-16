@@ -1,4 +1,7 @@
-const CACHE_NAME = 'studybg-pwa-v3';
+// v4: нова версия, за да се изчистят v3 кешовете, в които може да има HTML под JS адреси
+const CACHE_NAME = 'studybg-pwa-v4';
+const ASSET_CACHE_NAME = 'studybg-assets-v4';
+const MAX_ASSET_ENTRIES = 150;
 const CORE_STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -7,24 +10,39 @@ const CORE_STATIC_ASSETS = [
   '/manifest.webmanifest'
 ];
 
-// 1. Install Event: Pre-cache core shell
+// Кешираме само истински успешни отговори — никога HTML на мястото на JS/CSS
+const isCacheableAsset = (res) =>
+  Boolean(res) && res.ok && !(res.headers.get('content-type') || '').includes('text/html');
+
+// Пази кеша на асетите ограничен — най-старите записи се трият първи
+async function trimCache(name, maxEntries) {
+  const cache = await caches.open(name);
+  const keys = await cache.keys();
+  const excess = keys.length - maxEntries;
+  if (excess > 0) {
+    await Promise.all(keys.slice(0, excess).map((key) => cache.delete(key)));
+  }
+}
+
+// 1. Install Event: Pre-cache core shell.
+// Без skipWaiting тук — новата версия чака, докато потребителят натисне „Обнови“
+// (съобщение 'SKIP_WAITING'), за да не прекъсваме изпит по средата.
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(CORE_STATIC_ASSETS);
-    }).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_STATIC_ASSETS))
   );
 });
 
-// 2. Activate Event: Clean up legacy caches & take immediate control
+// 2. Activate Event: Clean up legacy caches & take control
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((name) => {
-          if (name !== CACHE_NAME) {
+          if (name !== CACHE_NAME && name !== ASSET_CACHE_NAME) {
             return caches.delete(name);
           }
+          return undefined;
         })
       );
     }).then(() => self.clients.claim())
@@ -51,24 +69,32 @@ self.addEventListener('fetch', (event) => {
           }
           return networkResponse;
         })
-        .catch(() => {
-          return caches.match(request).then((cached) => {
-            return cached || caches.match('/index.html') || caches.match('/');
-          });
+        .catch(async () => {
+          return (
+            (await caches.match(request)) ||
+            (await caches.match('/index.html')) ||
+            (await caches.match('/')) ||
+            Response.error()
+          );
         })
     );
     return;
   }
 
-  // Immutable content-hashed bundles (/assets/*.js, /assets/*.css): CacheFirst (0ms network overhead)
+  // Immutable content-hashed bundles (/assets/*.js, /assets/*.css): CacheFirst
   if (url.origin === self.location.origin && url.pathname.startsWith('/assets/')) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
         if (cachedResponse) return cachedResponse;
         return fetch(request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
+          if (isCacheableAsset(networkResponse)) {
             const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+            event.waitUntil(
+              caches
+                .open(ASSET_CACHE_NAME)
+                .then((cache) => cache.put(request, responseClone))
+                .then(() => trimCache(ASSET_CACHE_NAME, MAX_ASSET_ENTRIES))
+            );
           }
           return networkResponse;
         });
@@ -82,12 +108,12 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
         const fetchPromise = fetch(request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
+          if (isCacheableAsset(networkResponse)) {
             const responseClone = networkResponse.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
           }
           return networkResponse;
-        }).catch(() => null);
+        }).catch(() => cachedResponse || Response.error());
 
         // Return cached response immediately if available, otherwise wait for network
         return cachedResponse || fetchPromise;
@@ -115,7 +141,7 @@ self.addEventListener('fetch', (event) => {
 
   // Default network with cache fallback
   event.respondWith(
-    fetch(request).catch(() => caches.match(request))
+    fetch(request).catch(async () => (await caches.match(request)) || Response.error())
   );
 });
 

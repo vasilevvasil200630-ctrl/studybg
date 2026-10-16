@@ -24,7 +24,12 @@ import {
   Sparkles,
   Loader2
 } from 'lucide-react';
-import { evaluateEssayWithGemini, type EssayEvaluationResult } from '../services/geminiService';
+import {
+  ESSAY_MIN_LENGTH,
+  STRUCTURAL_ANALYSIS_LABEL,
+  evaluateEssayWithGemini,
+  type EssayEvaluationResult
+} from '../services/geminiService';
 
 interface HistoricalCasesViewProps {
   onSelectLessonByEra?: (era: string) => void;
@@ -91,6 +96,11 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
       setIsPlayingAudio(false);
     }
   }, [activeCase.id]);
+
+  // Спира гласовото четене, когато потребителят напусне изгледа
+  useEffect(() => () => {
+    window.speechSynthesis?.cancel();
+  }, []);
 
   // Handle Save Draft to LocalStorage
   const handleSaveDraft = () => {
@@ -655,18 +665,18 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
                     setIsAiHistoryLoading(false);
                   }
                 }}
-                disabled={isAiHistoryLoading || essayDraft.trim().length < 25}
+                disabled={isAiHistoryLoading || essayDraft.trim().length < ESSAY_MIN_LENGTH}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
               >
                 {isAiHistoryLoading ? (
                   <>
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    <span>Gemini 3.8 Flash проверява есето...</span>
+                    <span>Проверяваме есето...</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>🤖 Оцени историческото есе с Gemini 3.8 Flash (30 т.)</span>
+                    <span>Оцени историческото есе (30 т.)</span>
                   </>
                 )}
               </button>
@@ -682,16 +692,27 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
             )}
 
             {aiHistoryEval && (
-              <div className="p-4 rounded-xl bg-indigo-50/90 border border-indigo-200 space-y-3">
+              <div
+                className={`p-4 rounded-xl border space-y-3 ${
+                  aiHistoryEval.mode === 'ai' ? 'bg-indigo-50/90 border-indigo-200' : 'bg-amber-50/80 border-amber-200'
+                }`}
+              >
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-200 pb-2.5">
                   <span className="text-xs font-extrabold uppercase tracking-wider text-indigo-950 flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4 text-indigo-600" />
-                    Рецензия от Gemini 3.8 Flash по критериите на МОН
+                    {aiHistoryEval.mode === 'ai' ? 'AI рецензия (ориентировъчна) по 4-те критерия' : STRUCTURAL_ANALYSIS_LABEL}
                   </span>
-                  <span className="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-extrabold">
-                    Резултат: {aiHistoryEval.totalScore} / 30 т.
-                  </span>
+                  {aiHistoryEval.mode === 'ai' && aiHistoryEval.totalScore !== null && (
+                    <span className="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-extrabold">
+                      Резултат: {aiHistoryEval.totalScore} / 30 т.
+                    </span>
+                  )}
                 </div>
+                {aiHistoryEval.fallbackReason && (
+                  <p className="text-[11px] text-amber-900">
+                    AI оценката не е налична: {aiHistoryEval.fallbackReason}
+                  </p>
+                )}
                 <p className="text-xs text-slate-800 leading-relaxed font-medium">
                   {aiHistoryEval.overallFeedback}
                 </p>

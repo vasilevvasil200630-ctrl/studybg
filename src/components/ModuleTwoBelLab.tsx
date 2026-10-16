@@ -550,10 +550,12 @@ export const ModuleTwoBelLab: React.FC = () => {
                         <div key={idx} className="text-xs text-amber-200">• {imp}</div>
                       ))}
                     </div>
-                    <div className="p-3 rounded-xl bg-white/10 border border-white/10 text-xs text-emerald-200">
-                      <strong className="block text-white mb-0.5">✨ Редактиран еталонен вариант:</strong>
-                      {aiBelEval.modelImprovedVersion}
-                    </div>
+                    {aiBelEval.modelImprovedVersion && (
+                      <div className="p-3 rounded-xl bg-white/10 border border-white/10 text-xs text-emerald-200">
+                        <strong className="block text-white mb-0.5">✨ Редактиран еталонен вариант:</strong>
+                        {aiBelEval.modelImprovedVersion}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -811,10 +813,12 @@ export const ModuleTwoBelLab: React.FC = () => {
                       </span>
                     </div>
                     <p className="text-xs text-indigo-100 leading-relaxed">{aiBelEval.feedback}</p>
-                    <div className="p-2.5 rounded-xl bg-white/10 text-xs text-emerald-200">
-                      <strong className="block text-white mb-0.5">✨ Надградена теза (30/30 т.):</strong>
-                      {aiBelEval.modelImprovedVersion}
-                    </div>
+                    {aiBelEval.modelImprovedVersion && (
+                      <div className="p-2.5 rounded-xl bg-white/10 text-xs text-emerald-200">
+                        <strong className="block text-white mb-0.5">✨ Надградена теза (30/30 т.):</strong>
+                        {aiBelEval.modelImprovedVersion}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

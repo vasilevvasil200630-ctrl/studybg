@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from 'react';
+import React, { useState, lazy, Suspense, useEffect } from 'react';
 import {
   Compass,
   Search,
@@ -25,6 +25,7 @@ import {
   type UnsolvedMysteryItem,
   type TriviaQuestion
 } from '../data/generalKnowledgeData';
+import { isString, readStoredArray } from '../lib/storage';
 
 const HistoryTimelineView = lazy(() => import('./HistoryTimelineView').then(m => ({ default: m.HistoryTimelineView })));
 const CultureWondersView = lazy(() => import('./CultureWondersView').then(m => ({ default: m.CultureWondersView })));
@@ -73,14 +74,15 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
   const [mysterySearchQuery, setMysterySearchQuery] = useState<string>('');
   const [expandedMysteryId, setExpandedMysteryId] = useState<string | null>(null);
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
-  const [bookmarkedMysteryIds, setBookmarkedMysteryIds] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('studybg_bookmarked_mysteries');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+
+  // Спира гласовото четене, когато потребителят напусне изгледа
+  useEffect(() => () => {
+    window.speechSynthesis?.cancel();
+  }, []);
+
+  const [bookmarkedMysteryIds, setBookmarkedMysteryIds] = useState<string[]>(() =>
+    readStoredArray('studybg_bookmarked_mysteries', isString)
+  );
   const [copiedMysteryId, setCopiedMysteryId] = useState<string | null>(null);
 
   const mysteryCategories = [

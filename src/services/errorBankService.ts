@@ -1,4 +1,5 @@
 import type { QuizQuestion, LessonData } from '../types';
+import { isObjectItem, readStoredArray } from '../lib/storage';
 
 export interface SavedErrorItem {
   id: string;
@@ -21,9 +22,7 @@ const STORAGE_KEY = 'studybg_error_bank';
 export const errorBankService = {
   getAllErrors(): SavedErrorItem[] {
     try {
-      const data = localStorage.getItem(STORAGE_KEY);
-      if (!data) return [];
-      return JSON.parse(data) as SavedErrorItem[];
+      return readStoredArray<SavedErrorItem>(STORAGE_KEY, isObjectItem);
     } catch {
       return [];
     }

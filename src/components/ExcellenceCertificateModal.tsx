@@ -12,6 +12,7 @@ import {
   User,
   School
 } from 'lucide-react';
+import { NativeDialog } from './NativeDialog';
 
 interface ExcellenceCertificateModalProps {
   isOpen: boolean;
@@ -371,12 +372,7 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/65 backdrop-blur-sm animate-fade-in"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="cert-modal-title"
-    >
+    <NativeDialog onClose={onClose} labelledBy="cert-modal-title" widthClassName="max-w-3xl">
       <div className="bg-white w-full max-w-3xl max-h-[92vh] rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
         
         {/* Header */}
@@ -626,6 +622,6 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
         </div>
 
       </div>
-    </div>
+    </NativeDialog>
   );
 };

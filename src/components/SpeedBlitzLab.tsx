@@ -12,6 +12,7 @@ import {
   Award,
   Keyboard
 } from 'lucide-react';
+import { isPlainObject } from '../lib/storage';
 
 export type BlitzCategory = 'all' | 'bel' | 'math' | 'history' | 'english' | 'civics' | 'dippk' | 'science' | 'stem_code';
 
@@ -537,7 +538,8 @@ export const SpeedBlitzLab: React.FC = () => {
   const [highScores, setHighScores] = useState<BlitzHighScores>(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : {};
+      const parsed: unknown = raw ? JSON.parse(raw) : {};
+      return isPlainObject(parsed) ? (parsed as BlitzHighScores) : {};
     } catch {
       return {};
     }

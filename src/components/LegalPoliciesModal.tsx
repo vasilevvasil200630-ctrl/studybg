@@ -19,6 +19,7 @@ import {
   Eye
 } from 'lucide-react';
 import { mailingService } from '../services/mailingService';
+import { NativeDialog } from './NativeDialog';
 
 export type LegalPolicyTab = 'privacy' | 'cookies' | 'terms' | 'ai_act' | 'accessibility';
 
@@ -52,17 +53,6 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
     setConfirmWipe(false);
     setGdprActionNotice(null);
   }, [initialTab, isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -142,12 +132,7 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="legal-modal-title"
-    >
+    <NativeDialog onClose={onClose} labelledBy="legal-modal-title" widthClassName="max-w-4xl">
       <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
         
         {/* Modal Header */}
@@ -669,6 +654,6 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
         </div>
 
       </div>
-    </div>
+    </NativeDialog>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Clock,
   ShieldAlert,
@@ -22,10 +22,88 @@ import {
 } from 'lucide-react';
 import type { QuizQuestion, LessonData } from '../types';
 import { getExamModulesForLesson } from '../data/examModulesData';
-import { evaluateEssayWithGemini, type EssayEvaluationResult } from '../services/geminiService';
+import { evaluateEssayWithGemini, STRUCTURAL_ANALYSIS_LABEL, type EssayEvaluationResult } from '../services/geminiService';
 import { examHistoryService } from '../services/examHistoryService';
 import { ExamHistoryModal } from './ExamHistoryModal';
 import { ExcellenceCertificateModal } from './ExcellenceCertificateModal';
+import { DZI_SCALE, formatGrade, pointsToGrade, type VerbalGrade } from '../lib/monGradeScale';
+
+// Чернова на текущия изпит: пази се при всяка промяна, за да оцелее при презареждане
+interface ExamDraft {
+  v: 1;
+  lessonId: string;
+  durationMinutes: number;
+  deadline: number | null; // null = без таймер
+  selectedAnswers: Record<number, number>;
+  module2Answers: Record<string, string>;
+  essayText: string;
+  activeModuleTab: 1 | 2 | 3;
+  savedAt: number;
+}
+
+const EXAM_GRADE_STYLES: Record<VerbalGrade, { badge: string; status: string; color: string }> = {
+  'Отличен': {
+    badge: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    status: 'Пълно покритие на държавните образователни стандарти за ДЗИ / НВО',
+    color: 'text-emerald-700'
+  },
+  'Много добър': {
+    badge: 'bg-sky-50 text-sky-800 border-sky-200',
+    status: 'Солидни познания, висока степен на критичен и изворов анализ',
+    color: 'text-sky-700'
+  },
+  'Добър': {
+    badge: 'bg-amber-50 text-amber-800 border-amber-200',
+    status: 'Удовлетворително усвояване; препоръчва се преговор на изворите и есето',
+    color: 'text-amber-700'
+  },
+  'Среден': {
+    badge: 'bg-orange-50 text-orange-800 border-orange-200',
+    status: `Покрит минимален праг за преминаване (${DZI_SCALE.passPoints} точки). Налице са съществени пропуски`,
+    color: 'text-orange-700'
+  },
+  'Слаб': {
+    badge: 'bg-rose-50 text-rose-800 border-rose-200',
+    status: `Под прага за издържан изпит (под ${DZI_SCALE.passPoints} от ${DZI_SCALE.maxPoints} точки)`,
+    color: 'text-rose-700'
+  }
+};
+
+const examDraftKey = (lessonId: string) => `studybg_exam_draft_v1_${lessonId}`;
+
+const readExamDraft = (lessonId: string): ExamDraft | null => {
+  try {
+    const raw = localStorage.getItem(examDraftKey(lessonId));
+    if (!raw) return null;
+    const parsed: unknown = JSON.parse(raw);
+    if (
+      !parsed ||
+      typeof parsed !== 'object' ||
+      (parsed as ExamDraft).v !== 1 ||
+      (parsed as ExamDraft).lessonId !== lessonId
+    ) {
+      return null;
+    }
+    const d = parsed as ExamDraft;
+    return {
+      ...d,
+      selectedAnswers: d.selectedAnswers && typeof d.selectedAnswers === 'object' ? d.selectedAnswers : {},
+      module2Answers: d.module2Answers && typeof d.module2Answers === 'object' ? d.module2Answers : {},
+      essayText: typeof d.essayText === 'string' ? d.essayText : '',
+      activeModuleTab: d.activeModuleTab === 2 || d.activeModuleTab === 3 ? d.activeModuleTab : 1
+    };
+  } catch {
+    return null;
+  }
+};
+
+const clearExamDraft = (lessonId: string) => {
+  try {
+    localStorage.removeItem(examDraftKey(lessonId));
+  } catch {
+    // localStorage недостъпен (private mode) — няма какво да се изчисти
+  }
+};
 
 interface ExamSimulatorViewProps {
   currentLesson: LessonData;
@@ -77,6 +155,14 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
   // Exam History & Progress Modal State
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState<boolean>(false);
   const [historyCount, setHistoryCount] = useState<number>(() => examHistoryService.getAllAttempts().length);
+
+  // Таймер по краен момент (deadline - Date.now()) — не изостава във фонов таб
+  const [deadline, setDeadline] = useState<number | null>(null);
+  const [pendingDraft, setPendingDraft] = useState<ExamDraft | null>(() => readExamDraft(currentLesson.id));
+
+  useEffect(() => {
+    setPendingDraft(readExamDraft(currentLesson.id));
+  }, [currentLesson.id]);
 
   // Dynamic Exam Countdown: Always calculates upcoming May (ДЗИ 12. кл.) and June (НВО 7. и 10. кл.)
   const examCountdowns = useMemo(() => {
@@ -177,8 +263,11 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
 
   // Start Exam (Supports official МОН times: 240m DZI, 90m NVO 10, 60m express, 0 untimed)
   const handleStartExam = (mins: number) => {
+    clearExamDraft(currentLesson.id);
+    setPendingDraft(null);
     setExamDurationMinutes(mins);
     setSecondsLeft(mins === 0 ? 999999 : mins * 60);
+    setDeadline(mins === 0 ? null : Date.now() + mins * 60 * 1000);
     setIsExamRunning(true);
     setIsSubmitted(false);
     setSelectedAnswers({});
@@ -190,6 +279,31 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
     setAiEssayEvaluation(null);
     setEvaluationError(null);
     setActiveModuleTab(1);
+  };
+
+  // Възстановяване на незавършен изпит след презареждане
+  const handleRestoreDraft = () => {
+    if (!pendingDraft) return;
+    const d = pendingDraft;
+    setExamDurationMinutes(d.durationMinutes);
+    setDeadline(d.deadline);
+    setSecondsLeft(d.deadline === null ? 999999 : Math.max(0, Math.round((d.deadline - Date.now()) / 1000)));
+    setSelectedAnswers(d.selectedAnswers);
+    setModule2Answers(d.module2Answers);
+    setModule2Scores({});
+    setEssayText(d.essayText);
+    setRubricScores({});
+    setAiEssayEvaluation(null);
+    setEvaluationError(null);
+    setActiveModuleTab(d.activeModuleTab);
+    setIsSubmitted(false);
+    setIsExamRunning(true);
+    setPendingDraft(null);
+  };
+
+  const handleDiscardDraft = () => {
+    clearExamDraft(currentLesson.id);
+    setPendingDraft(null);
   };
 
   // Module 1 Option Select
@@ -216,7 +330,10 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
         examData.module3.rubric
       );
       setAiEssayEvaluation(result);
-      setRubricScores(result.scores);
+      // Структурният офлайн анализ не дава точки — ръчната самооценка остава непроменена
+      if (result.mode === 'ai') {
+        setRubricScores(result.scores);
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Грешка при AI оценяването. Опитайте отново.';
       setEvaluationError(msg);
@@ -227,6 +344,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
 
   // Submit Exam
   const handleSubmitExam = () => {
+    clearExamDraft(currentLesson.id);
     setIsSubmitted(true);
     setIsExamRunning(false);
 
@@ -258,22 +376,62 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
     setActiveModuleTab(1);
   };
 
-  // Timer Effect
+  // Винаги актуална референция към handleSubmitExam за таймера
+  const submitExamRef = useRef(handleSubmitExam);
+  submitExamRef.current = handleSubmitExam;
+
+  // Timer Effect: изчислява оставащото време от крайния момент, а не с декремент
   useEffect(() => {
-    let timer: any = null;
-    if (isExamRunning && secondsLeft > 0 && !isSubmitted) {
-      timer = setInterval(() => {
-        setSecondsLeft(prev => prev - 1);
-      }, 1000);
-    } else if (secondsLeft === 0 && isExamRunning && !isSubmitted) {
-      handleSubmitExam();
-    }
+    if (!isExamRunning || isSubmitted || deadline === null) return;
+    const tick = () => {
+      const left = Math.max(0, Math.round((deadline - Date.now()) / 1000));
+      setSecondsLeft(left);
+      if (left === 0) {
+        submitExamRef.current();
+      }
+    };
+    tick();
+    const timer = setInterval(tick, 1000);
     return () => clearInterval(timer);
-  }, [isExamRunning, secondsLeft, isSubmitted]);
+  }, [isExamRunning, isSubmitted, deadline]);
+
+  // Автозапис на черновата (debounce 500 ms)
+  useEffect(() => {
+    if (!isExamRunning || isSubmitted) return;
+    const t = setTimeout(() => {
+      const draft: ExamDraft = {
+        v: 1,
+        lessonId: currentLesson.id,
+        durationMinutes: examDurationMinutes,
+        deadline,
+        selectedAnswers,
+        module2Answers,
+        essayText,
+        activeModuleTab,
+        savedAt: Date.now()
+      };
+      try {
+        localStorage.setItem(examDraftKey(currentLesson.id), JSON.stringify(draft));
+      } catch {
+        // Квотата е пълна или localStorage е недостъпен — изпитът продължава без запис
+      }
+    }, 500);
+    return () => clearTimeout(t);
+  }, [isExamRunning, isSubmitted, currentLesson.id, examDurationMinutes, deadline, selectedAnswers, module2Answers, essayText, activeModuleTab]);
+
+  // Предупреждение при затваряне/презареждане по време на изпит
+  useEffect(() => {
+    if (!isExamRunning || isSubmitted) return;
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isExamRunning, isSubmitted]);
 
   // Score Calculations
   const module1Points = useMemo(() => {
-    if (questions.length === 0) return 40;
+    if (questions.length === 0) return 0;
     let correctCount = 0;
     questions.forEach(q => {
       if (selectedAnswers[q.id] === q.correctIndex) {
@@ -301,57 +459,19 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
 
   const totalPoints = module1Points + module2Points + module3Points;
 
-  // Official МОН Grading Blueprint
-  const getMonGradeInfo = (points: number) => {
-    if (points >= 90) {
-      return {
-        grade: 'Отличен 6.00',
-        badge: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-        status: 'Пълно покритие на държавните образователни стандарти за ДЗИ / НВО',
-        color: 'text-emerald-700'
-      };
-    }
-    if (points >= 75) {
-      return {
-        grade: 'Много добър 5.00',
-        badge: 'bg-sky-50 text-sky-800 border-sky-200',
-        status: 'Солидни познания, висока степен на критичен и изворов анализ',
-        color: 'text-sky-700'
-      };
-    }
-    if (points >= 59) {
-      return {
-        grade: 'Добър 4.00',
-        badge: 'bg-amber-50 text-amber-800 border-amber-200',
-        status: 'Удовлетворително усвояване; препоръчва се преговор на изворите и есето',
-        color: 'text-amber-700'
-      };
-    }
-    if (points >= 30) {
-      return {
-        grade: 'Среден 3.00',
-        badge: 'bg-orange-50 text-orange-800 border-orange-200',
-        status: 'Покрит минимален праг за преминаване (30 точки). Налице са съществени пропуски',
-        color: 'text-orange-700'
-      };
-    }
-    return {
-      grade: 'Слаб 2.00',
-      badge: 'bg-rose-50 text-rose-800 border-rose-200',
-      status: 'Под официалния държавен праг за преминаване (под 30 от 100 точки)',
-      color: 'text-rose-700'
-    };
+  // Единна монотонна скала (src/lib/monGradeScale.ts)
+  const gradeResult = pointsToGrade(totalPoints, DZI_SCALE);
+  const gradeInfo = {
+    grade: formatGrade(gradeResult),
+    numeric: gradeResult.numeric,
+    passed: gradeResult.passed,
+    ...EXAM_GRADE_STYLES[gradeResult.label]
   };
-
-  const gradeInfo = getMonGradeInfo(totalPoints);
 
   // Auto-record completed attempt to examHistoryService (LocalStorage & Supabase)
   useEffect(() => {
     if (isSubmitted) {
       const timeSpent = Math.max(1, (examDurationMinutes === 0 ? 3600 : examDurationMinutes * 60) - secondsLeft);
-      const match = gradeInfo.grade.match(/(\d+\.\d+)/);
-      const gradeNum = match ? parseFloat(match[1]) : (totalPoints >= 30 ? 3.00 : 2.00);
-
       examHistoryService.recordAttempt({
         lessonId: currentLesson.id,
         lessonTitle: currentLesson.title,
@@ -365,9 +485,9 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
         module3Points,
         totalPoints,
         gradeEquivalent: gradeInfo.grade,
-        gradeNumeric: gradeNum,
-        passed: totalPoints >= 30,
-        hasAiEvaluation: Boolean(aiEssayEvaluation)
+        gradeNumeric: gradeInfo.numeric,
+        passed: gradeInfo.passed,
+        hasAiEvaluation: aiEssayEvaluation?.mode === 'ai'
       }).then(() => {
         setHistoryCount(examHistoryService.getAllAttempts().length);
       });
@@ -723,6 +843,37 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
             )}
           </div>
         </div>
+
+        {/* Незавършен изпит, запазен преди презареждане */}
+        {pendingDraft && !isExamRunning && !isSubmitted && (
+          <div
+            role="status"
+            className="mt-4 p-4 rounded-xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+          >
+            <div className="text-xs text-amber-900 leading-relaxed">
+              <strong className="block text-sm">Имате незавършен изпит по тази тема.</strong>
+              {pendingDraft.deadline === null
+                ? 'Изпит без таймер — отговорите ви са запазени.'
+                : pendingDraft.deadline > Date.now()
+                  ? `Оставащо време: ${formatTimer(Math.round((pendingDraft.deadline - Date.now()) / 1000))}.`
+                  : 'Времето е изтекло — при продължаване изпитът ще бъде предаден автоматично.'}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleRestoreDraft}
+                className="px-3 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-colors"
+              >
+                Продължи изпита
+              </button>
+              <button
+                onClick={handleDiscardDraft}
+                className="px-3 py-2 rounded-xl bg-white hover:bg-amber-100 text-amber-900 text-xs font-medium border border-amber-200 transition-colors"
+              >
+                Изтрий черновата
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Results Banner when Submitted */}
         {isSubmitted && (
@@ -1186,42 +1337,58 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
 
             {/* AI Detailed Audit Report Card */}
             {aiEssayEvaluation && (
-              <div className="p-5 rounded-2xl bg-white border-2 border-blue-500/30 shadow-md space-y-4">
+              <div
+                className={`p-5 rounded-2xl bg-white border-2 shadow-md space-y-4 ${
+                  aiEssayEvaluation.mode === 'ai' ? 'border-blue-500/30' : 'border-amber-300'
+                }`}
+              >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
-                    <div>
-                      <h5 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                        <span>Официален AI протокол за оценка на есето</span>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                          {aiEssayEvaluation.isAiGenerated ? 'Gemini 3.8 Flash МОН Проверител' : 'МОН Евристичен анализ'}
-                        </span>
-                      </h5>
-                      <p className="text-xs text-slate-500 mt-0.5">
-                        Точките са изчислени според държавните образователни изисквания за ДЗИ 12. клас
-                      </p>
-                    </div>
+                  <div>
+                    <h5 className="text-sm font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                      <span>{aiEssayEvaluation.mode === 'ai' ? 'AI оценка на есето (ориентировъчна)' : STRUCTURAL_ANALYSIS_LABEL}</span>
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                          aiEssayEvaluation.mode === 'ai'
+                            ? 'bg-blue-50 text-blue-800 border-blue-200'
+                            : 'bg-amber-50 text-amber-900 border-amber-200'
+                        }`}
+                      >
+                        {aiEssayEvaluation.mode === 'ai' ? 'Google Gemini' : 'Без AI'}
+                      </span>
+                    </h5>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      {aiEssayEvaluation.mode === 'ai'
+                        ? 'Точките са ориентировъчни по 4-критериалната рубрика и не заместват официалната проверка.'
+                        : 'Няма връзка с AI модела. Показваме само структурни наблюдения — поставете точките сами в самооценката по-долу.'}
+                    </p>
+                    {aiEssayEvaluation.fallbackReason && (
+                      <p className="text-[11px] text-amber-800 mt-1">Причина: {aiEssayEvaluation.fallbackReason}</p>
+                    )}
                   </div>
 
-                  <div className="flex items-baseline gap-1 bg-blue-50 text-blue-900 border border-blue-200 px-3.5 py-1.5 rounded-xl self-start sm:self-auto">
-                    <span className="text-xs font-semibold text-blue-700">Оценка:</span>
-                    <span className="text-xl font-extrabold font-mono text-blue-700">
-                      {aiEssayEvaluation.totalScore}
-                    </span>
-                    <span className="text-xs font-medium text-slate-500">/ 30 т.</span>
-                  </div>
+                  {aiEssayEvaluation.mode === 'ai' && aiEssayEvaluation.totalScore !== null && (
+                    <div className="flex items-baseline gap-1 bg-blue-50 text-blue-900 border border-blue-200 px-3.5 py-1.5 rounded-xl self-start sm:self-auto">
+                      <span className="text-xs font-semibold text-blue-700">Оценка:</span>
+                      <span className="text-xl font-extrabold font-mono text-blue-700">
+                        {aiEssayEvaluation.totalScore}
+                      </span>
+                      <span className="text-xs font-medium text-slate-500">
+                        / {examData.module3.rubric.reduce((sum, c) => sum + c.maxPoints, 0)} т.
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Overall Feedback */}
                 <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-700 leading-relaxed font-sans">
-                  <span className="font-bold text-slate-900 block mb-1">Обобщение на националния проверител:</span>
+                  <span className="font-bold text-slate-900 block mb-1">Обобщение:</span>
                   {aiEssayEvaluation.overallFeedback}
                 </div>
 
                 {/* 4 Criteria Scores with Specific Feedback */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {examData.module3.rubric.map(crit => {
-                    const pts = aiEssayEvaluation.scores[crit.id] ?? 0;
+                    const pts = aiEssayEvaluation.scores[crit.id];
                     const feedback = aiEssayEvaluation.criterionFeedback[crit.id];
                     return (
                       <div key={crit.id} className="p-3.5 rounded-xl bg-white border border-slate-200 space-y-2 shadow-2xs">
@@ -1229,9 +1396,11 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
                           <span className="text-xs font-bold text-slate-900 truncate">
                             {crit.name}
                           </span>
-                          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
-                            {pts} / {crit.maxPoints} т.
-                          </span>
+                          {aiEssayEvaluation.mode === 'ai' && pts !== undefined && (
+                            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                              {pts} / {crit.maxPoints} т.
+                            </span>
+                          )}
                         </div>
                         {feedback && (
                           <p className="text-[11px] text-slate-600 leading-snug">

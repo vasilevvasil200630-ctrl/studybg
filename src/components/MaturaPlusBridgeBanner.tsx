@@ -20,7 +20,7 @@ export const MaturaPlusBridgeBanner: React.FC<MaturaPlusBridgeBannerProps> = ({
 
   if (compact) {
     return (
-      <aside 
+      <aside data-print-hide
         aria-label="Препратка към платформата Matura+ за прогимназиален етап"
         className={`flex items-center justify-between gap-3 p-3 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border border-emerald-200/90 text-xs text-slate-800 shadow-2xs ${className}`}
       >
@@ -47,7 +47,7 @@ export const MaturaPlusBridgeBanner: React.FC<MaturaPlusBridgeBannerProps> = ({
   }
 
   return (
-    <aside 
+    <aside data-print-hide
       aria-label="Специализирана платформа Matura+ за 5-7 клас"
       className={`p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-emerald-900 via-teal-900 to-slate-900 text-white shadow-md relative overflow-hidden ${className}`}
     >

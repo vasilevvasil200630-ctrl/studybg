@@ -558,7 +558,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
 
               {isLabsDropdownOpen && (
-                <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-[620px] p-4 rounded-2xl bg-white border border-slate-200 shadow-2xl z-50">
+                <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-[min(620px,calc(100vw-2rem))] p-4 rounded-2xl bg-white border border-slate-200 shadow-2xl z-50">
                   <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
                     <div>
                       <span className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">

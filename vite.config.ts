@@ -8,7 +8,8 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-  envPrefix: ['VITE_', 'NEXT_PUBLIC_', 'GEMINI_'],
+  // Без 'GEMINI_': всяка такава променлива би се вградила публично в бъндъла
+  envPrefix: ['VITE_', 'NEXT_PUBLIC_'],
   build: {
     target: 'es2022',
     cssMinify: true,

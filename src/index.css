@@ -92,10 +92,25 @@ body {
     contain-intrinsic-size: none !important;
   }
 
+  /* Навигация, странични менюта, банери и бисквитки не се печатат */
+  header,
+  nav,
+  footer,
+  aside,
+  [role="banner"],
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  /* Големите секции се пренасят нормално — иначе остават полупразни страници */
   section,
-  article,
-  table,
+  article {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
   tr,
+  figure,
   .print-avoid-break {
     break-inside: avoid;
     page-break-inside: avoid;

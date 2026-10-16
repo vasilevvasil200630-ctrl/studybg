@@ -1,4 +1,4 @@
-import { useState, useEffect, useTransition, lazy, Suspense } from 'react';
+import { useState, useEffect, useRef, useTransition, lazy, Suspense } from 'react';
 import { Navbar, type AppNavTab } from './components/Navbar';
 import { CultureHero, type CultureSubTab } from './components/CultureHero';
 import { Footer } from './components/Footer';
@@ -9,6 +9,7 @@ import { OfflineStatusBanner } from './components/OfflineStatusBanner';
 import { CookieConsentBanner } from './components/CookieConsentBanner';
 import type { LegalPolicyTab } from './components/LegalPoliciesModal';
 import { MaturaPlusBridgeBanner } from './components/MaturaPlusBridgeBanner';
+import { ChunkErrorBoundary } from './components/ChunkErrorBoundary';
 
 import { HomeLandingView } from './components/HomeLandingView';
 
@@ -136,47 +137,65 @@ export function App() {
   const [isQuickLessonModalOpen, setIsQuickLessonModalOpen] = useState(false);
   const [practiceQuestions, setPracticeQuestions] = useState<QuizQuestion[] | null>(null);
 
+  const curriculumHydratedRef = useRef(false);
+
   useEffect(() => {
+    if (curriculumHydratedRef.current) return;
     let isMounted = true;
     let triggered = false;
+    let idleHandle: number | null = null;
+    let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
 
-    const hydrateFullCurriculum = () => {
-      if (triggered) return;
-      triggered = true;
+    const cancelScheduled = () => {
       window.removeEventListener('pointerdown', hydrateFullCurriculum);
       window.removeEventListener('keydown', hydrateFullCurriculum);
-      window.removeEventListener('touchstart', hydrateFullCurriculum);
-      window.removeEventListener('scroll', hydrateFullCurriculum);
-      window.removeEventListener('wheel', hydrateFullCurriculum);
-
-      loadFullCurriculumLessons().then((fullLessons) => {
-        if (!isMounted) return;
-        startTabTransition(() => {
-          setLessons((prev) => {
-            const customScans = prev.filter((l) => !fullLessons.some((fl) => fl.id === l.id));
-            return [...customScans, ...fullLessons];
-          });
-        });
-      });
+      if (idleHandle !== null && 'cancelIdleCallback' in window) window.cancelIdleCallback(idleHandle);
+      if (timeoutHandle !== null) clearTimeout(timeoutHandle);
+      idleHandle = null;
+      timeoutHandle = null;
     };
+
+    function hydrateFullCurriculum() {
+      if (triggered) return;
+      triggered = true;
+      cancelScheduled();
+
+      loadFullCurriculumLessons()
+        .then((fullLessons) => {
+          if (!isMounted) return;
+          curriculumHydratedRef.current = true;
+          startTabTransition(() => {
+            setLessons((prev) => {
+              const fullIds = new Set(fullLessons.map((fl) => fl.id));
+              const customScans = prev.filter((l) => !fullIds.has(l.id));
+              return [...customScans, ...fullLessons];
+            });
+          });
+        })
+        .catch((err: unknown) => {
+          // Мрежова грешка/остарял chunk — следващата навигация опитва отново
+          console.warn('Full curriculum load failed:', err);
+        });
+    }
 
     if (activeTab !== 'home' || isQuickLessonModalOpen || isScanModalOpen) {
       hydrateFullCurriculum();
     } else {
+      // Намерение за навигация → веднага; иначе във времето на бездействие (без скрол тригер,
+      // за да не парсваме ~2 MB данни точно докато ученикът скролва на телефона)
       window.addEventListener('pointerdown', hydrateFullCurriculum, { passive: true, once: true });
       window.addEventListener('keydown', hydrateFullCurriculum, { passive: true, once: true });
-      window.addEventListener('touchstart', hydrateFullCurriculum, { passive: true, once: true });
-      window.addEventListener('scroll', hydrateFullCurriculum, { passive: true, once: true });
-      window.addEventListener('wheel', hydrateFullCurriculum, { passive: true, once: true });
+      if ('requestIdleCallback' in window) {
+        idleHandle = window.requestIdleCallback(hydrateFullCurriculum, { timeout: 5000 });
+      } else {
+        // Safari няма requestIdleCallback
+        timeoutHandle = setTimeout(hydrateFullCurriculum, 3000);
+      }
     }
 
     return () => {
       isMounted = false;
-      window.removeEventListener('pointerdown', hydrateFullCurriculum);
-      window.removeEventListener('keydown', hydrateFullCurriculum);
-      window.removeEventListener('touchstart', hydrateFullCurriculum);
-      window.removeEventListener('scroll', hydrateFullCurriculum);
-      window.removeEventListener('wheel', hydrateFullCurriculum);
+      cancelScheduled();
     };
   }, [activeTab, isQuickLessonModalOpen, isScanModalOpen]);
 
@@ -489,6 +508,7 @@ export function App() {
       )}
 
       {/* Lazy Modals wrapped in Suspense */}
+      <ChunkErrorBoundary compact>
       <Suspense fallback={null}>
         {/* Smart Scan Modal / Overlay */}
         {isScanModalOpen && (
@@ -526,6 +546,7 @@ export function App() {
           <MonFormulaSheetsModal onClose={() => setIsFormulaModalOpen(false)} />
         )}
       </Suspense>
+      </ChunkErrorBoundary>
 
       {/* Main Content Area: Spacious Full-Width Homepage vs Focused Workspace */}
       {portalMode === 'study' && activeTab === 'home' ? (
@@ -796,6 +817,7 @@ export function App() {
                   }`}
                 >
                   
+                  <ChunkErrorBoundary key={activeTab}>
                   <Suspense fallback={<ViewLoadingSkeleton />}>
                     {activeTab === 'specialties' && (
                       <SchoolsSpecialtiesHub
@@ -942,6 +964,7 @@ export function App() {
                       />
                     )}
                   </Suspense>
+                  </ChunkErrorBoundary>
 
                 </div>
               </div>
@@ -1037,6 +1060,7 @@ export function App() {
 
               {/* Right Column: Active Culture Sub-Module */}
               <div className="lg:col-span-8 xl:col-span-9 min-w-0">
+                <ChunkErrorBoundary key={cultureSubTab}>
                 <Suspense fallback={<ViewLoadingSkeleton />}>
                   <CultureHubView
                     activeSubTab={cultureSubTab}
@@ -1047,6 +1071,7 @@ export function App() {
                     lessons={lessons}
                   />
                 </Suspense>
+                </ChunkErrorBoundary>
               </div>
 
             </div>
@@ -1085,6 +1110,7 @@ export function App() {
 
       {/* GDPR Legal Policies Modal (Privacy, Cookies, Terms) */}
       {isPolicyModalOpen && (
+        <ChunkErrorBoundary compact>
         <Suspense fallback={null}>
           <LegalPoliciesModal
             isOpen={isPolicyModalOpen}
@@ -1092,6 +1118,7 @@ export function App() {
             initialTab={activePolicyTab}
           />
         </Suspense>
+        </ChunkErrorBoundary>
       )}
 
     </div>

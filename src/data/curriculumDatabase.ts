@@ -1184,6 +1184,10 @@ export async function loadFullCurriculumLessons(): Promise<LessonData[]> {
     ].map(ensureNotebookChecklist);
     cachedFullCurriculum = buildInterleavedCurriculum(fullRaw);
     return cachedFullCurriculum;
+  }).catch((err: unknown) => {
+    // Не кешираме неуспеха — следващото извикване опитва отново (напр. след връщане онлайн)
+    inflightCurriculumPromise = null;
+    throw err;
   });
   return inflightCurriculumPromise;
 }

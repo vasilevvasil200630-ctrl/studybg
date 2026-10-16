@@ -54,7 +54,8 @@ export const mailingService = {
     try {
       const raw = localStorage.getItem(LOCAL_STORAGE_SUBSCRIBERS_KEY);
       if (!raw) return { subscribed: false };
-      const subs: NewsletterSubscription[] = JSON.parse(raw);
+      const parsedSubs: unknown = JSON.parse(raw);
+      const subs: NewsletterSubscription[] = Array.isArray(parsedSubs) ? parsedSubs : [];
       if (subs.length > 0) {
         return { subscribed: true, subscription: subs[subs.length - 1] };
       }
@@ -82,7 +83,8 @@ export const mailingService = {
     // 1. Local Storage
     try {
       const raw = localStorage.getItem(LOCAL_STORAGE_SUBSCRIBERS_KEY);
-      const existing: NewsletterSubscription[] = raw ? JSON.parse(raw) : [];
+      const parsedExisting: unknown = raw ? JSON.parse(raw) : [];
+      const existing: NewsletterSubscription[] = Array.isArray(parsedExisting) ? parsedExisting : [];
       const filtered = existing.filter(s => s.email !== cleanEmail);
       filtered.push(newSub);
       localStorage.setItem(LOCAL_STORAGE_SUBSCRIBERS_KEY, JSON.stringify(filtered));
@@ -132,7 +134,8 @@ export const mailingService = {
     try {
       const raw = localStorage.getItem(LOCAL_STORAGE_SUBSCRIBERS_KEY);
       if (raw) {
-        const existing: NewsletterSubscription[] = JSON.parse(raw);
+        const parsedExisting: unknown = JSON.parse(raw);
+        const existing: NewsletterSubscription[] = Array.isArray(parsedExisting) ? parsedExisting : [];
         const filtered = existing.filter(s => s.email.toLowerCase() !== cleanEmail);
         localStorage.setItem(LOCAL_STORAGE_SUBSCRIBERS_KEY, JSON.stringify(filtered));
       }

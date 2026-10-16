@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Globe,
   Search,
@@ -16,6 +16,7 @@ import { ExamBridgeCard } from './ExamBridgeCard';
 import { findLessonForHeritageItem } from '../services/curriculumBridge';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
+import { isString, readStoredArray } from '../lib/storage';
 
 interface CultureHeritageViewProps {
   lessons?: LessonData[];
@@ -34,14 +35,15 @@ export const CultureHeritageView: React.FC<CultureHeritageViewProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
-  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('studybg_bookmarked_heritage');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+
+  // Спира гласовото четене, когато потребителят напусне изгледа
+  useEffect(() => () => {
+    window.speechSynthesis?.cancel();
+  }, []);
+
+  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(() =>
+    readStoredArray('studybg_bookmarked_heritage', isString)
+  );
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const categories: { id: string; label: string }[] = [

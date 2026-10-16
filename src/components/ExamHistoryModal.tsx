@@ -12,6 +12,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { examHistoryService, isCloudSyncEnabled, type ExamAnalyticsSummary } from '../services/examHistoryService';
+import { NativeDialog } from './NativeDialog';
 
 interface ExamHistoryModalProps {
   isOpen: boolean;
@@ -47,7 +48,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
   const isCloudActive = isCloudSyncEnabled();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+    <NativeDialog onClose={onClose} labelledBy="exam-history-title" widthClassName="max-w-3xl">
       <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
         
         {/* Header */}
@@ -57,7 +58,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+              <h3 id="exam-history-title" className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                 <span>Академичен прогрес & История на изпитите</span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold">
                   МОН 100т.
@@ -299,6 +300,6 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
         </div>
 
       </div>
-    </div>
+    </NativeDialog>
   );
 };

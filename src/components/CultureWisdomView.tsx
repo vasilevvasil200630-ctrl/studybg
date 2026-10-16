@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Quote,
   Search,
@@ -30,6 +30,11 @@ export const CultureWisdomView: React.FC<CultureWisdomViewProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
+
+  // Спира гласовото четене, когато потребителят напусне изгледа
+  useEffect(() => () => {
+    window.speechSynthesis?.cancel();
+  }, []);
 
   const categories = [
     { id: 'Всички', label: `Всички завети (${WISDOM_QUOTES_DATA.length})` },

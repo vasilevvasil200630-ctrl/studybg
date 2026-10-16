@@ -26,7 +26,8 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
   const [showSettings, setShowSettings] = useState<boolean>(false);
 
   const [functionalConsent, setFunctionalConsent] = useState<boolean>(true);
-  const [analyticsConsent, setAnalyticsConsent] = useState<boolean>(true);
+  // Аналитиката е opt-in: зарежда се САМО след изрично съгласие (GDPR / ePrivacy)
+  const [analyticsConsent, setAnalyticsConsent] = useState<boolean>(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -35,9 +36,10 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
         setIsVisible(true);
       } else {
         try {
-          const parsed: CookiePreferences = JSON.parse(stored);
+          const parsed: Partial<CookiePreferences> | null = JSON.parse(stored);
+          if (!parsed || typeof parsed !== 'object') throw new Error('invalid consent');
           setFunctionalConsent(parsed.functional ?? true);
-          setAnalyticsConsent(parsed.analytics ?? true);
+          setAnalyticsConsent(parsed.analytics === true);
         } catch {
           setIsVisible(true);
         }
@@ -111,7 +113,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
   if (!isVisible && !forceOpen) return null;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-50 p-3 sm:p-4 animate-fade-in pointer-events-none">
+    <div data-print-hide className="fixed bottom-0 inset-x-0 z-50 p-3 sm:p-4 animate-fade-in pointer-events-none">
       <div className="max-w-4xl mx-auto bg-white/95 backdrop-blur-md border border-slate-300 shadow-2xl rounded-2xl p-4 sm:p-6 pointer-events-auto transition-all">
         
         {/* Banner Header & Close if forced open */}

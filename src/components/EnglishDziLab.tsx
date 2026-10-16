@@ -792,10 +792,12 @@ export const EnglishDziLab: React.FC = () => {
                           ))}
                         </div>
                       )}
-                      <div className="p-3 rounded-xl bg-white/10 border border-white/15 text-xs text-emerald-200 font-mono leading-relaxed">
-                        <strong className="block font-sans text-white mb-1">✨ Upgraded C1/B2 Model Version:</strong>
-                        {aiEngEval.upgradedModelText}
-                      </div>
+                      {aiEngEval.upgradedModelText && (
+                        <div className="p-3 rounded-xl bg-white/10 border border-white/15 text-xs text-emerald-200 font-mono leading-relaxed">
+                          <strong className="block font-sans text-white mb-1">✨ Upgraded C1/B2 Model Version:</strong>
+                          {aiEngEval.upgradedModelText}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

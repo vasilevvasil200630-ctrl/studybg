@@ -17,6 +17,7 @@ import {
 import type { LessonData } from '../types';
 import { SUBJECTS_LIST } from '../data/curriculumDatabase';
 import { evaluateOralAnswerWithGemini, type OralExamAiEvaluation } from '../services/geminiService';
+import { isObjectItem, readStoredArray } from '../lib/storage';
 
 interface OralExamSimulatorLabProps {
   lessons: LessonData[];
@@ -59,6 +60,7 @@ interface SpeechRecognitionLike {
   onend: (() => void) | null;
   start: () => void;
   stop: () => void;
+  abort: () => void;
 }
 
 interface SpecialOralTicket {
@@ -371,16 +373,24 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
     return pool.find((t) => t.id === selectedSpecialTicketId) || pool[0];
   }, [oralMode, selectedSpecialTicketId]);
 
-  const [gradeBook, setGradeBook] = useState<GradeBookEntry[]>(() => {
-    try {
-      const saved = localStorage.getItem('studybg_oral_gradebook');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [gradeBook, setGradeBook] = useState<GradeBookEntry[]>(() =>
+    readStoredArray<GradeBookEntry>('studybg_oral_gradebook', isObjectItem)
+  );
 
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+
+  // При напускане на изгледа: спира микрофона и гласовото четене
+  useEffect(() => () => {
+    const recognition = recognitionRef.current;
+    if (recognition) {
+      recognition.onresult = null;
+      recognition.onerror = null;
+      recognition.onend = null;
+      recognition.abort();
+      recognitionRef.current = null;
+    }
+    window.speechSynthesis?.cancel();
+  }, []);
 
   const filteredLessons = useMemo(() => {
     if (selectedSubject === 'Всички предмети') return lessons;

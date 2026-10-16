@@ -266,7 +266,8 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
   const telemetry = useMemo(() => {
     let masteredCount = 0;
     let oralExamCount = 0;
-    let oralAvgGrade = '6.00';
+    // Без записани опити не показваме измислена средна оценка
+    let oralAvgGrade = '—';
     try {
       const rawMastered = localStorage.getItem('studybg_planner_mastered_lessons_v1');
       if (rawMastered) {
@@ -275,11 +276,15 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       }
       const rawOral = localStorage.getItem('studybg_oral_exam_history_v1');
       if (rawOral) {
-        const parsedOral = JSON.parse(rawOral);
+        const parsedOral: unknown = JSON.parse(rawOral);
         if (Array.isArray(parsedOral) && parsedOral.length > 0) {
           oralExamCount = parsedOral.length;
-          const sum = parsedOral.reduce((acc: number, item: { grade?: number }) => acc + (Number(item.grade) || 6), 0);
-          oralAvgGrade = (sum / parsedOral.length).toFixed(2);
+          const grades = parsedOral
+            .map((item: { grade?: unknown } | null) => Number(item?.grade))
+            .filter((g) => Number.isFinite(g) && g >= 2 && g <= 6);
+          if (grades.length > 0) {
+            oralAvgGrade = (grades.reduce((acc, g) => acc + g, 0) / grades.length).toFixed(2);
+          }
         }
       }
     } catch {

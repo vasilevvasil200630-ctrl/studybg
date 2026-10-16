@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { mailingService, type EmailSendParams } from '../services/mailingService';
 import type { LessonData } from '../types';
+import { NativeDialog } from './NativeDialog';
 
 interface EmailShareModalProps {
   isOpen: boolean;
@@ -105,7 +106,7 @@ export const EmailShareModal: React.FC<EmailShareModalProps> = ({
     : '';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <NativeDialog onClose={onClose} labelledBy="email-share-title" widthClassName="max-w-xl">
       <div className="bg-white rounded-2xl border border-slate-200 shadow-xl w-full max-w-xl max-h-[92vh] overflow-hidden flex flex-col">
         
         {/* Modal Header */}
@@ -115,7 +116,7 @@ export const EmailShareModal: React.FC<EmailShareModalProps> = ({
               <Mail className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900">
+              <h3 id="email-share-title" className="text-base font-bold text-slate-900">
                 {testResult ? 'Изпрати изпитен резултат по имейл' : 'Изпрати конспекта по имейл'}
               </h3>
               <p className="text-xs text-slate-500">
@@ -375,6 +376,6 @@ export const EmailShareModal: React.FC<EmailShareModalProps> = ({
         </div>
 
       </div>
-    </div>
+    </NativeDialog>
   );
 };

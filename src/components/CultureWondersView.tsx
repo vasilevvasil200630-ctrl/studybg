@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   MapPin,
   Search,
@@ -13,20 +13,22 @@ import {
   Navigation
 } from 'lucide-react';
 import { NATURAL_WONDERS_DATA, type NaturalWonderItem } from '../data/generalKnowledgeData';
+import { isString, readStoredArray } from '../lib/storage';
 
 export const CultureWondersView: React.FC = () => {
   const [selectedRegion, setSelectedRegion] = useState<string>('Всички');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
-  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('studybg_bookmarked_wonders');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+
+  // Спира гласовото четене, когато потребителят напусне изгледа
+  useEffect(() => () => {
+    window.speechSynthesis?.cancel();
+  }, []);
+
+  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(() =>
+    readStoredArray('studybg_bookmarked_wonders', isString)
+  );
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const regions: { id: string; label: string }[] = [

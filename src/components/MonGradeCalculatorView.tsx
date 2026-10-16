@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import type { AppNavTab } from './Navbar';
 import { ExcellenceCertificateModal } from './ExcellenceCertificateModal';
+import { DZI_SCALE, DIPPK_SCALE, formatGrade, gradeToPoints, pointsToGrade, verbalGrade, type VerbalGrade } from '../lib/monGradeScale';
 
 interface MonGradeCalculatorViewProps {
   onNavigateTab?: (tab: AppNavTab) => void;
@@ -39,82 +40,48 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
   const [dippkPracticePoints, setDippkPracticePoints] = useState<number>(92);
   const [dippkSubjectsAvg, setDippkSubjectsAvg] = useState<number>(5.65);
 
-  // Official МОН Formula: Grade = 2 + 4 * ((points - 30) / 70) for points >= 30
-  const calculateMonGrade = (pts: number) => {
-    if (pts < 30) {
-      // Under threshold: 2.00 to 2.99
-      const subRatio = pts / 30;
-      const num = 2.00 + (subRatio * 0.99);
-      return {
-        numeric: Number(num.toFixed(2)),
-        verbal: 'Слаб',
-        fullName: 'Слаб 2.00',
-        badge: 'bg-rose-50 text-rose-800 border-rose-200',
-        color: 'text-rose-600',
-        passed: false,
-        status: 'Под официалния праг за преминаване на МОН (под 30 от 100 точки). Не се издава диплома за средно образование.'
-      };
-    }
-
-    // Official linear formula
-    const num = 2.00 + (4.00 * ((pts - 30) / 70));
-    const rounded = Math.min(6.00, Number(num.toFixed(2)));
-
-    if (pts >= 90) {
-      return {
-        numeric: rounded,
-        verbal: 'Отличен',
-        fullName: `Отличен ${rounded.toFixed(2)}`,
-        badge: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-        color: 'text-emerald-700',
-        passed: true,
-        status: 'Пълно покритие на държавните образователни стандарти за ДЗИ / НВО. Отличен резултат за прием във всички университети.'
-      };
-    }
-    if (pts >= 75) {
-      return {
-        numeric: rounded,
-        verbal: 'Много добър',
-        fullName: `Много добър ${rounded.toFixed(2)}`,
-        badge: 'bg-sky-50 text-sky-800 border-sky-200',
-        color: 'text-sky-700',
-        passed: true,
-        status: 'Високо ниво на знания и аналитични умения. Конкурентен бал за повечето водещи университетски специалности.'
-      };
-    }
-    if (pts >= 59) {
-      return {
-        numeric: rounded,
-        verbal: 'Добър',
-        fullName: `Добър ${rounded.toFixed(2)}`,
-        badge: 'bg-amber-50 text-amber-800 border-amber-200',
-        color: 'text-amber-700',
-        passed: true,
-        status: 'Стабилна подготовка. Препоръчва се преговор на изворите и писмения отговор (Модул 2 и 3) за по-висок резултат.'
-      };
-    }
-
-    return {
-      numeric: rounded,
-      verbal: 'Среден',
-      fullName: `Среден ${rounded.toFixed(2)}`,
+  const GRADE_STYLES: Record<VerbalGrade, { badge: string; color: string; status: string }> = {
+    'Отличен': {
+      badge: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+      color: 'text-emerald-700',
+      status: 'Пълно покритие на държавните образователни стандарти за ДЗИ / НВО. Отличен резултат за прием във всички университети.'
+    },
+    'Много добър': {
+      badge: 'bg-sky-50 text-sky-800 border-sky-200',
+      color: 'text-sky-700',
+      status: 'Високо ниво на знания и аналитични умения. Конкурентен бал за повечето водещи университетски специалности.'
+    },
+    'Добър': {
+      badge: 'bg-amber-50 text-amber-800 border-amber-200',
+      color: 'text-amber-700',
+      status: 'Стабилна подготовка. Препоръчва се преговор на изворите и писмения отговор (Модул 2 и 3) за по-висок резултат.'
+    },
+    'Среден': {
       badge: 'bg-orange-50 text-orange-800 border-orange-200',
       color: 'text-orange-700',
-      passed: true,
-      status: 'Покрит минимален праг за успешно завършване на ДЗИ (30 точки). За кандидатстване в университет се препоръчва повишаване.'
+      status: `Покрит минимален праг за успешно завършване на ДЗИ (${DZI_SCALE.passPoints} точки). За кандидатстване в университет се препоръчва повишаване.`
+    },
+    'Слаб': {
+      badge: 'bg-rose-50 text-rose-800 border-rose-200',
+      color: 'text-rose-600',
+      status: `Под прага за издържан изпит (под ${DZI_SCALE.passPoints} от ${DZI_SCALE.maxPoints} точки). Не се издава диплома за средно образование.`
+    }
+  };
+
+  // Единна монотонна скала (src/lib/monGradeScale.ts)
+  const calculateMonGrade = (pts: number) => {
+    const result = pointsToGrade(pts, DZI_SCALE);
+    return {
+      numeric: result.numeric,
+      verbal: result.label,
+      fullName: formatGrade(result),
+      passed: result.passed,
+      ...GRADE_STYLES[result.label]
     };
   };
 
-  // Reverse Formula: Points = 30 + ((Grade - 2) / 4) * 70
-  const calculateRequiredPoints = (grade: number) => {
-    if (grade <= 3.00) return 30;
-    if (grade >= 6.00) return 90;
-    const required = 30 + (((grade - 2.00) / 4.00) * 70);
-    return Math.round(required * 10) / 10;
-  };
-
   const currentResult = useMemo(() => calculateMonGrade(points), [points]);
-  const reqPoints = useMemo(() => calculateRequiredPoints(targetGrade), [targetGrade]);
+  const reqPoints = useMemo(() => gradeToPoints(targetGrade, DZI_SCALE), [targetGrade]);
 
   // Strategy breakdown for required points
   const strategyBreakdown = useMemo(() => {
@@ -137,25 +104,16 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
 
   // ДИППК (Трета СПК) Calculation according to Наредба № 1 на МОН
   const dippkResult = useMemo(() => {
-    // Convert 0-100 points to 2.00-6.00 (50 points = 3.00 threshold for vocational exams, or 3 + 3*(pts-50)/50)
-    const pointsToSpkGrade = (pts: number) => {
-      if (pts < 50) return 2.00;
-      const g = 3.00 + 3.00 * ((pts - 50) / 50);
-      return Math.min(6.00, Number(g.toFixed(2)));
-    };
+    const pointsToSpkGrade = (pts: number) => pointsToGrade(pts, DIPPK_SCALE).numeric;
     const theoryGrade = pointsToSpkGrade(dippkTheoryPoints);
     const practiceGrade = pointsToSpkGrade(dippkPracticePoints);
-    const bothPassed = dippkTheoryPoints >= 50 && dippkPracticePoints >= 50;
+    const bothPassed = dippkTheoryPoints >= DIPPK_SCALE.passPoints && dippkPracticePoints >= DIPPK_SCALE.passPoints;
     const dippkExamAvg = bothPassed ? Number(((theoryGrade + practiceGrade) / 2).toFixed(2)) : 2.00;
     const certificateFinalGrade = bothPassed
       ? Number(((dippkSubjectsAvg + theoryGrade + practiceGrade) / 3).toFixed(2))
       : 2.00;
 
-    let verbal = 'Слаб';
-    if (certificateFinalGrade >= 5.50) verbal = 'Отличен';
-    else if (certificateFinalGrade >= 4.50) verbal = 'Много добър';
-    else if (certificateFinalGrade >= 3.50) verbal = 'Добър';
-    else if (certificateFinalGrade >= 3.00) verbal = 'Среден';
+    const verbal = verbalGrade(certificateFinalGrade);
 
     return {
       theoryGrade,
@@ -316,12 +274,11 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               </span>
               <div className="flex flex-wrap gap-2">
                 {[
-                  { label: '30 т. (Минимум)', val: 30 },
-                  { label: '59 т. (Добър 4)', val: 59 },
-                  { label: '75 т. (Мн. добър 5)', val: 75 },
-                  { label: '85 т. (Стипендия)', val: 85 },
-                  { label: '90 т. (Отличен 6)', val: 90 },
-                  { label: '100 т. (Пълен)', val: 100 }
+                  { label: `${DZI_SCALE.passPoints} т. (Минимум)`, val: DZI_SCALE.passPoints },
+                  { label: `${Math.ceil(gradeToPoints(3.5))} т. (Добър)`, val: Math.ceil(gradeToPoints(3.5)) },
+                  { label: `${Math.ceil(gradeToPoints(4.5))} т. (Мн. добър)`, val: Math.ceil(gradeToPoints(4.5)) },
+                  { label: `${Math.ceil(gradeToPoints(5.5))} т. (Отличен)`, val: Math.ceil(gradeToPoints(5.5)) },
+                  { label: `${DZI_SCALE.maxPoints} т. (Пълен)`, val: DZI_SCALE.maxPoints }
                 ].map((preset) => (
                   <button
                     key={preset.val}

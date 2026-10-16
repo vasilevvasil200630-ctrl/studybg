@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Search, X, BookOpen, GraduationCap, ChevronRight, Check, ExternalLink } from 'lucide-react';
 import type { LessonData } from '../types';
+import { NativeDialog } from './NativeDialog';
 
 type StageFilter = 'all' | 'dzi12' | 'nvo10' | 'gymnasium89';
 
@@ -62,7 +63,7 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fadeIn">
+    <NativeDialog onClose={onClose} labelledBy="quick-lesson-switcher-title" widthClassName="max-w-2xl">
       <div className="w-full max-w-2xl max-h-[85vh] bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
         
         {/* Header */}
@@ -72,7 +73,7 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
               <BookOpen className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900">Бърза смяна на урок</h3>
+              <h3 id="quick-lesson-switcher-title" className="text-base font-bold text-slate-900">Бърза смяна на урок</h3>
               <p className="text-xs text-slate-500">Гимназиален каталог: избери тема за НВО 10 и ДЗИ 12 ({lessons.length} теми)</p>
             </div>
           </div>
@@ -223,6 +224,6 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
         </div>
 
       </div>
-    </div>
+    </NativeDialog>
   );
 };

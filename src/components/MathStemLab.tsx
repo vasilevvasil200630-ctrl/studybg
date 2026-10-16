@@ -331,7 +331,7 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
             <polygon
               points="55,140 165,140 220,105 110,105"
               fill="rgba(99, 102, 241, 0.12)"
-              stroke="#818cf8"
+              stroke="#60a5fa"
               strokeWidth="2"
             />
             {/* Hidden edges */}
@@ -343,9 +343,9 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
             {/* Apothem MK */}
             <line x1="138" y1="25" x2="192" y2="122" stroke="#fbbf24" strokeWidth="2.5" />
             {/* Visible lateral edges */}
-            <line x1="138" y1="25" x2="55" y2="140" stroke="#818cf8" strokeWidth="2" />
-            <line x1="138" y1="25" x2="165" y2="140" stroke="#818cf8" strokeWidth="2" />
-            <line x1="138" y1="25" x2="220" y2="105" stroke="#818cf8" strokeWidth="2" />
+            <line x1="138" y1="25" x2="55" y2="140" stroke="#60a5fa" strokeWidth="2" />
+            <line x1="138" y1="25" x2="165" y2="140" stroke="#60a5fa" strokeWidth="2" />
+            <line x1="138" y1="25" x2="220" y2="105" stroke="#60a5fa" strokeWidth="2" />
             {/* Labels */}
             <text x="133" y="18" fill="#f8fafc" fontSize="12" fontWeight="bold">M</text>
             <text x="125" y="132" fill="#fda4af" fontSize="10" fontWeight="bold">O</text>
@@ -428,12 +428,12 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
         return (
           <svg viewBox="0 0 280 175" className="w-full h-44 bg-slate-900 rounded-xl border border-slate-700 p-2">
             <rect x="40" y="115" width="36" height="35" rx="4" fill="#3b82f6" />
-            <rect x="115" y="80" width="36" height="70" rx="4" fill="#6366f1" />
-            <rect x="190" y="35" width="36" height="115" rx="4" fill="#8b5cf6" />
+            <rect x="115" y="80" width="36" height="70" rx="4" fill="#3b82f6" />
+            <rect x="190" y="35" width="36" height="115" rx="4" fill="#64748b" />
             <line x1="25" y1="150" x2="255" y2="150" stroke="#64748b" strokeWidth="1.5" />
             <text x="42" y="108" fill="#93c5fd" fontSize="11" fontWeight="bold">a₁=5-d</text>
             <text x="118" y="72" fill="#c7d2fe" fontSize="11" fontWeight="bold">a₂ = 5</text>
-            <text x="188" y="27" fill="#ddd6fe" fontSize="11" fontWeight="bold">a₃=5+d</text>
+            <text x="188" y="27" fill="#e2e8f0" fontSize="11" fontWeight="bold">a₃=5+d</text>
             <text x="65" y="166" fill="#6ee7b7" fontSize="10" fontWeight="bold">÷ АП (a₁+a₃ = 2a₂) → ÷÷ ГП (b₂² = b₁·b₃)</text>
           </svg>
         );
@@ -454,7 +454,7 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
   return (
     <div className="space-y-6">
       {/* Top Hero Banner */}
-      <div className="rounded-2xl bg-gradient-to-br from-blue-950 via-indigo-950 to-slate-900 text-white p-6 sm:p-7 border border-blue-800/50 shadow-sm">
+      <div className="rounded-2xl bg-gradient-to-br from-blue-950 via-blue-950 to-slate-900 text-white p-6 sm:p-7 border border-blue-800/50 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs font-semibold">
@@ -523,7 +523,7 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
                 : 'bg-white/10 text-slate-200 hover:bg-white/20'
             }`}
           >
-            <Sparkles className="w-4 h-4 text-purple-600" />
+            <Sparkles className="w-4 h-4 text-slate-600" />
             <span>3. Изпитен Тренажор ({MATH_QUIZ_QUESTIONS.length} задачи)</span>
           </button>
         </div>
@@ -588,7 +588,7 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2 mb-1.5">
-                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-indigo-100 text-indigo-800">
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-blue-100 text-blue-800">
                       Задача #{idx + 1} • {prob.points}
                     </span>
                     {isCompleted && (
@@ -655,11 +655,11 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
                     </ul>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-200">
-                    <div className="text-xs font-bold uppercase text-indigo-800 mb-1">
+                  <div className="p-3.5 rounded-xl bg-blue-50/70 border border-blue-200">
+                    <div className="text-xs font-bold uppercase text-blue-800 mb-1">
                       Търси се:
                     </div>
-                    <div className="text-xs sm:text-sm font-bold text-indigo-950">
+                    <div className="text-xs sm:text-sm font-bold text-blue-950">
                       {currentProblem.find}
                     </div>
                   </div>
@@ -795,7 +795,7 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
 
                         {isRevealed ? (
                           <div className="space-y-2 pt-1">
-                            <div className="text-xs font-mono bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 text-indigo-800 font-semibold">
+                            <div className="text-xs font-mono bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 text-blue-800 font-semibold">
                               Приложена формула: {step.formulaUsed}
                             </div>
                             <pre className="whitespace-pre-wrap font-sans text-xs sm:text-sm text-slate-800 leading-relaxed bg-blue-50/40 p-3 rounded-lg border border-blue-100">
@@ -929,20 +929,20 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
                   <div className="text-base font-bold text-blue-950">x₁ + x₂ = {quadResults.sumRoots}</div>
                   <div className="text-[10px] text-blue-600">-b / a</div>
                 </div>
-                <div className="p-3.5 rounded-xl bg-indigo-50 border border-indigo-200">
-                  <div className="text-[11px] font-semibold text-indigo-700">Произведение (Виет)</div>
-                  <div className="text-base font-bold text-indigo-950">x₁ · x₂ = {quadResults.prodRoots}</div>
-                  <div className="text-[10px] text-indigo-600">c / a</div>
+                <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200">
+                  <div className="text-[11px] font-semibold text-blue-700">Произведение (Виет)</div>
+                  <div className="text-base font-bold text-blue-950">x₁ · x₂ = {quadResults.prodRoots}</div>
+                  <div className="text-[10px] text-blue-600">c / a</div>
                 </div>
                 <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200">
                   <div className="text-[11px] font-semibold text-emerald-700">Сбор от квадрати</div>
                   <div className="text-base font-bold text-emerald-950">x₁² + x₂² = {quadResults.sumSquares}</div>
                   <div className="text-[10px] text-emerald-600">(x₁+x₂)² - 2x₁x₂</div>
                 </div>
-                <div className="p-3.5 rounded-xl bg-purple-50 border border-purple-200">
-                  <div className="text-[11px] font-semibold text-purple-700">Реципрочен сбор</div>
-                  <div className="text-base font-bold text-purple-950">1/x₁ + 1/x₂ = {quadResults.sumReciprocals}</div>
-                  <div className="text-[10px] text-purple-600">(x₁+x₂) / (x₁x₂)</div>
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="text-[11px] font-semibold text-slate-700">Реципрочен сбор</div>
+                  <div className="text-base font-bold text-slate-950">1/x₁ + 1/x₂ = {quadResults.sumReciprocals}</div>
+                  <div className="text-[10px] text-slate-600">(x₁+x₂) / (x₁x₂)</div>
                 </div>
                 <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200">
                   <div className="text-[11px] font-semibold text-amber-800">Връх на парабола</div>
@@ -1039,7 +1039,7 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
               </div>
               <div className="p-4 rounded-xl bg-white border border-slate-200">
                 <div className="text-xs font-bold text-slate-500 mb-1">Първите членове на реда:</div>
-                <div className="text-sm font-mono font-bold text-indigo-900">
+                <div className="text-sm font-mono font-bold text-blue-900">
                   {progResults.firstTerms.join(' ; ')} ...
                 </div>
               </div>
@@ -1050,7 +1050,7 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
           <div className="rounded-2xl bg-slate-50 border border-slate-200 p-5 sm:p-6 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-purple-700">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
                   Интерактивен Решавач #3 • Планиметрия (НВО Задача 17 & ДЗИ Задача 28)
                 </span>
                 <h3 className="text-lg font-bold text-slate-900">
@@ -1133,17 +1133,17 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
                   <div className="text-base font-bold text-blue-950">r = {triResults.r} cm</div>
                   <div className="text-[10px] text-blue-700">r = S / p</div>
                 </div>
-                <div className="p-3.5 rounded-xl bg-indigo-50 border border-indigo-200">
-                  <div className="text-[11px] font-semibold text-indigo-800">Описан радиус R</div>
-                  <div className="text-base font-bold text-indigo-950">R = {triResults.R} cm</div>
-                  <div className="text-[10px] text-indigo-700">R = abc / (4S)</div>
+                <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200">
+                  <div className="text-[11px] font-semibold text-blue-800">Описан радиус R</div>
+                  <div className="text-base font-bold text-blue-950">R = {triResults.R} cm</div>
+                  <div className="text-[10px] text-blue-700">R = abc / (4S)</div>
                 </div>
-                <div className="p-3.5 rounded-xl bg-purple-50 border border-purple-200">
-                  <div className="text-[11px] font-semibold text-purple-800">Косинусова т-ма</div>
-                  <div className="text-xs font-bold text-purple-950">
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="text-[11px] font-semibold text-slate-800">Косинусова т-ма</div>
+                  <div className="text-xs font-bold text-slate-950">
                     cos α={triResults.cosAlpha} | cos β={triResults.cosBeta}
                   </div>
-                  <div className="text-[10px] text-purple-700">cos γ = {triResults.cosGamma}</div>
+                  <div className="text-[10px] text-slate-700">cos γ = {triResults.cosGamma}</div>
                 </div>
                 <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200">
                   <div className="text-[11px] font-semibold text-amber-800">Медиана m_c</div>
@@ -1224,13 +1224,13 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
                   className="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 font-bold text-slate-900 text-sm"
                 />
               </div>
-              <div className="p-3 rounded-xl bg-indigo-50/70 border border-indigo-200 col-span-2 sm:col-span-1">
-                <label className="block text-xs font-bold text-indigo-800 mb-1">Точка x₀ (допир.):</label>
+              <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200 col-span-2 sm:col-span-1">
+                <label className="block text-xs font-bold text-blue-800 mb-1">Точка x₀ (допир.):</label>
                 <input
                   type="number"
                   value={cubX0}
                   onChange={(e) => setCubX0(Number(e.target.value))}
-                  className="w-full px-2.5 py-1.5 rounded-lg border border-indigo-300 bg-white font-bold text-indigo-950 text-sm"
+                  className="w-full px-2.5 py-1.5 rounded-lg border border-blue-300 bg-white font-bold text-blue-950 text-sm"
                 />
               </div>
             </div>
@@ -1261,10 +1261,10 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
                   <div className="text-sm font-bold text-amber-950 mt-0.5">{cubicResults.inflectionText}</div>
                   <div className="text-[10px] text-amber-700 mt-0.5">x_инфл = -b / (3a)</div>
                 </div>
-                <div className="p-3.5 rounded-xl bg-indigo-50 border border-indigo-200">
-                  <div className="text-[11px] font-semibold text-indigo-800">Допирателна при x₀ = {cubX0}</div>
-                  <div className="text-sm font-mono font-bold text-indigo-950 mt-0.5">{cubicResults.tangentEq}</div>
-                  <div className="text-[10px] text-indigo-700 mt-0.5">Наклон k = f&apos;({cubX0}) = {cubicResults.slopeAtX0}</div>
+                <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200">
+                  <div className="text-[11px] font-semibold text-blue-800">Допирателна при x₀ = {cubX0}</div>
+                  <div className="text-sm font-mono font-bold text-blue-950 mt-0.5">{cubicResults.tangentEq}</div>
+                  <div className="text-[10px] text-blue-700 mt-0.5">Наклон k = f&apos;({cubX0}) = {cubicResults.slopeAtX0}</div>
                 </div>
               </div>
             )}
@@ -1372,8 +1372,8 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
                           : 'bg-amber-50/80 border-amber-200 text-amber-950'
                       }`}
                     >
-                      <div className="font-mono font-bold text-indigo-900 flex items-center gap-1">
-                        <HelpCircle className="w-3.5 h-3.5 shrink-0 text-indigo-600" />
+                      <div className="font-mono font-bold text-blue-900 flex items-center gap-1">
+                        <HelpCircle className="w-3.5 h-3.5 shrink-0 text-blue-600" />
                         <span>Формула: {q.formulaReference}</span>
                       </div>
                       <p className="leading-relaxed">{q.explanation}</p>

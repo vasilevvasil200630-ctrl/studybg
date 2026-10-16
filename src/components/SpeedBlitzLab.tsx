@@ -720,7 +720,7 @@ export const SpeedBlitzLab: React.FC = () => {
                   onClick={() => setMatchMode('duel')}
                   className={`px-3 py-1 rounded-lg cursor-pointer transition-all ${
                     matchMode === 'duel'
-                      ? 'bg-indigo-600 text-white shadow-2xs'
+                      ? 'bg-blue-600 text-white shadow-2xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -1006,8 +1006,8 @@ export const SpeedBlitzLab: React.FC = () => {
             </h2>
 
             {matchMode === 'duel' && (
-              <div className="max-w-lg mx-auto p-4 rounded-2xl bg-indigo-50 border border-indigo-200 space-y-2">
-                <div className="text-sm font-extrabold text-indigo-950">
+              <div className="max-w-lg mx-auto p-4 rounded-2xl bg-blue-50 border border-blue-200 space-y-2">
+                <div className="text-sm font-extrabold text-blue-950">
                   {teamAScore > teamBScore
                     ? `🏆 ПОБЕДИТЕЛ: ОТБОР А (СИНИ) — ${teamAScore} срещу ${teamBScore} т.!`
                     : teamBScore > teamAScore

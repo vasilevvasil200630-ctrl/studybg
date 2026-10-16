@@ -51,9 +51,9 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
 
           <button
             onClick={() => onSelectSubTab?.('mysticmap')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100/80 border border-purple-200 text-purple-900 text-xs font-semibold shadow-2xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100/80 border border-slate-200 text-slate-900 text-xs font-semibold shadow-2xs transition-colors"
           >
-            <MapPin className="w-3.5 h-3.5 text-purple-600" />
+            <MapPin className="w-3.5 h-3.5 text-slate-600" />
             <span>🛸 Карта на мистичните зони (12)</span>
           </button>
 

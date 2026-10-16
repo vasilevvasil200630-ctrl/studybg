@@ -108,7 +108,7 @@ export const CultureWisdomView: React.FC<CultureWisdomViewProps> = ({
       {/* Top Banner */}
       <div className="p-6 sm:p-7 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-indigo-50 border border-indigo-200 text-indigo-800 mb-1">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-50 border border-blue-200 text-blue-800 mb-1">
             <Quote className="w-3.5 h-3.5" />
             <span>Златен фонд • {WISDOM_QUOTES_DATA.length} вечни национални завета и нравствени уроци</span>
           </div>
@@ -136,7 +136,7 @@ export const CultureWisdomView: React.FC<CultureWisdomViewProps> = ({
             onClick={() => setSelectedCategory(cat.id)}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
               selectedCategory === cat.id
-                ? 'bg-white text-indigo-800 border border-indigo-300 shadow-2xs font-bold'
+                ? 'bg-white text-blue-800 border border-blue-300 shadow-2xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
             }`}
           >
@@ -155,7 +155,7 @@ export const CultureWisdomView: React.FC<CultureWisdomViewProps> = ({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Търси завет по автор, цитат, историческо събитие или идея..."
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm text-slate-900 bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 placeholder:text-slate-400 shadow-2xs"
+          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm text-slate-900 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 placeholder:text-slate-400 shadow-2xs"
         />
         {searchQuery && (
           <button
@@ -181,7 +181,7 @@ export const CultureWisdomView: React.FC<CultureWisdomViewProps> = ({
               {/* Header meta */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-indigo-50 border border-indigo-200 text-indigo-800">
+                  <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-blue-50 border border-blue-200 text-blue-800">
                     {item.category}
                   </span>
                   <span className="text-xs text-slate-500 font-medium">
@@ -195,7 +195,7 @@ export const CultureWisdomView: React.FC<CultureWisdomViewProps> = ({
                     onClick={() => handleToggleAudio(item)}
                     className={`p-2 rounded-xl text-xs font-medium border transition-colors shadow-2xs ${
                       isAudioPlaying
-                        ? 'bg-indigo-600 text-white border-indigo-600'
+                        ? 'bg-blue-600 text-white border-blue-600'
                         : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
                     }`}
                     title={isAudioPlaying ? 'Спри четенето' : 'Слушай цитата'}
@@ -229,7 +229,7 @@ export const CultureWisdomView: React.FC<CultureWisdomViewProps> = ({
                   „{item.quote}“
                 </p>
                 <div className="mt-2.5 flex flex-wrap items-center gap-2">
-                  <span className="text-xs sm:text-sm font-bold text-indigo-900">
+                  <span className="text-xs sm:text-sm font-bold text-blue-900">
                     {item.author}
                   </span>
                   <span className="text-xs text-slate-500">
@@ -252,12 +252,12 @@ export const CultureWisdomView: React.FC<CultureWisdomViewProps> = ({
                 </div>
 
                 {/* Moral lesson */}
-                <div className="p-4 rounded-xl bg-indigo-50/60 border border-indigo-200/80 space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-900 uppercase tracking-wider">
-                    <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                <div className="p-4 rounded-xl bg-blue-50/60 border border-blue-200/80 space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-blue-900 uppercase tracking-wider">
+                    <Sparkles className="w-3.5 h-3.5 text-blue-600" />
                     <span>Поука за днес</span>
                   </div>
-                  <p className="text-xs sm:text-sm text-indigo-950 leading-relaxed font-medium">
+                  <p className="text-xs sm:text-sm text-blue-950 leading-relaxed font-medium">
                     {item.moralLesson}
                   </p>
                 </div>

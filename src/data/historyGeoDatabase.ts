@@ -356,7 +356,7 @@ export const BULGARIA_GEO_REGIONS: GeoPlanningRegion[] = [
     ],
     examHighlight:
       'Единственият район в България с положителен механичен прираст и най-висок БВП на глава от населението; включва най-високата точка на Балканския полуостров — вр. Мусала (2925,2 m).',
-    svgCoords: { x: 25, y: 92, width: 105, height: 75, color: '#8b5cf6' },
+    svgCoords: { x: 25, y: 92, width: 105, height: 75, color: '#64748b' },
   },
 ];
 

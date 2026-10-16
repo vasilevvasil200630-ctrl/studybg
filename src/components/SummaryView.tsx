@@ -26,7 +26,7 @@ import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import { AudioReader } from './AudioReader';
 import { EmailShareModal } from './EmailShareModal';
-import { askGeminiMentor, isGeminiConfigured, AI_PROVIDER_LABEL } from '../services/geminiService';
+import { askGeminiMentor, isAiAvailable, isGeminiConfigured, AI_PROVIDER_LABEL } from '../services/geminiService';
 
 interface SummaryViewProps {
   lesson: LessonData;
@@ -92,7 +92,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
     setIsMentorLoading(true);
 
     try {
-      if (isGeminiConfigured()) {
+      if (isAiAvailable()) {
         const aiReply = await askGeminiMentor(lesson, mentorHistory, q);
         setMentorHistory([...nextHistory, { sender: 'assistant', text: aiReply }]);
       } else {
@@ -350,15 +350,15 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
         )}
 
         {/* Interactive Gemini AI Academic Mentor */}
-        <div className="my-6 p-4 sm:p-5 rounded-xl bg-indigo-50/70 border border-indigo-200/90 space-y-3.5">
+        <div className="my-6 p-4 sm:p-5 rounded-xl bg-blue-50/70 border border-blue-200/90 space-y-3.5">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-indigo-600" />
-              <h4 className="text-xs font-extrabold uppercase tracking-wider text-indigo-950">
+              <Sparkles className="w-4 h-4 text-blue-600" />
+              <h4 className="text-xs font-extrabold uppercase tracking-wider text-blue-950">
                 🤖 Попитай AI Ментора за този урок ({AI_PROVIDER_LABEL})
               </h4>
             </div>
-            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200">
+            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-200">
               {isGeminiConfigured() ? `● ${AI_PROVIDER_LABEL} е активен` : '● МОН Академичен Асистент'}
             </span>
           </div>
@@ -388,7 +388,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                 type="button"
                 disabled={isMentorLoading}
                 onClick={() => handleAskMentor(chip.prompt)}
-                className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-indigo-600 text-indigo-900 hover:text-white border border-indigo-200 hover:border-indigo-600 text-[11px] font-bold transition-all cursor-pointer disabled:opacity-50 shadow-2xs"
+                className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-blue-600 text-blue-900 hover:text-white border border-blue-200 hover:border-blue-600 text-[11px] font-bold transition-all cursor-pointer disabled:opacity-50 shadow-2xs"
               >
                 {chip.label}
               </button>
@@ -397,13 +397,13 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
 
           {/* Conversation Thread */}
           {mentorHistory.length > 0 && (
-            <div className="space-y-2.5 max-h-96 overflow-y-auto p-3 rounded-xl bg-white border border-indigo-100">
+            <div className="space-y-2.5 max-h-96 overflow-y-auto p-3 rounded-xl bg-white border border-blue-100">
               {mentorHistory.map((msg, idx) => (
                 <div
                   key={idx}
                   className={`p-3 rounded-xl text-xs leading-relaxed ${
                     msg.sender === 'user'
-                      ? 'bg-indigo-600 text-white ml-6 font-medium'
+                      ? 'bg-blue-600 text-white ml-6 font-medium'
                       : 'bg-slate-50 border border-slate-200 text-slate-800 mr-2 space-y-2'
                   }`}
                 >
@@ -416,7 +416,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                           const nextVal = personalNote ? `${personalNote}\n\n🤖 AI Ментор:\n${msg.text}` : `🤖 AI Ментор:\n${msg.text}`;
                           handleNoteChange(nextVal);
                         }}
-                        className="text-[11px] font-bold text-indigo-700 hover:text-indigo-900 cursor-pointer"
+                        className="text-[11px] font-bold text-blue-700 hover:text-blue-900 cursor-pointer"
                       >
                         + Запиши в личния бележник ↓
                       </button>
@@ -425,8 +425,8 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                 </div>
               ))}
               {isMentorLoading && (
-                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-indigo-700 font-semibold flex items-center gap-2">
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-indigo-600" />
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-blue-700 font-semibold flex items-center gap-2">
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-blue-600" />
                   <span>AI Менторът подготвя отговор по учебната програма...</span>
                 </div>
               )}
@@ -452,12 +452,12 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
               value={mentorQuestion}
               onChange={(e) => setMentorQuestion(e.target.value)}
               placeholder={`Попитай AI ментора всичко за „${lesson.title.slice(0, 42)}...“`}
-              className="flex-1 px-3.5 py-2 rounded-xl bg-white border border-indigo-200 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500"
+              className="flex-1 px-3.5 py-2 rounded-xl bg-white border border-blue-200 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500"
             />
             <button
               type="submit"
               disabled={isMentorLoading || !mentorQuestion.trim()}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-colors cursor-pointer disabled:opacity-50 shrink-0"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors cursor-pointer disabled:opacity-50 shrink-0"
             >
               <Send className="w-3.5 h-3.5" />
               <span>Попитай</span>
@@ -518,9 +518,9 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
               <button
                 onClick={() => onNavigateTab('oralexam')}
-                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200 text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-xs font-bold transition-all shadow-2xs cursor-pointer"
               >
-                <Mic className="w-3.5 h-3.5 text-indigo-600" />
+                <Mic className="w-3.5 h-3.5 text-blue-600" />
                 <span>Устен изпит</span>
               </button>
               <button

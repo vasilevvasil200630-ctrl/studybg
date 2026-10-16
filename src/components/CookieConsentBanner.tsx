@@ -154,7 +154,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
                 </span>
               </h3>
               <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                Вашите конспекти, грешки и офлайн кеш се пазят само в браузъра ви (LocalStorage). <strong>По избор</strong> и само ако натиснете „Приемам всички“, включваме <strong>Google Analytics 4</strong> и <strong>Microsoft Clarity</strong> — услуги на трети страни (Google и Microsoft), които събират статистика за посещенията и записи на сесиите, за да подобряваме сайта. Без реклами и без продажба на данни.
+                Вашите конспекти, грешки и офлайн кеш се пазят само в браузъра ви (LocalStorage). <strong>По избор</strong> и само ако натиснете „Приемам всички“, включваме <strong>Google Analytics 4</strong> и <strong>Microsoft Clarity</strong> — услуги на трети страни (Google и Microsoft), които събират статистика за посещенията и записи на сесиите, за да подобряваме сайта. Без реклами и без продажба на данни. Ако си под 14 години, съгласието за аналитика се дава от родител или настойник (чл. 25в ЗЗЛД).
               </p>
             </div>
           </div>
@@ -237,7 +237,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
           <span>•</span>
           <button
             onClick={() => onOpenPolicy('ai_act')}
-            className="text-indigo-600 hover:underline font-medium"
+            className="text-blue-600 hover:underline font-medium"
           >
             Прозрачност за ИИ (EU AI Act)
           </button>

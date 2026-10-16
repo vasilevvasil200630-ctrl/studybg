@@ -1,5 +1,30 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+// Supabase се подменя изцяло — тестовете никога не излизат в мрежата
+const supabaseMock = vi.hoisted(() => ({
+  configured: false,
+  session: null as null | { user: { id: string } },
+  invoke: null as null | ((name: string, options: { body: Record<string, unknown> }) => Promise<unknown>),
+  invocations: [] as { name: string; body: Record<string, unknown> }[]
+}));
+
+vi.mock('../src/services/supabaseConfig', () => ({
+  isSupabaseConfigured: () => supabaseMock.configured
+}));
+
+vi.mock('../src/services/supabaseClient', () => ({
+  ensureSupabaseSession: async () => supabaseMock.session,
+  supabase: {
+    functions: {
+      invoke: async (name: string, options: { body: Record<string, unknown> }) => {
+        supabaseMock.invocations.push({ name, body: options.body });
+        if (!supabaseMock.invoke) throw new Error('Няма подготвен отговор за invoke');
+        return supabaseMock.invoke(name, options);
+      }
+    }
+  }
+}));
+
 type Scripted = () => Response;
 
 const API_KEY = 'TEST_KEY_1234567890';
@@ -35,6 +60,10 @@ beforeEach(() => {
   calls = [];
   script = [];
   store = { studybg_gemini_api_key: API_KEY };
+  supabaseMock.configured = false;
+  supabaseMock.session = null;
+  supabaseMock.invoke = null;
+  supabaseMock.invocations = [];
   vi.stubGlobal('window', globalThis);
   vi.stubGlobal('localStorage', {
     getItem: (k: string) => store[k] ?? null,
@@ -158,5 +187,63 @@ describe('callGeminiContent (през evaluateBelModuleTwoWithGemini)', () => {
     await evaluateBelModuleTwoWithGemini(belParams);
     expect(calls[0].key).toBe(API_KEY);
     expect(calls[0].url).not.toContain('key=');
+  });
+});
+
+describe('Supabase AI proxy (без локален ключ)', () => {
+  const belParams = { mode: 'synthesis' as const, topic: 't', studentDraft: 'x', referenceText: 'еталон' };
+  const geminiBody = (obj: unknown) => ({
+    candidates: [{ content: { parts: [{ text: JSON.stringify(obj) }] }, finishReason: 'STOP' }]
+  });
+  const httpError = (status: number, body: unknown) => ({
+    data: null,
+    error: { context: new Response(JSON.stringify(body), { status }) }
+  });
+
+  beforeEach(() => {
+    delete store.studybg_gemini_api_key;
+    supabaseMock.configured = true;
+    supabaseMock.session = { user: { id: 'anon-user' } };
+  });
+
+  it('минава през gemini-proxy, без директна заявка към Google', async () => {
+    const { evaluateBelModuleTwoWithGemini, isAiAvailable } = await loadService();
+    supabaseMock.invoke = async () => ({
+      data: geminiBody({ score: 3, feedback: 'ok', improvements: [], modelImprovedVersion: '' }),
+      error: null
+    });
+    expect(isAiAvailable()).toBe(true);
+    const result = await evaluateBelModuleTwoWithGemini(belParams);
+    expect(result.score).toBe(3);
+    expect(calls).toHaveLength(0);
+    expect(supabaseMock.invocations[0].name).toBe('gemini-proxy');
+    expect(supabaseMock.invocations[0].body.model).toBe('gemini-2.5-flash');
+  });
+
+  it('недеплойната функция (404) → структурен анализ и без повторни опити в сесията', async () => {
+    const { evaluateEssayWithGemini, isAiAvailable } = await loadService();
+    supabaseMock.invoke = async () => httpError(404, { code: 'NOT_FOUND' });
+    const first = await evaluateEssayWithGemini(essay, 'Тема', rubric);
+    expect(first.mode).toBe('structural');
+    expect(first.fallbackReason).toMatch(/не е включен/);
+    expect(isAiAvailable()).toBe(false);
+    await evaluateEssayWithGemini(essay, 'Тема', rubric);
+    expect(supabaseMock.invocations).toHaveLength(1);
+  });
+
+  it('дневен лимит → ясна грешка, без повторни опити', async () => {
+    const { evaluateBelModuleTwoWithGemini } = await loadService();
+    supabaseMock.invoke = async () => httpError(429, { error: 'daily_limit_reached', limit: 30 });
+    await expect(evaluateBelModuleTwoWithGemini(belParams)).rejects.toThrow(/дневния лимит/);
+    expect(supabaseMock.invocations).toHaveLength(1);
+  });
+
+  it('без сесия (анонимният вход е изключен) → структурен анализ', async () => {
+    const { evaluateEssayWithGemini } = await loadService();
+    supabaseMock.session = null;
+    const result = await evaluateEssayWithGemini(essay, 'Тема', rubric);
+    expect(result.mode).toBe('structural');
+    expect(result.fallbackReason).toMatch(/сесия/);
+    expect(supabaseMock.invocations).toHaveLength(0);
   });
 });

@@ -348,7 +348,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
                             ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                             : item.subject === 'Биология'
                             ? 'bg-rose-50 text-rose-800 border-rose-200'
-                            : 'bg-indigo-50 text-indigo-800 border-indigo-200'
+                            : 'bg-blue-50 text-blue-800 border-blue-200'
                         }`}>
                           {item.subject} • {item.category}
                         </span>
@@ -612,7 +612,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
                     </div>
 
                     <div className="p-3.5 rounded-xl border border-slate-300 space-y-2">
-                      <h4 className="font-bold text-indigo-900 uppercase">Институционален триъгълник на Европейския съюз</h4>
+                      <h4 className="font-bold text-blue-900 uppercase">Институционален триъгълник на Европейския съюз</h4>
                       <ul className="space-y-1.5 text-slate-800">
                         <li><strong>Европейска комисия (Брюксел):</strong> 27 комисари (1 от България). Изпълнителен орган, <strong>единствен има законодателна инициатива</strong>.</li>
                         <li><strong>Европейски парламент (Страсбург/Брюксел):</strong> 720 пряко избрани евродепутати (<strong>17 от България</strong>). Съзаконодател заедно със Съвета на ЕС.</li>
@@ -639,7 +639,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                     <div className="p-3.5 rounded-xl border border-slate-300 space-y-1.5">
-                      <h4 className="font-bold text-indigo-900 uppercase">1. Софтуер, Мрежи, Криптография & БД</h4>
+                      <h4 className="font-bold text-blue-900 uppercase">1. Софтуер, Мрежи, Криптография & БД</h4>
                       <div className="space-y-1 text-slate-800">
                         <div><strong>Криптография:</strong> AES-256-GCM (симетричен), RSA / ECC (асиметричен), Argon2id (хеширане на пароли със сол).</div>
                         <div><strong>Мрежи (CIDR):</strong> /24 = 254 хоста (255.255.255.0); /26 = 62 хоста (.192); /30 = 2 хоста (.252).</div>

@@ -91,7 +91,7 @@ export const PrimarySourceContextCard: React.FC<PrimarySourceContextCardProps> =
   const primarySource = matchedCase.primarySources[0];
 
   return (
-    <div className={`p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-amber-50/90 via-orange-50/30 to-purple-50/50 border-2 border-amber-300/80 shadow-xs relative overflow-hidden ${className}`}>
+    <div className={`p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-amber-50/90 via-orange-50/30 to-slate-50/50 border-2 border-amber-300/80 shadow-xs relative overflow-hidden ${className}`}>
       {/* Background Accent */}
       <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
 

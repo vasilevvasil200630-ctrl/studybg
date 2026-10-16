@@ -566,7 +566,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
     const pair = [a1, a2].sort().join('');
     if (pair === 'IᴬIᴬ' || pair === 'Iᴬi') return { group: 'Група A', genotype: `${a1}${a2}`, color: 'bg-rose-50 text-rose-900 border-rose-200' };
     if (pair === 'IᴮIᴮ' || pair === 'Iᴮi') return { group: 'Група B', genotype: `${a1}${a2}`, color: 'bg-blue-50 text-blue-900 border-blue-200' };
-    if (pair === 'IᴬIᴮ') return { group: 'Група AB (Кодоминиране)', genotype: 'IᴬIᴮ', color: 'bg-purple-50 text-purple-900 border-purple-200' };
+    if (pair === 'IᴬIᴮ') return { group: 'Група AB (Кодоминиране)', genotype: 'IᴬIᴮ', color: 'bg-slate-50 text-slate-900 border-slate-200' };
     return { group: 'Група 0 (Рецесивна)', genotype: 'ii', color: 'bg-emerald-50 text-emerald-900 border-emerald-200' };
   };
 
@@ -715,7 +715,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
           onClick={() => setActiveTab('quiz')}
           className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'quiz'
-              ? 'bg-indigo-600 text-white shadow-xs'
+              ? 'bg-blue-600 text-white shadow-xs'
               : 'text-slate-700 hover:bg-white'
           }`}
         >
@@ -829,9 +829,9 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
                       <span className="text-[10px] text-blue-600 block">иРНК кодон (5&apos;-3&apos;)</span>
                       <strong className="text-blue-900">{item.codon}</strong>
                     </div>
-                    <div className="text-xs font-mono bg-purple-50/70 py-1 px-2 rounded border border-purple-200">
-                      <span className="text-[10px] text-purple-600 block">тРНК антикодон</span>
-                      <strong className="text-purple-900">{item.anticodon}</strong>
+                    <div className="text-xs font-mono bg-slate-50/70 py-1 px-2 rounded border border-slate-200">
+                      <span className="text-[10px] text-slate-600 block">тРНК антикодон</span>
+                      <strong className="text-slate-900">{item.anticodon}</strong>
                     </div>
                     <div
                       className={`py-1.5 px-2 rounded-lg text-xs font-bold ${
@@ -1171,7 +1171,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
           {/* Salt Hydrolysis & pH Explorer */}
           <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-4">
             <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700">
                 Водни разтвори и pH • 9. и 10. клас
               </span>
               <h3 className="text-base sm:text-lg font-extrabold text-slate-900">
@@ -1186,7 +1186,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
                   onClick={() => setSelectedSaltIdx(idx)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                     selectedSaltIdx === idx
-                      ? 'bg-purple-600 text-white border-purple-600 shadow-xs'
+                      ? 'bg-slate-600 text-white border-slate-600 shadow-xs'
                       : 'bg-slate-50 hover:bg-slate-100 hover:text-blue-700 text-slate-700 border-slate-200'
                   }`}
                 >
@@ -1206,7 +1206,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
                 </div>
                 <div className="p-3 rounded-lg bg-white border border-slate-200">
                   <span className="text-slate-400 block text-[10px] uppercase font-bold">Среда и pH</span>
-                  <strong className="text-purple-900">{currentSalt.phRange}</strong>
+                  <strong className="text-slate-900">{currentSalt.phRange}</strong>
                 </div>
                 <div className="p-3 rounded-lg bg-white border border-slate-200">
                   <span className="text-slate-400 block text-[10px] uppercase font-bold">Лакмус / Фенолфталеин</span>
@@ -1215,7 +1215,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
                   </strong>
                 </div>
               </div>
-              <div className="p-3 rounded-lg bg-purple-50 border border-purple-200 text-xs font-mono text-purple-950">
+              <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs font-mono text-slate-950">
                 {currentSalt.hydrolysisIon}
               </div>
             </div>
@@ -1465,9 +1465,9 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
                 <div className="text-[11px] text-amber-800">Мощност P = U · I</div>
                 <div className="text-lg font-black text-amber-950 font-mono">{totalPower.toFixed(1)} W</div>
               </div>
-              <div className="p-3.5 rounded-xl bg-purple-50 border border-purple-200 text-center">
-                <div className="text-[11px] text-purple-800">Топлина за 10 s (Q = P·t)</div>
-                <div className="text-lg font-black text-purple-950 font-mono">{(totalPower * 10).toFixed(0)} J</div>
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
+                <div className="text-[11px] text-slate-800">Топлина за 10 s (Q = P·t)</div>
+                <div className="text-lg font-black text-slate-950 font-mono">{(totalPower * 10).toFixed(0)} J</div>
               </div>
             </div>
           </div>
@@ -1475,7 +1475,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
           {/* Einstein Photoelectric Effect Simulator */}
           <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-4">
             <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-700">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700">
                 Квантова Физика • НВО 10 & ДЗИ 12
               </span>
               <h3 className="text-base sm:text-lg font-extrabold text-slate-900">
@@ -1495,7 +1495,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
                       onClick={() => setSelectedMetalIdx(idx)}
                       className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border cursor-pointer ${
                         selectedMetalIdx === idx
-                          ? 'bg-indigo-600 text-white border-indigo-600'
+                          ? 'bg-blue-600 text-white border-blue-600'
                           : 'bg-white text-slate-700 border-slate-200'
                       }`}
                     >
@@ -1508,7 +1508,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
                 <div className="flex justify-between text-xs font-bold">
                   <span>Дължина на вълната λ на падащата светлина:</span>
-                  <span className="font-mono text-indigo-700">{wavelengthNm} nm ({photonEnergyEv} eV)</span>
+                  <span className="font-mono text-blue-700">{wavelengthNm} nm ({photonEnergyEv} eV)</span>
                 </div>
                 <input
                   type="range"
@@ -1517,7 +1517,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
                   step={5}
                   value={wavelengthNm}
                   onChange={(e) => setWavelengthNm(Number(e.target.value))}
-                  className="w-full accent-indigo-600"
+                  className="w-full accent-blue-600"
                 />
                 <div className="flex justify-between text-[10px] text-slate-500">
                   <span>180 nm (Ултравиолетова UV)</span>
@@ -1688,7 +1688,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
       {activeTab === 'quiz' && (
         <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-5">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200">
+            <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-800 border border-blue-200">
               Задача {quizIndex + 1} от {SCIENCE_QUIZ.length} • {currentQ.subject}
             </span>
             <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">

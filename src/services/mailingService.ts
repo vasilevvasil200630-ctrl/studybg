@@ -105,24 +105,10 @@ export const mailingService = {
       console.warn('Supabase newsletter table notice:', err);
     }
 
-    // 3. Dispatch welcome notification via API endpoint (if deployed on Vercel)
-    try {
-      await fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'welcome_newsletter',
-          recipientEmail: cleanEmail,
-          grade
-        })
-      });
-    } catch {
-      // Offline or local dev fallback without serverless function
-    }
-
+    // Сайтът е статичен и не изпраща автоматични имейли — не обещаваме приветствено писмо
     return {
       success: true,
-      message: `Успешен абонамент! Всяка неделя ще получаваш подбрани изпитни материали за ${grade}.`
+      message: `Абонаментът за ${grade} е записан. Ще ти пишем на ${cleanEmail}, когато излезе новият брой на бюлетина.`
     };
   },
 
@@ -325,9 +311,47 @@ export const mailingService = {
   },
 
   /**
-   * Send an email via the serverless API (with fallback)
+   * Текстова версия на имейла (за mailto: и за копиране)
    */
-  async sendEmail(params: EmailSendParams): Promise<{ success: boolean; message: string; previewHtml?: string }> {
+  generatePlainText(params: EmailSendParams): string {
+    const lines: string[] = [];
+    if (params.recipientName?.trim()) lines.push(`Здравей, ${params.recipientName.trim()}!`, '');
+    if (params.customNote?.trim()) lines.push(params.customNote.trim(), '');
+
+    if (params.testResult) {
+      const r = params.testResult;
+      lines.push(`Резултат от изпит: ${r.lessonTitle}`, `Точки: ${r.score} / ${r.total}`, `Оценка: ${r.gradeBg.toFixed(2)}`);
+      if (r.missedQuestions?.length) {
+        lines.push('', 'Въпроси за преговор:', ...r.missedQuestions.slice(0, 10).map((q) => `• ${q}`));
+      }
+    } else if (params.lesson) {
+      const l = params.lesson;
+      lines.push(`${l.title} (${l.subject}, ${l.grade})`, '');
+      if (params.includeSummary !== false) {
+        lines.push(l.summary.overview, '', 'Основни акценти:', ...l.summary.keyPoints.map((p) => `• ${p}`));
+      }
+      if (params.includeFormulas !== false && l.summary.formulasOrDates.length > 0) {
+        lines.push('', 'Дати, термини и формули:', ...l.summary.formulasOrDates.map((f) => `• ${f.label}: ${f.value}`));
+      }
+      if (params.includeGoldenRule !== false && l.summary.examGoldenRule) {
+        lines.push('', `Златно правило: ${l.summary.examGoldenRule}`);
+      }
+    }
+    lines.push('', '— Изпратено от StudyBG (https://studybg.vercel.app)');
+    return lines.join('\n');
+  },
+
+  /**
+   * Подготвя имейла и го отваря в имейл клиента на потребителя (mailto:).
+   * StudyBG НЕ изпраща имейли от свой сървър — потребителят изпраща сам.
+   */
+  async sendEmail(params: EmailSendParams): Promise<{
+    success: boolean;
+    message: string;
+    previewHtml?: string;
+    mailtoUrl?: string;
+    plainText?: string;
+  }> {
     const cleanEmail = params.recipientEmail.trim().toLowerCase();
     if (!cleanEmail || !cleanEmail.includes('@') || !cleanEmail.includes('.')) {
       return { success: false, message: 'Моля, посочете валиден имейл адрес.' };
@@ -350,36 +374,21 @@ export const mailingService = {
       }
     }
 
-    // Try calling the Vercel serverless function `/api/send-email`
-    try {
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: cleanEmail,
-          subject: emailSubject,
-          html: htmlContent,
-          recipientName: params.recipientName
-        })
-      });
+    const plainText = this.generatePlainText(params);
+    // Повечето имейл клиенти режат дълги mailto: адреси — пълният текст остава за копиране/изтегляне
+    const MAX_MAILTO_BODY = 1800;
+    const body =
+      plainText.length > MAX_MAILTO_BODY
+        ? `${plainText.slice(0, MAX_MAILTO_BODY)}\n\n[…] Пълният текст е копиран в StudyBG — поставете го тук или прикачете изтегления HTML файл.`
+        : plainText;
+    const mailtoUrl = `mailto:${encodeURIComponent(cleanEmail)}?subject=${encodeURIComponent(emailSubject ?? 'StudyBG')}&body=${encodeURIComponent(body)}`;
 
-      if (response.ok) {
-        const data = await response.json();
-        return {
-          success: true,
-          message: data.message || `Имейлът беше изпратен успешно до ${cleanEmail}!`,
-          previewHtml: htmlContent
-        };
-      }
-    } catch {
-      // Local dev or serverless not available
-    }
-
-    // Fallback: If no serverless API is running, we confirm success locally and save to errorBank/logs
     return {
       success: true,
-      message: `Имейлът е подготвен и изпратен успешно към ${cleanEmail}!`,
-      previewHtml: htmlContent
+      message: `Отворихме имейл клиента ви с готово писмо до ${cleanEmail}. Натиснете „Изпрати“ там. Ако не се отвори, копирайте текста или изтеглете конспекта по-долу.`,
+      previewHtml: htmlContent,
+      mailtoUrl,
+      plainText
     };
   }
 };

@@ -26,6 +26,7 @@ import { classifyAndDiagnoseNotebook, type NotebookDiagnosis } from '../services
 import {
   extractNotebookTextWithGemini,
   isGeminiConfigured,
+  isAiProxyCandidate,
   getActiveGeminiApiKey,
   setStoredGeminiApiKey,
   removeStoredGeminiApiKey,
@@ -173,7 +174,8 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
     }
 
     // 2. Image with active Gemini Key: Run OCR and present in transparent review
-    if (hasGemini && file.type.startsWith('image/')) {
+    // Собствен ключ или Supabase AI proxy (ключът е на сървъра)
+    if ((hasGemini || isAiProxyCandidate()) && file.type.startsWith('image/')) {
       setIsScanning(true);
       setScanStep(`${AI_PROVIDER_LABEL} разчита ръкописа от снимката...`);
       try {

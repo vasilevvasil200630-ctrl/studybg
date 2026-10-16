@@ -118,7 +118,7 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
                 }
               }}
               disabled={isAiDiagnosing}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs font-bold shadow-xs transition-colors whitespace-nowrap cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold shadow-xs transition-colors whitespace-nowrap cursor-pointer"
             >
               {isAiDiagnosing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
               <span>{isAiDiagnosing ? 'Анализирам пропуските...' : `🤖 AI диагностика на грешките (${AI_EXAMINER_LABEL})`}</span>
@@ -144,14 +144,14 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
       )}
 
       {aiDiagnosis && (
-        <div className="p-5 sm:p-6 rounded-2xl bg-indigo-950 text-white border border-indigo-700 space-y-4 shadow-md">
+        <div className="p-5 sm:p-6 rounded-2xl bg-blue-950 text-white border border-blue-700 space-y-4 shadow-md">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-black uppercase tracking-wider text-indigo-300 flex items-center gap-1.5">
+            <span className="text-xs font-black uppercase tracking-wider text-blue-300 flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <span>Персонална AI диагностика & 3-дневен план за наваксване ({AI_EXAMINER_LABEL}):</span>
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-indigo-100 leading-relaxed">{aiDiagnosis.summary}</p>
+          <p className="text-xs sm:text-sm text-blue-100 leading-relaxed">{aiDiagnosis.summary}</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="p-3.5 rounded-xl bg-white/10 border border-white/10 space-y-1">
               <div className="text-[11px] font-bold text-rose-300 uppercase">🎯 Основни слаби места:</div>

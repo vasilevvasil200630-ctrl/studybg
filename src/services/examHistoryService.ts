@@ -1,3 +1,5 @@
+import { isSupabaseConfigured } from './supabaseConfig';
+
 export interface ExamAttemptRecord {
   id: string;
   timestamp: string;
@@ -31,7 +33,8 @@ export interface ExamAnalyticsSummary {
 
 const STORAGE_KEY = 'studybg_exam_history';
 
-export const isCloudSyncEnabled = (): boolean => true;
+// Облачното копие е възможно само с истински Supabase проект (без да зареждаме supabase-js)
+export const isCloudSyncEnabled = (): boolean => isSupabaseConfigured();
 
 export const examHistoryService = {
   /**
@@ -82,37 +85,8 @@ export const examHistoryService = {
       console.warn('LocalStorage save failed:', err);
     }
 
-    // 2. Asynchronously sync to Supabase via lazy dynamic import (zero upfront bundle cost)
-    try {
-      const { supabase, isSupabaseConfigured } = await import('./supabaseClient');
-      if (isSupabaseConfigured()) {
-        const { error } = await supabase.from('exam_attempts').insert({
-          id: newRecord.id,
-          lesson_id: newRecord.lessonId,
-          lesson_title: newRecord.lessonTitle,
-          subject: newRecord.subject,
-          grade: newRecord.grade,
-          exam_preset: newRecord.examPreset,
-          duration_minutes: newRecord.durationMinutes,
-          time_spent_seconds: newRecord.timeSpentSeconds,
-          module1_points: newRecord.module1Points,
-          module2_points: newRecord.module2Points,
-          module3_points: newRecord.module3Points,
-          total_points: newRecord.totalPoints,
-          grade_equivalent: newRecord.gradeEquivalent,
-          grade_numeric: newRecord.gradeNumeric,
-          passed: newRecord.passed,
-          created_at: newRecord.timestamp
-        });
-
-        if (error) {
-          // Table might not be migrated yet or RLS policy, ignore non-fatal error
-          console.info('Supabase sync note (handled gracefully):', error.message);
-        }
-      }
-    } catch (err) {
-      console.info('Supabase network sync skipped:', err);
-    }
+    // 2. Облачно копие, свързано с (анонимния) акаунт — RLS пуска само собствените редове
+    void pushAttemptsToCloud([newRecord]);
 
     return newRecord;
   },
@@ -163,7 +137,45 @@ export const examHistoryService = {
   },
 
   /**
-   * Clear all local history
+   * Двупосочна синхронизация с Supabase за текущия потребител:
+   * дърпа облачните опити, слива ги локално по id и качва локалните, които липсват в облака.
+   * Нищо не прави без активна сесия (не създава акаунт само заради четене).
+   */
+  async syncWithCloud(): Promise<{ downloaded: number; uploaded: number; error?: string }> {
+    try {
+      const { supabase, getExistingSupabaseSession } = await import('./supabaseClient');
+      const session = await getExistingSupabaseSession();
+      if (!session) return { downloaded: 0, uploaded: 0 };
+
+      const { data, error } = await supabase
+        .from('exam_attempts')
+        .select(CLOUD_COLUMNS)
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: false })
+        .limit(200);
+      if (error) return { downloaded: 0, uploaded: 0, error: error.message };
+
+      const local = this.getAllAttempts();
+      const localIds = new Set(local.map((a) => a.id));
+      const cloud = (data ?? []).map(rowToRecord);
+      const cloudIds = new Set(cloud.map((a) => a.id));
+
+      const downloaded = cloud.filter((a) => !localIds.has(a.id));
+      if (downloaded.length > 0) {
+        saveAll([...local, ...downloaded]);
+      }
+
+      const missingInCloud = local.filter((a) => !cloudIds.has(a.id));
+      const uploaded = missingInCloud.length > 0 ? await pushAttemptsToCloud(missingInCloud) : 0;
+
+      return { downloaded: downloaded.length, uploaded };
+    } catch (err) {
+      return { downloaded: 0, uploaded: 0, error: err instanceof Error ? err.message : String(err) };
+    }
+  },
+
+  /**
+   * Clear all local history (и облачната, ако има сесия)
    */
   clearHistory(): void {
     try {
@@ -171,5 +183,116 @@ export const examHistoryService = {
     } catch {
       // ignore
     }
+    void (async () => {
+      try {
+        const { supabase, getExistingSupabaseSession } = await import('./supabaseClient');
+        const session = await getExistingSupabaseSession();
+        if (session) {
+          await supabase.from('exam_attempts').delete().eq('user_id', session.user.id);
+        }
+      } catch (err) {
+        console.info('Cloud history delete skipped:', err);
+      }
+    })();
   }
 };
+
+// ---------------------------------------------------------------------------
+// Supabase помощни функции
+// ---------------------------------------------------------------------------
+
+const CLOUD_COLUMNS =
+  'id, lesson_id, lesson_title, subject, grade, exam_preset, duration_minutes, time_spent_seconds, module1_points, module2_points, module3_points, total_points, grade_equivalent, grade_numeric, passed, created_at';
+
+interface ExamAttemptRow {
+  id: string;
+  lesson_id: string;
+  lesson_title: string;
+  subject: string;
+  grade: string;
+  exam_preset: string | null;
+  duration_minutes: number | null;
+  time_spent_seconds: number | null;
+  module1_points: number;
+  module2_points: number;
+  module3_points: number;
+  total_points: number;
+  grade_equivalent: string | null;
+  grade_numeric: number | string | null;
+  passed: boolean;
+  created_at: string;
+}
+
+const formatBgDate = (iso: string): string =>
+  new Date(iso).toLocaleString('bg-BG', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+function rowToRecord(row: ExamAttemptRow): ExamAttemptRecord {
+  return {
+    id: row.id,
+    timestamp: row.created_at,
+    formattedDate: formatBgDate(row.created_at),
+    lessonId: row.lesson_id,
+    lessonTitle: row.lesson_title,
+    subject: row.subject,
+    grade: row.grade,
+    examPreset: row.exam_preset ?? 'lesson',
+    durationMinutes: row.duration_minutes ?? 0,
+    timeSpentSeconds: row.time_spent_seconds ?? 0,
+    module1Points: row.module1_points,
+    module2Points: row.module2_points,
+    module3Points: row.module3_points,
+    totalPoints: row.total_points,
+    gradeEquivalent: row.grade_equivalent ?? '',
+    gradeNumeric: Number(row.grade_numeric ?? 2),
+    passed: row.passed
+  };
+}
+
+function saveAll(records: ExamAttemptRecord[]): void {
+  try {
+    const sorted = [...records].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(sorted));
+  } catch (err) {
+    console.warn('LocalStorage save failed:', err);
+  }
+}
+
+/** Качва опити с user_id на текущата (при нужда — анонимна) сесия. Връща броя качени. */
+async function pushAttemptsToCloud(records: ExamAttemptRecord[]): Promise<number> {
+  try {
+    const { supabase, ensureSupabaseSession } = await import('./supabaseClient');
+    const session = await ensureSupabaseSession();
+    if (!session) return 0;
+    const { error } = await supabase.from('exam_attempts').upsert(
+      records.map((r) => ({
+        id: r.id,
+        user_id: session.user.id,
+        lesson_id: r.lessonId,
+        lesson_title: r.lessonTitle,
+        subject: r.subject,
+        grade: r.grade,
+        exam_preset: r.examPreset,
+        duration_minutes: r.durationMinutes,
+        time_spent_seconds: r.timeSpentSeconds,
+        module1_points: r.module1Points,
+        module2_points: r.module2Points,
+        module3_points: r.module3Points,
+        total_points: r.totalPoints,
+        grade_equivalent: r.gradeEquivalent,
+        grade_numeric: r.gradeNumeric,
+        passed: r.passed,
+        created_at: r.timestamp
+      })),
+      { onConflict: 'id', ignoreDuplicates: true }
+    );
+    if (error) {
+      // Миграцията още не е пусната или RLS отказва — локалното копие остава източник на истина
+      console.info('Supabase sync note:', error.message);
+      return 0;
+    }
+    return records.length;
+  } catch (err) {
+    console.info('Supabase network sync skipped:', err);
+    return 0;
+  }
+}

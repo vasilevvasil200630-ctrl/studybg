@@ -69,9 +69,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Училища & Специалности 8–12 кл.',
           sublabel: '',
           icon: GraduationCap,
-          accentColor: 'text-indigo-600',
+          accentColor: 'text-blue-600',
           badge: (
-            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-blue-100 text-blue-800 font-bold border border-blue-200">
               8.–12. кл.
             </span>
           )
@@ -100,9 +100,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Устно изпитване пред дъската',
           sublabel: '',
           icon: Mic,
-          accentColor: 'text-indigo-600',
+          accentColor: 'text-blue-600',
           badge: (
-            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-blue-100 text-blue-800 font-bold border border-blue-200">
               Глас & 6.00
             </span>
           )
@@ -112,9 +112,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Казуси за ДЗИ',
           sublabel: '',
           icon: Scale,
-          accentColor: 'text-purple-600',
+          accentColor: 'text-slate-600',
           badge: (
-            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-purple-100 text-purple-700 font-bold border border-purple-200">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 font-bold border border-slate-200">
               11–12 кл
             </span>
           )
@@ -149,9 +149,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Тренажор БЕЛ (Модул 1)',
           sublabel: '',
           icon: PenTool,
-          accentColor: 'text-indigo-600',
+          accentColor: 'text-blue-600',
           badge: (
-            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-700 font-bold border border-indigo-200">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-blue-100 text-blue-700 font-bold border border-blue-200">
               БАН
             </span>
           )
@@ -161,9 +161,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Тропи, Пароними & Резюме',
           sublabel: '',
           icon: Feather,
-          accentColor: 'text-purple-600',
+          accentColor: 'text-slate-600',
           badge: (
-            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-purple-100 text-purple-700 font-bold border border-purple-200">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 font-bold border border-slate-200">
               Модул 2
             </span>
           )
@@ -173,9 +173,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Литературен Канон & Тези',
           sublabel: '',
           icon: BookMarked,
-          accentColor: 'text-purple-600',
+          accentColor: 'text-slate-600',
           badge: (
-            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-purple-100 text-purple-700 font-bold border border-purple-200">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 font-bold border border-slate-200">
               41. в-с
             </span>
           )
@@ -233,9 +233,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Конституция & ЕС (ГО)',
           sublabel: '',
           icon: Scale,
-          accentColor: 'text-indigo-600',
+          accentColor: 'text-blue-600',
           badge: (
-            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-blue-100 text-blue-800 font-bold border border-blue-200">
               Власти & ЕС
             </span>
           )
@@ -324,9 +324,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'МОН Калкулатор оценка',
           sublabel: '',
           icon: Calculator,
-          accentColor: 'text-indigo-600',
+          accentColor: 'text-blue-600',
           badge: (
-            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-700 font-bold border border-indigo-200">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-blue-100 text-blue-700 font-bold border border-blue-200">
               0–100т.
             </span>
           )

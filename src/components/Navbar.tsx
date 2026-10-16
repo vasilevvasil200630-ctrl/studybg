@@ -140,16 +140,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       label: 'Училища & Специалности 8.–12. клас',
       desc: 'ПМГ, ЕГ, ТУЕС/ИТ, НТБГ/Бизнес, СГСАГ, Мехатроника, Медицина и Туризъм',
       badge: '8.–12. КЛАС',
-      icon: <GraduationCap className="w-4 h-4 text-indigo-600" />,
-      accentBg: 'bg-indigo-50 border-indigo-200 text-indigo-800'
+      icon: <GraduationCap className="w-4 h-4 text-blue-600" />,
+      accentBg: 'bg-blue-50 border-blue-200 text-blue-800'
     },
     {
       tab: 'oralexam',
       label: 'Устно изпитване пред дъската',
       desc: 'Гласов и писмен симулатор за 6.00 с AI рублика',
       badge: 'ТОП ЛАБ',
-      icon: <Mic className="w-4 h-4 text-indigo-600" />,
-      accentBg: 'bg-indigo-50 border-indigo-200 text-indigo-800'
+      icon: <Mic className="w-4 h-4 text-blue-600" />,
+      accentBg: 'bg-blue-50 border-blue-200 text-blue-800'
     },
     {
       tab: 'sciencelab',
@@ -172,16 +172,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       label: 'Тропи, Пароними & Резюме (Модул 2)',
       desc: 'Фигури на речта, четене с разбиране и резюмиране',
       badge: 'Модул 2',
-      icon: <Feather className="w-4 h-4 text-purple-600" />,
-      accentBg: 'bg-purple-50 border-purple-200 text-purple-800'
+      icon: <Feather className="w-4 h-4 text-slate-600" />,
+      accentBg: 'bg-slate-50 border-slate-200 text-slate-800'
     },
     {
       tab: 'literature',
       label: 'Литературен Канон (41. въпрос)',
       desc: 'Съпоставителни таблици, мотиви и тези за есе и ИС',
       badge: '30т. ДЗИ',
-      icon: <BookMarked className="w-4 h-4 text-violet-600" />,
-      accentBg: 'bg-violet-50 border-violet-200 text-violet-800'
+      icon: <BookMarked className="w-4 h-4 text-slate-600" />,
+      accentBg: 'bg-slate-50 border-slate-200 text-slate-800'
     },
     {
       tab: 'mathlab',
@@ -212,8 +212,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       label: 'Конституция на РБ & Европейски съюз',
       desc: 'Разделение на властите, права на гражданите и институции',
       badge: '11.–12. кл',
-      icon: <Scale className="w-4 h-4 text-indigo-600" />,
-      accentBg: 'bg-indigo-50 border-indigo-200 text-indigo-800'
+      icon: <Scale className="w-4 h-4 text-blue-600" />,
+      accentBg: 'bg-blue-50 border-blue-200 text-blue-800'
     },
     {
       tab: 'blitz',
@@ -246,9 +246,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'specialties',
       label: 'Училища & Специалности 8–12 кл.',
-      icon: <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />,
+      icon: <GraduationCap className="w-3.5 h-3.5 text-blue-600" />,
       badge: (
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold border border-blue-200">
           Всички предмети
         </span>
       )
@@ -276,9 +276,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'calculator',
       label: 'МОН Калкулатор',
-      icon: <Calculator className="w-3.5 h-3.5 text-indigo-600" />,
+      icon: <Calculator className="w-3.5 h-3.5 text-blue-600" />,
       badge: (
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 font-bold border border-indigo-200">
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-bold border border-blue-200">
           Оценка & бал
         </span>
       )
@@ -286,9 +286,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'cases',
       label: 'Казуси за ДЗИ',
-      icon: <Scale className="w-3.5 h-3.5 text-purple-600" />,
+      icon: <Scale className="w-3.5 h-3.5 text-slate-600" />,
       badge: (
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 font-bold border border-purple-200">
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-bold border border-slate-200">
           11–12 кл
         </span>
       )
@@ -306,9 +306,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'moduletwo',
       label: 'Тропи, Пароними & Резюме',
-      icon: <Feather className="w-3.5 h-3.5 text-purple-600" />,
+      icon: <Feather className="w-3.5 h-3.5 text-slate-600" />,
       badge: (
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-bold border border-purple-200">
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 font-bold border border-slate-200">
           Модул 2
         </span>
       )
@@ -316,9 +316,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'literature',
       label: 'Литературен Канон',
-      icon: <BookMarked className="w-3.5 h-3.5 text-purple-600" />,
+      icon: <BookMarked className="w-3.5 h-3.5 text-slate-600" />,
       badge: (
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-bold border border-purple-200">
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 font-bold border border-slate-200">
           41. въпрос
         </span>
       )
@@ -346,9 +346,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'oralexam',
       label: 'Устно изпитване',
-      icon: <Mic className="w-3.5 h-3.5 text-indigo-600" />,
+      icon: <Mic className="w-3.5 h-3.5 text-blue-600" />,
       badge: (
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold border border-blue-200">
           Пред дъската
         </span>
       )
@@ -376,9 +376,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'civics',
       label: 'Конституция & ЕС',
-      icon: <Scale className="w-3.5 h-3.5 text-indigo-600" />,
+      icon: <Scale className="w-3.5 h-3.5 text-blue-600" />,
       badge: (
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold border border-blue-200">
           ГО & ДЗИ
         </span>
       )
@@ -413,14 +413,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const contextCultureNavItems: { subTab: CultureSubTab; label: string; icon: React.ReactNode }[] = [
     { subTab: 'mysteries', label: 'Конспирации & Досиета (40)', icon: <Compass className="w-3.5 h-3.5 text-amber-600" /> },
-    { subTab: 'mysticmap', label: 'Карта на мистичните зони (12)', icon: <MapPin className="w-3.5 h-3.5 text-purple-600" /> },
+    { subTab: 'mysticmap', label: 'Карта на мистичните зони (12)', icon: <MapPin className="w-3.5 h-3.5 text-slate-600" /> },
     { subTab: 'heritage', label: 'Принос & ЮНЕСКО (16)', icon: <Award className="w-3.5 h-3.5 text-orange-600" /> },
     { subTab: 'timeline', label: 'Хронология (681–1908)', icon: <Clock className="w-3.5 h-3.5 text-emerald-600" /> },
     { subTab: 'cases', label: 'Отворени казуси (12)', icon: <Scale className="w-3.5 h-3.5 text-amber-700" /> },
     { subTab: 'wonders', label: 'Природни чудеса (18)', icon: <MapPin className="w-3.5 h-3.5 text-teal-600" /> },
     { subTab: 'trivia', label: 'Куиз за ерудити (48)', icon: <Sparkles className="w-3.5 h-3.5 text-sky-600" /> },
     { subTab: 'myths', label: 'Факт или Конспирация (24)', icon: <HelpCircle className="w-3.5 h-3.5 text-rose-600" /> },
-    { subTab: 'wisdom', label: 'Златен фонд & Мъдрост (16)', icon: <Quote className="w-3.5 h-3.5 text-indigo-600" /> }
+    { subTab: 'wisdom', label: 'Златен фонд & Мъдрост (16)', icon: <Quote className="w-3.5 h-3.5 text-blue-600" /> }
   ];
 
   const isLabActive =
@@ -444,7 +444,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 handleStudyNavClick('home');
               }}
             >
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-xs group-hover:from-blue-700 group-hover:to-indigo-700 transition-all">
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-600 text-white shadow-xs group-hover:from-blue-700 group-hover:to-blue-700 transition-all">
                 <GraduationCap className="w-5 h-5 text-white" />
               </div>
               
@@ -534,11 +534,11 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => handleStudyNavClick('oralexam')}
               className={`flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                 portalMode === 'study' && activeTab === 'oralexam'
-                  ? 'bg-indigo-50 text-indigo-900 font-bold border border-indigo-200'
+                  ? 'bg-blue-50 text-blue-900 font-bold border border-blue-200'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <Mic className="w-3.5 h-3.5 text-indigo-600" />
+              <Mic className="w-3.5 h-3.5 text-blue-600" />
               <span>Устен изпит</span>
             </button>
 
@@ -548,11 +548,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setIsLabsDropdownOpen(!isLabsDropdownOpen)}
                 className={`flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   isLabActive || isLabsDropdownOpen
-                    ? 'bg-indigo-50 text-indigo-900 font-bold border border-indigo-200'
+                    ? 'bg-blue-50 text-blue-900 font-bold border border-blue-200'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <Layers className="w-3.5 h-3.5 text-indigo-600" />
+                <Layers className="w-3.5 h-3.5 text-blue-600" />
                 <span>Лаборатории (12)</span>
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isLabsDropdownOpen ? 'rotate-180' : ''}`} />
               </button>

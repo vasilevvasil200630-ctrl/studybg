@@ -167,7 +167,7 @@ export const EnglishDziLab: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="rounded-3xl bg-gradient-to-br from-blue-950 via-indigo-900 to-slate-900 text-white p-6 sm:p-8 shadow-lg relative overflow-hidden">
+      <div className="rounded-3xl bg-gradient-to-br from-blue-950 via-blue-900 to-slate-900 text-white p-6 sm:p-8 shadow-lg relative overflow-hidden">
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-blue-200 text-xs font-bold uppercase tracking-wider">
@@ -218,7 +218,7 @@ export const EnglishDziLab: React.FC = () => {
           onClick={() => setActiveTab('phrasal')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
             activeTab === 'phrasal'
-              ? 'bg-indigo-600 text-white shadow-xs'
+              ? 'bg-blue-600 text-white shadow-xs'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
           }`}
         >
@@ -299,13 +299,13 @@ export const EnglishDziLab: React.FC = () => {
                       <span className="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 font-black text-xs flex items-center justify-center border border-blue-200">
                         #{idx + 1}
                       </span>
-                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
                         {item.category}
                       </span>
                       <span
                         className={`px-2 py-0.5 rounded-full text-[11px] font-bold border ${
                           item.cefrLevel === 'B2'
-                            ? 'bg-purple-50 text-purple-700 border-purple-200'
+                            ? 'bg-slate-50 text-slate-700 border-slate-200'
                             : 'bg-emerald-50 text-emerald-700 border-emerald-200'
                         }`}
                       >
@@ -419,7 +419,7 @@ export const EnglishDziLab: React.FC = () => {
             </div>
             <button
               onClick={() => setShowPvReference(!showPvReference)}
-              className="px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold transition-colors"
+              className="px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold transition-colors"
             >
               {showPvReference ? 'Скрий таблицата със синоними' : 'Покажи таблица: Phrasal Verb ➔ Formal B2 Verb'}
             </button>
@@ -440,7 +440,7 @@ export const EnglishDziLab: React.FC = () => {
                   <tbody className="divide-y divide-slate-200">
                     {ENGLISH_PHRASAL_VERBS.map((pv) => (
                       <tr key={pv.id} className="hover:bg-slate-50">
-                        <td className="p-3 font-mono font-bold text-indigo-700">{pv.phrasalVerb}</td>
+                        <td className="p-3 font-mono font-bold text-blue-700">{pv.phrasalVerb}</td>
                         <td className="p-3 font-semibold text-slate-800">{pv.formalEquivalent}</td>
                         <td className="p-3 text-slate-600">{pv.meaningBg}</td>
                         <td className="p-3">
@@ -468,7 +468,7 @@ export const EnglishDziLab: React.FC = () => {
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-indigo-600">
+                      <span className="text-xs font-bold text-blue-600">
                         Задача #{idx + 1} • CEFR {pv.cefrLevel}
                       </span>
                       <span className="text-[11px] text-slate-500">
@@ -507,11 +507,11 @@ export const EnglishDziLab: React.FC = () => {
                   </div>
 
                   {isAnswered && (
-                    <div className="p-3 rounded-xl bg-indigo-50/70 border border-indigo-200 text-xs text-indigo-950 space-y-1">
+                    <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200 text-xs text-blue-950 space-y-1">
                       <div className="font-bold">
                         {pv.phrasalVerb} = {pv.meaningBg}
                       </div>
-                      <p className="text-[11px] text-indigo-900">{pv.monTip}</p>
+                      <p className="text-[11px] text-blue-900">{pv.monTip}</p>
                     </div>
                   )}
                 </div>
@@ -666,7 +666,7 @@ export const EnglishDziLab: React.FC = () => {
                   </div>
 
                   {/* 2. Linking Words Detector */}
-                  <div className="p-3 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-950 text-xs">
+                  <div className="p-3 rounded-xl border border-blue-200 bg-blue-50 text-blue-950 text-xs">
                     <div className="font-bold uppercase text-[10px] tracking-wider opacity-75">
                       Linking Words (B2)
                     </div>
@@ -773,7 +773,7 @@ export const EnglishDziLab: React.FC = () => {
                   )}
 
                   {aiEngEval && (
-                    <div className="p-4 rounded-2xl bg-indigo-950 text-white border border-indigo-700 space-y-3">
+                    <div className="p-4 rounded-2xl bg-blue-950 text-white border border-blue-700 space-y-3">
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-xs font-black uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
                           <Sparkles className="w-4 h-4 text-amber-400" />
@@ -783,7 +783,7 @@ export const EnglishDziLab: React.FC = () => {
                           {aiEngEval.scoreLabel}
                         </span>
                       </div>
-                      <p className="text-xs text-indigo-100 leading-relaxed">{aiEngEval.feedbackBg}</p>
+                      <p className="text-xs text-blue-100 leading-relaxed">{aiEngEval.feedbackBg}</p>
                       {aiEngEval.grammarCorrections.length > 0 && (
                         <div className="space-y-1">
                           <div className="text-[11px] font-bold text-amber-300 uppercase">📌 Езикови и стилови препоръки:</div>

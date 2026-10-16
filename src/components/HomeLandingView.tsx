@@ -1,42 +1,18 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
-import {
-  GraduationCap,
-  Clock,
-  Calculator,
-  BookOpen,
-  Camera,
-  ArrowRight,
-  Sparkles,
-  FileText,
-  ChevronRight,
-  Award,
-  BookMarked,
-  Compass,
-  PenTool,
-  Search,
-  Play,
-  Pause,
-  RotateCcw,
-  CheckCircle2,
-  XCircle,
-  Mic,
-  FlaskConical,
-  Zap,
-  Calendar,
-  MapPin,
-  RefreshCw,
-  X
-} from 'lucide-react';
+import React, { useState, useEffect, useMemo, lazy } from 'react';
+import { GraduationCap, Clock, Camera, ArrowRight, Sparkles, FileText, ChevronRight, Award, Compass, Search, Play, Pause, RotateCcw, CheckCircle2, XCircle, Zap, Calendar, RefreshCw, X } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import type { CultureSubTab } from './CultureHero';
 import { MaturaPlusBridgeBanner } from './MaturaPlusBridgeBanner';
+import { DeferredSection } from './DeferredSection';
 import type { UnsolvedMysteryItem } from '../data/generalKnowledgeData';
-import type {
-  SchoolCategorySection,
-  GradeCurriculumMatrix
-} from '../data/schoolsSpecialtiesDatabase';
+
 import { errorBankService } from '../services/errorBankService';
+
+const HomeSchoolsSection = lazy(() => import('./HomeSchoolsSection').then((m) => ({ default: m.HomeSchoolsSection })));
+const HomeTrainerSection = lazy(() => import('./HomeTrainerSection').then((m) => ({ default: m.HomeTrainerSection })));
+const HomePillarsSection = lazy(() => import('./HomePillarsSection').then((m) => ({ default: m.HomePillarsSection })));
+const HomeCurriculumSection = lazy(() => import('./HomeCurriculumSection').then((m) => ({ default: m.HomeCurriculumSection })));
 
 interface HomeLandingViewProps {
   lessons: LessonData[];
@@ -45,6 +21,8 @@ interface HomeLandingViewProps {
   onOpenScan?: () => void;
   onOpenFormulaModal?: () => void;
   onNavigateCultureTab?: (tab: CultureSubTab) => void;
+  /** Иска пълния каталог (~2 MB) само при реално взаимодействие с търсачката или пътеките */
+  onRequestFullCurriculum?: () => void;
 }
 
 export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
@@ -53,91 +31,10 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
   onNavigateTab,
   onOpenScan,
   onOpenFormulaModal,
-  onNavigateCultureTab
+  onNavigateCultureTab,
+  onRequestFullCurriculum
 }) => {
   const totalLessonsCount = Math.max(lessons.length, 108);
-  const [selectedCurriculumTrack, setSelectedCurriculumTrack] = useState<'dzi' | 'nvo' | 'stem' | 'dippk' | 'all'>('dzi');
-  const [showAllInTrack, setShowAllInTrack] = useState(false);
-  const [schoolSections, setSchoolSections] = useState<SchoolCategorySection[]>([]);
-  const [gradeMatrices, setGradeMatrices] = useState<GradeCurriculumMatrix[]>([]);
-  const [activeHomeSchoolId, setActiveHomeSchoolId] = useState<string>('pmg-smg-npmg');
-  const [activeHomeGrade, setActiveHomeGrade] = useState<'8. клас' | '9. клас' | '10. клас' | '11. клас' | '12. клас'>('8. клас');
-  const schoolsSectionRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    let active = true;
-    let loaded = false;
-
-    const loadSchoolsData = () => {
-      if (loaded) return;
-      loaded = true;
-      import('../data/schoolsSpecialtiesDatabase').then((mod) => {
-        if (!active) return;
-        setSchoolSections(mod.SCHOOL_SPECIALTIES_SECTIONS);
-        setGradeMatrices(mod.GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX);
-        if (mod.SCHOOL_SPECIALTIES_SECTIONS.length > 0) {
-          setActiveHomeSchoolId((prev) => prev || mod.SCHOOL_SPECIALTIES_SECTIONS[0].id);
-        }
-      });
-    };
-
-    const el = schoolsSectionRef.current;
-    if (el && 'IntersectionObserver' in window) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries.some((e) => e.isIntersecting)) {
-            loadSchoolsData();
-            observer.disconnect();
-          }
-        },
-        { rootMargin: '450px' }
-      );
-      observer.observe(el);
-      return () => {
-        active = false;
-        observer.disconnect();
-      };
-    } else {
-      loadSchoolsData();
-      return () => {
-        active = false;
-      };
-    }
-  }, []);
-
-  // 5. University & Career Admission Compass State
-  const [selectedUniId, setSelectedUniId] = useState<
-    'su-fmi' | 'mu-med' | 'tu-eng' | 'unwe-econ' | 'uacg-arch' | 'su-law-hum'
-  >('su-fmi');
-  const [uniGradePrimary, setUniGradePrimary] = useState<number>(5.75);
-  const [uniGradeSecondary, setUniGradeSecondary] = useState<number>(5.60);
-  const [uniGradeDiploma1, setUniGradeDiploma1] = useState<number>(5.90);
-  const [uniGradeDiploma2, setUniGradeDiploma2] = useState<number>(5.85);
-
-  // 6. Live Interactive Flashcard Deck State
-  const [flashcardIndex, setFlashcardIndex] = useState<number>(0);
-  const [isFlashcardFlipped, setIsFlashcardFlipped] = useState<boolean>(false);
-  const [knownFlashcardsCount, setKnownFlashcardsCount] = useState<number>(0);
-
-  const interleavedFlashcards = useMemo(() => {
-    const cards: { card: LessonData['flashcards'][number]; lesson: LessonData }[] = [];
-    let cIdx = 0;
-    let added = true;
-    while (added) {
-      added = false;
-      for (const lesson of lessons) {
-        if (cIdx < lesson.flashcards.length) {
-          cards.push({ card: lesson.flashcards[cIdx], lesson });
-          added = true;
-        }
-      }
-      cIdx++;
-    }
-    return cards;
-  }, [lessons]);
-
-  const currentFlashcardItem =
-    interleavedFlashcards[flashcardIndex % Math.max(1, interleavedFlashcards.length)];
 
   // 1. Live Omni-Search State
   const [omniSearchQuery, setOmniSearchQuery] = useState('');
@@ -177,6 +74,10 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
   const [trainerSubjectFilter, setTrainerSubjectFilter] = useState<
     'all' | 'bel' | 'math' | 'bio_chem' | 'phys_geo' | 'phil_eng' | 'specialties' | 'history'
   >('all');
+
+  useEffect(() => {
+    if (trainerSubjectFilter !== 'all') onRequestFullCurriculum?.();
+  }, [trainerSubjectFilter, onRequestFullCurriculum]);
 
   const allQuizPool = useMemo(() => {
     // Поставяме уроците в разнообразен ред, като „Априлското въстание“ остава в края на опашката,
@@ -344,45 +245,6 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
     };
   }, [omniSearchQuery, lessons, mysteriesPool]);
 
-  // Curated DZI 12 High-Yield Lessons
-  const dziLessons = lessons.filter(
-    (l) => l.grade.includes('12') || l.grade.includes('11') || (l.examType && l.examType.includes('ДЗИ'))
-  );
-
-  // Curated NVO 10 Lessons
-  const nvo10Lessons = lessons.filter((l) => l.grade.includes('10') || l.grade.includes('9') || l.grade.includes('8'));
-
-  // STEM / Science Lessons
-  const stemLessons = lessons.filter(
-    (l) =>
-      l.subject.includes('Математика') ||
-      l.subject.includes('Биология') ||
-      l.subject.includes('Химия') ||
-      l.subject.includes('Физика')
-  );
-
-  // Vocational / DIPPK Lessons
-  const dippkLessons = lessons.filter(
-    (l) =>
-      l.examType === 'ДИППК / Професионален изпит' ||
-      l.subject.includes('Професионални') ||
-      l.subject.includes('Икономика') ||
-      l.subject.includes('Информатика')
-  );
-
-  const activeTrackList =
-    selectedCurriculumTrack === 'dzi'
-      ? dziLessons
-      : selectedCurriculumTrack === 'nvo'
-      ? nvo10Lessons
-      : selectedCurriculumTrack === 'stem'
-      ? stemLessons
-      : selectedCurriculumTrack === 'dippk'
-      ? dippkLessons
-      : lessons;
-
-  const displayedCurriculum = showAllInTrack ? activeTrackList : activeTrackList.slice(0, 12);
-
   return (
     <div className="space-y-14 pb-16">
       
@@ -395,7 +257,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
           className="absolute inset-0 -z-10 pointer-events-none flex items-center justify-center overflow-hidden"
           aria-hidden="true"
         >
-          <div className="w-[720px] h-[380px] rounded-full bg-gradient-to-tr from-blue-100/70 via-indigo-100/50 to-amber-100/30 blur-3xl opacity-85" />
+          <div className="w-[720px] h-[380px] rounded-full bg-gradient-to-tr from-blue-100/70 via-blue-100/50 to-amber-100/30 blur-3xl opacity-85" />
         </div>
 
         <div className="max-w-5xl mx-auto px-4 space-y-6">
@@ -411,12 +273,12 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             <span className="text-slate-300">•</span>
             <span className="text-amber-800 font-bold">40 секретни досиета</span>
             <span className="text-slate-300 hidden sm:inline">•</span>
-            <span className="text-indigo-700 font-bold hidden sm:inline">12 интерактивни лаборатории</span>
+            <span className="text-blue-700 font-bold hidden sm:inline">12 интерактивни лаборатории</span>
           </div>
 
           {/* Main Display Headline */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.12]">
-            Национална дигитална академия за <span className="text-blue-600">НВО 10</span> и <span className="text-indigo-600">ДЗИ 12</span>
+            Национална дигитална академия за <span className="text-blue-600">НВО 10</span> и <span className="text-blue-600">ДЗИ 12</span>
           </h1>
 
           {/* Subtitle */}
@@ -432,6 +294,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 type="text"
                 value={omniSearchQuery}
                 onChange={(e) => setOmniSearchQuery(e.target.value)}
+                onFocus={onRequestFullCurriculum}
                 placeholder={`Търси мигновено сред ${totalLessonsCount} урока, 40 мистерии, формули или автори (напр. Талев, производна, митоза, Царичина)...`}
                 className="w-full py-3.5 px-3 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none bg-transparent"
               />
@@ -539,7 +402,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                                   setOmniSearchQuery('');
                                   onSelectLesson?.(lesson, 'oralexam');
                                 }}
-                                className="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 text-[11px] font-semibold transition-colors cursor-pointer"
+                                className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 text-[11px] font-semibold transition-colors cursor-pointer"
                               >
                                 🎙️ Устен
                               </button>
@@ -605,7 +468,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 {/* Entrance 1: The Study Academy (8.-12. grade) */}
                 <button
                   onClick={() => onNavigateTab('summary')}
-                  className="group relative p-5 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white flex flex-col justify-between transition-all shadow-sm hover:shadow-md cursor-pointer text-left"
+                  className="group relative p-5 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white flex flex-col justify-between transition-all shadow-sm hover:shadow-md cursor-pointer text-left"
                 >
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
@@ -675,14 +538,14 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 <button
                   type="button"
                   onClick={() => onNavigateTab('specialties')}
-                  className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-colors cursor-pointer shadow-2xs"
+                  className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition-colors cursor-pointer shadow-2xs"
                 >
                   🏫 Училища & Специалности (8.–12. кл.)
                 </button>
                 <button
                   type="button"
                   onClick={() => onNavigateTab('oralexam')}
-                  className="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-900 font-bold transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-900 font-bold transition-colors cursor-pointer"
                 >
                   🎙️ Устно изпитване
                 </button>
@@ -710,14 +573,14 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 <button
                   type="button"
                   onClick={() => onNavigateTab('moduletwo')}
-                  className="px-2.5 py-1 rounded-lg bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-900 font-semibold transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 font-semibold transition-colors cursor-pointer"
                 >
                   🪶 Тропи & Резюме (Модул 2)
                 </button>
                 <button
                   type="button"
                   onClick={() => onNavigateTab('literature')}
-                  className="px-2.5 py-1 rounded-lg bg-violet-50 hover:bg-violet-100 border border-violet-200 text-violet-900 font-semibold transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 font-semibold transition-colors cursor-pointer"
                 >
                   📚 Литературен Канон (41. в-с)
                 </button>
@@ -995,7 +858,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                   className="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70 text-left transition-colors cursor-pointer"
                 >
                   <div className="text-[10px] text-slate-400 uppercase font-bold">Устен изпит</div>
-                  <div className="text-base sm:text-lg font-black text-indigo-400 mt-0.5">
+                  <div className="text-base sm:text-lg font-black text-blue-400 mt-0.5">
                     {telemetry.oralExamCount > 0 ? `Ср. ${telemetry.oralAvgGrade}` : 'Готов за тест'}
                   </div>
                   <div className="text-[10px] text-slate-400 mt-0.5">Пред дъската →</div>
@@ -1031,1084 +894,21 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
         </div>
       </section>
 
-      {/* ========================================================================= */}
-      {/* 2.5 SPECIAL SECTIONS: ALL HIGH SCHOOLS, SPECIALTIES & GRADES 8-12 MATRIX */}
-      {/* ========================================================================= */}
-      <section ref={schoolsSectionRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
-        <div className="rounded-3xl bg-white border-2 border-indigo-200/90 shadow-sm p-5 sm:p-8 space-y-7">
-          {/* Header */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-100">
-            <div className="space-y-1.5 max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-extrabold uppercase tracking-wider">
-                <GraduationCap className="w-4 h-4 text-indigo-600" />
-                <span>{schoolSections.length || 16} Специални секции • 64+ професии и специалности (8.–12. клас)</span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                Всеки предмет от всеки клас (8.–12.) за всяко училище и специалност
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Избери своето училище (ПМГ/СМГ, ЕГ, ТУЕС/ИТ и AI, НТБГ/НФСГ, СГСАГ/Геодезия, ПГМЕ/CNC и Роботика, Медицина/Фармация, Дизайн/UI-UX/3D, ВМГ/Авиация, ПГХВТ/Винарство, Спортни и Музикални училища, НГДЕК, НПГПТО/ПГЯЕ, НПГПФ/Кино и Иконопис, МВР/Криминалистика, Балнеология/СПА) или клас (8.–12. клас), за да отвориш <strong>Общообразователните (Раздел А)</strong>, <strong>Профилираните (Раздел Б за ДЗИ)</strong> и <strong>Специалните професионални предмети (Раздел В за ДИППК — Трета СПК)</strong>.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => onNavigateTab('specialties')}
-              className="self-start lg:self-center inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-extrabold shadow-sm transition-all cursor-pointer shrink-0"
-            >
-              <span>Отвори пълния справочник & калкулатор ДИППК</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
+      <DeferredSection minHeight={1100}>
+        <HomeSchoolsSection lessons={lessons} onNavigateTab={onNavigateTab} onSelectLesson={onSelectLesson} />
+      </DeferredSection>
 
-          {/* Part A: 16 School & Vocational Specialty Tabs */}
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-2">
-              {schoolSections.map((school) => {
-                const isSelected = school.id === activeHomeSchoolId;
-                return (
-                  <button
-                    key={school.id}
-                    type="button"
-                    onClick={() => setActiveHomeSchoolId(school.id)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border flex items-center gap-2 ${
-                      isSelected
-                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
-                        : 'bg-slate-50 hover:bg-indigo-50/70 text-slate-700 border-slate-200 hover:border-indigo-300'
-                    }`}
-                  >
-                    <span>🏫 {school.shortName}</span>
-                  </button>
-                );
-              })}
-            </div>
+      <DeferredSection minHeight={900}>
+        <HomeTrainerSection lessons={lessons} onNavigateTab={onNavigateTab} onSelectLesson={onSelectLesson} />
+      </DeferredSection>
 
-            {(() => {
-              const activeSchool =
-                schoolSections.find((s) => s.id === activeHomeSchoolId) ||
-                schoolSections[0];
-              if (!activeSchool) return null;
-              return (
-                <div className="rounded-2xl bg-slate-50 border border-slate-200/90 p-4 sm:p-6 space-y-5">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
-                    <div>
-                      <span className="text-[11px] font-extrabold uppercase tracking-wider text-indigo-700">
-                        {activeSchool.badgeText}
-                      </span>
-                      <h3 className="text-lg sm:text-xl font-black text-slate-900 mt-0.5">
-                        {activeSchool.title}
-                      </h3>
-                      <p className="text-xs text-slate-600 mt-0.5">{activeSchool.subtitle}</p>
-                    </div>
-                    <div className="text-[11px] font-semibold px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 max-w-md">
-                      🎓 <strong>Дипломиране:</strong> {activeSchool.examFormat}
-                    </div>
-                  </div>
+      <DeferredSection minHeight={1000}>
+        <HomePillarsSection totalLessonsCount={totalLessonsCount} onNavigateTab={onNavigateTab} />
+      </DeferredSection>
 
-                  {/* Specialties Cards for selected school */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {activeSchool.specialties.map((spec) => {
-                      const matchedLesson = lessons.find((l) => l.id === spec.linkedLessonId);
-                      return (
-                        <div
-                          key={spec.code}
-                          className="p-4 rounded-xl bg-white border border-slate-200 hover:border-indigo-300 transition-all flex flex-col justify-between gap-3 shadow-2xs"
-                        >
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between gap-1">
-                              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
-                                {spec.code}
-                              </span>
-                              <span className="text-[10px] font-semibold text-emerald-700">
-                                8.–12. кл.
-                              </span>
-                            </div>
-                            <h4 className="text-xs sm:text-sm font-extrabold text-slate-900 leading-snug">
-                              {spec.name}
-                            </h4>
-                            <div className="flex flex-wrap gap-1">
-                              {spec.coreSubjects.map((cs, i) => (
-                                <span
-                                  key={i}
-                                  className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-medium"
-                                >
-                                  {cs}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (matchedLesson) {
-                                onSelectLesson?.(matchedLesson, 'summary');
-                              } else {
-                                onNavigateTab('specialties');
-                              }
-                            }}
-                            className="w-full py-1.5 px-3 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-                          >
-                            <BookOpen className="w-3.5 h-3.5" />
-                            <span>Отвори специалния урок</span>
-                          </button>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })()}
-          </div>
-
-          {/* Part B: Complete Grade-by-Grade Subject Matrix (8., 9., 10., 11., 12. клас) */}
-          <div className="pt-3 border-t border-slate-100 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h3 className="text-base sm:text-lg font-extrabold text-slate-900">
-                  📅 Бърз преглед по класове: Всеки предмет от 8., 9., 10., 11. и 12. клас
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Общообразователни (Раздел А), Профилирани (Раздел Б) и Специални професионални предмети (Раздел В — ДИППК)
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {(['8. клас', '9. клас', '10. клас', '11. клас', '12. клас'] as const).map((gr) => (
-                  <button
-                    key={gr}
-                    type="button"
-                    onClick={() => setActiveHomeGrade(gr)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${
-                      activeHomeGrade === gr
-                        ? 'bg-slate-900 text-white border-slate-900'
-                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
-                    }`}
-                  >
-                    {gr}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {(() => {
-              const gradeMatrix =
-                gradeMatrices.find((g) => g.grade === activeHomeGrade) ||
-                gradeMatrices[0];
-              if (!gradeMatrix) return null;
-              return (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {gradeMatrix.subjects.map((subj, idx) => {
-                    const targetLesson = lessons.find((l) => l.id === subj.linkedLessonId);
-                    const isSectionC = subj.category.includes('Раздел В');
-                    const isSectionB = subj.category.includes('Раздел Б');
-                    return (
-                      <div
-                        key={idx}
-                        className="p-4 rounded-2xl bg-slate-50/90 hover:bg-white border border-slate-200/90 hover:border-indigo-300 transition-all flex flex-col justify-between gap-3"
-                      >
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between gap-2">
-                            <span
-                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                                isSectionC
-                                  ? 'bg-amber-50 text-amber-800 border-amber-200'
-                                  : isSectionB
-                                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                                  : 'bg-blue-50 text-blue-800 border-blue-200'
-                              }`}
-                            >
-                              {subj.category}
-                            </span>
-                            <span className="text-[10px] font-mono text-slate-500">
-                              {subj.weeklyHoursNote}
-                            </span>
-                          </div>
-                          <h4 className="text-xs sm:text-sm font-bold text-slate-900">
-                            {subj.subjectName}
-                          </h4>
-                          <p className="text-[11px] text-slate-600 line-clamp-3 leading-relaxed">
-                            {subj.keyTopics}
-                          </p>
-                        </div>
-                        <div className="pt-2 border-t border-slate-200/70 flex items-center justify-between text-xs">
-                          <span className="text-[10px] text-slate-500 truncate max-w-[160px]">
-                            🏫 {subj.schoolTypes}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (targetLesson) {
-                                onSelectLesson?.(targetLesson, 'summary');
-                              } else {
-                                onNavigateTab('specialties');
-                              }
-                            }}
-                            className="font-bold text-indigo-600 hover:text-indigo-800 inline-flex items-center gap-1 cursor-pointer"
-                          >
-                            <span>Към модула</span>
-                            <ArrowRight className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })()}
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 2.8 UNIVERSITY ADMISSION COMPASS & LIVE FLASHCARD FLIP-DECK */}
-      {/* ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-          
-          {/* Left Panel (7 cols): Interactive University & Career Admission Compass */}
-          <div className="lg:col-span-7 p-5 sm:p-7 rounded-3xl bg-white border-2 border-emerald-200/90 shadow-xs flex flex-col justify-between space-y-5">
-            {(() => {
-              const uniConfigs = {
-                'su-fmi': {
-                  shortTitle: '💻 СУ — ФМИ (Софтуерно инж. / КН)',
-                  fullTitle: 'Софийски университет „Св. Климент Охридски“ — Факултет по математика и информатика (ФМИ)',
-                  formulaText: '3 × Изпит/ДЗИ Математика или Информатика + 1 × ДЗИ БЕЛ',
-                  maxBall: 24,
-                  minThreshold: 21.8,
-                  primaryLabel: 'Изпит / ДЗИ Математика или Информатика (×3)',
-                  secondaryLabel: 'ДЗИ Български език и литература (×1)',
-                  dip1Label: 'Диплома Математика (информативно)',
-                  dip2Label: 'Диплома Информатика (информативно)',
-                  calcScore: (p: number, s: number) => 3 * p + 1 * s,
-                  lessonIds: [
-                    'cs-data-structures-graphs-trees-sorting-complexity-11-12',
-                    'math-11-12-exponential-logarithmic-irrational-equations',
-                    'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
-                  ]
-                },
-                'mu-med': {
-                  shortTitle: '🩺 МУ — Медицина, Дентална & Фармация',
-                  fullTitle: 'Медицински университети (МУ София, Пловдив, Варна, Плевен) — Магистър „Медицина / Фармация“',
-                  formulaText: '2 × Изпит Биология + 2 × Изпит Химия + 1 × Диплома Биология + 1 × Диплома Химия',
-                  maxBall: 36,
-                  minThreshold: 32.4,
-                  primaryLabel: 'Кандидатстудентски изпит по Биология (×2)',
-                  secondaryLabel: 'Кандидатстудентски изпит по Химия (×2)',
-                  dip1Label: 'Оценка от диплома по Биология (×1)',
-                  dip2Label: 'Оценка от диплома по Химия (×1)',
-                  calcScore: (p: number, s: number, d1: number, d2: number) => 2 * p + 2 * s + d1 + d2,
-                  lessonIds: [
-                    'bio-11-12-immunology-virology-neurobiology-endocrinology',
-                    'chem-11-12-electrochemistry-galvanic-electrolysis-corrosion',
-                    'voc-pharmaceutical-tech-cosmetology-microbiology-food-safety-8-12'
-                  ]
-                },
-                'tu-eng': {
-                  shortTitle: '⚙️ ТУ — КСИ, AI, Мехатроника & Авиация',
-                  fullTitle: 'Технически университет (ТУ София / Пловдив / Варна) — Компютърно и софтуерно инж., Мехатроника, Авиация',
-                  formulaText: '3 × Изпит/ДЗИ Математика или Физика + 1 × Диплома Математика + 1 × Диплома Физика',
-                  maxBall: 30,
-                  minThreshold: 25.5,
-                  primaryLabel: 'Изпит / ДЗИ Математика или Физика (×3)',
-                  secondaryLabel: 'Втора матура / ДИППК по специалността (бонус/резерв)',
-                  dip1Label: 'Оценка от диплома по Математика (×1)',
-                  dip2Label: 'Оценка от диплома по Физика / ИТ (×1)',
-                  calcScore: (p: number, _s: number, d1: number, d2: number) => 3 * p + d1 + d2,
-                  lessonIds: [
-                    'phys-11-12-relativity-photoelectric-bohr-standard-model',
-                    'voc-cnc-machining-welding-hydraulics-pneumatics-robotics-8-12',
-                    'cs-cybersecurity-cryptography-ai-machine-learning-11-12'
-                  ]
-                },
-                'unwe-econ': {
-                  shortTitle: '📈 УНСС — Финанси, МИО & Бизнес',
-                  fullTitle: 'Университет за национално и световно стопанство (УНСС) & Икономически университети',
-                  formulaText: '2 × ЕПИ / ДЗИ (БЕЛ, Математика, География, История или Икономика) + 1 × Диплома БЕЛ + 1 × Диплома Математика',
-                  maxBall: 24,
-                  minThreshold: 20.6,
-                  primaryLabel: 'Оценка от ЕПИ или по-високо ДЗИ / ДИППК (×2)',
-                  secondaryLabel: 'Втора матура / Език (резервен коефициент)',
-                  dip1Label: 'Оценка от диплома по БЕЛ (×1)',
-                  dip2Label: 'Оценка от диплома по Математика (×1)',
-                  calcScore: (p: number, _s: number, d1: number, d2: number) => 2 * p + d1 + d2,
-                  lessonIds: [
-                    'econ-international-trade-forex-stock-market-insurance-11-12',
-                    'geo-11-12-globalization-international-organizations-climate-demography',
-                    'math-combinatorics-probability-stats-10-12'
-                  ]
-                },
-                'uacg-arch': {
-                  shortTitle: '🏗️ УАСГ — Архитектура, ССС & Геодезия',
-                  fullTitle: 'Университет по архитектура, строителство и геодезия (УАСГ) — Архитектура, ССС и Геодезия',
-                  formulaText: '2 × Изпит/ДЗИ Математика + 2 × Изпит Рисуване / Физика + 1 × Диплома Математика + 1 × Диплома БЕЛ',
-                  maxBall: 36,
-                  minThreshold: 30.8,
-                  primaryLabel: 'Изпит / ДЗИ по Математика (×2)',
-                  secondaryLabel: 'Изпит по Рисуване или ДЗИ Физика / СПП (×2)',
-                  dip1Label: 'Оценка от диплома по Математика (×1)',
-                  dip2Label: 'Оценка от диплома по БЕЛ (×1)',
-                  calcScore: (p: number, s: number, d1: number, d2: number) => 2 * p + 2 * s + d1 + d2,
-                  lessonIds: [
-                    'voc-geodesy-photogrammetry-cartography-gis-water-construction-8-12',
-                    'math-10-12-solid-geometry-prisms-pyramids-spheres-cones',
-                    'voc-graphic-design-ui-ux-3d-modeling-architectural-visualization-8-12'
-                  ]
-                },
-                'su-law-hum': {
-                  shortTitle: '⚖️ СУ — Право, МО, Психология & Езици',
-                  fullTitle: 'СУ „Св. Климент Охридски“ — Юридически, Исторически, Философски и Филологически факултети',
-                  formulaText: '2 × ДЗИ БЕЛ + 2 × ДЗИ История / Философия / Чужд език + 1 × Диплома БЕЛ + 1 × Диплома История/Език',
-                  maxBall: 36,
-                  minThreshold: 32.0,
-                  primaryLabel: 'ДЗИ 1 по Български език и литература (×2)',
-                  secondaryLabel: 'ДЗИ 2 по История / Философия / Чужд език (×2)',
-                  dip1Label: 'Оценка от диплома по БЕЛ (×1)',
-                  dip2Label: 'Оценка от диплома по История / Чужд език (×1)',
-                  calcScore: (p: number, s: number, d1: number, d2: number) => 2 * p + 2 * s + d1 + d2,
-                  lessonIds: [
-                    'hist-11-12-bulgarian-state-institutions-constitutions-1879-1991',
-                    'bel-bulgarian-literature-10-smirnenski-milev-dalchev-yovkov',
-                    'bel-world-literature-9-enlightenment-romanticism-realism'
-                  ]
-                }
-              };
-
-              const activeUni = uniConfigs[selectedUniId];
-              const calculatedBall = activeUni.calcScore(
-                uniGradePrimary,
-                uniGradeSecondary,
-                uniGradeDiploma1,
-                uniGradeDiploma2
-              );
-              const isAdmittedFirstRound = calculatedBall >= activeUni.minThreshold;
-              const recommendedLessons = activeUni.lessonIds
-                .map((id) => lessons.find((l) => l.id === id))
-                .filter((l): l is LessonData => Boolean(l));
-
-              return (
-                <>
-                  <div className="space-y-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
-                      <div className="space-y-0.5">
-                        <div className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-emerald-700">
-                          <Compass className="w-4 h-4 text-emerald-600" />
-                          <span>Университетски & Кариерен Компас след 12. клас</span>
-                        </div>
-                        <h3 className="text-lg sm:text-xl font-black text-slate-900">
-                          Калкулатор на Състезателен бал за ВУЗ (СУ, МУ, ТУ, УНСС, УАСГ)
-                        </h3>
-                      </div>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-extrabold border ${
-                          isAdmittedFirstRound
-                            ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                            : 'bg-amber-50 text-amber-800 border-amber-300'
-                        }`}
-                      >
-                        {isAdmittedFirstRound
-                          ? '✅ Приет по Първо желание (Топ класиране)'
-                          : '⚡ Нужен е още малко ръст за I класиране'}
-                      </span>
-                    </div>
-
-                    {/* University Selector Pills */}
-                    <div className="flex flex-wrap gap-1.5">
-                      {(Object.keys(uniConfigs) as Array<keyof typeof uniConfigs>).map((uKey) => {
-                        const isSel = selectedUniId === uKey;
-                        return (
-                          <button
-                            key={uKey}
-                            type="button"
-                            onClick={() => setSelectedUniId(uKey)}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
-                              isSel
-                                ? 'bg-emerald-700 text-white border-emerald-700 shadow-2xs'
-                                : 'bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-emerald-800 border-slate-200 hover:border-emerald-300'
-                            }`}
-                          >
-                            {uniConfigs[uKey].shortTitle}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {/* Active University Formula Banner */}
-                    <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div className="space-y-0.5">
-                        <div className="text-xs font-extrabold text-slate-900">{activeUni.fullTitle}</div>
-                        <div className="text-[11px] text-slate-600">
-                          <strong>Формула за бал:</strong> {activeUni.formulaText}
-                        </div>
-                      </div>
-                      <div className="shrink-0 text-right bg-white px-3.5 py-2 rounded-xl border border-emerald-200 shadow-2xs">
-                        <div className="text-[10px] font-bold uppercase text-slate-500">Твоят състезателен бал</div>
-                        <div className="text-xl sm:text-2xl font-mono font-black text-emerald-700">
-                          {calculatedBall.toFixed(2)}{' '}
-                          <span className="text-xs font-semibold text-slate-400">/ {activeUni.maxBall.toFixed(2)}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Grade Sliders */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                      <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-200/80 space-y-1">
-                        <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                          <span className="truncate pr-2">{activeUni.primaryLabel}</span>
-                          <span className="font-mono text-emerald-700">{uniGradePrimary.toFixed(2)}</span>
-                        </div>
-                        <input
-                          type="range"
-                          min={3.0}
-                          max={6.0}
-                          step={0.05}
-                          value={uniGradePrimary}
-                          onChange={(e) => setUniGradePrimary(Number(e.target.value))}
-                          className="w-full accent-emerald-600 cursor-pointer"
-                        />
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-200/80 space-y-1">
-                        <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                          <span className="truncate pr-2">{activeUni.secondaryLabel}</span>
-                          <span className="font-mono text-emerald-700">{uniGradeSecondary.toFixed(2)}</span>
-                        </div>
-                        <input
-                          type="range"
-                          min={3.0}
-                          max={6.0}
-                          step={0.05}
-                          value={uniGradeSecondary}
-                          onChange={(e) => setUniGradeSecondary(Number(e.target.value))}
-                          className="w-full accent-emerald-600 cursor-pointer"
-                        />
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-200/80 space-y-1">
-                        <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                          <span className="truncate pr-2">{activeUni.dip1Label}</span>
-                          <span className="font-mono text-blue-700">{uniGradeDiploma1.toFixed(2)}</span>
-                        </div>
-                        <input
-                          type="range"
-                          min={3.0}
-                          max={6.0}
-                          step={0.05}
-                          value={uniGradeDiploma1}
-                          onChange={(e) => setUniGradeDiploma1(Number(e.target.value))}
-                          className="w-full accent-blue-600 cursor-pointer"
-                        />
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-200/80 space-y-1">
-                        <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                          <span className="truncate pr-2">{activeUni.dip2Label}</span>
-                          <span className="font-mono text-blue-700">{uniGradeDiploma2.toFixed(2)}</span>
-                        </div>
-                        <input
-                          type="range"
-                          min={3.0}
-                          max={6.0}
-                          step={0.05}
-                          value={uniGradeDiploma2}
-                          onChange={(e) => setUniGradeDiploma2(Number(e.target.value))}
-                          className="w-full accent-blue-600 cursor-pointer"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Direct Launch to Target University Preparation Lessons */}
-                  <div className="pt-3 border-t border-slate-100 space-y-2">
-                    <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
-                      🎯 Препоръчани уроци за максимален бал в тази специалност:
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      {recommendedLessons.map((recLesson) => (
-                        <button
-                          key={recLesson.id}
-                          type="button"
-                          onClick={() => onSelectLesson?.(recLesson, 'summary')}
-                          className="p-2.5 rounded-xl bg-emerald-50/60 hover:bg-emerald-100/80 border border-emerald-200 text-left transition-all cursor-pointer flex flex-col justify-between gap-1"
-                        >
-                          <span className="text-[10px] font-bold text-emerald-800">{recLesson.subject}</span>
-                          <span className="text-xs font-bold text-slate-900 line-clamp-2 leading-snug">
-                            {recLesson.title}
-                          </span>
-                          <span className="text-[10px] font-extrabold text-emerald-700 pt-0.5">
-                            Отвори конспекта →
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              );
-            })()}
-          </div>
-
-          {/* Right Panel (5 cols): Live Interactive Flashcard Flip-Deck from all 108 Lessons */}
-          <div className="lg:col-span-5 p-5 sm:p-7 rounded-3xl bg-slate-900 text-white shadow-sm flex flex-col justify-between space-y-5">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-amber-300">
-                    Експресни Флашкарти ({interleavedFlashcards.length} карти)
-                  </span>
-                </div>
-                {knownFlashcardsCount > 0 && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[11px] font-bold">
-                    ✓ Научени днес: {knownFlashcardsCount}
-                  </span>
-                )}
-              </div>
-
-              {currentFlashcardItem && (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-2 text-xs text-indigo-200">
-                    <span className="font-bold text-amber-300">
-                      {currentFlashcardItem.lesson.subject} • {currentFlashcardItem.lesson.grade}
-                    </span>
-                    <span className="font-mono text-[11px] text-slate-400">
-                      Карта #{(flashcardIndex % interleavedFlashcards.length) + 1} / {interleavedFlashcards.length}
-                    </span>
-                  </div>
-
-                  {/* Interactive Flip Card Box */}
-                  <div
-                    onClick={() => setIsFlashcardFlipped(!isFlashcardFlipped)}
-                    className={`min-h-[210px] p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between select-none ${
-                      isFlashcardFlipped
-                        ? 'bg-emerald-950/70 border-emerald-400/60 shadow-lg'
-                        : 'bg-white/10 hover:bg-white/15 border-white/20'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider">
-                      <span className={isFlashcardFlipped ? 'text-emerald-300' : 'text-blue-300'}>
-                        {isFlashcardFlipped ? '💡 Академичен отговор / Формула' : '❓ Въпрос / Термин (Кликни за обръщане)'}
-                      </span>
-                      <span className="px-2 py-0.5 rounded bg-white/10 text-white text-[10px]">
-                        {isFlashcardFlipped ? 'Гръб' : 'Лице'}
-                      </span>
-                    </div>
-
-                    <div className="my-auto py-3">
-                      <p
-                        className={`leading-relaxed ${
-                          isFlashcardFlipped
-                            ? 'text-xs sm:text-sm text-emerald-100 font-medium'
-                            : 'text-sm sm:text-base text-white font-extrabold'
-                        }`}
-                      >
-                        {isFlashcardFlipped ? currentFlashcardItem.card.back : currentFlashcardItem.card.front}
-                      </p>
-                    </div>
-
-                    <div className="text-[11px] text-slate-300 flex items-center justify-between pt-2 border-t border-white/10">
-                      <span className="truncate max-w-[230px]">
-                        Урок: {currentFlashcardItem.lesson.title}
-                      </span>
-                      <span className="font-bold text-amber-300">Обърни ↻</span>
-                    </div>
-                  </div>
-
-                  {/* Controls */}
-                  <div className="grid grid-cols-3 gap-2 pt-1">
-                    <button
-                      type="button"
-                      onClick={() => setIsFlashcardFlipped(!isFlashcardFlipped)}
-                      className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-xs font-bold text-white transition-colors cursor-pointer"
-                    >
-                      {isFlashcardFlipped ? 'Виж въпроса' : 'Виж отговора'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setKnownFlashcardsCount((prev) => prev + 1);
-                        setIsFlashcardFlipped(false);
-                        setFlashcardIndex((prev) => (prev + 1) % Math.max(1, interleavedFlashcards.length));
-                      }}
-                      className="py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-emerald-950 text-xs font-extrabold transition-colors cursor-pointer"
-                    >
-                      ✓ Знам го (+1)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsFlashcardFlipped(false);
-                        setFlashcardIndex((prev) => (prev + 1) % Math.max(1, interleavedFlashcards.length));
-                      }}
-                      className="py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-colors cursor-pointer"
-                    >
-                      Следваща →
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs text-indigo-200">
-              <button
-                type="button"
-                onClick={() => {
-                  if (currentFlashcardItem) {
-                    onSelectLesson?.(currentFlashcardItem.lesson, 'flashcards');
-                  } else {
-                    onNavigateTab('flashcards');
-                  }
-                }}
-                className="text-amber-300 hover:text-amber-200 font-bold cursor-pointer"
-              >
-                Отвори всички флашкарти към урока →
-              </button>
-              <button
-                type="button"
-                onClick={() => onNavigateTab('blitz')}
-                className="text-white hover:text-amber-300 font-semibold cursor-pointer"
-              >
-                ⚡ 60-сек. Блиц
-              </button>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 3. INTERACTIVE LABORATORIES & SPECIALIZED MODULES GRID */}
-      {/* ========================================================================= */}
-      <section id="pillars" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
-        <div className="text-center max-w-2xl mx-auto mb-8">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-bold mb-2">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-            <span>Интерактивни тренажори и лаборатории на StudyBG</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Специализирани лаборатории за Отличен 6.00
-          </h2>
-          <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-            Всички модули са директно свързани с учебните програми на МОН за 8.–12. клас и работят в реално време.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          
-          {/* Lab 1: Oral Exam Simulator */}
-          <div
-            onClick={() => onNavigateTab('oralexam')}
-            className="p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-slate-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
-          >
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center border border-slate-200">
-                  <Mic className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-800">
-                  ГЛАС & ТЕКСТ
-                </span>
-              </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-blue-700 transition-colors">
-                Устно изпитване пред дъската
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Симулатор с микрофон (Web Speech API) за всички {totalLessonsCount} урока, автоматичен одит на ключовите термини и бележник.
-              </p>
-            </div>
-            <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-indigo-700">
-              <span>Започни устен изпит</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Lab 2: Science DZI Lab */}
-          <div
-            onClick={() => onNavigateTab('sciencelab')}
-            className="p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-emerald-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
-          >
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-200">
-                  <FlaskConical className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900">
-                  БИО • ХИМ • ФИЗ
-                </span>
-              </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">
-                Лаборатория Природни науки
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                ДНК репликация и транслация (кодони), pH и йоннообменни реакции, закон на Ом и електрически вериги.
-              </p>
-            </div>
-            <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-700">
-              <span>Отвори STEM лабораторията</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Lab 3: Grammar & Orthography Trainer */}
-          <div
-            onClick={() => onNavigateTab('grammar')}
-            className="p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-blue-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
-          >
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center border border-blue-200">
-                  <PenTool className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-900">
-                  МОДУЛ 1 & 2 БЕЛ
-                </span>
-              </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-blue-700 transition-colors">
-                Тренажор по Граматика & Правопис
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Пълен/кратък член, бройна форма, запетаи при обособени и вметнати части, пароними и редактиране на текст.
-              </p>
-            </div>
-            <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-blue-700">
-              <span>Отвори езиковия тренажор</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Lab 4: Literature Canon & Thesis Builder */}
-          <div
-            onClick={() => onNavigateTab('literature')}
-            className="p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-stone-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
-          >
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-stone-100 text-stone-700 flex items-center justify-center border border-stone-200">
-                  <BookMarked className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stone-200 text-stone-800">
-                  41. ЗАДАЧА (30т.)
-                </span>
-              </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-blue-700 transition-colors">
-                Литературен Канон & Тези
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Всички задължителни автори от Ботев и Вазов до Талев и Димов, тематични цикли, цитати и генератор на теза.
-              </p>
-            </div>
-            <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-purple-700">
-              <span>Отвори литературния канон</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Lab 5: 100-Point Exam Simulator */}
-          <div
-            onClick={() => onNavigateTab('simulator')}
-            className="p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-amber-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
-          >
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center border border-amber-200">
-                  <Clock className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
-                  100 ТОЧКИ • AI ЕСЕ
-                </span>
-              </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-amber-800 transition-colors">
-                100-точков Симулатор на МОН
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Тримодулна матура с хронометър и интелигентен AI оценител за аргументативно есе и интерпретативно съчинение.
-              </p>
-            </div>
-            <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-amber-800">
-              <span>Стартирай симулация</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Lab 6: Math & STEM Solver */}
-          <div
-            onClick={() => onNavigateTab('mathlab')}
-            className="p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-cyan-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
-          >
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center border border-cyan-200">
-                  <Compass className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-900">
-                  НВО 10 & ДЗИ
-                </span>
-              </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-cyan-800 transition-colors">
-                Математика & STEM Решавач
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Квадратни уравнения, прогресии, комбинаторика, синусова/косинусова теорема и производни стъпка по стъпка.
-              </p>
-            </div>
-            <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-cyan-800">
-              <span>Отвори математическия лаб</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Lab 7: History & Geography Atlas + Cases */}
-          <div
-            onClick={() => onNavigateTab('atlas')}
-            className="p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-teal-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
-          >
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center border border-teal-200">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-100 text-teal-900">
-                  ДОГОВОРИ & NUTS 2
-                </span>
-              </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-teal-800 transition-colors">
-                Атлас История & География
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Териториални промени (681–1947), мирни договори, 6-те района за планиране (NUTS 2) и климатограми.
-              </p>
-            </div>
-            <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-teal-800">
-              <span>Отвори интерактивния атлас</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Lab 8: MON Grade Calculator & Speed Blitz */}
-          <div
-            onClick={() => onNavigateTab('calculator')}
-            className="p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-rose-400 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
-          >
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center border border-rose-200">
-                  <Calculator className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-900">
-                  НАРЕДБА №11 МОН
-                </span>
-              </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-rose-700 transition-colors">
-                МОН Калкулатор за оценка и ВУЗ бал
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Пресметни точно оценката си по точки (праг 30т. = 3.00) и изчисли състезателния си бал за университет.
-              </p>
-            </div>
-            <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-rose-700">
-              <span>Пресметни оценка и бал</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 4. CURATED EXAM PATHWAYS: ALL 108 MON LESSONS WITH MULTI-ACTION LAUNCH */}
-      {/* ========================================================================= */}
-      <section id="curriculum" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
-        <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-xs">
-          
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
-            <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
-                <BookOpen className="w-3.5 h-3.5" />
-                <span>Пълна учебна база по предмети (8.–12. клас)</span>
-              </div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-                Учебни конспекти, устно изпитване и тестове ({totalLessonsCount} урока)
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Избери урок и стартирай директно конспект с личен бележник, гласово устно изпитване или изпитен тест.
-              </p>
-            </div>
-
-            {/* Curriculum Track Switcher */}
-            <div className="flex flex-wrap items-center gap-1 p-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-semibold">
-              <button
-                onClick={() => {
-                  setSelectedCurriculumTrack('dzi');
-                  setShowAllInTrack(false);
-                }}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                  selectedCurriculumTrack === 'dzi'
-                    ? 'bg-white text-blue-700 shadow-xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                ДЗИ 11.–12. кл ({dziLessons.length})
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedCurriculumTrack('nvo');
-                  setShowAllInTrack(false);
-                }}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                  selectedCurriculumTrack === 'nvo'
-                    ? 'bg-white text-blue-700 shadow-xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                8.–10. кл & НВО ({nvo10Lessons.length})
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedCurriculumTrack('stem');
-                  setShowAllInTrack(false);
-                }}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                  selectedCurriculumTrack === 'stem'
-                    ? 'bg-white text-blue-700 shadow-xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Математика & Природни ({stemLessons.length})
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedCurriculumTrack('dippk');
-                  setShowAllInTrack(false);
-                }}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                  selectedCurriculumTrack === 'dippk'
-                    ? 'bg-white text-indigo-700 shadow-xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                ДИППК & Професии ({dippkLessons.length})
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedCurriculumTrack('all');
-                  setShowAllInTrack(true);
-                }}
-                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                  selectedCurriculumTrack === 'all'
-                    ? 'bg-white text-blue-700 shadow-xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Всички предмети ({totalLessonsCount})
-              </button>
-            </div>
-          </div>
-
-          {/* Lessons Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {displayedCurriculum.map((lesson) => {
-              const isHistory = lesson.subject.includes('История');
-              const isBel = lesson.subject.includes('Български');
-              const isMath = lesson.subject.includes('Математика');
-              
-              const accentColor = isHistory
-                ? 'text-amber-800 bg-amber-50 border-amber-200'
-                : isBel
-                ? 'text-blue-800 bg-blue-50 border-blue-200'
-                : isMath
-                ? 'text-emerald-800 bg-emerald-50 border-emerald-200'
-                : 'text-indigo-800 bg-indigo-50 border-indigo-200';
-
-              return (
-                <div
-                  key={lesson.id}
-                  onClick={() => onSelectLesson?.(lesson, 'summary')}
-                  className="p-4 rounded-2xl bg-slate-50/70 hover:bg-white border border-slate-200/80 hover:border-blue-300 hover:shadow-sm transition-all flex flex-col justify-between group cursor-pointer"
-                >
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${accentColor}`}>
-                        {lesson.subject.split(' ')[0]}
-                      </span>
-                      <span className="text-[10px] text-slate-500 font-mono">
-                        {lesson.grade.split(' ')[0]}
-                      </span>
-                    </div>
-
-                    <h3 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 line-clamp-2 transition-colors">
-                      {lesson.title}
-                    </h3>
-
-                    <p className="text-[11px] text-slate-600 line-clamp-2 leading-relaxed">
-                      {lesson.summary.overview}
-                    </p>
-                  </div>
-
-                  <div className="pt-3 mt-3 border-t border-slate-200/60 flex items-center justify-between gap-1 text-[11px] font-semibold">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSelectLesson?.(lesson, 'summary');
-                      }}
-                      className="flex items-center gap-1 text-blue-700 hover:text-blue-900 cursor-pointer"
-                    >
-                      <BookOpen className="w-3.5 h-3.5" />
-                      <span>Конспект</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSelectLesson?.(lesson, 'oralexam');
-                      }}
-                      className="px-2 py-0.5 rounded bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 transition-colors cursor-pointer"
-                      title="Устно изпитване по тази тема"
-                    >
-                      🎙️ Устен
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSelectLesson?.(lesson, 'quiz');
-                      }}
-                      className="font-mono text-[10px] px-2 py-0.5 rounded bg-slate-200/80 hover:bg-slate-300/80 text-slate-800 hover:text-blue-900 font-bold transition-colors cursor-pointer"
-                    >
-                      Тест ({lesson.quiz.length})
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Full Catalog / Expand Buttons */}
-          <div className="pt-6 flex flex-wrap items-center justify-center gap-3">
-            {activeTrackList.length > 12 && (
-              <button
-                type="button"
-                onClick={() => setShowAllInTrack(!showAllInTrack)}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-800 text-xs font-bold transition-colors cursor-pointer"
-              >
-                <span>
-                  {showAllInTrack
-                    ? 'Свий списъка (покажи първите 12)'
-                    : `Покажи всички ${activeTrackList.length} урока в тази категория`}
-                </span>
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={() => onNavigateTab('catalog')}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/70 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-800 text-xs font-semibold transition-colors cursor-pointer"
-            >
-              <BookMarked className="w-4 h-4 text-blue-600" />
-              <span>Отвори пълния каталог с всички {totalLessonsCount} теми по програмите на МОН за 8.–12. клас</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-        </div>
-      </section>
+      <DeferredSection minHeight={1200}>
+        <HomeCurriculumSection lessons={lessons} totalLessonsCount={totalLessonsCount} onNavigateTab={onNavigateTab} onSelectLesson={onSelectLesson} onRequestFullCurriculum={onRequestFullCurriculum} />
+      </DeferredSection>
 
       {/* ========================================================================= */}
       {/* 5. SMARTSCAN AI BANNER: NOTEBOOK CAMERA DIAGNOSTIC */}
@@ -2181,7 +981,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               onClick={() => onNavigateCultureTab?.('mysticmap')}
               className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-amber-100/80 text-amber-950 border border-amber-300 font-bold text-xs transition-colors cursor-pointer"
             >
-              <Zap className="w-4 h-4 text-purple-600" />
+              <Zap className="w-4 h-4 text-slate-600" />
               <span>Гео-радарна карта (12 зони)</span>
             </button>
           </div>

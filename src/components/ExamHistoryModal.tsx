@@ -29,10 +29,23 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
     examHistoryService.getAnalytics()
   );
 
+  // Последният onRefresh без да рестартира синхронизацията при всеки рендер на родителя
+  const onRefreshRef = React.useRef(onRefresh);
+  onRefreshRef.current = onRefresh;
+
   React.useEffect(() => {
-    if (isOpen) {
+    if (!isOpen) return;
+    setAnalytics(examHistoryService.getAnalytics());
+    // Двупосочна синхронизация с облака, ако има сесия; после опресняваме статистиката
+    let active = true;
+    void examHistoryService.syncWithCloud().then((result) => {
+      if (!active || result.downloaded === 0) return;
       setAnalytics(examHistoryService.getAnalytics());
-    }
+      onRefreshRef.current?.();
+    });
+    return () => {
+      active = false;
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -171,7 +184,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
                 </div>
                 <div className="w-full h-3 rounded-full bg-slate-200 overflow-hidden relative">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-emerald-500 transition-all duration-500"
+                    className="h-full rounded-full bg-gradient-to-r from-blue-500 via-blue-500 to-emerald-500 transition-all duration-500"
                     style={{ width: `${Math.min(100, Math.max(5, analytics.averageScore))}%` }}
                   />
                   {/* МОН Threshold Marks */}
@@ -267,7 +280,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
                           <span className="px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
                             М2 (Извор): <strong>{attempt.module2Points}</strong>/30т.
                           </span>
-                          <span className="px-2 py-0.5 rounded bg-purple-50 text-purple-800 border border-purple-200">
+                          <span className="px-2 py-0.5 rounded bg-slate-50 text-slate-800 border border-slate-200">
                             М3 (Есе): <strong>{attempt.module3Points}</strong>/30т.
                           </span>
                           {attempt.hasAiEvaluation && (

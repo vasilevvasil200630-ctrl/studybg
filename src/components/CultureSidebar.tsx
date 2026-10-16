@@ -43,7 +43,7 @@ export const CultureSidebar: React.FC<CultureSidebarProps> = ({
       label: 'Карта на мистичните зони',
       sublabel: '12 секретни координати & меридиани',
       icon: MapPin,
-      accentColor: 'text-purple-600'
+      accentColor: 'text-slate-600'
     },
     {
       tab: 'heritage',
@@ -85,7 +85,7 @@ export const CultureSidebar: React.FC<CultureSidebarProps> = ({
       label: 'Златен фонд & Мъдрост',
       sublabel: '16 вечни национални урока',
       icon: Quote,
-      accentColor: 'text-indigo-600'
+      accentColor: 'text-blue-600'
     }
   ];
 

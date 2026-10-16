@@ -93,7 +93,7 @@ export const ExamBridgeCard: React.FC<ExamBridgeCardProps> = ({
         </div>
 
         <div className="p-2.5 rounded-xl bg-white border border-slate-200 text-center shadow-2xs">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 block">Модул 2</span>
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 block">Модул 2</span>
           <span className="text-xs font-semibold text-slate-800">Анализ на извор</span>
           <div className="text-[11px] text-slate-500 font-medium mt-0.5">30 точки</div>
         </div>

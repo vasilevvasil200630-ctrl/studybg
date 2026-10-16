@@ -157,7 +157,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                 onClick={() => setSelectedExamType(examItem.id)}
                 className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer ${
                   isSelected
-                    ? 'bg-indigo-600 text-white shadow-xs font-semibold'
+                    ? 'bg-blue-600 text-white shadow-xs font-semibold'
                     : 'bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200/80 border border-slate-200'
                 }`}
               >
@@ -165,7 +165,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                 <span
                   className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
                     isSelected
-                      ? 'bg-indigo-700 text-indigo-100'
+                      ? 'bg-blue-700 text-blue-100'
                       : 'bg-white text-slate-600 border border-slate-200/80'
                   }`}
                 >

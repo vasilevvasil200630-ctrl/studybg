@@ -160,7 +160,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
           description: 'Работа с автентични дипломатически текстове от ЦДА за Модул 2 и Модул 3 на ДЗИ.',
           targetTab: 'cases',
           actionLabel: 'Към Казуси за ДЗИ',
-          accentClass: 'border-purple-200 bg-purple-50/40'
+          accentClass: 'border-slate-200 bg-slate-50/40'
         },
         {
           id: 'wed',
@@ -190,7 +190,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
           description: 'Извличане на 3 микротези и ключови цитати за темата „Паметта, свободата и дългът“.',
           targetTab: 'literature',
           actionLabel: 'Отвори Канона',
-          accentClass: 'border-purple-200 bg-purple-50/40'
+          accentClass: 'border-slate-200 bg-slate-50/40'
         },
         {
           id: 'sat',
@@ -235,7 +235,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
           description: 'Преговор на сюжетите, конфликтите и нравствените послания с бърз 10-въпросен тест.',
           targetTab: 'summary',
           actionLabel: 'Отвори Конспекта',
-          accentClass: 'border-indigo-200 bg-indigo-50/40'
+          accentClass: 'border-blue-200 bg-blue-50/40'
         },
         {
           id: 'wed',
@@ -265,7 +265,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
           description: 'Работа с цитатника и структурираните тези за последната задача на НВО.',
           targetTab: 'literature',
           actionLabel: 'Към Литературен Канон',
-          accentClass: 'border-purple-200 bg-purple-50/40'
+          accentClass: 'border-slate-200 bg-slate-50/40'
         },
         {
           id: 'sat',
@@ -310,7 +310,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
         description: 'Преговор на жанровете, основните конфликти и запаметяване на 4 ключови цитата за 41. задача.',
         targetTab: 'literature',
         actionLabel: 'Отвори Канона',
-        accentClass: 'border-purple-200 bg-purple-50/40'
+        accentClass: 'border-slate-200 bg-slate-50/40'
       },
       {
         id: 'wed',
@@ -330,7 +330,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
         description: 'Покриване на всички пунктуационни правила за безгрешен Модул 1 и езикова култура в есето.',
         targetTab: 'grammar',
         actionLabel: 'Към Пунктуация',
-        accentClass: 'border-indigo-200 bg-indigo-50/40'
+        accentClass: 'border-blue-200 bg-blue-50/40'
       },
       {
         id: 'fri',
@@ -340,7 +340,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
         description: 'Съставяне на 3-компонентна теза за ЛИС и есе с помощта на генератора на тези.',
         targetTab: 'literature',
         actionLabel: 'Към Генератор на тези',
-        accentClass: 'border-purple-200 bg-purple-50/40'
+        accentClass: 'border-slate-200 bg-slate-50/40'
       },
       {
         id: 'sat',
@@ -360,7 +360,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
         description: 'Пререшаване на сгрешените въпроси и изчисляване на нужните точки за желаната специалност.',
         targetTab: 'calculator',
         actionLabel: 'Отвори МОН Калкулатор',
-        accentClass: 'border-indigo-200 bg-indigo-50/40'
+        accentClass: 'border-blue-200 bg-blue-50/40'
       }
     ];
   };
@@ -374,7 +374,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
       {/* ========================================================================= */}
       {/* 1. HERO COUNTDOWN & OVERALL READINESS SCORE */}
       {/* ========================================================================= */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white shadow-md relative overflow-hidden">
+      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-blue-950 to-blue-950 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10 space-y-6">
           
           {/* Top Bar: Badge & Target Exam Selector Pills */}
@@ -494,14 +494,14 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
               {/* Progress Bar */}
               <div className="w-full h-3 rounded-full bg-slate-800 overflow-hidden p-0.5 border border-white/10">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-blue-500 via-indigo-400 to-emerald-400 transition-all duration-500"
+                  className="h-full rounded-full bg-gradient-to-r from-blue-500 via-blue-400 to-emerald-400 transition-all duration-500"
                   style={{ width: `${Math.max(5, overallReadinessPercent)}%` }}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2 pt-1 text-[11px] text-slate-200">
                 <div className="flex items-center gap-1.5">
-                  <BookMarked className="w-3.5 h-3.5 text-purple-300 shrink-0" />
+                  <BookMarked className="w-3.5 h-3.5 text-slate-300 shrink-0" />
                   <span>Автори: <strong>{masteredAuthorsCount}/{totalAuthors}</strong></span>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -509,7 +509,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                   <span>Уроци: <strong>{masteredLessonsCount}/{totalLessons}</strong></span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <PenTool className="w-3.5 h-3.5 text-indigo-300 shrink-0" />
+                  <PenTool className="w-3.5 h-3.5 text-blue-300 shrink-0" />
                   <span>Модул 1 БЕЛ: <strong>{progress.grammarQuestionsSolved} решени</strong></span>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -544,22 +544,22 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
         <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between space-y-4">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-700 border border-purple-200 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-xl bg-slate-50 text-slate-700 border border-slate-200 flex items-center justify-center">
                 <BookMarked className="w-4 h-4" />
               </div>
-              <span className="text-sm font-black font-mono text-purple-700">{authorsPercent}%</span>
+              <span className="text-sm font-black font-mono text-slate-700">{authorsPercent}%</span>
             </div>
             <h3 className="text-sm font-bold text-slate-900">Литературен канон (41. в-с)</h3>
             <p className="text-xs text-slate-500">
               Преговорени <strong>{masteredAuthorsCount}</strong> от общо <strong>{totalAuthors}</strong> задължителни автори за ДЗИ.
             </p>
             <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-              <div className="h-full bg-purple-600 rounded-full transition-all" style={{ width: `${authorsPercent}%` }} />
+              <div className="h-full bg-slate-600 rounded-full transition-all" style={{ width: `${authorsPercent}%` }} />
             </div>
           </div>
           <button
             onClick={() => onNavigateTab('literature')}
-            className="text-xs font-bold text-purple-700 hover:text-purple-900 flex items-center gap-1 cursor-pointer"
+            className="text-xs font-bold text-slate-700 hover:text-slate-900 flex items-center gap-1 cursor-pointer"
           >
             <span>Преговори цитати и тези</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -596,22 +596,22 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
         <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between space-y-4">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center">
                 <PenTool className="w-4 h-4" />
               </div>
-              <span className="text-sm font-black font-mono text-indigo-700">{grammarPercent}%</span>
+              <span className="text-sm font-black font-mono text-blue-700">{grammarPercent}%</span>
             </div>
             <h3 className="text-sm font-bold text-slate-900">Тренажор БЕЛ (Модул 1)</h3>
             <p className="text-xs text-slate-500">
               Решени <strong>{progress.grammarQuestionsSolved}</strong> задачи по БАН • Най-добра серия: <strong>{progress.grammarBestStreak}</strong>.
             </p>
             <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-              <div className="h-full bg-indigo-600 rounded-full transition-all" style={{ width: `${grammarPercent}%` }} />
+              <div className="h-full bg-blue-600 rounded-full transition-all" style={{ width: `${grammarPercent}%` }} />
             </div>
           </div>
           <button
             onClick={() => onNavigateTab('grammar')}
-            className="text-xs font-bold text-indigo-700 hover:text-indigo-900 flex items-center gap-1 cursor-pointer"
+            className="text-xs font-bold text-blue-700 hover:text-blue-900 flex items-center gap-1 cursor-pointer"
           >
             <span>Тренирай правопис и член</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -775,7 +775,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
           })}
 
           {/* 8th Summary Card in Grid: Weekly Bonus Goal */}
-          <div className="p-5 rounded-2xl bg-gradient-to-br from-blue-900 to-indigo-950 text-white flex flex-col justify-between space-y-4">
+          <div className="p-5 rounded-2xl bg-gradient-to-br from-blue-900 to-blue-950 text-white flex flex-col justify-between space-y-4">
             <div className="space-y-2.5">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-400/20 text-amber-300 text-[11px] font-bold">
                 <Award className="w-3.5 h-3.5" />
@@ -825,7 +825,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
               onClick={() => setChecklistTab('authors')}
               className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
                 checklistTab === 'authors'
-                  ? 'bg-white text-purple-700 shadow-2xs font-bold'
+                  ? 'bg-white text-slate-700 shadow-2xs font-bold'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -854,7 +854,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                   onClick={() => handleToggleAuthor(author.id)}
                   className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                     isMastered
-                      ? 'bg-purple-50/70 border-purple-300 text-purple-950'
+                      ? 'bg-slate-50/70 border-slate-300 text-slate-950'
                       : 'bg-slate-50/60 hover:bg-white border-slate-200 text-slate-800'
                   }`}
                 >
@@ -862,7 +862,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                     <div
                       className={`w-9 h-9 rounded-xl font-bold text-xs flex items-center justify-center shrink-0 ${
                         isMastered
-                          ? 'bg-purple-600 text-white'
+                          ? 'bg-slate-600 text-white'
                           : 'bg-white border border-slate-200 text-slate-700'
                       }`}
                     >

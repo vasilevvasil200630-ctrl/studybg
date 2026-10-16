@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useTransition, lazy, Suspense } from 'react';
+import { useState, useEffect, useCallback, useRef, useTransition, lazy, Suspense } from 'react';
 import { Navbar, type AppNavTab } from './components/Navbar';
 import { CultureHero, type CultureSubTab } from './components/CultureHero';
 import { Footer } from './components/Footer';
@@ -82,6 +82,11 @@ const STUDY_TABS: AppNavTab[] = [
   'grammar', 'moduletwo', 'literature', 'mathlab', 'sciencelab', 'oralexam', 'atlas', 'english', 'civics', 'blitz'
 ];
 
+// Изгледи, които показват или търсят във всички уроци
+const FULL_CURRICULUM_TABS: ReadonlySet<AppNavTab> = new Set<AppNavTab>([
+  'catalog', 'simulator', 'generator', 'blitz', 'specialties', 'errorbank', 'oralexam', 'planner', 'scan'
+]);
+
 function prefetchStudyTabChunk(tab: AppNavTab): void {
   switch (tab) {
     case 'specialties': void import('./components/SchoolsSpecialtiesHub'); break;
@@ -139,66 +144,42 @@ export function App() {
   const [practiceQuestions, setPracticeQuestions] = useState<QuizQuestion[] | null>(null);
 
   const curriculumHydratedRef = useRef(false);
+  // Търсачката на началната страница иска пълния каталог едва при фокус
+  const [fullCurriculumRequested, setFullCurriculumRequested] = useState(false);
+  const requestFullCurriculum = useCallback(() => setFullCurriculumRequested(true), []);
+
+  // Пълният каталог (~2 MB) се сваля САМО когато е реално нужен — не при всяко отваряне на началната
+  const needsFullCurriculum =
+    (portalMode === 'study' && FULL_CURRICULUM_TABS.has(activeTab)) ||
+    isQuickLessonModalOpen ||
+    isScanModalOpen ||
+    fullCurriculumRequested;
 
   useEffect(() => {
-    if (curriculumHydratedRef.current) return;
+    if (curriculumHydratedRef.current || !needsFullCurriculum) return;
     let isMounted = true;
-    let triggered = false;
-    let idleHandle: number | null = null;
-    let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
 
-    const cancelScheduled = () => {
-      window.removeEventListener('pointerdown', hydrateFullCurriculum);
-      window.removeEventListener('keydown', hydrateFullCurriculum);
-      if (idleHandle !== null && 'cancelIdleCallback' in window) window.cancelIdleCallback(idleHandle);
-      if (timeoutHandle !== null) clearTimeout(timeoutHandle);
-      idleHandle = null;
-      timeoutHandle = null;
-    };
-
-    function hydrateFullCurriculum() {
-      if (triggered) return;
-      triggered = true;
-      cancelScheduled();
-
-      loadFullCurriculumLessons()
-        .then((fullLessons) => {
-          if (!isMounted) return;
-          curriculumHydratedRef.current = true;
-          startTabTransition(() => {
-            setLessons((prev) => {
-              const fullIds = new Set(fullLessons.map((fl) => fl.id));
-              const customScans = prev.filter((l) => !fullIds.has(l.id));
-              return [...customScans, ...fullLessons];
-            });
+    loadFullCurriculumLessons()
+      .then((fullLessons) => {
+        if (!isMounted) return;
+        curriculumHydratedRef.current = true;
+        startTabTransition(() => {
+          setLessons((prev) => {
+            const fullIds = new Set(fullLessons.map((fl) => fl.id));
+            const customScans = prev.filter((l) => !fullIds.has(l.id));
+            return [...customScans, ...fullLessons];
           });
-        })
-        .catch((err: unknown) => {
-          // Мрежова грешка/остарял chunk — следващата навигация опитва отново
-          console.warn('Full curriculum load failed:', err);
         });
-    }
-
-    if (activeTab !== 'home' || isQuickLessonModalOpen || isScanModalOpen) {
-      hydrateFullCurriculum();
-    } else {
-      // Намерение за навигация → веднага; иначе във времето на бездействие (без скрол тригер,
-      // за да не парсваме ~2 MB данни точно докато ученикът скролва на телефона)
-      window.addEventListener('pointerdown', hydrateFullCurriculum, { passive: true, once: true });
-      window.addEventListener('keydown', hydrateFullCurriculum, { passive: true, once: true });
-      if ('requestIdleCallback' in window) {
-        idleHandle = window.requestIdleCallback(hydrateFullCurriculum, { timeout: 5000 });
-      } else {
-        // Safari няма requestIdleCallback
-        timeoutHandle = setTimeout(hydrateFullCurriculum, 3000);
-      }
-    }
+      })
+      .catch((err: unknown) => {
+        // Мрежова грешка/остарял chunk — следващото поискване опитва отново
+        console.warn('Full curriculum load failed:', err);
+      });
 
     return () => {
       isMounted = false;
-      cancelScheduled();
     };
-  }, [activeTab, isQuickLessonModalOpen, isScanModalOpen]);
+  }, [needsFullCurriculum]);
 
   // Dynamic document.title synchronization for SEO, accessibility, and multi-tab clarity
   useEffect(() => {
@@ -439,17 +420,17 @@ export function App() {
     { tab: 'home', label: 'Начало', icon: <Home className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'planner', label: 'План за 6.00', icon: <Calendar className="w-3.5 h-3.5 text-emerald-600" /> },
     { tab: 'summary', label: 'Конспект', icon: <BookOpen className="w-3.5 h-3.5" /> },
-    { tab: 'oralexam', label: 'Устен изпит', icon: <Mic className="w-3.5 h-3.5 text-indigo-600" /> },
-    { tab: 'cases', label: 'Казуси ДЗИ', icon: <Scale className="w-3.5 h-3.5 text-purple-600" /> },
+    { tab: 'oralexam', label: 'Устен изпит', icon: <Mic className="w-3.5 h-3.5 text-blue-600" /> },
+    { tab: 'cases', label: 'Казуси ДЗИ', icon: <Scale className="w-3.5 h-3.5 text-slate-600" /> },
     { tab: 'grammar', label: 'Тренажор БЕЛ', icon: <PenTool className="w-3.5 h-3.5 text-blue-600" /> },
-    { tab: 'moduletwo', label: 'Модул 2 БЕЛ', icon: <Feather className="w-3.5 h-3.5 text-purple-600" /> },
-    { tab: 'literature', label: 'Литературен Канон', icon: <BookMarked className="w-3.5 h-3.5 text-purple-600" /> },
-    { tab: 'specialties', label: 'Училища & Специалности 8–12', icon: <GraduationCap className="w-3.5 h-3.5 text-indigo-600" /> },
+    { tab: 'moduletwo', label: 'Модул 2 БЕЛ', icon: <Feather className="w-3.5 h-3.5 text-slate-600" /> },
+    { tab: 'literature', label: 'Литературен Канон', icon: <BookMarked className="w-3.5 h-3.5 text-slate-600" /> },
+    { tab: 'specialties', label: 'Училища & Специалности 8–12', icon: <GraduationCap className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'mathlab', label: 'Математика & STEM', icon: <Compass className="w-3.5 h-3.5 text-cyan-600" /> },
     { tab: 'sciencelab', label: 'Природни науки Лаб', icon: <FlaskConical className="w-3.5 h-3.5 text-emerald-600" /> },
     { tab: 'atlas', label: 'Атлас Ист. & Гео.', icon: <MapPin className="w-3.5 h-3.5 text-amber-600" /> },
     { tab: 'english', label: 'Английски ДЗИ', icon: <Globe className="w-3.5 h-3.5 text-sky-600" /> },
-    { tab: 'civics', label: 'Конституция & ЕС', icon: <Scale className="w-3.5 h-3.5 text-indigo-600" /> },
+    { tab: 'civics', label: 'Конституция & ЕС', icon: <Scale className="w-3.5 h-3.5 text-blue-600" /> },
     { tab: 'blitz', label: 'Блиц 60с.', icon: <Zap className="w-3.5 h-3.5 text-amber-600" /> },
     { tab: 'audit', label: 'Одит 6.00', icon: <CheckSquare className="w-3.5 h-3.5" /> },
     { tab: 'flashcards', label: 'Флаш карти', icon: <Zap className="w-3.5 h-3.5" /> },
@@ -541,6 +522,7 @@ export function App() {
             onOpenScan={() => setIsScanModalOpen(true)}
             onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
             onNavigateCultureTab={handleNavigateCultureTab}
+            onRequestFullCurriculum={requestFullCurriculum}
           />
         </main>
       ) : (
@@ -568,33 +550,33 @@ export function App() {
                   <span className="text-blue-700 font-semibold">Гимназиална академия (8.–12. кл)</span>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   {activeTab === 'specialties' ? (
-                    <span className="text-indigo-700 font-semibold">Специални секции по училища, специалности и класове (8.–12. клас)</span>
+                    <span className="text-blue-700 font-semibold">Специални секции по училища, специалности и класове (8.–12. клас)</span>
                   ) : activeTab === 'planner' ? (
                     <span className="text-emerald-700 font-semibold">Моят План за 6.00 (Хронометър & Седмичен график)</span>
                   ) : activeTab === 'grammar' ? (
-                    <span className="text-indigo-700 font-semibold">Тренажор БЕЛ (Модул 1 • Норми на БАН)</span>
+                    <span className="text-blue-700 font-semibold">Тренажор БЕЛ (Модул 1 • Норми на БАН)</span>
                   ) : activeTab === 'moduletwo' ? (
-                    <span className="text-purple-700 font-semibold">Модул 2 БЕЛ (Тропи, Пароними & Резюме)</span>
+                    <span className="text-slate-700 font-semibold">Модул 2 БЕЛ (Тропи, Пароними & Резюме)</span>
                   ) : activeTab === 'literature' ? (
-                    <span className="text-purple-700 font-semibold">Литературен Канон & Тези (41. задача ДЗИ)</span>
+                    <span className="text-slate-700 font-semibold">Литературен Канон & Тези (41. задача ДЗИ)</span>
                   ) : activeTab === 'mathlab' ? (
                     <span className="text-cyan-700 font-semibold">Математика & STEM Лаб (НВО 10 & ДЗИ)</span>
                   ) : activeTab === 'sciencelab' ? (
                     <span className="text-emerald-700 font-semibold">Лаборатория Природни науки (Биология, Химия и Физика)</span>
                   ) : activeTab === 'oralexam' ? (
-                    <span className="text-indigo-700 font-semibold">Устно изпитване пред дъската (Гласов и текстов тренажор за 6.00)</span>
+                    <span className="text-blue-700 font-semibold">Устно изпитване пред дъската (Гласов и текстов тренажор за 6.00)</span>
                   ) : activeTab === 'atlas' ? (
                     <span className="text-amber-700 font-semibold">Атлас История & География (Договори & NUTS 2)</span>
                   ) : activeTab === 'english' ? (
                     <span className="text-sky-700 font-semibold">Английски език ДЗИ & НВО (CEFR B1.1 & B2)</span>
                   ) : activeTab === 'civics' ? (
-                    <span className="text-indigo-700 font-semibold">Конституция на РБ, Власти & Европейски съюз (ГО & ДЗИ)</span>
+                    <span className="text-blue-700 font-semibold">Конституция на РБ, Власти & Европейски съюз (ГО & ДЗИ)</span>
                   ) : activeTab === 'blitz' ? (
                     <span className="text-amber-700 font-semibold">Speed Blitz 6.00 (Аркаден 60-секунден Блиц)</span>
                   ) : activeTab === 'cases' ? (
-                    <span className="text-purple-700 font-semibold">Казуси за ДЗИ (11.–12. клас)</span>
+                    <span className="text-slate-700 font-semibold">Казуси за ДЗИ (11.–12. клас)</span>
                   ) : activeTab === 'calculator' ? (
-                    <span className="text-indigo-700 font-semibold">МОН Калкулатор & Балообразуване</span>
+                    <span className="text-blue-700 font-semibold">МОН Калкулатор & Балообразуване</span>
                   ) : activeTab === 'errorbank' ? (
                     <span className="text-rose-700 font-semibold">Интерактивна банка с грешки</span>
                   ) : activeTab === 'catalog' ? (
@@ -613,7 +595,7 @@ export function App() {
                   {activeTab === 'specialties' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Специални секции по училища, специалности и класове (8.–12. клас)</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
                         Раздел А (ООП) • Раздел Б (ДЗИ) • Раздел В (ДИППК)
                       </span>
                     </h2>
@@ -627,21 +609,21 @@ export function App() {
                   ) : activeTab === 'grammar' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Тренажор по Граматика, Правопис и Пунктуация</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
                         ДЗИ Модул 1 • 20 задачи
                       </span>
                     </h2>
                   ) : activeTab === 'moduletwo' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Лаборатория за Тропи, Фигури, Пароними и Резюме</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-purple-50 text-purple-800 border border-purple-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-50 text-slate-800 border border-slate-200 font-semibold">
                         ДЗИ Модул 2 & НВО 10
                       </span>
                     </h2>
                   ) : activeTab === 'literature' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Литературен Канон (15 автори) & Генератор на Тези</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-purple-50 text-purple-800 border border-purple-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-50 text-slate-800 border border-slate-200 font-semibold">
                         41. задача • ЕСЕ & ЛИС
                       </span>
                     </h2>
@@ -662,7 +644,7 @@ export function App() {
                   ) : activeTab === 'oralexam' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Гласов Симулатор „Устно изпитване пред дъската за 6.00“</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
                         Глас & Микрофон • Радар на термини • Бележник
                       </span>
                     </h2>
@@ -683,7 +665,7 @@ export function App() {
                   ) : activeTab === 'civics' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Конституция на РБ, Разделение на властите и Европейски съюз</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
                         Гражданско образование & ДЗИ Философия
                       </span>
                     </h2>
@@ -697,14 +679,14 @@ export function App() {
                   ) : activeTab === 'cases' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Академични Казуси с Архивни Извори</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-purple-50 text-purple-800 border border-purple-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-50 text-slate-800 border border-slate-200 font-semibold">
                         ЦДА & ЛИБИ • 11.–12. клас
                       </span>
                     </h2>
                   ) : activeTab === 'calculator' ? (
                     <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
                       <span>Официален МОН Калкулатор за Оценка и Бал</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold">
+                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
                         Наредба №11 • 0–100 точки
                       </span>
                     </h2>

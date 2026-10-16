@@ -20,8 +20,11 @@ import {
   Save,
   Bookmark,
   BookMarked,
-  Library
+  Library,
+  Sparkles,
+  Loader2
 } from 'lucide-react';
+import { evaluateEssayWithGemini, type EssayEvaluationResult } from '../services/geminiService';
 
 interface HistoricalCasesViewProps {
   onSelectLessonByEra?: (era: string) => void;
@@ -36,6 +39,9 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
   const [essayDraft, setEssayDraft] = useState<string>('');
   const [isCopied, setIsCopied] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [aiHistoryEval, setAiHistoryEval] = useState<EssayEvaluationResult | null>(null);
+  const [isAiHistoryLoading, setIsAiHistoryLoading] = useState<boolean>(false);
+  const [aiHistoryError, setAiHistoryError] = useState<string | null>(null);
   const [checklistState, setChecklistState] = useState<{ [key: string]: boolean }>({
     thesis: false,
     facts: false,
@@ -54,6 +60,8 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
   useEffect(() => {
     const savedDraft = localStorage.getItem(`studybg_essay_draft_${activeCase.id}`);
     setEssayDraft(savedDraft || '');
+    setAiHistoryEval(null);
+    setAiHistoryError(null);
 
     const savedChecklist = localStorage.getItem(`studybg_essay_checklist_${activeCase.id}`);
     if (savedChecklist) {
@@ -622,6 +630,91 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
               placeholder="Започни с формулиране на ясна теза: Според мен... Използвай доказателства от документите по-горе..."
               className="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-sans leading-relaxed"
             />
+
+            {/* Gemini 3.8 Flash Historical Essay Evaluator */}
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+              <button
+                onClick={async () => {
+                  setIsAiHistoryLoading(true);
+                  setAiHistoryError(null);
+                  try {
+                    const res = await evaluateEssayWithGemini(
+                      essayDraft,
+                      `${activeCase.title} — ${activeCase.historicalDilemma}`,
+                      [
+                        { id: 'c1', name: 'Теза и историческа аргументация', maxPoints: 10, description: 'Ясно формулирана историческа теза и последователна защита' },
+                        { id: 'c2', name: 'Точна фактология, хронология и понятия', maxPoints: 8, description: 'Коректно използване на дати, личности и исторически термини' },
+                        { id: 'c3', name: 'Критичен анализ и цитиране на изворите', maxPoints: 7, description: 'Позоваване на приложените исторически документи и контекст' },
+                        { id: 'c4', name: 'Композиция и академичен стил', maxPoints: 5, description: 'Логическа структура (увод, теза, аргументи, заключение) и езикова норма' },
+                      ]
+                    );
+                    setAiHistoryEval(res);
+                  } catch (err) {
+                    setAiHistoryError(err instanceof Error ? err.message : 'Възникна грешка при оценяването.');
+                  } finally {
+                    setIsAiHistoryLoading(false);
+                  }
+                }}
+                disabled={isAiHistoryLoading || essayDraft.trim().length < 25}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+              >
+                {isAiHistoryLoading ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Gemini 3.8 Flash проверява есето...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>🤖 Оцени историческото есе с Gemini 3.8 Flash (30 т.)</span>
+                  </>
+                )}
+              </button>
+              <span className="text-[11px] text-slate-500">
+                По 4-те критерия за ДЗИ по История и цивилизации (макс. 30 т.)
+              </span>
+            </div>
+
+            {aiHistoryError && (
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-semibold text-rose-800">
+                {aiHistoryError}
+              </div>
+            )}
+
+            {aiHistoryEval && (
+              <div className="p-4 rounded-xl bg-indigo-50/90 border border-indigo-200 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-200 pb-2.5">
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-indigo-950 flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-indigo-600" />
+                    Рецензия от Gemini 3.8 Flash по критериите на МОН
+                  </span>
+                  <span className="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-extrabold">
+                    Резултат: {aiHistoryEval.totalScore} / 30 т.
+                  </span>
+                </div>
+                <p className="text-xs text-slate-800 leading-relaxed font-medium">
+                  {aiHistoryEval.overallFeedback}
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div className="p-2.5 rounded-lg bg-white border border-emerald-200">
+                    <div className="text-[10px] font-bold uppercase text-emerald-700 mb-1">Силни страни:</div>
+                    <ul className="space-y-1 text-[11px] text-slate-700">
+                      {aiHistoryEval.strengths.map((s, idx) => (
+                        <li key={idx}>• {s}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-white border border-amber-200">
+                    <div className="text-[10px] font-bold uppercase text-amber-800 mb-1">Препоръки за 30/30 т.:</div>
+                    <ul className="space-y-1 text-[11px] text-slate-700">
+                      {aiHistoryEval.concreteTipsForSix.map((tip, idx) => (
+                        <li key={idx}>• {tip}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Self-Checklist */}
             <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">

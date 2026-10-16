@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Search, BookOpen, Copy, Check, FileText, Layers, Award, Printer, ShieldCheck } from 'lucide-react';
 import {
   MATH_FORMULA_SHEETS,
@@ -11,10 +11,34 @@ interface MonFormulaSheetsModalProps {
 }
 
 export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ onClose }) => {
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
   const [activeTab, setActiveTab] = useState<'math' | 'literature' | 'science' | 'posters'>('math');
   const [selectedPoster, setSelectedPoster] = useState<'bel_dzi' | 'math_all' | 'history_dates' | 'civics_eu' | 'dippk_stem'>('bel_dzi');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedText, setCopiedText] = useState<string | null>(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (dialog && !dialog.open) {
+      dialog.showModal();
+    }
+  }, []);
+
+  const handleDialogClick = (event: React.MouseEvent<HTMLDialogElement>) => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (!('closedBy' in HTMLDialogElement.prototype) && event.target === dialog) {
+      const rect = dialog.getBoundingClientRect();
+      const clickedInDialog =
+        rect.top <= event.clientY &&
+        event.clientY <= rect.bottom &&
+        rect.left <= event.clientX &&
+        event.clientX <= rect.right;
+      if (!clickedInDialog) {
+        dialog.close();
+      }
+    }
+  };
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -51,8 +75,15 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/40 backdrop-blur-xs overflow-y-auto">
-      <div className="relative w-full max-w-5xl bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col max-h-[90vh] my-auto">
+    <dialog
+      ref={dialogRef}
+      aria-labelledby="mon-formula-sheets-title"
+      onClose={onClose}
+      onClick={handleDialogClick}
+      {...({ closedby: 'any' } as React.DialogHTMLAttributes<HTMLDialogElement>)}
+      className="m-auto w-full max-w-5xl bg-white border border-slate-200 rounded-2xl shadow-2xl p-0 backdrop:bg-black/40 backdrop:backdrop-blur-xs open:flex flex-col max-h-[90vh]"
+    >
+      <div className="relative w-full flex flex-col max-h-[90vh] overflow-hidden">
         
         {/* Modal Header */}
         <div className="p-5 sm:p-6 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4 flex-shrink-0">
@@ -61,7 +92,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>Официален свитък по стандартите на МОН</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+            <h2 id="mon-formula-sheets-title" className="text-xl sm:text-2xl font-bold text-slate-900">
               Справочник с формули, матрици и A4 Табла за Стена
             </h2>
             <p className="text-xs text-slate-600 mt-0.5">
@@ -648,11 +679,11 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
 
         {/* Modal Footer */}
         <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between text-xs text-slate-500 flex-shrink-0">
-          <span>StudyBG Справочник за НВО & ДЗИ</span>
+          <span>StudyBG Справочник за НВО & ДЗИ (натисни Esc или кликни извън прозореца за затваряне)</span>
           <span>Съгласувано с учебните програми на МОН</span>
         </div>
 
       </div>
-    </div>
+    </dialog>
   );
 };

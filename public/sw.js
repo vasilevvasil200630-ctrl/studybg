@@ -1,8 +1,9 @@
-const CACHE_NAME = 'studybg-pwa-v2';
+const CACHE_NAME = 'studybg-pwa-v3';
 const CORE_STATIC_ASSETS = [
   '/',
   '/index.html',
   '/favicon.svg',
+  '/og-banner.png',
   '/manifest.webmanifest'
 ];
 

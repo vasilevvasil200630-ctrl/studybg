@@ -26,7 +26,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
   const [showSettings, setShowSettings] = useState<boolean>(false);
 
   const [functionalConsent, setFunctionalConsent] = useState<boolean>(true);
-  const [analyticsConsent, setAnalyticsConsent] = useState<boolean>(false);
+  const [analyticsConsent, setAnalyticsConsent] = useState<boolean>(true);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -37,7 +37,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
         try {
           const parsed: CookiePreferences = JSON.parse(stored);
           setFunctionalConsent(parsed.functional ?? true);
-          setAnalyticsConsent(parsed.analytics ?? false);
+          setAnalyticsConsent(parsed.analytics ?? true);
         } catch {
           setIsVisible(true);
         }

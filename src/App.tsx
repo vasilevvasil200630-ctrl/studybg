@@ -182,8 +182,15 @@ export function App() {
 
   // Dynamic document.title synchronization for SEO, accessibility, and multi-tab clarity
   useEffect(() => {
+    const w = window as unknown as { gtag?: (...args: unknown[]) => void };
     if (portalMode === 'culture') {
       document.title = 'Обща култура, 40 Секретни досиета & Мистична карта | StudyBG';
+      if (typeof w.gtag === 'function') {
+        w.gtag('event', 'page_view', {
+          page_title: document.title,
+          page_path: `/culture/${cultureSubTab}`,
+        });
+      }
       return;
     }
     const tabTitleMap: Partial<Record<AppNavTab, string>> = {
@@ -210,6 +217,13 @@ export function App() {
     document.title =
       tabTitleMap[activeTab] ||
       `${currentLesson.title} (${currentLesson.grade} • ${currentLesson.subject}) | StudyBG`;
+
+    if (typeof w.gtag === 'function') {
+      w.gtag('event', 'page_view', {
+        page_title: document.title,
+        page_path: `/${activeTab}`,
+      });
+    }
   }, [portalMode, activeTab, cultureSubTab, currentLesson, lessons.length]);
 
   // Legal Policies and Cookie Consent State
@@ -478,7 +492,14 @@ export function App() {
       <Suspense fallback={null}>
         {/* Smart Scan Modal / Overlay */}
         {isScanModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setIsScanModalOpen(false);
+              }
+            }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
             <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto">
               <SmartScan
                 onScanComplete={handleScanCompleted}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle2, RotateCcw, Trash2, Check, BookOpen, ArrowRight } from 'lucide-react';
+import { AlertCircle, CheckCircle2, RotateCcw, Trash2, Check, BookOpen, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
 import { errorBankService, type SavedErrorItem } from '../services/errorBankService';
+import { analyzeErrorBankWithGemini, type ErrorBankAiDiagnosis } from '../services/geminiService';
 import type { QuizQuestion, LessonData } from '../types';
 
 interface ErrorBankViewProps {
@@ -17,6 +18,9 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
   const [errors, setErrors] = useState<SavedErrorItem[]>([]);
   const [filter, setFilter] = useState<'all' | 'quiz' | 'audit'>('all');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [aiDiagnosis, setAiDiagnosis] = useState<ErrorBankAiDiagnosis | null>(null);
+  const [isAiDiagnosing, setIsAiDiagnosing] = useState<boolean>(false);
+  const [aiDiagnosisError, setAiDiagnosisError] = useState<string | null>(null);
 
   const loadErrors = () => {
     setErrors(errorBankService.getAllErrors());
@@ -88,17 +92,85 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
           </p>
         </div>
 
-        {/* Action Button: Start Practice Quiz */}
-        {quizErrorsWithData.length > 0 && onStartCustomQuiz && (
-          <button
-            onClick={() => onStartCustomQuiz(quizErrorsWithData)}
-            className="self-start md:self-auto flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors whitespace-nowrap"
-          >
-            <RotateCcw className="w-4 h-4" />
-            <span>Генерирай тест само от грешките ({quizErrorsWithData.length})</span>
-          </button>
-        )}
+        {/* Action Buttons: Start Practice Quiz & AI Error Diagnosis */}
+        <div className="flex flex-wrap items-center gap-2.5 self-start md:self-auto">
+          {errors.length > 0 && (
+            <button
+              type="button"
+              onClick={async () => {
+                if (isAiDiagnosing) return;
+                setIsAiDiagnosing(true);
+                setAiDiagnosisError(null);
+                try {
+                  const res = await analyzeErrorBankWithGemini({
+                    errors: errors.map((e) => ({
+                      subject: e.subject,
+                      lessonTitle: e.lessonTitle,
+                      question: e.questionOrRequirement,
+                      correctAnswer: e.correctAnswerOrNote
+                    }))
+                  });
+                  setAiDiagnosis(res);
+                } catch (err) {
+                  setAiDiagnosisError(err instanceof Error ? err.message : 'Грешка при връзка с Gemini 3.8 Flash.');
+                } finally {
+                  setIsAiDiagnosing(false);
+                }
+              }}
+              disabled={isAiDiagnosing}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs font-bold shadow-xs transition-colors whitespace-nowrap cursor-pointer"
+            >
+              {isAiDiagnosing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+              <span>{isAiDiagnosing ? 'Анализирам пропуските...' : '🤖 AI Диагностика на грешките (Gemini 3.8 Flash)'}</span>
+            </button>
+          )}
+
+          {quizErrorsWithData.length > 0 && onStartCustomQuiz && (
+            <button
+              onClick={() => onStartCustomQuiz(quizErrorsWithData)}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors whitespace-nowrap cursor-pointer"
+            >
+              <RotateCcw className="w-4 h-4" />
+              <span>Генерирай тест само от грешките ({quizErrorsWithData.length})</span>
+            </button>
+          )}
+        </div>
       </div>
+
+      {aiDiagnosisError && (
+        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800">
+          {aiDiagnosisError}
+        </div>
+      )}
+
+      {aiDiagnosis && (
+        <div className="p-5 sm:p-6 rounded-2xl bg-indigo-950 text-white border border-indigo-700 space-y-4 shadow-md">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs font-black uppercase tracking-wider text-indigo-300 flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <span>Персонална AI Диагностика & 3-дневен план за наваксване (Gemini 3.8 Flash):</span>
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-indigo-100 leading-relaxed">{aiDiagnosis.summary}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="p-3.5 rounded-xl bg-white/10 border border-white/10 space-y-1">
+              <div className="text-[11px] font-bold text-rose-300 uppercase">🎯 Основни слаби места:</div>
+              {aiDiagnosis.weakSpots.map((ws, i) => (
+                <div key={i} className="text-xs text-slate-200">• {ws}</div>
+              ))}
+            </div>
+            <div className="p-3.5 rounded-xl bg-white/10 border border-white/10 space-y-1">
+              <div className="text-[11px] font-bold text-emerald-300 uppercase">📅 3-дневен план за Отличен 6.00:</div>
+              {aiDiagnosis.threeDayActionPlan.map((step, i) => (
+                <div key={i} className="text-xs text-slate-200">• {step}</div>
+              ))}
+            </div>
+          </div>
+          <div className="p-3 rounded-xl bg-amber-500/20 border border-amber-400/40 text-xs text-amber-200 font-semibold">
+            💡 Златно правило: {aiDiagnosis.goldenRuleReminder}
+          </div>
+        </div>
+      )}
 
       {/* Stats and Filter Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

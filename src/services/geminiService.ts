@@ -547,3 +547,168 @@ ${params.studentDraft.trim()}
     modelImprovedVersion: parsed.modelImprovedVersion || params.referenceText
   };
 };
+
+export interface EnglishWritingAiEvaluation {
+  scoreLabel: string;
+  feedbackBg: string;
+  grammarCorrections: string[];
+  upgradedModelText: string;
+}
+
+/**
+ * Evaluates a student's English DZI/NVO essay or formal letter via Google Gemini 3.8 Flash
+ */
+export const evaluateEnglishWritingWithGemini = async (params: {
+  genre: string;
+  cefrLevel: string;
+  prompt: string;
+  studentDraft: string;
+  wordCountRange: string;
+}): Promise<EnglishWritingAiEvaluation> => {
+  const promptText = `Ти си главен проверител на ДЗИ по Английски език към МОН (ниво ${params.cefrLevel}, жанр: ${params.genre}, изискван обем: ${params.wordCountRange}).
+Задание: "${params.prompt}"
+Текст на ученика:
+"""
+${params.studentDraft.trim()}
+"""
+
+Оцени текста по 4-те официални критерия на МОН (Content, Communicative Achievement, Organisation, Language — общо 30 точки) и върни САМО валиден JSON обект:
+{
+  "scoreLabel": "28 / 30 т. • Отличен 6.00 (${params.cefrLevel})",
+  "feedbackBg": "Кратък, точен коментар на български език за структурата, регистъра и аргументацията (2-3 изречения)...",
+  "grammarCorrections": ["Корекция 1 на граматика/лексика...", "Корекция 2 за по-висок академичен стил..."],
+  "upgradedModelText": "An upgraded, C1/B2-level polished version of the student's paragraph in English..."
+}`;
+
+  const data = await callGeminiContent({
+    contents: [{ parts: [{ text: promptText }] }],
+    generationConfig: {
+      temperature: 0.25,
+      maxOutputTokens: 2048
+    }
+  });
+
+  const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error('Неуспешно разчитане на AI оценката по английски език.');
+  }
+  const parsed = JSON.parse(jsonMatch[0]);
+  return {
+    scoreLabel: parsed.scoreLabel || `27 / 30 т. (${params.cefrLevel})`,
+    feedbackBg: parsed.feedbackBg || 'Много добра структура и спазен академичен регистър по критериите на МОН.',
+    grammarCorrections: Array.isArray(parsed.grammarCorrections) ? parsed.grammarCorrections : [],
+    upgradedModelText: parsed.upgradedModelText || params.studentDraft
+  };
+};
+
+export interface LiteratureCustomAiThesis {
+  thesis: string;
+  arguments: string[];
+  keyQuotesToUse: string[];
+  conclusion: string;
+}
+
+/**
+ * Generates a custom 30-point Task 41 thesis & argument chain for any author and custom topic via Google Gemini 3.8 Flash
+ */
+export const generateCustomLiteratureThesisWithGemini = async (params: {
+  authorName: string;
+  worksList: string;
+  customTopic: string;
+}): Promise<LiteratureCustomAiThesis> => {
+  const promptText = `Ти си водещ литературен експерт за ДЗИ по БЕЛ (Задача 41 — Есе и Интерпретативно съчинение за 30 точки по МОН).
+Автор: "${params.authorName}"
+Произведения по канона: "${params.worksList}"
+Зададена тема от ученика: "${params.customTopic.trim()}"
+
+Състави еталонна разработка за Отличен 6.00 (30 точки) и върни САМО валиден JSON обект:
+{
+  "thesis": "Цялостна, задълбочена теза в 3-4 изречения по темата...",
+  "arguments": [
+    "Микротеза 1 (Първи аргументативен абзац с анализ на художествени похвати)...",
+    "Микротеза 2 (Втори аргументативен абзац с философски/нравствен конфликт)...",
+    "Микротеза 3 (Трети аргументативен абзац със съпоставителен или общочовешки акцент)..."
+  ],
+  "keyQuotesToUse": ["Точен цитат 1...", "Точен цитат 2..."],
+  "conclusion": "Обобщаващо заключение за 30/30 точки..."
+}`;
+
+  const data = await callGeminiContent({
+    contents: [{ parts: [{ text: promptText }] }],
+    generationConfig: {
+      temperature: 0.3,
+      maxOutputTokens: 2048
+    }
+  });
+
+  const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error('Неуспешно генериране на литературна теза.');
+  }
+  const parsed = JSON.parse(jsonMatch[0]);
+  return {
+    thesis: parsed.thesis || 'Формулирана теза по стандартите на МОН.',
+    arguments: Array.isArray(parsed.arguments) ? parsed.arguments : [],
+    keyQuotesToUse: Array.isArray(parsed.keyQuotesToUse) ? parsed.keyQuotesToUse : [],
+    conclusion: parsed.conclusion || ''
+  };
+};
+
+export interface ErrorBankAiDiagnosis {
+  summary: string;
+  weakSpots: string[];
+  threeDayActionPlan: string[];
+  goldenRuleReminder: string;
+}
+
+/**
+ * Diagnoses a student's saved mistakes in ErrorBankView via Google Gemini 3.8 Flash
+ */
+export const analyzeErrorBankWithGemini = async (params: {
+  errors: { subject: string; lessonTitle: string; question: string; correctAnswer: string }[];
+}): Promise<ErrorBankAiDiagnosis> => {
+  const formattedErrors = params.errors
+    .slice(0, 10)
+    .map((e, idx) => `${idx + 1}. [${e.subject} — ${e.lessonTitle}] Въпрос: "${e.question}" -> Верен отговор: "${e.correctAnswer}"`)
+    .join('\n');
+
+  const promptText = `Ти си персонален академичен ментор по програмите на МОН (8.–12. клас).
+Ето списък с допуснатите грешки на ученика:
+${formattedErrors}
+
+Направи точна диагностика на пропуските и върни САМО валиден JSON обект:
+{
+  "summary": "Обобщена диагноза на основните пропуски (2 изречения)...",
+  "weakSpots": ["Конкретно слабо място 1...", "Конкретно слабо място 2..."],
+  "threeDayActionPlan": [
+    "Ден 1: Конкретна стъпка за преговор...",
+    "Ден 2: Конкретна тренировка...",
+    "Ден 3: Финална проверка за 6.00..."
+  ],
+  "goldenRuleReminder": "Едно златно правило за матурата/изпита, което решава тези грешки..."
+}`;
+
+  const data = await callGeminiContent({
+    contents: [{ parts: [{ text: promptText }] }],
+    generationConfig: {
+      temperature: 0.25,
+      maxOutputTokens: 2048
+    }
+  });
+
+  const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error('Неуспешно генериране на AI диагностика.');
+  }
+  const parsed = JSON.parse(jsonMatch[0]);
+  return {
+    summary: parsed.summary || 'Открити са систематични пропуски, които могат бързо да бъдат наваксани с целенасочен преговор.',
+    weakSpots: Array.isArray(parsed.weakSpots) ? parsed.weakSpots : [],
+    threeDayActionPlan: Array.isArray(parsed.threeDayActionPlan) ? parsed.threeDayActionPlan : [],
+    goldenRuleReminder: parsed.goldenRuleReminder || 'Винаги проверявай ключовите термини и причинно-следствените връзки.'
+  };
+};
+

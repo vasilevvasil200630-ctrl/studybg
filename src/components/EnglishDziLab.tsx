@@ -12,7 +12,8 @@ import {
   Copy,
   Check,
   PlusCircle,
-  ShieldCheck
+  ShieldCheck,
+  Loader2
 } from 'lucide-react';
 import {
   ENGLISH_TRANSFORMATIONS,
@@ -21,6 +22,7 @@ import {
   ACADEMIC_LINKING_WORDS
 } from '../data/englishDziDatabase';
 import { studyProgressService } from '../services/studyProgressService';
+import { evaluateEnglishWritingWithGemini, type EnglishWritingAiEvaluation } from '../services/geminiService';
 
 type EnglishLabTab = 'transformations' | 'phrasal' | 'writing';
 
@@ -67,6 +69,9 @@ export const EnglishDziLab: React.FC = () => {
   const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>(ENGLISH_WRITING_BLUEPRINTS[0].id);
   const [draftText, setDraftText] = useState<string>(ENGLISH_WRITING_BLUEPRINTS[0].modelOpening);
   const [copiedPhrase, setCopiedPhrase] = useState<string | null>(null);
+  const [aiEngEval, setAiEngEval] = useState<EnglishWritingAiEvaluation | null>(null);
+  const [isAiEngLoading, setIsAiEngLoading] = useState<boolean>(false);
+  const [aiEngError, setAiEngError] = useState<string | null>(null);
 
   const filteredTransformations = useMemo(() => {
     if (selectedCefr === 'ALL') return ENGLISH_TRANSFORMATIONS;
@@ -725,6 +730,74 @@ export const EnglishDziLab: React.FC = () => {
                       </div>
                     ))}
                   </div>
+                </div>
+
+                {/* Gemini 3.8 Flash AI Examiner for English Writing */}
+                <div className="pt-2 space-y-3">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!draftText.trim() || isAiEngLoading) return;
+                      setIsAiEngLoading(true);
+                      setAiEngError(null);
+                      try {
+                        const res = await evaluateEnglishWritingWithGemini({
+                          genre: activeBlueprint.genre,
+                          cefrLevel: activeBlueprint.cefrLevel,
+                          prompt: activeBlueprint.modelPrompt,
+                          studentDraft: draftText.trim(),
+                          wordCountRange: activeBlueprint.wordCountRange.label
+                        });
+                        setAiEngEval(res);
+                      } catch (err) {
+                        setAiEngError(err instanceof Error ? err.message : 'Грешка при свързване с Gemini 3.8 Flash.');
+                      } finally {
+                        setIsAiEngLoading(false);
+                      }
+                    }}
+                    disabled={!draftText.trim() || isAiEngLoading}
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white text-xs sm:text-sm font-bold shadow-xs transition-all cursor-pointer"
+                  >
+                    {isAiEngLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                    <span>
+                      {isAiEngLoading
+                        ? 'Проверява се по МОН / Cambridge (CEFR)...'
+                        : `🤖 Оцени текста с Gemini 3.8 Flash (${activeBlueprint.cefrLevel} • 30 т.)`}
+                    </span>
+                  </button>
+
+                  {aiEngError && (
+                    <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800">
+                      {aiEngError}
+                    </div>
+                  )}
+
+                  {aiEngEval && (
+                    <div className="p-4 rounded-2xl bg-indigo-950 text-white border border-indigo-700 space-y-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-black uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
+                          <Sparkles className="w-4 h-4 text-amber-400" />
+                          <span>Рецензия от Проверителя (Gemini 3.8 Flash):</span>
+                        </span>
+                        <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-black">
+                          {aiEngEval.scoreLabel}
+                        </span>
+                      </div>
+                      <p className="text-xs text-indigo-100 leading-relaxed">{aiEngEval.feedbackBg}</p>
+                      {aiEngEval.grammarCorrections.length > 0 && (
+                        <div className="space-y-1">
+                          <div className="text-[11px] font-bold text-amber-300 uppercase">📌 Езикови и стилови препоръки:</div>
+                          {aiEngEval.grammarCorrections.map((c, idx) => (
+                            <div key={idx} className="text-xs text-slate-200">• {c}</div>
+                          ))}
+                        </div>
+                      )}
+                      <div className="p-3 rounded-xl bg-white/10 border border-white/15 text-xs text-emerald-200 font-mono leading-relaxed">
+                        <strong className="block font-sans text-white mb-1">✨ Upgraded C1/B2 Model Version:</strong>
+                        {aiEngEval.upgradedModelText}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

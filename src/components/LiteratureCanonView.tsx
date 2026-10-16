@@ -7,13 +7,18 @@ import {
   Search,
   BookMarked,
   Lightbulb,
-  FileText
+  FileText,
+  Loader2
 } from 'lucide-react';
 import {
   LITERATURE_CANON,
   LITERATURE_THEMATIC_CYCLES,
   type LiteratureAuthor
 } from '../data/literatureDatabase';
+import {
+  generateCustomLiteratureThesisWithGemini,
+  type LiteratureCustomAiThesis
+} from '../services/geminiService';
 
 export const LiteratureCanonView: React.FC = () => {
   const [selectedCycle, setSelectedCycle] = useState<string>('all');
@@ -22,6 +27,10 @@ export const LiteratureCanonView: React.FC = () => {
   const [selectedEssayThemeIndex, setSelectedEssayThemeIndex] = useState<number>(0);
   const [copiedQuote, setCopiedQuote] = useState<string | null>(null);
   const [copiedThesis, setCopiedThesis] = useState<boolean>(false);
+  const [customAiTopic, setCustomAiTopic] = useState<string>('');
+  const [customAiResult, setCustomAiResult] = useState<LiteratureCustomAiThesis | null>(null);
+  const [isAiLitLoading, setIsAiLitLoading] = useState<boolean>(false);
+  const [aiLitError, setAiLitError] = useState<string | null>(null);
 
   // Filter authors by search or thematic cycle
   const filteredAuthors = LITERATURE_CANON.filter(author => {
@@ -347,6 +356,81 @@ export const LiteratureCanonView: React.FC = () => {
               <div>
                 <strong>Съвет за матурата:</strong> В Модул 3 имаш право да избираш между ЛИС и Есе. В ЛИС задължително формулирай теза от 3 микротези и анализирай авторовите похвати (метафори, опозиции, заглавие).
               </div>
+            </div>
+
+            {/* AI Custom Thesis & Argument Generator (Gemini 3.8 Flash) */}
+            <div className="p-5 rounded-2xl bg-indigo-950 text-white border border-indigo-700 space-y-3">
+              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-purple-300">
+                <Sparkles className="w-4 h-4 text-amber-400" />
+                <span>🤖 Генерирай AI Теза по твоя тема (Gemini 3.8 Flash)</span>
+              </div>
+              <p className="text-[11px] text-indigo-200">
+                Въведи произволно заглавие за есе или ЛИС върху <strong>{activeAuthor.name}</strong> и получи готова 30-точкова разработка:
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="text"
+                  value={customAiTopic}
+                  onChange={(e) => setCustomAiTopic(e.target.value)}
+                  placeholder={`Напр.: Проблемът за избора и свободата у ${activeAuthor.name}...`}
+                  className="flex-1 px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-xs text-white placeholder:text-indigo-300 focus:outline-none focus:border-amber-400"
+                />
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const topic = customAiTopic.trim() || activeEssayTheme.theme;
+                    if (isAiLitLoading) return;
+                    setIsAiLitLoading(true);
+                    setAiLitError(null);
+                    try {
+                      const res = await generateCustomLiteratureThesisWithGemini({
+                        authorName: activeAuthor.name,
+                        worksList: activeAuthor.works.map((w) => w.title).join(', '),
+                        customTopic: topic
+                      });
+                      setCustomAiResult(res);
+                    } catch (err) {
+                      setAiLitError(err instanceof Error ? err.message : 'Грешка при връзка с Gemini 3.8 Flash.');
+                    } finally {
+                      setIsAiLitLoading(false);
+                    }
+                  }}
+                  disabled={isAiLitLoading}
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black shrink-0 cursor-pointer disabled:opacity-50"
+                >
+                  {isAiLitLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                  <span>{isAiLitLoading ? 'Генерира се...' : 'Състави теза (30 т.)'}</span>
+                </button>
+              </div>
+
+              {aiLitError && (
+                <div className="p-2.5 rounded-xl bg-rose-500/20 border border-rose-400/40 text-xs text-rose-200">
+                  {aiLitError}
+                </div>
+              )}
+
+              {customAiResult && (
+                <div className="p-4 rounded-xl bg-white/10 border border-white/15 space-y-2.5 text-xs">
+                  <div>
+                    <strong className="text-amber-300 block mb-0.5">🎯 Основна теза (7/7 т.):</strong>
+                    <p className="text-white leading-relaxed">{customAiResult.thesis}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <strong className="text-emerald-300 block">📌 3 Аргументативни микротези:</strong>
+                    {customAiResult.arguments.map((arg, idx) => (
+                      <div key={idx} className="text-indigo-100 leading-relaxed">• {arg}</div>
+                    ))}
+                  </div>
+                  {customAiResult.keyQuotesToUse.length > 0 && (
+                    <div className="text-[11px] text-purple-200">
+                      <strong className="text-white">Цитати за опора:</strong> {customAiResult.keyQuotesToUse.join(' | ')}
+                    </div>
+                  )}
+                  <div className="pt-1 border-t border-white/10 text-indigo-100">
+                    <strong className="text-amber-300">🏁 Заключение:</strong> {customAiResult.conclusion}
+                  </div>
+                </div>
+              )}
             </div>
 
           </div>

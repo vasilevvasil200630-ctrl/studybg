@@ -315,7 +315,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
     }));
   };
 
-  // AI Essay Evaluation with Gemini 1.5 Flash
+  // AI Essay Evaluation
   const handleEvaluateEssayWithAi = async () => {
     if (essayText.trim().length < 30) {
       setEvaluationError('Моля, напишете поне 2–3 изречения (теза или аргумент), за да може AI проверителят да анализира текста.');

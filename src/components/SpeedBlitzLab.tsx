@@ -857,7 +857,7 @@ export const SpeedBlitzLab: React.FC = () => {
                   <strong className="text-lg font-black text-amber-950 font-mono">{teamBScore} т.</strong>
                 </div>
                 {activeDuelTeam === 'B' && (
-                  <span className="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 text-xs font-bold">
+                  <span className="px-2.5 py-1 rounded-lg bg-amber-500 text-amber-950 text-xs font-bold">
                     Твой ред!
                   </span>
                 )}
@@ -870,7 +870,7 @@ export const SpeedBlitzLab: React.FC = () => {
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3">
               <Timer
                 className={`w-6 h-6 shrink-0 ${
-                  secondsLeft <= 10 ? 'text-rose-600 animate-bounce' : 'text-blue-600'
+                  secondsLeft <= 10 ? 'text-rose-600 animate-pulse' : 'text-blue-600'
                 }`}
               />
               <div>
@@ -955,7 +955,7 @@ export const SpeedBlitzLab: React.FC = () => {
                   onClick={() => handleAnswer(idx)}
                   className="text-left p-4 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/60 active:scale-[0.99] transition-all cursor-pointer flex items-center gap-3.5 group"
                 >
-                  <span className="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-blue-600 group-hover:text-white text-slate-700 font-bold text-sm flex items-center justify-center shrink-0 transition-colors">
+                  <span className="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-slate-200 group-hover:text-blue-700 text-slate-700 font-bold text-sm flex items-center justify-center shrink-0 transition-colors">
                     {idx + 1}
                   </span>
                   <span className="text-sm sm:text-base font-bold text-slate-800 group-hover:text-slate-950">

@@ -29,7 +29,7 @@ import {
   type Task41Blueprint
 } from '../data/moduleTwoBelDatabase';
 import { studyProgressService } from '../services/studyProgressService';
-import { evaluateBelModuleTwoWithGemini, type BelModuleTwoAiEvaluation } from '../services/geminiService';
+import { evaluateBelModuleTwoWithGemini, type BelModuleTwoAiEvaluation, AI_EXAMINER_LABEL } from '../services/geminiService';
 
 export const ModuleTwoBelLab: React.FC = () => {
   const [activeSubTab, setActiveSubTab] = useState<'figures' | 'lexicology' | 'synthesis' | 'task41' | 'quiz'>('figures');
@@ -514,7 +514,7 @@ export const ModuleTwoBelLab: React.FC = () => {
                         });
                         setAiBelEval(res);
                       } catch (err) {
-                        setAiBelError(err instanceof Error ? err.message : 'Грешка при свързване с Gemini 3.8 Flash.');
+                        setAiBelError(err instanceof Error ? err.message : 'Грешка при връзка с AI Екзаминатора.');
                       } finally {
                         setIsAiBelLoading(false);
                       }
@@ -523,7 +523,7 @@ export const ModuleTwoBelLab: React.FC = () => {
                     className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-40 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
                   >
                     {isAiBelLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                    <span>{isAiBelLoading ? 'Проверява се по МОН...' : '🤖 Провери с Gemini 3.8 Flash (Оценител МОН)'}</span>
+                    <span>{isAiBelLoading ? 'Проверява се по МОН...' : `🤖 Провери с ${AI_EXAMINER_LABEL} (критерии на МОН)`}</span>
                   </button>
                 </div>
 
@@ -538,9 +538,9 @@ export const ModuleTwoBelLab: React.FC = () => {
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-xs font-black uppercase tracking-wider text-purple-300 flex items-center gap-1.5">
                         <Sparkles className="w-4 h-4 text-amber-400" />
-                        <span>Оценка от Gemini 3.8 Flash (Критерии на МОН):</span>
+                        <span>Оценка от {AI_EXAMINER_LABEL} (критерии на МОН):</span>
                       </span>
-                      <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-black">
+                      <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-amber-950 text-xs font-black">
                         {aiBelEval.verdict}
                       </span>
                     </div>
@@ -592,14 +592,14 @@ export const ModuleTwoBelLab: React.FC = () => {
               </div>
 
               {/* Model Answer Box */}
-              <div className="p-6 rounded-3xl bg-gradient-to-br from-indigo-50/80 to-purple-50/50 border border-indigo-200 space-y-3">
+              <div className="p-6 rounded-3xl bg-blue-50/60 border border-blue-200 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-black uppercase tracking-wider text-indigo-900">
+                  <span className="text-xs font-black uppercase tracking-wider text-blue-900">
                     Еталонен отговор за максимален резултат:
                   </span>
                   <button
                     onClick={() => handleCopy(activeSynthesis.modelAnswer)}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-indigo-200 text-indigo-700 hover:bg-indigo-100 text-[11px] font-bold cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-blue-200 text-blue-700 hover:bg-blue-100 text-[11px] font-bold cursor-pointer"
                   >
                     {copiedText === activeSynthesis.modelAnswer ? (
                       <>
@@ -615,7 +615,7 @@ export const ModuleTwoBelLab: React.FC = () => {
                   </button>
                 </div>
 
-                <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium bg-white p-4 rounded-2xl border border-indigo-100">
+                <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium bg-white p-4 rounded-2xl border border-blue-100">
                   {activeSynthesis.modelAnswer}
                 </p>
               </div>
@@ -792,7 +792,7 @@ export const ModuleTwoBelLab: React.FC = () => {
                       });
                       setAiBelEval(res);
                     } catch (err) {
-                      setAiBelError(err instanceof Error ? err.message : 'Грешка при свързване с Gemini 3.8 Flash.');
+                      setAiBelError(err instanceof Error ? err.message : 'Грешка при връзка с AI Екзаминатора.');
                     } finally {
                       setIsAiBelLoading(false);
                     }
@@ -801,14 +801,14 @@ export const ModuleTwoBelLab: React.FC = () => {
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-40 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
                 >
                   {isAiBelLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                  <span>{isAiBelLoading ? 'Проверява се по МОН (30 т.)...' : '🤖 Провери черновата с Gemini 3.8 Flash (30 т.)'}</span>
+                  <span>{isAiBelLoading ? 'Проверява се по МОН (30 т.)...' : `🤖 Провери черновата с ${AI_EXAMINER_LABEL} (30 т.)`}</span>
                 </button>
 
                 {aiBelEval && (
                   <div className="p-4 rounded-2xl bg-indigo-950 text-white border border-indigo-700 space-y-2">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-black uppercase text-purple-300">Gemini 3.8 Flash Рецензия:</span>
-                      <span className="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-black">
+                      <span className="text-xs font-black uppercase text-purple-300">Рецензия — {AI_EXAMINER_LABEL}:</span>
+                      <span className="px-2 py-0.5 rounded-full bg-amber-400 text-amber-950 text-xs font-black">
                         {aiBelEval.verdict}
                       </span>
                     </div>

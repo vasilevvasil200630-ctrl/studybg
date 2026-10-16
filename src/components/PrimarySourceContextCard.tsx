@@ -55,11 +55,11 @@ export const PrimarySourceContextCard: React.FC<PrimarySourceContextCardProps> =
     if (!isHumanities) return null;
 
     return (
-      <div className={`p-5 rounded-2xl bg-gradient-to-r from-purple-50/70 via-indigo-50/40 to-blue-50/60 border border-purple-200/90 shadow-2xs ${className}`}>
+      <div className={`p-5 rounded-2xl bg-amber-50/60 border border-amber-200/90 shadow-2xs ${className}`}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-purple-100 text-purple-800 border border-purple-200">
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200">
                 Модул 2 & 3 на ДЗИ (30 т.)
               </span>
               <span className="text-xs text-slate-500 font-medium">
@@ -76,7 +76,7 @@ export const PrimarySourceContextCard: React.FC<PrimarySourceContextCardProps> =
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => onNavigateTab('cases')}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-semibold text-xs transition-all shadow-xs"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-semibold text-xs transition-all shadow-xs"
             >
               <Scale className="w-3.5 h-3.5" />
               <span>Отвори казусите за ДЗИ</span>

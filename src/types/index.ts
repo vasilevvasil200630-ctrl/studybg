@@ -33,7 +33,7 @@ export interface NotebookCheckItem {
 export interface LessonData {
   id: string;
   title: string;
-  subject: string;
+  subject: LessonSubject;
   grade: string;
   sourceType: 'notebook' | 'pdf' | 'syllabus';
   examType?:
@@ -67,19 +67,27 @@ export type GradeLevel =
   | '11. клас'
   | '12. клас (ДЗИ / Матура)';
 
-export type SubjectName =
-  | 'Всички предмети'
-  | 'Български език и литература'
-  | 'Математика'
-  | 'Информатика, ИТ и Програмиране'
-  | 'Икономика, Бизнес и Предприемачество'
-  | 'История и цивилизации'
-  | 'Биология и ЗО'
-  | 'Химия и ООС'
-  | 'Физика и астрономия'
-  | 'География и икономика'
-  | 'Английски език'
-  | 'Чужди езици (Немски, Френски, Испански)'
-  | 'Гражданско образование и философия'
-  | 'Професионални специалности и Инженерство';
+/** Единственият източник на истина за предметите — ползва се от типовете и от check:data */
+export const LESSON_SUBJECTS = [
+  'Български език и литература',
+  'Математика',
+  'Информатика, ИТ и Програмиране',
+  'Икономика, Бизнес и Предприемачество',
+  'История и цивилизации',
+  'Биология и ЗО',
+  'Химия и ООС',
+  'Физика и астрономия',
+  'География и икономика',
+  'Английски език',
+  'Чужди езици (Немски, Френски, Испански)',
+  'Гражданско образование и философия',
+  'Професионални специалности и Инженерство'
+] as const;
+
+export type LessonSubject = (typeof LESSON_SUBJECTS)[number];
+
+export type SubjectName = 'Всички предмети' | LessonSubject;
+
+export const isLessonSubject = (value: string): value is LessonSubject =>
+  (LESSON_SUBJECTS as readonly string[]).includes(value);
 

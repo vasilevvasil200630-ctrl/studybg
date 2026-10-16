@@ -440,9 +440,9 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               </span>
             </div>
 
-            <div className="text-center py-4 bg-purple-50/60 rounded-2xl border border-purple-200 space-y-1">
-              <span className="text-xs text-purple-900 font-medium">Необходими точки за оценка {targetGrade.toFixed(2)}:</span>
-              <div className="text-4xl sm:text-5xl font-black font-mono text-purple-900">
+            <div className="text-center py-4 bg-blue-50/60 rounded-2xl border border-blue-200 space-y-1">
+              <span className="text-xs text-blue-900 font-medium">Необходими точки за оценка {targetGrade.toFixed(2)}:</span>
+              <div className="text-4xl sm:text-5xl font-black font-mono text-blue-900">
                 {reqPoints}
               </div>
               <span className="text-xs text-slate-500 font-mono">от 100 точки</span>
@@ -727,14 +727,14 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               </span>
             </div>
 
-            <div className="text-center py-4 bg-indigo-50/60 rounded-2xl border border-indigo-200 space-y-1">
-              <span className="text-xs text-indigo-900 font-medium">
+            <div className="text-center py-4 bg-blue-50/60 rounded-2xl border border-blue-200 space-y-1">
+              <span className="text-xs text-blue-900 font-medium">
                 Окончателна оценка в Свидетелството за СПК (EUROPASS):
               </span>
-              <div className="text-4xl sm:text-5xl font-black font-mono text-indigo-950">
+              <div className="text-4xl sm:text-5xl font-black font-mono text-blue-950">
                 {dippkResult.certificateFinalGrade.toFixed(2)}
               </div>
-              <div className="text-sm font-bold text-indigo-800">
+              <div className="text-sm font-bold text-blue-800">
                 {dippkResult.verbal} ({dippkResult.certificateFinalGrade.toFixed(2)})
               </div>
             </div>

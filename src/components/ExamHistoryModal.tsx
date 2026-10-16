@@ -118,14 +118,14 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
                 </div>
 
                 {/* 2. Average Grade */}
-                <div className="p-3.5 rounded-xl bg-purple-50/70 border border-purple-200 space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-purple-700">
+                <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200 space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700">
                     Средна оценка МОН
                   </span>
-                  <div className="text-xl sm:text-2xl font-extrabold text-purple-900 font-mono">
+                  <div className="text-xl sm:text-2xl font-extrabold text-amber-900 font-mono">
                     {analytics.averageGrade.toFixed(2)}
                   </div>
-                  <span className="text-[10px] text-purple-700">
+                  <span className="text-[10px] text-amber-700">
                     по шестобалната скала
                   </span>
                 </div>

@@ -22,7 +22,7 @@ import {
   ACADEMIC_LINKING_WORDS
 } from '../data/englishDziDatabase';
 import { studyProgressService } from '../services/studyProgressService';
-import { evaluateEnglishWritingWithGemini, type EnglishWritingAiEvaluation } from '../services/geminiService';
+import { evaluateEnglishWritingWithGemini, type EnglishWritingAiEvaluation, AI_EXAMINER_LABEL } from '../services/geminiService';
 
 type EnglishLabTab = 'transformations' | 'phrasal' | 'writing';
 
@@ -482,7 +482,7 @@ export const EnglishDziLab: React.FC = () => {
 
                     <div className="grid grid-cols-2 gap-2 pt-1">
                       {pv.options.map((opt, optIdx) => {
-                        let style = 'bg-slate-50 hover:bg-indigo-50 text-slate-800 border-slate-200';
+                        let style = 'bg-slate-50 hover:bg-slate-100 hover:text-blue-700 text-slate-800 border-slate-200';
                         if (isAnswered) {
                           if (optIdx === pv.correctIndex) {
                             style = 'bg-emerald-50 text-emerald-900 border-emerald-400 font-bold';
@@ -596,7 +596,7 @@ export const EnglishDziLab: React.FC = () => {
                             key={phrase}
                             type="button"
                             onClick={() => handleInsertPhrase(phrase)}
-                            className="w-full text-left p-2 rounded-lg bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-xs font-mono text-slate-800 flex items-center justify-between gap-2 transition-colors group"
+                            className="w-full text-left p-2 rounded-lg bg-white hover:bg-slate-100 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 text-xs font-mono text-slate-800 flex items-center justify-between gap-2 transition-colors group"
                           >
                             <span>{phrase}</span>
                             {copiedPhrase === phrase ? (
@@ -722,7 +722,7 @@ export const EnglishDziLab: React.FC = () => {
                             onClick={() =>
                               handleInsertPhrase(w.charAt(0).toUpperCase() + w.slice(1) + ', ')
                             }
-                            className="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-200 text-[11px] font-mono transition-colors"
+                            className="px-2 py-0.5 rounded-md bg-white hover:bg-slate-100 text-slate-700 hover:text-blue-700 border border-slate-200 text-[11px] font-mono transition-colors"
                           >
                             + {w}
                           </button>
@@ -732,7 +732,7 @@ export const EnglishDziLab: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Gemini 3.8 Flash AI Examiner for English Writing */}
+                {/* AI Examiner for English Writing */}
                 <div className="pt-2 space-y-3">
                   <button
                     type="button"
@@ -750,7 +750,7 @@ export const EnglishDziLab: React.FC = () => {
                         });
                         setAiEngEval(res);
                       } catch (err) {
-                        setAiEngError(err instanceof Error ? err.message : 'Грешка при свързване с Gemini 3.8 Flash.');
+                        setAiEngError(err instanceof Error ? err.message : 'Грешка при връзка с AI Екзаминатора.');
                       } finally {
                         setIsAiEngLoading(false);
                       }
@@ -762,7 +762,7 @@ export const EnglishDziLab: React.FC = () => {
                     <span>
                       {isAiEngLoading
                         ? 'Проверява се по МОН / Cambridge (CEFR)...'
-                        : `🤖 Оцени текста с Gemini 3.8 Flash (${activeBlueprint.cefrLevel} • 30 т.)`}
+                        : `🤖 Оцени текста с ${AI_EXAMINER_LABEL} (${activeBlueprint.cefrLevel} • 30 т.)`}
                     </span>
                   </button>
 
@@ -777,9 +777,9 @@ export const EnglishDziLab: React.FC = () => {
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-xs font-black uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
                           <Sparkles className="w-4 h-4 text-amber-400" />
-                          <span>Рецензия от Проверителя (Gemini 3.8 Flash):</span>
+                          <span>Рецензия от {AI_EXAMINER_LABEL}:</span>
                         </span>
-                        <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-black">
+                        <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-amber-950 text-xs font-black">
                           {aiEngEval.scoreLabel}
                         </span>
                       </div>

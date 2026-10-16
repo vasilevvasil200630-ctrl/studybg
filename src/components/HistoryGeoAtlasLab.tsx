@@ -487,7 +487,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                   </div>
 
                   {/* Primary Source Quote */}
-                  <blockquote className="p-4 rounded-xl bg-amber-50/60 border-l-4 border-amber-500 text-slate-800 italic text-sm sm:text-base leading-relaxed">
+                  <blockquote className="p-4 rounded-xl bg-amber-50/60 border border-amber-200 text-slate-800 italic text-sm sm:text-base leading-relaxed">
                     {fig.sourceExcerpt}
                   </blockquote>
 
@@ -614,7 +614,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                       onClick={() => setSelectedRegionId(reg.id)}
                       className={`px-2.5 py-2 rounded-lg text-left text-xs font-bold transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-emerald-500 text-slate-950'
+                          ? 'bg-emerald-500 text-emerald-950'
                           : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
                       }`}
                     >

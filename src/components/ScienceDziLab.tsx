@@ -186,7 +186,7 @@ const ION_REACTIONS: IonReaction[] = [
     anion: 'OH⁻ (Хидроксидни йони при нагряване)',
     reagentPair: 'NH₄Cl + NaOH (t°)',
     visualResult: 'Отделя се газ амоняк (NH₃↑) с остра задушлива миризма, който оцветява влажна червена лакмусова хартия в синьо.',
-    tubeColorClass: 'from-indigo-100 via-blue-200 to-indigo-300 border-indigo-400',
+    tubeColorClass: 'from-blue-100 via-blue-200 to-blue-300 border-blue-400',
     precipitateBadge: '⬆ Газ с остра миризма NH₃↑',
     molecularEq: 'NH₄Cl + NaOH → NaCl + H₂O + NH₃↑',
     netIonicEq: 'NH₄⁺ + OH⁻ → NH₃↑ + H₂O',
@@ -753,7 +753,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
                     className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-colors cursor-pointer ${
                       dnaInput === preset.dnaTemplate
                         ? 'bg-emerald-600 text-white border-emerald-600'
-                        : 'bg-slate-50 hover:bg-emerald-50 text-slate-700 border-slate-200'
+                        : 'bg-slate-50 hover:bg-slate-100 hover:text-emerald-700 text-slate-700 border-slate-200'
                     }`}
                   >
                     {preset.label}
@@ -1123,7 +1123,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-center p-5 rounded-2xl bg-slate-50 border border-slate-200">
               {/* Visual Test Tube */}
               <div className="flex flex-col items-center justify-center space-y-2">
-                <div className="w-20 h-44 rounded-b-full border-4 border-t-2 border-slate-400 bg-white p-1.5 flex flex-col justify-end shadow-inner relative overflow-hidden">
+                <div className="w-20 h-44 rounded-b-full border-4 border-t-0 border-slate-400 bg-white p-1.5 flex flex-col justify-end shadow-inner relative overflow-hidden">
                   <div
                     className={`w-full h-28 rounded-b-full bg-gradient-to-b ${currentReaction.tubeColorClass} border-t transition-all duration-500 flex items-end justify-center pb-3`}
                   >
@@ -1187,7 +1187,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                     selectedSaltIdx === idx
                       ? 'bg-purple-600 text-white border-purple-600 shadow-xs'
-                      : 'bg-slate-50 hover:bg-purple-50 text-slate-700 border-slate-200'
+                      : 'bg-slate-50 hover:bg-slate-100 hover:text-blue-700 text-slate-700 border-slate-200'
                   }`}
                 >
                   {salt.formula.split(' ')[0]}
@@ -1338,7 +1338,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
                     className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
                       selectedOrganicId === org.id
                         ? 'bg-rose-600 text-white border-rose-600'
-                        : 'bg-slate-50 hover:bg-rose-50 text-slate-700 border-slate-200'
+                        : 'bg-slate-50 hover:bg-slate-100 hover:text-rose-700 text-slate-700 border-slate-200'
                     }`}
                   >
                     {org.compoundClass.split(' ')[0]}

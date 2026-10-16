@@ -345,7 +345,9 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                 <ul className="list-disc list-inside space-y-1 pl-1">
                   <li><strong>Supabase Inc.</strong> — защитена база данни за съхранение на абонатите за седмичния бюлетин;</li>
                   <li><strong>Vercel Inc.</strong> — облачен хостинг, глобална доставка (CDN) и изпълнение на безсървърни функции за изпращане на имейли;</li>
-                  <li><strong>Google Ireland Limited (Google Gemini API)</strong> — обработка на текст и оптично разпознаване на ръкопис по заявка на потребителя.</li>
+                  <li><strong>Google Ireland Limited (Google Gemini API)</strong> — обработка на текст и оптично разпознаване на ръкопис по заявка на потребителя;</li>
+                  <li><strong>Google Ireland Limited (Google Analytics 4)</strong> — статистика за посещенията, само след съгласие за аналитика;</li>
+                  <li><strong>Microsoft Ireland Operations Limited (Microsoft Clarity)</strong> — записи на сесии и топлинни карти, само след съгласие за аналитика.</li>
                 </ul>
               </section>
 
@@ -389,10 +391,10 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                 <h3 className="text-base font-bold text-slate-900">1. Кои модули използват Изкуствен Интелект</h3>
                 <ul className="list-disc list-inside space-y-1.5 pl-1">
                   <li>
-                    <strong>SmartScan („Снимай тетрадка“ и Одит на записки):</strong> Използва мултимодален модел <em>Google Gemini 3.8 Flash Vision</em> за оптично разпознаване на ръкописен текст (OCR) и съпоставянето му с ключовите точки от учебната програма на МОН.
+                    <strong>SmartScan („Снимай тетрадка“ и Одит на записки):</strong> Използва мултимодален модел <em>Google Gemini</em> за оптично разпознаване на ръкописен текст (OCR) и съпоставянето му с ключовите точки от учебната програма на МОН.
                   </li>
                   <li>
-                    <strong>AI Оценител на Есе и Интерпретативно съчинение (Задача 41 в 100т. Симулатор):</strong> Използва генеративен езиков модел (<em>Google Gemini 3.8 Flash</em>) за ориентировъчен анализ по 4-те критерия на МОН (К1: Литературни/философски компетентности, К2: Смислова свързаност, К3: Езикови норми, К4: Правопис и пунктуация).
+                    <strong>AI Оценител на Есе и Интерпретативно съчинение (Задача 41 в 100т. Симулатор):</strong> Използва генеративен езиков модел (<em>Google Gemini</em>) за ориентировъчен анализ по 4-те критерия на МОН (К1: Литературни/философски компетентности, К2: Смислова свързаност, К3: Езикови норми, К4: Правопис и пунктуация).
                   </li>
                   <li>
                     <strong>AI Ментор към учебните конспекти (8.–12. клас):</strong> Интерактивен академичен асистент във всеки от 108-те урока, който отговаря на въпроси на ученика, извежда тези и генерира примерни изпитни въпроси по темата.
@@ -510,7 +512,7 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                   <span>Прозрачност съгласно Директива 2002/58/ЕО (ePrivacy)</span>
                 </div>
                 <p>
-                  StudyBG <strong>не използва рекламни бисквитки, пиксели на социални мрежи или тракери на трети страни (Zero Ad-Tracking)</strong>. Използваме единствено локално хранилище на браузъра (Web LocalStorage) за запазване на вашия учебен прогрес и офлайн работа.
+                  StudyBG <strong>не използва рекламни бисквитки и пиксели на социални мрежи</strong>. Учебният прогрес се пази в локалното хранилище на браузъра (Web LocalStorage). <strong>Само с изрично съгласие</strong> („Приемам всички“) се зареждат Google Analytics 4 и Microsoft Clarity — аналитични услуги на трети страни, които използват бисквитките, описани в таблицата по-долу.
                 </p>
               </div>
 
@@ -564,10 +566,22 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                         <td className="p-3">До изчистване</td>
                       </tr>
                       <tr>
-                        <td className="p-3 font-mono text-blue-600">studybg-pwa-v1</td>
+                        <td className="p-3 font-mono text-blue-600">studybg-pwa-v4 / studybg-assets-v4</td>
                         <td className="p-3">Строго необходим</td>
                         <td className="p-3">Service Worker кеш за работа на конспектите и формулите без интернет</td>
                         <td className="p-3">До обновяване</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3 font-mono text-blue-600">_ga, _ga_EE8QCTTSKD</td>
+                        <td className="p-3">Аналитичен (само със съгласие)</td>
+                        <td className="p-3">Google Analytics 4 — статистика за посещенията (Google Ireland Limited)</td>
+                        <td className="p-3">До 2 години</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3 font-mono text-blue-600">_clck, _clsk</td>
+                        <td className="p-3">Аналитичен (само със съгласие)</td>
+                        <td className="p-3">Microsoft Clarity — записи на сесии и топлинни карти (Microsoft Ireland Operations Limited)</td>
+                        <td className="p-3">До 1 година / 1 ден</td>
                       </tr>
                     </tbody>
                   </table>

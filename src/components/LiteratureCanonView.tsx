@@ -17,7 +17,8 @@ import {
 } from '../data/literatureDatabase';
 import {
   generateCustomLiteratureThesisWithGemini,
-  type LiteratureCustomAiThesis
+  type LiteratureCustomAiThesis,
+  AI_PROVIDER_LABEL
 } from '../services/geminiService';
 
 export const LiteratureCanonView: React.FC = () => {
@@ -358,11 +359,11 @@ export const LiteratureCanonView: React.FC = () => {
               </div>
             </div>
 
-            {/* AI Custom Thesis & Argument Generator (Gemini 3.8 Flash) */}
+            {/* AI Custom Thesis & Argument Generator */}
             <div className="p-5 rounded-2xl bg-indigo-950 text-white border border-indigo-700 space-y-3">
               <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-purple-300">
                 <Sparkles className="w-4 h-4 text-amber-400" />
-                <span>🤖 Генерирай AI Теза по твоя тема (Gemini 3.8 Flash)</span>
+                <span>🤖 Генерирай AI теза по твоя тема ({AI_PROVIDER_LABEL})</span>
               </div>
               <p className="text-[11px] text-indigo-200">
                 Въведи произволно заглавие за есе или ЛИС върху <strong>{activeAuthor.name}</strong> и получи готова 30-точкова разработка:
@@ -390,13 +391,13 @@ export const LiteratureCanonView: React.FC = () => {
                       });
                       setCustomAiResult(res);
                     } catch (err) {
-                      setAiLitError(err instanceof Error ? err.message : 'Грешка при връзка с Gemini 3.8 Flash.');
+                      setAiLitError(err instanceof Error ? err.message : 'Грешка при връзка с AI Екзаминатора.');
                     } finally {
                       setIsAiLitLoading(false);
                     }
                   }}
                   disabled={isAiLitLoading}
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black shrink-0 cursor-pointer disabled:opacity-50"
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 text-xs font-black shrink-0 cursor-pointer disabled:opacity-50"
                 >
                   {isAiLitLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
                   <span>{isAiLitLoading ? 'Генерира се...' : 'Състави теза (30 т.)'}</span>

@@ -248,7 +248,7 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
           onClick={() => setShowLeyLines(!showLeyLines)}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all shrink-0 cursor-pointer ${
             showLeyLines
-              ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-sm'
+              ? 'bg-amber-500 text-amber-950 border-amber-400 shadow-sm'
               : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
           }`}
         >
@@ -357,7 +357,7 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
                   : zone.clearance === 'anomaly'
                   ? 'bg-purple-500 border-purple-200 text-white'
                   : zone.clearance === 'ancient_code'
-                  ? 'bg-amber-500 border-amber-200 text-slate-950'
+                  ? 'bg-amber-500 border-amber-200 text-amber-950'
                   : 'bg-sky-500 border-sky-200 text-white';
 
               return (
@@ -383,7 +383,7 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
                   <span
                     className={`mt-1 block px-1.5 py-0.5 rounded text-[9px] font-mono font-bold whitespace-nowrap shadow-sm ${
                       isSelected
-                        ? 'bg-amber-400 text-slate-950'
+                        ? 'bg-amber-400 text-amber-950'
                         : 'bg-slate-900/90 text-slate-200 border border-slate-700'
                     }`}
                   >

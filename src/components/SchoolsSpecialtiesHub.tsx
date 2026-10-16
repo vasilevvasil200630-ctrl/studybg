@@ -545,7 +545,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
 
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3 shrink-0">
             <div className="rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3.5 text-center">
-              <div className="text-2xl font-black text-indigo-400">16</div>
+              <div className="text-2xl font-black text-blue-300">16</div>
               <div className="text-[11px] text-slate-300 font-medium">Вида гимназии & техникуми</div>
             </div>
             <div className="rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3.5 text-center">
@@ -1098,7 +1098,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               onClick={() => setCalcSchoolMode('vocational')}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                 calcSchoolMode === 'vocational'
-                  ? 'bg-amber-500 text-slate-950 shadow-sm'
+                  ? 'bg-amber-500 text-amber-950 shadow-sm'
                   : 'text-slate-300 hover:text-white'
               }`}
             >

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, CheckCircle2, RotateCcw, Trash2, Check, BookOpen, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
 import { errorBankService, type SavedErrorItem } from '../services/errorBankService';
-import { analyzeErrorBankWithGemini, type ErrorBankAiDiagnosis } from '../services/geminiService';
+import { analyzeErrorBankWithGemini, type ErrorBankAiDiagnosis, AI_EXAMINER_LABEL } from '../services/geminiService';
 import type { QuizQuestion, LessonData } from '../types';
 
 interface ErrorBankViewProps {
@@ -112,7 +112,7 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
                   });
                   setAiDiagnosis(res);
                 } catch (err) {
-                  setAiDiagnosisError(err instanceof Error ? err.message : 'Грешка при връзка с Gemini 3.8 Flash.');
+                  setAiDiagnosisError(err instanceof Error ? err.message : 'Грешка при връзка с AI Екзаминатора.');
                 } finally {
                   setIsAiDiagnosing(false);
                 }
@@ -121,7 +121,7 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs font-bold shadow-xs transition-colors whitespace-nowrap cursor-pointer"
             >
               {isAiDiagnosing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-              <span>{isAiDiagnosing ? 'Анализирам пропуските...' : '🤖 AI Диагностика на грешките (Gemini 3.8 Flash)'}</span>
+              <span>{isAiDiagnosing ? 'Анализирам пропуските...' : `🤖 AI диагностика на грешките (${AI_EXAMINER_LABEL})`}</span>
             </button>
           )}
 
@@ -148,7 +148,7 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-black uppercase tracking-wider text-indigo-300 flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-amber-400" />
-              <span>Персонална AI Диагностика & 3-дневен план за наваксване (Gemini 3.8 Flash):</span>
+              <span>Персонална AI диагностика & 3-дневен план за наваксване ({AI_EXAMINER_LABEL}):</span>
             </span>
           </div>
           <p className="text-xs sm:text-sm text-indigo-100 leading-relaxed">{aiDiagnosis.summary}</p>
@@ -332,7 +332,7 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
 
                     <button
                       onClick={() => handleRemove(err.id)}
-                      className="p-1.5 rounded-lg bg-white hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200 shadow-2xs transition-colors"
+                      className="p-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-500 hover:text-rose-600 border border-slate-200 shadow-2xs transition-colors"
                       title="Изтрий"
                     >
                       <Trash2 className="w-3.5 h-3.5" />

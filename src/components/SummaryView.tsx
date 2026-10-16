@@ -26,7 +26,7 @@ import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import { AudioReader } from './AudioReader';
 import { EmailShareModal } from './EmailShareModal';
-import { askGeminiMentor, isGeminiConfigured } from '../services/geminiService';
+import { askGeminiMentor, isGeminiConfigured, AI_PROVIDER_LABEL } from '../services/geminiService';
 
 interface SummaryViewProps {
   lesson: LessonData;
@@ -176,7 +176,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
               className={`inline-flex items-center gap-1 text-[11px] px-2.5 py-0.5 rounded-full font-bold border transition-all cursor-pointer ${
                 isMastered
                   ? 'bg-emerald-600 text-white border-emerald-700 shadow-2xs'
-                  : 'bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-800 border-slate-300'
+                  : 'bg-white hover:bg-slate-100 text-slate-600 hover:text-emerald-800 border-slate-300'
               }`}
               title="Отбележи този урок като научен в твоя План за 6.00"
             >
@@ -355,11 +355,11 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-indigo-600" />
               <h4 className="text-xs font-extrabold uppercase tracking-wider text-indigo-950">
-                🤖 Попитай AI Ментора за този урок (Google Gemini 3.8 Flash)
+                🤖 Попитай AI Ментора за този урок ({AI_PROVIDER_LABEL})
               </h4>
             </div>
             <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200">
-              {isGeminiConfigured() ? '● Gemini 3.8 Flash Активен' : '● МОН Академичен Асистент'}
+              {isGeminiConfigured() ? `● ${AI_PROVIDER_LABEL} е активен` : '● МОН Академичен Асистент'}
             </span>
           </div>
 
@@ -427,7 +427,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
               {isMentorLoading && (
                 <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-indigo-700 font-semibold flex items-center gap-2">
                   <RefreshCw className="w-3.5 h-3.5 animate-spin text-indigo-600" />
-                  <span>Gemini 3.8 Flash подготвя академичен отговор по стандартите на МОН...</span>
+                  <span>AI Менторът подготвя отговор по учебната програма...</span>
                 </div>
               )}
             </div>
@@ -491,7 +491,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                 <button
                   type="button"
                   onClick={() => handleNoteChange('')}
-                  className="p-1 rounded-lg bg-white hover:bg-rose-50 text-slate-500 hover:text-rose-700 border border-slate-200 transition-colors cursor-pointer"
+                  className="p-1 rounded-lg bg-white hover:bg-slate-100 text-slate-500 hover:text-rose-700 border border-slate-200 transition-colors cursor-pointer"
                   title="Изчисти бележките"
                 >
                   <Trash2 className="w-3.5 h-3.5" />

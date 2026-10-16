@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import { SUBJECTS_LIST } from '../data/curriculumDatabase';
-import { evaluateOralAnswerWithGemini, type OralExamAiEvaluation } from '../services/geminiService';
+import { evaluateOralAnswerWithGemini, type OralExamAiEvaluation, AI_EXAMINER_LABEL } from '../services/geminiService';
 import { isObjectItem, readStoredArray } from '../lib/storage';
 
 interface OralExamSimulatorLabProps {
@@ -628,10 +628,10 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-indigo-900 via-slate-900 to-blue-950 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 sm:p-6 rounded-2xl bg-slate-900 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-400/40 text-indigo-300 text-xs font-bold">
-            <Mic className="w-3.5 h-3.5 text-indigo-400" />
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/20 border border-blue-400/40 text-blue-300 text-xs font-bold">
+            <Mic className="w-3.5 h-3.5 text-blue-400" />
             <span>ГЛАСОВ И ПИСМЕН ТРЕНАЖОР • {lessons.length} УРОКА + ДИППК КОМИСИЯ (ТРЕТА СПК) + ВУЗ</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
@@ -644,7 +644,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
 
         <button
           onClick={handleRandomBoardCall}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black shadow-sm transition-colors shrink-0 cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-amber-950 text-xs font-black shadow-sm transition-colors shrink-0 cursor-pointer"
         >
           <Shuffle className="w-4 h-4" />
           <span>🎲 Изтегли случаен билет</span>
@@ -997,7 +997,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
                   });
                   setAiOralEval(res);
                 } catch (err) {
-                  setAiError(err instanceof Error ? err.message : 'Грешка при свързване с Gemini 3.8 Flash.');
+                  setAiError(err instanceof Error ? err.message : 'Грешка при връзка с AI Екзаминатора.');
                 } finally {
                   setIsAiEvaluating(false);
                 }
@@ -1006,7 +1006,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white text-xs sm:text-sm font-bold shadow-xs transition-all cursor-pointer"
             >
               {isAiEvaluating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-              <span>{isAiEvaluating ? 'Комисията оценява...' : '🤖 AI Оценка с Gemini 3.8 Flash (Комисия МОН)'}</span>
+              <span>{isAiEvaluating ? 'Комисията оценява...' : `🤖 AI оценка от комисията (${AI_EXAMINER_LABEL})`}</span>
             </button>
 
             <button
@@ -1046,9 +1046,9 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-black uppercase tracking-wider text-indigo-300 flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4 text-amber-400" />
-                    <span>Рецензия от Председателя на Комисията (Google Gemini 3.8 Flash):</span>
+                    <span>Рецензия от председателя на комисията ({AI_EXAMINER_LABEL}):</span>
                   </span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-xs font-black">
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-amber-950 text-xs font-black">
                     {aiOralEval.gradeLabel}
                   </span>
                 </div>

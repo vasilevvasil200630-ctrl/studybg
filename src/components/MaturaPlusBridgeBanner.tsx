@@ -89,7 +89,7 @@ export const MaturaPlusBridgeBanner: React.FC<MaturaPlusBridgeBannerProps> = ({
           <button
             onClick={handleGoToMaturaPlus}
             data-source={source}
-            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-slate-950 font-bold text-sm shadow-md transition-all hover:scale-[1.02]"
+            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-emerald-950 font-bold text-sm shadow-md transition-all hover:scale-[1.02]"
           >
             <span>Отвори Matura+ за 7. клас</span>
             <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />

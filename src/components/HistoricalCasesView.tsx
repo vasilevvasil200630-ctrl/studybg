@@ -641,7 +641,7 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
               className="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-sans leading-relaxed"
             />
 
-            {/* Gemini 3.8 Flash Historical Essay Evaluator */}
+            {/* AI Historical Essay Evaluator */}
             <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
               <button
                 onClick={async () => {

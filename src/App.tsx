@@ -10,6 +10,7 @@ import { CookieConsentBanner } from './components/CookieConsentBanner';
 import type { LegalPolicyTab } from './components/LegalPoliciesModal';
 import { MaturaPlusBridgeBanner } from './components/MaturaPlusBridgeBanner';
 import { ChunkErrorBoundary } from './components/ChunkErrorBoundary';
+import { parseLocation, pushRoute, routeToPath, syncCanonicalUrl } from './lib/routing';
 
 import { HomeLandingView } from './components/HomeLandingView';
 
@@ -202,12 +203,14 @@ export function App() {
   // Dynamic document.title synchronization for SEO, accessibility, and multi-tab clarity
   useEffect(() => {
     const w = window as unknown as { gtag?: (...args: unknown[]) => void };
+    // Каноничният URL следва реалния път, иначе всички страници се броят за дубликати на „/“
+    syncCanonicalUrl(window.location.pathname);
     if (portalMode === 'culture') {
       document.title = 'Обща култура, 40 Секретни досиета & Мистична карта | StudyBG';
       if (typeof w.gtag === 'function') {
         w.gtag('event', 'page_view', {
           page_title: document.title,
-          page_path: `/culture/${cultureSubTab}`,
+          page_path: window.location.pathname,
         });
       }
       return;
@@ -240,7 +243,7 @@ export function App() {
     if (typeof w.gtag === 'function') {
       w.gtag('event', 'page_view', {
         page_title: document.title,
-        page_path: `/${activeTab}`,
+        page_path: window.location.pathname,
       });
     }
   }, [portalMode, activeTab, cultureSubTab, currentLesson, lessons.length]);
@@ -268,14 +271,10 @@ export function App() {
       }
     });
     if (mode === 'study') {
-      if (window.location.hash) {
-        window.history.pushState(null, '', window.location.pathname);
-      }
+      pushRoute({ portal: 'study', tab: 'home' });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      if (window.location.hash !== '#culture') {
-        window.history.pushState(null, '', '#culture');
-      }
+      pushRoute({ portal: 'culture', subTab: cultureSubTab });
       const el = document.getElementById('workspace');
       el?.scrollIntoView({ behavior: 'smooth' });
     }
@@ -287,15 +286,10 @@ export function App() {
       setPortalMode('study');
       setActiveTab(tab);
     });
+    pushRoute({ portal: 'study', tab });
     if (tab === 'home') {
-      if (window.location.hash) {
-        window.history.pushState(null, '', window.location.pathname);
-      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      if (window.location.hash !== `#${tab}`) {
-        window.history.pushState(null, '', `#${tab}`);
-      }
       const el = document.getElementById('workspace');
       el?.scrollIntoView({ behavior: 'smooth' });
     }
@@ -307,9 +301,7 @@ export function App() {
       setPortalMode('culture');
       setCultureSubTab(subTab);
     });
-    if (window.location.hash !== `#${subTab}`) {
-      window.history.pushState(null, '', `#${subTab}`);
-    }
+    pushRoute({ portal: 'culture', subTab });
     const el = document.getElementById('workspace');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -321,95 +313,88 @@ export function App() {
       setCurrentLesson(lesson);
       setActiveTab(preferredTab);
     });
-    if (window.location.hash !== `#${preferredTab}`) {
-      window.history.pushState(null, '', `#${preferredTab}`);
-    }
+    // Конспектът има собствен адрес /lesson/<id>; останалите изгледи — /<таб>
+    pushRoute(
+      preferredTab === 'summary'
+        ? { portal: 'study', tab: 'summary', lessonId: lesson.id }
+        : { portal: 'study', tab: preferredTab }
+    );
     const el = document.getElementById('workspace');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // URL Hash Sync for deep linking and browser back/forward buttons
+  // Path routing: /simulator, /lesson/<id>, /culture/<sub> + бутоните Назад/Напред.
+  // Старите /#tab линкове се превръщат в чист адрес с replaceState.
+  const lessonsRef = useRef(lessons);
+  lessonsRef.current = lessons;
+  const pendingLessonIdRef = useRef<string | null>(null);
+
   useEffect(() => {
-    const syncFromHash = () => {
-      const hash = window.location.hash.replace('#', '').trim();
-      if (!hash || hash === 'home' || hash === 'study') {
+    const applyLocation = () => {
+      const { route, fromLegacyHash } = parseLocation(window.location.pathname, window.location.hash, STUDY_TABS);
+
+      if (!route) {
+        // Непознат адрес → началната страница (без дублиран „soft 404“ URL)
+        window.history.replaceState(null, '', '/');
         setPortalMode('study');
         setActiveTab('home');
         return;
       }
+      if (fromLegacyHash) {
+        window.history.replaceState(null, '', routeToPath(route));
+      }
 
-      if (hash === 'culture') {
+      if (route.portal === 'culture') {
         setPortalMode('culture');
-        setCultureSubTab('mysteries');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'heritage' || hash === 'unesco' || hash === 'inventions') {
-        setPortalMode('culture');
-        setCultureSubTab('heritage');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'mysteries' || hash === 'knowledge') {
-        setPortalMode('culture');
-        setCultureSubTab('mysteries');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'mysticmap') {
-        setPortalMode('culture');
-        setCultureSubTab('mysticmap');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'timeline') {
-        setPortalMode('culture');
-        setCultureSubTab('timeline');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'cases' || hash === 'casestudies') {
+        setCultureSubTab(route.subTab);
+      } else if (route.lessonId) {
         setPortalMode('study');
-        setActiveTab('cases');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'trivia') {
-        setPortalMode('culture');
-        setCultureSubTab('trivia');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'myths') {
-        setPortalMode('culture');
-        setCultureSubTab('myths');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'wonders') {
-        setPortalMode('culture');
-        setCultureSubTab('wonders');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'wisdom') {
-        setPortalMode('culture');
-        setCultureSubTab('wisdom');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (STUDY_TABS.includes(hash as AppNavTab)) {
-        setPortalMode('study');
-        setActiveTab(hash as AppNavTab);
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash === 'catalog') {
-        setPortalMode('study');
-        setActiveTab('catalog');
-        const el = document.getElementById('workspace');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      } else if (hash.startsWith('lesson-')) {
-        const lessonId = hash.replace('lesson-', '');
-        const targetLesson = lessons.find(l => l.id === lessonId);
-        if (targetLesson) {
-          handleLessonSelected(targetLesson, 'summary');
+        const lesson = lessonsRef.current.find((l) => l.id === route.lessonId);
+        if (lesson) {
+          pendingLessonIdRef.current = null;
+          setCurrentLesson(lesson);
+          setActiveTab('summary');
+        } else {
+          // Урокът още не е зареден: каталогът пуска пълното зареждане, после го отваряме
+          pendingLessonIdRef.current = route.lessonId;
+          setActiveTab('catalog');
         }
+      } else {
+        setPortalMode('study');
+        setActiveTab(route.tab);
+        prefetchStudyTabChunk(route.tab);
+      }
+
+      if (route.portal === 'study' && route.tab === 'home' && !route.lessonId) {
+        window.scrollTo({ top: 0 });
+      } else {
+        document.getElementById('workspace')?.scrollIntoView({ behavior: 'smooth' });
       }
     };
 
-    syncFromHash();
-    window.addEventListener('hashchange', syncFromHash);
-    return () => window.removeEventListener('hashchange', syncFromHash);
+    applyLocation();
+    window.addEventListener('popstate', applyLocation);
+    window.addEventListener('hashchange', applyLocation);
+    return () => {
+      window.removeEventListener('popstate', applyLocation);
+      window.removeEventListener('hashchange', applyLocation);
+    };
+  }, []);
+
+  // Отложено отваряне на /lesson/<id>, когато пълният каталог се зареди
+  useEffect(() => {
+    const pendingId = pendingLessonIdRef.current;
+    if (!pendingId) return;
+    const lesson = lessons.find((l) => l.id === pendingId);
+    if (lesson) {
+      pendingLessonIdRef.current = null;
+      setCurrentLesson(lesson);
+      setActiveTab('summary');
+    } else if (curriculumHydratedRef.current) {
+      // Няма такъв урок — оставаме в каталога с чист адрес
+      pendingLessonIdRef.current = null;
+      window.history.replaceState(null, '', routeToPath({ portal: 'study', tab: 'catalog' }));
+    }
   }, [lessons]);
 
   // Global Ctrl+K / Cmd+K shortcut to open Quick Lesson Switcher from anywhere
@@ -436,9 +421,7 @@ export function App() {
   const scrollToCatalog = () => {
     setPortalMode('study');
     setActiveTab('catalog');
-    if (window.location.hash !== '#catalog') {
-      window.history.pushState(null, '', '#catalog');
-    }
+    pushRoute({ portal: 'study', tab: 'catalog' });
     const el = document.getElementById('workspace');
     el?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -479,7 +462,7 @@ export function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
       
       {/* Offline Status & PWA Install Banner */}
       <OfflineStatusBanner />
@@ -571,7 +554,7 @@ export function App() {
                 {/* Breadcrumbs Trail */}
                 <nav aria-label="Хлябни трохи" className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-500">
                   <a
-                    href="#study"
+                    href="/"
                     onClick={(e) => {
                       e.preventDefault();
                       handleSelectPortalMode('study');
@@ -981,7 +964,7 @@ export function App() {
             <div className="mb-6 pb-4 border-b border-slate-200">
               <nav aria-label="Хлябни трохи" className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-500">
                 <a
-                  href="#culture"
+                  href="/culture"
                   onClick={(e) => {
                     e.preventDefault();
                     handleSelectPortalMode('culture');

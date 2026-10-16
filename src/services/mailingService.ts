@@ -179,7 +179,7 @@ export const mailingService = {
     .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
     .title { margin: 0; font-size: 20px; font-weight: 700; }
     .body { padding: 24px; }
-    .note-box { background: #eff6ff; border-left: 4px solid #2563eb; padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 20px; font-size: 13px; color: #1e3a8a; }
+    .note-box { background: #eff6ff; border: 1px solid #bfdbfe; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: #1e3a8a; }
     .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; margin-top: 20px; margin-bottom: 8px; }
     .overview { font-size: 14px; color: #334155; line-height: 1.6; margin-bottom: 16px; }
     ul { padding-left: 20px; margin: 0 0 16px 0; }
@@ -278,7 +278,7 @@ export const mailingService = {
     .grade-number { font-size: 40px; font-weight: 800; color: ${gradeColor}; line-height: 1; }
     .grade-label { font-size: 13px; font-weight: 700; color: ${gradeColor}; text-transform: uppercase; margin-top: 4px; }
     .points { font-size: 14px; color: #64748b; margin-top: 8px; font-weight: 500; }
-    .note-box { background: #eff6ff; border-left: 4px solid #2563eb; padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 20px; font-size: 13px; color: #1e3a8a; }
+    .note-box { background: #eff6ff; border: 1px solid #bfdbfe; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: #1e3a8a; }
     .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; margin-top: 20px; margin-bottom: 8px; }
     ul { padding-left: 20px; margin: 0 0 16px 0; }
     li { font-size: 13px; color: #dc2626; margin-bottom: 6px; }

@@ -1,10 +1,14 @@
 import type { LessonData } from '../types';
 import { verbalGrade } from '../lib/monGradeScale';
 
-// Основният модел може да се смени с VITE_GEMINI_MODEL без промяна в кода.
-const PRIMARY_MODEL = (import.meta.env.VITE_GEMINI_MODEL as string | undefined)?.trim() || 'gemini-3.8-flash';
-// Стабилен модел, към който минаваме автоматично, ако основният върне 404.
+// Стабилен модел, към който минаваме автоматично, ако зададеният с VITE_GEMINI_MODEL върне 404.
 const FALLBACK_MODEL = 'gemini-2.5-flash';
+// Основният модел може да се смени с VITE_GEMINI_MODEL без промяна в кода.
+const PRIMARY_MODEL = (import.meta.env.VITE_GEMINI_MODEL as string | undefined)?.trim() || FALLBACK_MODEL;
+
+// Етикети за интерфейса — без твърдо закодирани версии на модела в компонентите
+export const AI_EXAMINER_LABEL = 'AI Екзаминатор';
+export const AI_PROVIDER_LABEL = 'Google Gemini';
 const REQUEST_TIMEOUT_MS = 30_000;
 const MAX_RETRIES = 2;
 const API_KEY_STORAGE_KEY = 'studybg_gemini_api_key';
@@ -71,6 +75,9 @@ export const removeStoredGeminiApiKey = (): void => {
 };
 
 export const isGeminiConfigured = (): boolean => getActiveGeminiApiKey().length > 10;
+
+/** Моделът, който реално се използва (след евентуален 404 fallback). */
+export const getActiveGeminiModel = (): string => resolvedModel ?? PRIMARY_MODEL;
 
 // ---------------------------------------------------------------------------
 // Централен HTTP helper: timeout, retry при 429/5xx, ключ в хедър, fallback модел

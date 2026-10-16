@@ -224,7 +224,7 @@ export const CultureWisdomView: React.FC<CultureWisdomViewProps> = ({
               </div>
 
               {/* Main Quote Callout */}
-              <div className="relative pl-6 sm:pl-8 border-l-4 border-indigo-500 py-1">
+              <div className="relative py-1">
                 <p className="text-lg sm:text-2xl font-serif font-bold text-slate-900 leading-snug tracking-tight">
                   „{item.quote}“
                 </p>

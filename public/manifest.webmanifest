@@ -29,28 +29,28 @@
       "name": "Училища & Специалности 8–12",
       "short_name": "Училища",
       "description": "16 секции за гимназии, 64+ професии, ДИППК защита и калкулатор за бал",
-      "url": "/#specialties",
+      "url": "/specialties",
       "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
     },
     {
       "name": "Моят План за 6.00",
       "short_name": "План 6.00",
       "description": "Седмичен график, обратен брояч до ДЗИ/НВО и A4 чеклист за печат",
-      "url": "/#planner",
+      "url": "/planner",
       "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
     },
     {
       "name": "100-точков изпитен симулатор",
       "short_name": "Симулатор",
       "description": "3-модулна матура, НВО и ДИППК симулация с таймер и AI проверка",
-      "url": "/#simulator",
+      "url": "/simulator",
       "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
     },
     {
       "name": "Обща култура & Загадки",
       "short_name": "Култура",
       "description": "40 секретни досиета, гео-радарна карта, ЮНЕСКО и куизове",
-      "url": "/#culture",
+      "url": "/culture",
       "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
     }
   ]

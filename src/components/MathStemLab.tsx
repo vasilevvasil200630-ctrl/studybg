@@ -474,7 +474,7 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
             {onOpenFormulaModal && (
               <button
                 onClick={onOpenFormulaModal}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs shadow-sm transition-all cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs shadow-sm transition-all cursor-pointer"
               >
                 <BookOpen className="w-4 h-4" />
                 <span>Отвори МОН Формули</span>
@@ -858,19 +858,19 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
               <div className="flex flex-wrap gap-1.5">
                 <button
                   onClick={() => { setQuadA(2); setQuadB(-6); setQuadC(3); }}
-                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-blue-50 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-blue-700 cursor-pointer"
                 >
                   2x² - 6x + 3 = 0
                 </button>
                 <button
                   onClick={() => { setQuadA(1); setQuadB(-7); setQuadC(10); }}
-                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-blue-50 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-blue-700 cursor-pointer"
                 >
                   x² - 7x + 10 = 0
                 </button>
                 <button
                   onClick={() => { setQuadA(1); setQuadB(-10); setQuadC(9); }}
-                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-blue-50 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-blue-700 cursor-pointer"
                 >
                   x² - 10x + 9 = 0
                 </button>
@@ -1060,19 +1060,19 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
               <div className="flex flex-wrap gap-1.5">
                 <button
                   onClick={() => { setTriA(15); setTriB(13); setTriC(14); }}
-                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-purple-50 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-blue-700 cursor-pointer"
                 >
                   Еталон (15, 13, 14)
                 </button>
                 <button
                   onClick={() => { setTriA(3); setTriB(4); setTriC(5); }}
-                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-purple-50 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-blue-700 cursor-pointer"
                 >
                   Питагоров (3, 4, 5)
                 </button>
                 <button
                   onClick={() => { setTriA(5); setTriB(8); setTriC(7); }}
-                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-purple-50 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-blue-700 cursor-pointer"
                 >
                   Ъгъл 60° (5, 8, 7)
                 </button>
@@ -1168,19 +1168,19 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
               <div className="flex flex-wrap gap-1.5">
                 <button
                   onClick={() => { setCubA(1); setCubB(-3); setCubC(-9); setCubD(12); setCubX0(2); }}
-                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-rose-50 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-rose-700 cursor-pointer"
                 >
                   x³ - 3x² - 9x + 12
                 </button>
                 <button
                   onClick={() => { setCubA(1); setCubB(-6); setCubC(0); setCubD(5); setCubX0(1); }}
-                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-rose-50 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-rose-700 cursor-pointer"
                 >
                   x³ - 6x² + 5
                 </button>
                 <button
                   onClick={() => { setCubA(4); setCubB(-72); setCubC(324); setCubD(0); setCubX0(3); }}
-                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-rose-50 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-rose-700 cursor-pointer"
                 >
                   Резервоар V(x) = 4x³ - 72x² + 324x
                 </button>

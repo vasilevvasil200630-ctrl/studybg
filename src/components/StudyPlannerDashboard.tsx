@@ -522,7 +522,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsCertModalOpen(true)}
-                  className="w-full py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                  className="w-full py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-amber-950 font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
                 >
                   <Award className="w-4 h-4" />
                   <span>Генерирай Грамота / Сертификат за 6.00 (PDF / A4)</span>
@@ -764,7 +764,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                 <div className="pt-3 border-t border-slate-200/60">
                   <button
                     onClick={() => onNavigateTab(day.targetTab)}
-                    className="w-full py-2 px-3 rounded-xl bg-white hover:bg-blue-600 text-slate-800 hover:text-white border border-slate-200 hover:border-blue-600 text-xs font-bold flex items-center justify-between transition-all cursor-pointer shadow-2xs"
+                    className="w-full py-2 px-3 rounded-xl bg-white hover:bg-slate-50 text-slate-800 hover:text-blue-700 border border-slate-200 hover:border-blue-400 text-xs font-bold flex items-center justify-between transition-all cursor-pointer shadow-2xs"
                   >
                     <span>{day.actionLabel}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -795,7 +795,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
 
             <button
               onClick={() => onNavigateTab('simulator')}
-              className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-amber-950 font-black text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
             >
               <span>Тествай нивото си в 100т. Симулатор</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -955,7 +955,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
 
           <button
             onClick={() => setIsCertModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition-all cursor-pointer shrink-0"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-amber-950 font-black text-xs transition-all cursor-pointer shrink-0"
           >
             <Award className="w-4 h-4" />
             <span>📜 Издай Грамота / Свидетелство Трета СПК + EUROPASS</span>

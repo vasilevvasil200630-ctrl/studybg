@@ -110,11 +110,21 @@ describe('кратки отговори', () => {
     id: 't', number: 1, kind: 'short', answerType: 'text', prompt: 'p', acceptedAnswers: ['петнадесетте минути'], points: 5, explanation: 'e'
   };
 
-  it('числата се сравняват независимо от интервали и мерни единици', () => {
+  it('числата се сравняват независимо от интервали, мерни единици, индекси и множители', () => {
     expect(isShortAnswerCorrect(numberQ, '12 000')).toBe(true);
+    expect(isShortAnswerCorrect(numberQ, '12,000')).toBe(true);
+    expect(isShortAnswerCorrect(numberQ, '12 хиляди')).toBe(true);
+    expect(isShortAnswerCorrect(numberQ, '12 хил. тома')).toBe(true);
     expect(isShortAnswerCorrect(numberQ, '12000 тома')).toBe(true);
     expect(isShortAnswerCorrect(numberQ, '1200')).toBe(false);
     expect(isShortAnswerCorrect(numberQ, '')).toBe(false);
+
+    const seqQ: ShortAnswerQuestion = {
+      id: 'seq', number: 2, kind: 'short', answerType: 'number', prompt: 'p', acceptedAnswers: ['39'], points: 3, explanation: 'e'
+    };
+    expect(isShortAnswerCorrect(seqQ, 'a10 = 39')).toBe(true);
+    expect(isShortAnswerCorrect(seqQ, 'x_1 = 39')).toBe(true);
+    expect(isShortAnswerCorrect(seqQ, 'S = 39 cm²')).toBe(true);
   });
 
   it('текстът се сравнява без главни букви, кавички и крайна точка', () => {

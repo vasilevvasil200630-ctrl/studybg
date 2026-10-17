@@ -268,7 +268,7 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
 
     return {
       valid: true,
-      derivativeFormula: `f'(x) = ${3 * cubA}x² ${2 * cubB >= 0 ? '+ ' + 2 * cubB : '- ' + Math.abs(2 * cubB)}x ${cubC >= 0 ? '+ ' + cubC : '- ' + Math.abs(cubC)}`,
+      derivativeFormula: `f'(x) = ${3 * cubA}x²${2 * cubB === 0 ? '' : 2 * cubB > 0 ? ' + ' + 2 * cubB + 'x' : ' - ' + Math.abs(2 * cubB) + 'x'}${cubC === 0 ? '' : cubC > 0 ? ' + ' + cubC : ' - ' + Math.abs(cubC)}`,
       extremaStatus,
       xMaxText,
       xMinText,
@@ -1273,7 +1273,7 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
       )}
 
       {/* ===================================================================== */}
-      {/* MODE 3: INTERACTIVE EXAM TRAINER (12 QUESTIONS)                       */}
+      {/* MODE 3: INTERACTIVE EXAM TRAINER (18 QUESTIONS)                       */}
       {/* ===================================================================== */}
       {activeMode === 'quiz' && (
         <div className="space-y-4">

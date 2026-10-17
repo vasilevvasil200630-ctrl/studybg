@@ -41,7 +41,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     frequencyOrMetric: 'Дълбочина: 165 м • 16 секретни тома',
     summary: 'Двегодишна засекретена военна експедиция на Генералния щаб, изкопала спираловиден тунел по диктовка на сензитиви в търсене на първия двуполов прародител и извънземен биологичен код.',
     secretProtocol: 'На 19 ноември 1992 г. обектът е внезапно запечатан с тонове стоманобетон, а дневниците са засекретени.',
-    linkedMysteryId: 'mystery-tsarichina-operation-slava'
+    linkedMysteryId: 'conspiracy-tsarichina-deep-dossier'
   },
   {
     id: 'zone-bastet-strandzha',
@@ -56,7 +56,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     frequencyOrMetric: 'Радиоактивен гранит • V–III в. пр.Хр.',
     summary: 'Тайна правителствена експедиция под егидата на Людмила Живкова и указанията на Ванга по разчетени знаци върху египетска мумия, сочещи към светилище в Странджа.',
     secretProtocol: 'Свидетели описват сияние над върха и гладък полиран изкуствен свод в скалата под връх Голямо Градище.',
-    linkedMysteryId: 'mystery-strandzha-bastet-mishkova-niva'
+    linkedMysteryId: 'conspiracy-strandzha-bastet-tomb'
   },
   {
     id: 'zone-magura',
@@ -71,7 +71,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     frequencyOrMetric: '366 дни • Шахматни и соларни матрици',
     summary: 'Над 700 праисторически рисунки, изписани с многопластово прилепно гуано. Включва най-древния слънчев календар в Европа и „Сцената на Сътворението“ с Т-образни антени.',
     secretProtocol: 'Галерията с рисунките има постоянна температура 12°C и специфична йонизация на въздуха.',
-    linkedMysteryId: 'mystery-magura-cosmic-code'
+    linkedMysteryId: 'conspiracy-magura-cosmic-code'
   },
   {
     id: 'zone-belintash',
@@ -86,7 +86,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     frequencyOrMetric: 'Отклонение на компаса • Огледална звездна карта',
     summary: 'Равнобедрен енергиен триъгълник от три мегалитни светилища върху тектонски разлом с висока концентрация на железни и магнитни руди, изкривяващи стрелките на компасите.',
     secretProtocol: 'Улеите и стотиците кръгли кладенчета върху Белинташ повтарят проекцията на съзвездията Орион, Голяма мечка и Лъв.',
-    linkedMysteryId: 'mystery-belintash-energy-triangle'
+    linkedMysteryId: 'conspiracy-belintash-triangle'
   },
   {
     id: 'zone-perperikon-harman',
@@ -101,7 +101,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     frequencyOrMetric: 'Слънчеви прорези за равноденствията',
     summary: 'Мегалитен комплекс, където според римския историк Светоний на Александър Велики и бащата на Октавиан Август е предсказано, че ще завладеят света чрез винено-огнен ритуал.',
     secretProtocol: 'Изсечените в скалата трапецовидни ниши и оптични коридори измерват зимното и лятното слънцестоене с точност до минута.',
-    linkedMysteryId: 'mystery-orpheus-head-oracle'
+    linkedMysteryId: 'ancient-perperikon-dionysus'
   },
   {
     id: 'zone-rupite',
@@ -116,7 +116,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     frequencyOrMetric: 'Минерални извори 74°C • Древна Хераклея Синтика',
     summary: 'Котловина в кратера на загасналия вулкан Кожух, която пророчицата Ванга нарича свой „енергиен акумулатор“, зареждащ я със сили над погребания античен град.',
     secretProtocol: 'Висока естествена геотермална активност, рядка ендемична флора и пресечна точка на южния меридиан.',
-    linkedMysteryId: 'mystery-lozanov-suggestopedia-vanga'
+    linkedMysteryId: 'conspiracy-vanga-suggestology-institute'
   },
   {
     id: 'zone-rila-lakes',
@@ -131,7 +131,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     frequencyOrMetric: '7 глациални тераси • Хармонични цикли',
     summary: 'На 19 август край езерото „Бъбрека“ се изпълняват концентричните кръгове на Паневритмията — система от музикални интервали и геометрия за синхрон с природните ритми.',
     secretProtocol: 'Легендата за 7-те енергийни центъра на Рила, свързани по меридиана с Магурата на север и Рупите на юг.',
-    linkedMysteryId: 'mystery-danov-paneurhythmy-rila-code'
+    linkedMysteryId: 'conspiracy-rila-agartha-deunov'
   },
   {
     id: 'zone-sofia-urvich',
@@ -146,7 +146,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     frequencyOrMetric: 'Многоетажни галерии • Шишманови нишани',
     summary: 'Мрежа от римски галерии, правителствени бункери под ларгото на София и скалните знаци (стрели, кръстове и змии) за седемте запечатани хазни на цар Иван Шишман при Урвич.',
     secretProtocol: 'Подземните комуникационни коридори между бившия мавзолей, Министерския съвет и ЦУМ остават частично запечатани.',
-    linkedMysteryId: 'mystery-sofia-plovdiv-underground-tunnels'
+    linkedMysteryId: 'conspiracy-sofia-underground-tunnels'
   },
   {
     id: 'zone-tsarevets-library',
@@ -161,7 +161,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     frequencyOrMetric: 'Златни обкови • Богомилски апокрифи',
     summary: 'Преди падането на Търновград през юли 1393 г. патриарх Евтимий запечатва най-ценните царски хрисовули и древни книги в тайна подземна крипта под крепостта и р. Янтра.',
     secretProtocol: 'Свързана с разпространението на „Тайната книга на Богомилите“ към катарите в крепостта Монсегюр.',
-    linkedMysteryId: 'mystery-bogomils-secret-book-grail'
+    linkedMysteryId: 'conspiracy-bogomils-cathars-grail'
   },
   {
     id: 'zone-kazanlak-starosel',
@@ -176,7 +176,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     frequencyOrMetric: '110–112 Hz стоящи вълни • Тета-ритъм',
     summary: 'Каменните „кошерни“ куполи (толоси) в Старосел, Казанлък и Александрово са математически изчислени акустични резонатори, които усилват мъжкия баритон точно на 110 Hz.',
     secretProtocol: 'При честота 110 Hz (Алфа/Тета граница) се потиска езиковият център и се активира дясното полукълбо за мистичен транс.',
-    linkedMysteryId: 'mystery-thracian-110hz-resonance'
+    linkedMysteryId: 'conspiracy-zalmoxis-110hz-tombs'
   },
   {
     id: 'zone-devils-bridge',
@@ -187,11 +187,11 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     mapX: 52,
     mapY: 85,
     clearance: 'ancient_code',
-    clearanceLabel: '🟡 ЕСОТЕРИЧЕН ШИФЪР',
+    clearanceLabel: '🟡 ЕЗОТЕРИЧЕН ШИФЪР',
     frequencyOrMetric: 'Ключов камък с хексагон • Огледална сянка',
     summary: 'Майстор Димитър вгражда в централния свод тайния „Печат на Соломон“, а между 11:00 и 12:00 ч. арката и нейното отражение във водата образуват идеален геометричен образ.',
-    secretProtocol: 'Мостът издържа над 500 години придойделите води на р. Арда без нито една стоманена скоба или цимент.',
-    linkedMysteryId: 'mystery-devils-bridge-ardino-seal'
+    secretProtocol: 'Мостът издържа над 500 години придошлите води на р. Арда без нито една стоманена скоба или цимент.',
+    linkedMysteryId: 'conspiracy-devils-bridge-seal'
   },
   {
     id: 'zone-black-sea-anoxic',
@@ -206,7 +206,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     frequencyOrMetric: 'Под 150 м: 0% кислород • 60 запазени кораба',
     summary: 'След катастрофалния пробив на Босфора се формира безкислороден сероводороден слой, в който експедицията MAP откри над 60 антични кораба с непокътнати мачти и въжета.',
     secretProtocol: 'Край Варна и Созопол под водата лежат потопени селища от епохата на най-старото обработено злато в света.',
-    linkedMysteryId: 'mystery-black-sea-deluge-ships'
+    linkedMysteryId: 'conspiracy-black-sea-flood-noah'
   }
 ];
 

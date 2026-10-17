@@ -127,9 +127,27 @@ export function validateExamPaper(paper: ExamPaper): string[] {
 // Оценяване
 // ---------------------------------------------------------------------------
 
+const BG_WORD_NUMBERS: ReadonlyArray<[RegExp, string]> = [
+  [/дванадесет(?:те)?|дванайсет(?:те)?/gi, '12'],
+  [/единадесет(?:те)?|единайсет(?:те)?/gi, '11'],
+  [/петнадесет(?:те)?|петнайсет(?:те)?/gi, '15'],
+  [/десет(?:те)?/gi, '10']
+];
+
 export function parseNumberAnswer(raw: string): number | null {
-  const m = raw.replace(/\s+/g, '').replace(',', '.').match(/-?\d+(?:\.\d+)?/);
-  return m ? Number(m[0]) : null;
+  let afterEquals = raw.includes('=') ? raw.slice(raw.lastIndexOf('=') + 1) : raw;
+  for (const [pattern, digit] of BG_WORD_NUMBERS) {
+    afterEquals = afterEquals.replace(pattern, digit);
+  }
+  const hasThousandsWord = /(?:хиляди|хиляда|хил\.?)/i.test(afterEquals);
+  const cleaned = afterEquals
+    .replace(/\s+/g, '')
+    .replace(/(\d),(\d{3})(?!\d)/g, '$1$2')
+    .replace(',', '.');
+  const m = cleaned.match(/-?\d+(?:\.\d+)?/);
+  if (!m) return null;
+  const num = Number(m[0]);
+  return hasThousandsWord && Math.abs(num) < 1000 ? num * 1000 : num;
 }
 
 export function normalizeTextAnswer(raw: string): string {
@@ -145,7 +163,11 @@ export function isShortAnswerCorrect(q: ShortAnswerQuestion, answer: string): bo
   if (!answer.trim()) return false;
   if (q.answerType === 'number') {
     const value = parseNumberAnswer(answer);
-    return value !== null && q.acceptedAnswers.some((a) => parseNumberAnswer(a) === value);
+    if (value !== null && q.acceptedAnswers.some((a) => parseNumberAnswer(a) === value)) {
+      return true;
+    }
+    const normalized = normalizeTextAnswer(answer);
+    return q.acceptedAnswers.some((a) => normalizeTextAnswer(a) === normalized);
   }
   const normalized = normalizeTextAnswer(answer);
   return q.acceptedAnswers.some((a) => normalizeTextAnswer(a) === normalized);

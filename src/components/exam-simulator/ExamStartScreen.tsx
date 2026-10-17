@@ -89,24 +89,24 @@ export const ExamStartScreen: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) 
 
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs">
                 <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200">
-                  <span className="block font-bold text-rose-900 font-mono">0 – 29 т.</span>
+                  <span className="block font-bold text-rose-900 font-mono">0 – 29,5 т.</span>
                   <span className="text-[11px] text-rose-700 font-medium">Слаб 2.00</span>
                 </div>
                 <div className="p-2.5 rounded-lg bg-orange-50 border border-orange-200">
-                  <span className="block font-bold text-orange-900 font-mono">30 – 58 т.</span>
-                  <span className="text-[11px] text-orange-700 font-medium">Среден 3.00 (Праг)</span>
+                  <span className="block font-bold text-orange-900 font-mono">30 – 41,5 т.</span>
+                  <span className="text-[11px] text-orange-700 font-medium">Среден 3 (Праг)</span>
                 </div>
                 <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-200">
-                  <span className="block font-bold text-amber-900 font-mono">59 – 74 т.</span>
-                  <span className="text-[11px] text-amber-700 font-medium">Добър 4.00</span>
+                  <span className="block font-bold text-amber-900 font-mono">42 – 64,5 т.</span>
+                  <span className="text-[11px] text-amber-700 font-medium">Добър 4</span>
                 </div>
                 <div className="p-2.5 rounded-lg bg-sky-50 border border-sky-200">
-                  <span className="block font-bold text-sky-900 font-mono">75 – 89 т.</span>
-                  <span className="text-[11px] text-sky-700 font-medium">Мн. добър 5.00</span>
+                  <span className="block font-bold text-sky-900 font-mono">65 – 88 т.</span>
+                  <span className="text-[11px] text-sky-700 font-medium">Мн. добър 5</span>
                 </div>
                 <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 col-span-2 sm:col-span-1">
-                  <span className="block font-bold text-emerald-900 font-mono">90 – 100 т.</span>
-                  <span className="text-[11px] text-emerald-700 font-medium">Отличен 6.00</span>
+                  <span className="block font-bold text-emerald-900 font-mono">88,5 – 100 т.</span>
+                  <span className="text-[11px] text-emerald-700 font-medium">Отличен 6</span>
                 </div>
               </div>
             </div>

@@ -134,7 +134,7 @@ const BLITZ_QUESTIONS: BlitzQuestion[] = [
   },
   {
     id: 'bl-math-4',
-    category: 'math',
+    category: 'science',
     categoryLabel: 'Физика • Закон на Ом',
     prompt: 'Как гласи Законът на Ом за част от електрическата верига?',
     options: ['I = U · R', 'I = U / R', 'I = R / U', 'U = I / R'],
@@ -152,7 +152,7 @@ const BLITZ_QUESTIONS: BlitzQuestion[] = [
   },
   {
     id: 'bl-math-6',
-    category: 'math',
+    category: 'science',
     categoryLabel: 'Биология • Кръвообращение',
     prompt: 'От коя кухина на сърцето започва Големият (телесен) кръг на кръвообращение?',
     options: ['От дясното предсърдие', 'От лявата камера (чрез аортата)', 'От дясната камера', 'От лявото предсърдие'],
@@ -487,23 +487,23 @@ const BLITZ_QUESTIONS: BlitzQuestion[] = [
   {
     id: 'bl-code-6',
     category: 'stem_code',
-    categoryLabel: 'Киберсигурност • Уеб защита',
-    prompt: 'Кой механизъм защитава най-надеждно релационната база данни от SQL Injection (SQLi) атаки?',
+    categoryLabel: 'Уеб технологии • HTTP & REST API',
+    prompt: 'Кой HTTP статус код указва, че потребителят е автентикиран, но НЯМА ПРАВА (Forbidden) за достъп до ресурса?',
     options: [
-      'Скриване на формата с CSS',
-      'Параметризирани заявки (Prepared Statements) със строго типизирани плейсхолдъри',
-      'Проверка само с JavaScript във фронтенда',
-      'Използване на HTTP вместо HTTPS'
+      '200 OK',
+      '401 Unauthorized (липсва валидна автентикация)',
+      '403 Forbidden (сървърът разбира заявката, но отказва оторизация)',
+      '500 Internal Server Error'
     ],
-    correctIndex: 1,
-    quickRule: 'Prepared Statements компилират структурата на SQL заявката предварително и третират входа единствено като литерална стойност.'
+    correctIndex: 2,
+    quickRule: '401 означава липса на автентикация (кой си ти?), а 403 Forbidden — липса на права/оторизация (знам кой си, но нямаш достъп).'
   }
 ];
 
 function shuffleArray<T>(items: T[]): T[] {
   const copy = [...items];
   for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor((i * 17 + Date.now()) % (i + 1));
+    const j = Math.floor(Math.random() * (i + 1));
     const temp = copy[i];
     copy[i] = copy[j];
     copy[j] = temp;

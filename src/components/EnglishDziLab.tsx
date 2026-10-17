@@ -115,7 +115,8 @@ export const EnglishDziLab: React.FC = () => {
     const detectedLinkingWords: string[] = [];
     for (const group of ACADEMIC_LINKING_WORDS) {
       for (const lw of group.words) {
-        if (lowerText.includes(lw)) {
+        const escaped = lw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        if (new RegExp(`\\b${escaped}\\b`, 'i').test(lowerText)) {
           detectedLinkingWords.push(lw);
         }
       }
@@ -172,10 +173,10 @@ export const EnglishDziLab: React.FC = () => {
           <div className="space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-blue-200 text-xs font-bold uppercase tracking-wider">
               <Globe className="w-3.5 h-3.5 text-sky-400" />
-              <span>ДЗИ & НВО Английски език • CEFR B1.1 & B2</span>
+              <span>ДЗИ & НВО Английски език • CEFR B1.1, B2 & C1</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
-              Лаборатория по Английски език за Матура (B1.1 / B2)
+              Лаборатория по Английски език за Матура (B1.1 / B2 / C1)
             </h2>
             <p className="text-xs sm:text-sm text-blue-100/90 leading-relaxed">
               Овладей компонентите с най-висока тежест на ДЗИ по английски език: <strong>Sentence Transformations (Use of English)</strong>, фразеологични глаголи за B2 и <strong>Writing Studio</strong> с жив одитор на официалния регистър и броя думи по стандарта на МОН.
@@ -304,7 +305,9 @@ export const EnglishDziLab: React.FC = () => {
                       </span>
                       <span
                         className={`px-2 py-0.5 rounded-full text-[11px] font-bold border ${
-                          item.cefrLevel === 'B2'
+                          item.cefrLevel === 'C1 / ESP'
+                            ? 'bg-purple-50 text-purple-700 border-purple-200'
+                            : item.cefrLevel === 'B2'
                             ? 'bg-slate-50 text-slate-700 border-slate-200'
                             : 'bg-emerald-50 text-emerald-700 border-emerald-200'
                         }`}
@@ -715,18 +718,32 @@ export const EnglishDziLab: React.FC = () => {
                         <span className="text-[11px] font-semibold text-slate-500 mr-1">
                           {group.category}:
                         </span>
-                        {group.words.map((w) => (
-                          <button
-                            key={w}
-                            type="button"
-                            onClick={() =>
-                              handleInsertPhrase(w.charAt(0).toUpperCase() + w.slice(1) + ', ')
-                            }
-                            className="px-2 py-0.5 rounded-md bg-white hover:bg-slate-100 text-slate-700 hover:text-blue-700 border border-slate-200 text-[11px] font-mono transition-colors"
-                          >
-                            + {w}
-                          </button>
-                        ))}
+                        {group.words.map((w) => {
+                          const noCommaAfter = new Set([
+                            'although',
+                            'despite',
+                            'in spite of',
+                            'whereas',
+                            'even though',
+                            'owing to',
+                            'due to',
+                            'not only',
+                            'as a result of'
+                          ]);
+                          const suffix = noCommaAfter.has(w) ? ' ' : ', ';
+                          return (
+                            <button
+                              key={w}
+                              type="button"
+                              onClick={() =>
+                                handleInsertPhrase(w.charAt(0).toUpperCase() + w.slice(1) + suffix)
+                              }
+                              className="px-2 py-0.5 rounded-md bg-white hover:bg-slate-100 text-slate-700 hover:text-blue-700 border border-slate-200 text-[11px] font-mono transition-colors"
+                            >
+                              + {w}
+                            </button>
+                          );
+                        })}
                       </div>
                     ))}
                   </div>

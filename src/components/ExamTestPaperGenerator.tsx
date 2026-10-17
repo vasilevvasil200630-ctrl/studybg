@@ -219,7 +219,15 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
   });
 
   const currentQuestions = activeGroup === 'A' ? questionsA : questionsB;
-  const fullChecklist = currentLesson.notebookChecklist || [];
+  const fullChecklist =
+    currentLesson.notebookChecklist && currentLesson.notebookChecklist.length > 0
+      ? currentLesson.notebookChecklist
+      : (currentLesson.flashcards || []).slice(0, 4).map((fc, idx) => ({
+          id: fc.id || `fc-fallback-${idx}`,
+          requirement: fc.front,
+          whyNeeded: fc.back,
+          suggestedNotes: fc.back,
+        }));
   const checklist =
     activeGroup === 'B' && fullChecklist.length >= 4
       ? [fullChecklist[2], fullChecklist[3]]
@@ -524,7 +532,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
             {/* Correction Protocol */}
             <div className="border-t border-black/30 pt-2 flex flex-wrap items-center justify-between text-[9px] text-slate-600 gap-2">
               <span>Ако сгрешите, зачертайте грешния отговор плътно и отбележете новия със знак Х.</span>
-              <span className="font-bold text-slate-900">Точки от Модул 1: ....... / {currentQuestions.length * 10} т.</span>
+              <span className="font-bold text-slate-900">Точки от Модул 1: ....... / 40 т.</span>
             </div>
           </div>
         )}
@@ -533,9 +541,9 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
         <div className="space-y-5 pt-2">
           <div className="flex items-center justify-between border-b border-black/40 pb-1">
             <h3 className="text-xs font-bold uppercase tracking-wider">
-              I. МОДУЛ 1: Въпроси със структуриран отговор (10 т. за всеки верен отговор)
+              I. МОДУЛ 1: Въпроси със структуриран отговор (по {Number((40 / Math.max(1, currentQuestions.length)).toFixed(1))} т. за верен отговор)
             </h3>
-            <span className="text-xs text-slate-600 font-medium">Общо: {currentQuestions.length * 10} т.</span>
+            <span className="text-xs text-slate-600 font-medium">Общо: 40 т.</span>
           </div>
 
           <div className="space-y-4">
@@ -699,9 +707,9 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
             </div>
 
             <div className="text-[11px] text-slate-700 leading-relaxed space-y-1 border-t border-amber-200 pt-2 print:text-black">
-              <div><strong>Скала за превръщане на точките в оценка:</strong></div>
-              <div>• 0 – 29 т. = Слаб 2.00 | • 30 – 58 т. = Среден 3.00 | • 59 – 74 т. = Добър 4.00</div>
-              <div>• 75 – 89 т. = Мн. добър 5.00 | • 90 – 100 т. = Отличен 6.00</div>
+              <div><strong>Скала за превръщане на точките в оценка (100 т.):</strong></div>
+              <div>• 0 – 29,5 т. = Слаб 2.00 | • 30 – 41,5 т. = Среден 3 (3.00–3.49) | • 42 – 64,5 т. = Добър 4 (3.50–4.49)</div>
+              <div>• 65 – 88 т. = Мн. добър 5 (4.50–5.49) | • 88,5 – 100 т. = Отличен 6 (5.50–6.00; 100 т. = 6.00)</div>
             </div>
           </div>
         )}

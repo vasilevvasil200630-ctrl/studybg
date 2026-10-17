@@ -71,7 +71,7 @@ export const ExamModule3Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
               <button
                 type="button"
                 onClick={handleEvaluateEssayWithAi}
-                disabled={isEvaluatingEssay || essayText.trim().length < 20}
+                disabled={isEvaluatingEssay || essayText.trim().length < 30}
                 className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-slate-300 text-white font-semibold text-xs transition-all shadow-xs shrink-0 cursor-pointer disabled:cursor-not-allowed"
               >
                 {isEvaluatingEssay ? (

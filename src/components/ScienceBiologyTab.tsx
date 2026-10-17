@@ -73,8 +73,8 @@ export const ScienceBiologyTab: React.FC = () => {
 
   const getPhenotype = (a1: string, a2: string) => {
     const pair = [a1, a2].sort().join('');
-    if (pair === 'IᴬIᴬ' || pair === 'Iᴬi') return { group: 'Група A', genotype: `${a1}${a2}`, color: 'bg-rose-50 text-rose-900 border-rose-200' };
-    if (pair === 'IᴮIᴮ' || pair === 'Iᴮi') return { group: 'Група B', genotype: `${a1}${a2}`, color: 'bg-blue-50 text-blue-900 border-blue-200' };
+    if (pair === 'IᴬIᴬ' || pair === 'Iᴬi') return { group: 'Група A', genotype: pair, color: 'bg-rose-50 text-rose-900 border-rose-200' };
+    if (pair === 'IᴮIᴮ' || pair === 'Iᴮi') return { group: 'Група B', genotype: pair, color: 'bg-blue-50 text-blue-900 border-blue-200' };
     if (pair === 'IᴬIᴮ') return { group: 'Група AB (Кодоминиране)', genotype: 'IᴬIᴮ', color: 'bg-slate-50 text-slate-900 border-slate-200' };
     return { group: 'Група 0 (Рецесивна)', genotype: 'ii', color: 'bg-emerald-50 text-emerald-900 border-emerald-200' };
   };
@@ -127,7 +127,10 @@ export const ScienceBiologyTab: React.FC = () => {
               <input
                 type="text"
                 value={dnaInput}
-                onChange={(e) => setDnaInput(e.target.value.toUpperCase().replace(/[^ATGC]/g, ''))}
+                onChange={(e) => {
+                  setDnaInput(e.target.value.toUpperCase().replace(/[^ATGC]/g, ''));
+                  setActivePresetNote('');
+                }}
                 className="flex-1 font-mono text-sm px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-slate-900 focus:outline-none focus:border-emerald-600 tracking-widest"
                 placeholder="Напр. TACGTGGACTGAGGACTCCTCTTCATT"
               />
@@ -135,14 +138,20 @@ export const ScienceBiologyTab: React.FC = () => {
                 {(['A', 'T', 'G', 'C'] as const).map((nuc) => (
                   <button
                     key={nuc}
-                    onClick={() => setDnaInput((prev) => prev + nuc)}
+                    onClick={() => {
+                      setDnaInput((prev) => prev + nuc);
+                      setActivePresetNote('');
+                    }}
                     className="px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-mono text-xs font-bold cursor-pointer"
                   >
                     +{nuc}
                   </button>
                 ))}
                 <button
-                  onClick={() => setDnaInput('TAC')}
+                  onClick={() => {
+                    setDnaInput('TAC');
+                    setActivePresetNote('');
+                  }}
                   className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 cursor-pointer"
                   title="Нулирай до СТАРТ триплет TAC"
                 >
@@ -186,7 +195,7 @@ export const ScienceBiologyTab: React.FC = () => {
                     <strong className="text-blue-900">{item.codon}</strong>
                   </div>
                   <div className="text-xs font-mono bg-slate-50/70 py-1 px-2 rounded border border-slate-200">
-                    <span className="text-[10px] text-slate-600 block">тРНК антикодон</span>
+                    <span className="text-[10px] text-slate-600 block">тРНК антикодон (3&apos;-5&apos;)</span>
                     <strong className="text-slate-900">{item.anticodon}</strong>
                   </div>
                   <div

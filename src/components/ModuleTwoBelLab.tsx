@@ -468,12 +468,18 @@ export const ModuleTwoBelLab: React.FC = () => {
                   <div className="flex items-center gap-2 font-mono">
                     <span
                       className={`px-2 py-0.5 rounded font-bold border ${
-                        sentenceCount >= 3 && sentenceCount <= 4
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
-                          : 'bg-amber-50 text-amber-800 border-amber-300'
+                        activeSynthesis.examType.includes('Резюме')
+                          ? wordCount >= 50 && wordCount <= 95
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                            : 'bg-amber-50 text-amber-800 border-amber-300'
+                          : sentenceCount >= 3 && sentenceCount <= 4
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                            : 'bg-amber-50 text-amber-800 border-amber-300'
                       }`}
                     >
-                      Изречения: {sentenceCount} (Цел: 3–4)
+                      {activeSynthesis.examType.includes('Резюме')
+                        ? `Изречения: ${sentenceCount} (Цел: 60–90 думи / 4–5 изр.)`
+                        : `Изречения: ${sentenceCount} (Цел: 3–4)`}
                     </span>
                     <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
                       Думи: {wordCount}

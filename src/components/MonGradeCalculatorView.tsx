@@ -87,9 +87,9 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
   const strategyBreakdown = useMemo(() => {
     const total = reqPoints;
     const m1 = Math.min(40, Math.round(total * 0.40));
-    const remaining = total - m1;
+    const remaining = Math.max(0, total - m1);
     const m2 = Math.min(30, Math.round(remaining * 0.50));
-    const m3 = Math.min(30, Math.round(total - m1 - m2));
+    const m3 = Number((total - m1 - m2).toFixed(1));
     return { m1, m2, m3 };
   }, [reqPoints]);
 
@@ -259,10 +259,10 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                 <div className="flex justify-between text-[10px] font-mono text-slate-500">
                   <span>0т.</span>
                   <span className="text-rose-600 font-bold">30т. (Тройка)</span>
-                  <span className="text-amber-600 font-bold">59т. (Добър)</span>
-                  <span className="text-blue-600 font-bold">75т. (Мн. добър)</span>
-                  <span className="text-emerald-700 font-bold">90т. (Отличен 6)</span>
-                  <span>100т.</span>
+                  <span className="text-amber-600 font-bold">42т. (Добър)</span>
+                  <span className="text-blue-600 font-bold">65т. (Мн. добър)</span>
+                  <span className="text-emerald-700 font-bold">89т. (Отличен)</span>
+                  <span>100т. (6.00)</span>
                 </div>
               </div>
             </div>
@@ -328,14 +328,14 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
             </div>
 
             {/* Progress to next milestone */}
-            {points < 90 && (
+            {points < 100 && (
               <div className="flex items-center justify-between p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
                 <span className="flex items-center gap-1.5 font-medium">
                   <TrendingUp className="w-4 h-4 text-amber-600" />
-                  <span>До Отличен 6.00:</span>
+                  <span>{points < 88.5 ? 'До Отличен (5.50):' : 'До Пълен Отличен (6.00):'}</span>
                 </span>
                 <span className="font-bold font-mono">
-                  още +{(90 - points).toFixed(1)} точки
+                  още +{(points < 88.5 ? 88.5 - points : 100 - points).toFixed(1)} точки
                 </span>
               </div>
             )}
@@ -813,37 +813,37 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                 </td>
               </tr>
               <tr className="hover:bg-slate-50/60">
-                <td className="py-2.5 px-3 font-bold text-orange-600 font-mono">Среден 3.00</td>
-                <td className="py-2.5 px-3 font-mono font-medium">30.00 – 58.50 т.</td>
+                <td className="py-2.5 px-3 font-bold text-orange-600 font-mono">Среден (3.00 – 3.49)</td>
+                <td className="py-2.5 px-3 font-mono font-medium">30.00 – 41.50 т.</td>
                 <td className="py-2.5 px-3 text-slate-600">Среден</td>
                 <td className="py-2.5 px-3 text-slate-700">
-                  Успешно преминат минимален праг за средно образование
+                  Успешно преминат минимален праг за средно образование (30 т. = 3.00)
                 </td>
               </tr>
               <tr className="hover:bg-slate-50/60">
-                <td className="py-2.5 px-3 font-bold text-amber-600 font-mono">Добър 4.00</td>
-                <td className="py-2.5 px-3 font-mono font-medium">59.00 – 74.50 т.</td>
+                <td className="py-2.5 px-3 font-bold text-amber-600 font-mono">Добър (3.50 – 4.49)</td>
+                <td className="py-2.5 px-3 font-mono font-medium">42.00 – 64.50 т.</td>
                 <td className="py-2.5 px-3 text-slate-600">Добър</td>
                 <td className="py-2.5 px-3 text-slate-700">
-                  Задоволителни знания по изпитната програма
+                  Задоволителни знания по изпитната програма (53.5 т. = 4.00)
                 </td>
               </tr>
               <tr className="hover:bg-slate-50/60">
-                <td className="py-2.5 px-3 font-bold text-sky-600 font-mono">Много добър 5.00</td>
-                <td className="py-2.5 px-3 font-mono font-medium">75.00 – 89.50 т.</td>
+                <td className="py-2.5 px-3 font-bold text-sky-600 font-mono">Много добър (4.50 – 5.49)</td>
+                <td className="py-2.5 px-3 font-mono font-medium">65.00 – 88.00 т.</td>
                 <td className="py-2.5 px-3 text-slate-600">Много добър</td>
                 <td className="py-2.5 px-3 text-slate-700">
-                  Високо ниво на овладяване на материала и изворите
+                  Високо ниво на овладяване на материала и изворите (77 т. = 5.00)
                 </td>
               </tr>
               <tr className="bg-emerald-50/40 hover:bg-emerald-50/60">
-                <td className="py-2.5 px-3 font-bold text-emerald-700 font-mono">Отличен 6.00</td>
-                <td className="py-2.5 px-3 font-mono font-bold text-emerald-900">90.00 – 100.00 т.</td>
+                <td className="py-2.5 px-3 font-bold text-emerald-700 font-mono">Отличен (5.50 – 6.00)</td>
+                <td className="py-2.5 px-3 font-mono font-bold text-emerald-900">88.50 – 100.00 т.</td>
                 <td className="py-2.5 px-3 font-semibold text-emerald-900">Отличен</td>
                 <td className="py-2.5 px-3 font-medium text-emerald-900">
                   <span className="inline-flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    Пълен успех, максимален състезателен бал
+                    Отличен успех (88.5 т. = 5.50; 100 т. = Пълен 6.00)
                   </span>
                 </td>
               </tr>

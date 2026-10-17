@@ -549,7 +549,7 @@ export const ENGLISH_WRITING_BLUEPRINTS: WritingBlueprint[] = [
         ]
       }
     ],
-    modelPrompt: 'You have seen an advertisement for an European Youth Leadership Exchange in Brussels. Write a formal email asking about the programme dates, accommodation, and eligibility criteria.',
+    modelPrompt: 'You have seen an advertisement for a European Youth Leadership Exchange in Brussels. Write a formal email asking about the programme dates, accommodation, and eligibility criteria.',
     modelOpening: 'Dear Sir or Madam,\n\nI am writing with regard to the advertisement for the European Youth Leadership Exchange in Brussels, which I recently saw on your official website. As a twelfth-grade student with a keen interest in European affairs, I would be grateful if you could provide me with some additional details.'
   },
   {
@@ -635,7 +635,7 @@ export const ENGLISH_WRITING_BLUEPRINTS: WritingBlueprint[] = [
         phrasesEn: [
           'I would welcome the opportunity to discuss how my technical background aligns with your team\'s objectives during an interview.',
           'Thank you for considering my application. I look forward to hearing from you.',
-          'Yours faithfully,'
+          'Yours faithfully, (при Dear Hiring Manager / Dear Admissions Committee) / Yours sincerely, (при конкретно име)'
         ]
       }
     ],

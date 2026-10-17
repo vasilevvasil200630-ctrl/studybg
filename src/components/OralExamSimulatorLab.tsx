@@ -447,12 +447,21 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
     }
 
     if (activeLesson.flashcards) {
+      const stopWords = new Set([
+        'когато', 'напълно', 'защото', 'това', 'което', 'както', 'всички',
+        'според', 'между', 'след', 'преди', 'чрез', 'върху', 'поради',
+        'който', 'която', 'които', 'винаги', 'само', 'дори', 'обаче', 'затова'
+      ]);
       activeLesson.flashcards.slice(0, 4).forEach((fc) => {
-        const words = fc.back
+        const frontWords = fc.front
           .replace(/[.,:;()"'„“!?-]/g, ' ')
           .split(/\s+/)
-          .filter((w: string) => w.length >= 5);
-        const keyWord = words[0] || fc.front.split(/\s+/).find((w: string) => w.length >= 5) || 'понятие';
+          .filter((w: string) => w.length >= 5 && !stopWords.has(w.toLowerCase()));
+        const backWords = fc.back
+          .replace(/[.,:;()"'„“!?-]/g, ' ')
+          .split(/\s+/)
+          .filter((w: string) => w.length >= 5 && !stopWords.has(w.toLowerCase()));
+        const keyWord = frontWords[frontWords.length - 1] || backWords[0] || 'понятие';
         const token = keyWord.slice(0, 5).toLowerCase();
         if (token && !terms.some((t) => t.matchToken === token)) {
           terms.push({
@@ -470,9 +479,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
   const matchedKeywords = useMemo(() => {
     const ansLower = studentAnswer.toLowerCase();
     return rubricKeywords.filter((rk) => {
-      const firstWord = rk.label.toLowerCase().split(/\s+/)[0];
-      const stem = firstWord.length > 5 ? firstWord.slice(0, 5) : firstWord;
-      return ansLower.includes(rk.matchToken) || (stem.length >= 3 && ansLower.includes(stem));
+      return ansLower.includes(rk.matchToken.toLowerCase());
     });
   }, [studentAnswer, rubricKeywords]);
 
@@ -507,12 +514,15 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
       return;
     }
     window.speechSynthesis.cancel();
+    const isEnglishLesson = oralMode === 'lesson' && activeLesson.subject === 'Английски език';
     const introText =
       oralMode === 'lesson'
-        ? `Устно изпитване по ${activeLesson.subject}. Тема: ${activeLesson.title}. Въпрос към ученика: ${activeQuestion}`
+        ? isEnglishLesson
+          ? `Oral Exam in English. Topic: ${activeLesson.title}. Question: ${activeQuestion}`
+          : `Устно изпитване по ${activeLesson.subject}. Тема: ${activeLesson.title}. Въпрос към ученика: ${activeQuestion}`
         : `${activeSpecialTicket.commissionRole}. Специалност: ${activeSpecialTicket.code}. Въпрос на комисията: ${activeQuestion}`;
     const utterance = new SpeechSynthesisUtterance(introText);
-    utterance.lang = 'bg-BG';
+    utterance.lang = isEnglishLesson ? 'en-GB' : 'bg-BG';
     utterance.rate = 0.96;
     utterance.onend = () => setIsSpeakingQuestion(false);
     utterance.onerror = () => setIsSpeakingQuestion(false);
@@ -540,7 +550,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
 
     try {
       const recognition = new SpeechRecConstructor();
-      recognition.lang = 'bg-BG';
+      recognition.lang = oralMode === 'lesson' && activeLesson.subject === 'Английски език' ? 'en-GB' : 'bg-BG';
       recognition.continuous = true;
       recognition.interimResults = true;
 

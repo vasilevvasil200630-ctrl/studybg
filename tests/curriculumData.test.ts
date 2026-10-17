@@ -4,10 +4,25 @@ import { LESSON_GRADES, LESSON_SUBJECTS } from '../src/types';
 import { validateLessons } from '../scripts/lib/validateLessons.mjs';
 
 describe('данни за уроците', () => {
-  it('всички уроци минават валидацията', async () => {
+  it('всички уроци минават валидацията и имат балансирани верни отговори', async () => {
     const lessons = await loadFullCurriculumLessons();
     expect(lessons.length).toBeGreaterThanOrEqual(108);
     expect(validateLessons(lessons, { subjects: LESSON_SUBJECTS, grades: LESSON_GRADES })).toEqual([]);
+
+    const dist = [0, 0, 0, 0];
+    for (const lesson of lessons) {
+      expect(lesson.notebookChecklist?.length).toBeGreaterThan(0);
+      for (const q of lesson.quiz) {
+        if (q.options.length === 4) {
+          dist[q.correctIndex]++;
+        }
+      }
+    }
+    const total4 = dist.reduce((a, b) => a + b, 0);
+    for (const count of dist) {
+      expect(count / total4).toBeGreaterThan(0.18);
+      expect(count / total4).toBeLessThan(0.32);
+    }
   });
 });
 
@@ -36,6 +51,29 @@ describe('validateLessons хваща типичните грешки', () => {
     expect(text).toMatch(/дублирано id/);
     expect(text).toMatch(/непознат предмет/);
     expect(text).toMatch(/невалиден correctIndex 5/);
+  });
+
+  it('дублирани опции и шаблонни дистрактори в куиз въпросите', () => {
+    const errors = validateLessons(
+      [
+        {
+          ...base,
+          quiz: [
+            { id: 1, question: 'q1', options: ['еднакъв', 'еднакъв'], correctIndex: 0 },
+            {
+              id: 2,
+              question: 'q2',
+              options: ['Твърдението е невалидно и противоречи на основните принципи по Математика', 'вярно'],
+              correctIndex: 1
+            }
+          ]
+        }
+      ],
+      { subjects: LESSON_SUBJECTS, grades: LESSON_GRADES }
+    );
+    const text = errors.join('\n');
+    expect(text).toMatch(/дублирани опции/);
+    expect(text).toMatch(/шаблонен дистрактор/);
   });
 });
 

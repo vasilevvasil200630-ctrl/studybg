@@ -168,10 +168,21 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
   else gradeEstimate = 'Начално ниво (Препоръчва се попълване на пропуските)';
 
   // Check if we have an existing rich lesson in curriculum database
-  const existing = activeLessonsPool.find(
-    l => l.title.toLowerCase().includes(matched.subDomain.name.toLowerCase().slice(0, 15)) ||
-         matched.subDomain.name.toLowerCase().includes(l.title.toLowerCase().slice(0, 15))
-  );
+  const subNameLower = matched.subDomain.name.toLowerCase();
+  const existing =
+    activeLessonsPool.find((l) => l.id === matched.subDomain.id) ||
+    activeLessonsPool.find(
+      (l) =>
+        l.title.toLowerCase().includes(subNameLower.slice(0, 15)) ||
+        subNameLower.includes(l.title.toLowerCase().slice(0, 15))
+    ) ||
+    activeLessonsPool.find((l) => {
+      if (l.subject !== matched.subject) return false;
+      const lTitle = l.title.toLowerCase();
+      return matched.subDomain.keywords.some(
+        (kw) => kw.length >= 4 && lTitle.includes(kw.toLowerCase())
+      );
+    });
 
   const lessonData = existing || generateLessonFromInput(
     matched.subDomain.name,

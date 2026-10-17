@@ -12,7 +12,7 @@ export const ExamModule1Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
           <div className="space-y-4 mt-6">
             <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 flex items-center justify-between">
               <span>
-                <strong>Модул 1:</strong> 10 затворени въпроса с избираем отговор (А, Б, В, Г). Всеки верен отговор носи <strong>4 точки</strong>.
+                <strong>Модул 1:</strong> {questions.length} затворени въпроса с избираем отговор (А, Б, В, Г). Общ брой точки за Модул 1: <strong>40 точки</strong> (по {Number((40 / Math.max(1, questions.length)).toFixed(1))} т. на въпрос).
               </span>
               <span className="font-mono font-medium text-slate-800">
                 Попълнени: {mod1CompletedCount} / {questions.length}
@@ -22,6 +22,7 @@ export const ExamModule1Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
             {questions.map((q, qIdx) => {
               const selectedOpt = selectedAnswers[q.id];
               const isCorrect = selectedOpt === q.correctIndex;
+              const ptsPerQ = Number((40 / Math.max(1, questions.length)).toFixed(1));
 
               return (
                 <div key={q.id} className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200 space-y-3 shadow-2xs">
@@ -34,7 +35,7 @@ export const ExamModule1Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
                         <h5 className="text-sm font-semibold text-slate-900 leading-snug">
                           {q.question}
                         </h5>
-                        <span className="text-[11px] text-slate-500 font-mono">4 точки</span>
+                        <span className="text-[11px] text-slate-500 font-mono">{ptsPerQ} точки</span>
                       </div>
                     </div>
 
@@ -43,7 +44,7 @@ export const ExamModule1Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
                         {isCorrect ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold">
                             <CheckCircle2 className="w-3.5 h-3.5" />
-                            +4 т.
+                            +{ptsPerQ} т.
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 text-xs font-semibold">

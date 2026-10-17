@@ -3,7 +3,7 @@ import { verbalGrade } from '../lib/monGradeScale';
 import { isSupabaseConfigured } from './supabaseConfig';
 
 // Стабилен модел, към който минаваме автоматично, ако зададеният с VITE_GEMINI_MODEL върне 404.
-const FALLBACK_MODEL = 'gemini-2.5-flash';
+const FALLBACK_MODEL = 'gemini-3.8-flash';
 // Основният модел може да се смени с VITE_GEMINI_MODEL без промяна в кода.
 const PRIMARY_MODEL = (import.meta.env.VITE_GEMINI_MODEL as string | undefined)?.trim() || FALLBACK_MODEL;
 

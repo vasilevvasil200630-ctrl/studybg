@@ -147,21 +147,21 @@ describe('evaluateEssayWithGemini', () => {
 describe('callGeminiContent (през evaluateBelModuleTwoWithGemini)', () => {
   const belParams = { mode: 'synthesis' as const, topic: 't', studentDraft: 'x', referenceText: 'еталон' };
 
-  it('по подразбиране ползва gemini-2.5-flash', async () => {
+  it('по подразбиране ползва gemini-3.8-flash', async () => {
     const { evaluateBelModuleTwoWithGemini, getActiveGeminiModel } = await loadService();
     script = [ok({ score: 2, feedback: 'ok', improvements: [], modelImprovedVersion: '' })];
     await evaluateBelModuleTwoWithGemini(belParams);
-    expect(calls[0].url).toContain('/models/gemini-2.5-flash:');
-    expect(getActiveGeminiModel()).toBe('gemini-2.5-flash');
+    expect(calls[0].url).toContain('/models/gemini-3.8-flash:');
+    expect(getActiveGeminiModel()).toBe('gemini-3.8-flash');
   });
 
-  it('404 за зададения модел → повторение с gemini-2.5-flash', async () => {
-    const { evaluateBelModuleTwoWithGemini, getActiveGeminiModel } = await loadService('gemini-3.6-flash');
+  it('404 за зададения модел → повторение с gemini-3.8-flash', async () => {
+    const { evaluateBelModuleTwoWithGemini, getActiveGeminiModel } = await loadService('gemini-2.5-flash');
     script = [status(404), ok({ score: 0, feedback: 'празно', improvements: [], modelImprovedVersion: '' })];
     const result = await evaluateBelModuleTwoWithGemini(belParams);
-    expect(calls[0].url).toContain('/models/gemini-3.6-flash:');
-    expect(calls[1].url).toContain('/models/gemini-2.5-flash:');
-    expect(getActiveGeminiModel()).toBe('gemini-2.5-flash');
+    expect(calls[0].url).toContain('/models/gemini-2.5-flash:');
+    expect(calls[1].url).toContain('/models/gemini-3.8-flash:');
+    expect(getActiveGeminiModel()).toBe('gemini-3.8-flash');
     expect(result.score).toBe(0);
     expect(result.modelImprovedVersion).toBe('');
   });
@@ -217,7 +217,7 @@ describe('Supabase AI proxy (без локален ключ)', () => {
     expect(result.score).toBe(3);
     expect(calls).toHaveLength(0);
     expect(supabaseMock.invocations[0].name).toBe('gemini-proxy');
-    expect(supabaseMock.invocations[0].body.model).toBe('gemini-2.5-flash');
+    expect(supabaseMock.invocations[0].body.model).toBe('gemini-3.8-flash');
   });
 
   it('недеплойната функция (404) → структурен анализ и без повторни опити в сесията', async () => {

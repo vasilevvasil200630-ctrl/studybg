@@ -9,9 +9,9 @@
 // supabase/migrations/20261016_rls_and_ai_usage.sql (consume_ai_quota).
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-const FALLBACK_MODEL = 'gemini-2.5-flash';
+const FALLBACK_MODEL = 'gemini-3.8-flash';
 const DEFAULT_MODEL = Deno.env.get('GEMINI_MODEL') ?? FALLBACK_MODEL;
-const ALLOWED_MODELS = new Set([FALLBACK_MODEL, DEFAULT_MODEL]);
+const ALLOWED_MODELS = new Set([FALLBACK_MODEL, DEFAULT_MODEL, 'gemini-3.6-flash', 'gemini-2.5-flash']);
 const DAILY_LIMIT = Number(Deno.env.get('AI_DAILY_LIMIT') ?? '30');
 const MAX_BODY_BYTES = 6 * 1024 * 1024; // снимки за разпознаване на ръкопис
 const ALLOWED_ORIGINS = (

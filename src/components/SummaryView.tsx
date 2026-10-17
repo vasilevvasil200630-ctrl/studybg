@@ -99,8 +99,8 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
         const fallbackReply = `📌 Синтез по МОН за „${lesson.title}“:\n• Основен акцент: ${lesson.summary.overview}\n• Златно правило за Отличен 6.00: ${lesson.summary.examGoldenRule}\n• Ключов капан на изпит: ${lesson.summary.commonTraps?.[0] || 'Внимавайте за точното използване на терминологията.'}`;
         setMentorHistory([...nextHistory, { sender: 'assistant', text: fallbackReply }]);
       }
-    } catch (err: any) {
-      setMentorError(err?.message || 'Възникна временна грешка при връзка с AI ментора.');
+    } catch (err: unknown) {
+      setMentorError(err instanceof Error && err.message ? err.message : 'Възникна временна грешка при връзка с AI ментора.');
     } finally {
       setIsMentorLoading(false);
     }
@@ -166,6 +166,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
             </span>
             <span className="text-xs text-slate-500 font-medium">
               {lesson.grade}
+              {lesson.audience && <span className="text-slate-400"> • {lesson.audience}</span>}
             </span>
             <span className="inline-flex items-center gap-1 text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-medium">
               <ShieldCheck className="w-3 h-3 text-emerald-600" />

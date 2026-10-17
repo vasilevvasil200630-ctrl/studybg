@@ -263,8 +263,9 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                       isJuniorLesson
                         ? 'text-emerald-800 bg-emerald-100/70 border-emerald-200 font-semibold'
                         : 'text-slate-600 bg-slate-100 border-slate-200'
-                    }`}>
+                    }`} title={lesson.audience}>
                       {lesson.grade}
+                      {lesson.audience && <span className="opacity-75"> • {lesson.audience}</span>}
                     </span>
                   </div>
                 </div>

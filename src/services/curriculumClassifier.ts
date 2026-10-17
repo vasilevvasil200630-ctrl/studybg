@@ -176,7 +176,8 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
   const lessonData = existing || generateLessonFromInput(
     matched.subDomain.name,
     inputText,
-    matched.subject
+    matched.subject,
+    matched.grade
   );
 
   return {

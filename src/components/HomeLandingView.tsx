@@ -257,7 +257,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
           className="absolute inset-0 -z-10 pointer-events-none flex items-center justify-center overflow-hidden"
           aria-hidden="true"
         >
-          <div className="w-[720px] h-[380px] rounded-full bg-gradient-to-tr from-blue-100/70 via-blue-100/50 to-amber-100/30 blur-3xl opacity-85" />
+          <div className="w-[min(720px,100vw)] h-[380px] rounded-full bg-gradient-to-tr from-blue-100/70 via-blue-100/50 to-amber-100/30 blur-3xl opacity-85" />
         </div>
 
         <div className="max-w-5xl mx-auto px-4 space-y-6">

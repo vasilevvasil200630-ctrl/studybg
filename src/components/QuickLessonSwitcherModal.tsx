@@ -79,6 +79,8 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
           </div>
 
           <button
+            type="button"
+            aria-label="Затвори бързата смяна на урок"
             onClick={onClose}
             className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors"
           >

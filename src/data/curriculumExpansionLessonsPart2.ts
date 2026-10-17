@@ -172,7 +172,9 @@ export const EXTRA_CURRICULUM_LESSONS_PART2: LessonData[] = [
     id: 'bio-medicine-anatomy-biotech-pharmacy-8-12',
     title: 'Анатомия и физиология на човека (8.–9. кл.), микробиология и биотехнологии (10.–12. кл.)',
     subject: 'Биология и ЗО',
-    grade: '8.–12. клас (НПМГ / Медицински профил & ДЗИ)',
+    grade: '8.–12. клас',
+
+    audience: 'НПМГ / Медицински профил & ДЗИ',
     examType: 'ДЗИ / Матура',
     sourceType: 'syllabus',
     originalNoteExcerpt:

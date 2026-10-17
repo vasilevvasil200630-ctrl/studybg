@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Cookie, ShieldCheck, Check, Settings, X, Lock, CheckCircle2 } from 'lucide-react';
 import type { LegalPolicyTab } from './LegalPoliciesModal';
-
-interface CookiePreferences {
-  necessary: boolean;
-  functional: boolean;
-  analytics: boolean;
-  timestamp: string;
-}
-
-const COOKIE_STORAGE_KEY = 'studybg_cookie_consent';
+import {
+  AGE_CONFIRMATION_TEXT,
+  COOKIE_STORAGE_KEY,
+  buildConsent,
+  isAnalyticsAllowed,
+  parseStoredConsent,
+  type CookiePreferences
+} from '../lib/consent';
 
 // Изтрива бисквитките на GA4 (_ga, _ga_*) и Clarity (_clck, _clsk) при оттегляне на съгласието
 const clearAnalyticsCookies = () => {
@@ -38,30 +37,39 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [showSettings, setShowSettings] = useState<boolean>(false);
 
+  // Записаното съгласие решава дали се зарежда аналитиката; полетата по-долу са само чернова в банера
+  const [savedConsent, setSavedConsent] = useState<CookiePreferences | null>(null);
   const [functionalConsent, setFunctionalConsent] = useState<boolean>(true);
   // Аналитиката е строго opt-in: GA4 и Clarity се зареждат САМО след изрично съгласие (GDPR / ePrivacy)
   const [analyticsConsent, setAnalyticsConsent] = useState<boolean>(false);
+  // чл. 25в ЗЗЛД: под 14 г. съгласието за аналитика се дава от родител/настойник
+  const [ageConfirmed, setAgeConfirmed] = useState<boolean>(false);
+  const [ageError, setAgeError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(COOKIE_STORAGE_KEY);
-      if (!stored || forceOpen) {
-        setIsVisible(true);
-      } else {
-        try {
-          const parsed: Partial<CookiePreferences> | null = JSON.parse(stored);
-          if (!parsed || typeof parsed !== 'object') throw new Error('invalid consent');
-          setFunctionalConsent(parsed.functional ?? true);
-          setAnalyticsConsent(parsed.analytics === true);
-        } catch {
-          setIsVisible(true);
-        }
-      }
+    if (typeof window === 'undefined') return;
+    let state: ReturnType<typeof parseStoredConsent>;
+    try {
+      state = parseStoredConsent(localStorage.getItem(COOKIE_STORAGE_KEY));
+    } catch {
+      state = { status: 'missing' };
+    }
+    if (state.status === 'valid') {
+      setSavedConsent(state.prefs);
+      setFunctionalConsent(state.prefs.functional);
+      setAnalyticsConsent(state.prefs.analytics);
+      setAgeConfirmed(state.prefs.ageConfirmed);
+    }
+    // Липсващо, невалидно или старо съгласие без потвърдена възраст → банерът се показва отново
+    if (state.status !== 'valid' || forceOpen) {
+      setIsVisible(true);
     }
   }, [forceOpen]);
 
+  const analyticsAllowed = isAnalyticsAllowed(savedConsent);
+
   useEffect(() => {
-    if (!analyticsConsent || typeof window === 'undefined') return;
+    if (!analyticsAllowed || typeof window === 'undefined') return;
     const gaId = (import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-EE8QCTTSKD').trim();
     const clarityId = (import.meta.env.VITE_CLARITY_PROJECT_ID || 'yqlqdpk1li').trim();
 
@@ -83,16 +91,20 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
       c.text = `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "${clarityId}");`;
       document.head.appendChild(c);
     }
-  }, [analyticsConsent]);
+  }, [analyticsAllowed]);
 
   const saveConsent = (prefs: CookiePreferences) => {
     const analyticsWasLoaded = Boolean(
       document.getElementById('studybg-ga-script') || document.getElementById('studybg-clarity-script')
     );
+    setSavedConsent(prefs);
     setFunctionalConsent(prefs.functional);
     setAnalyticsConsent(prefs.analytics);
-    if (typeof window !== 'undefined') {
+    setAgeError(null);
+    try {
       localStorage.setItem(COOKIE_STORAGE_KEY, JSON.stringify(prefs));
+    } catch {
+      // localStorage недостъпен — изборът важи само за текущата сесия
     }
     setIsVisible(false);
     setShowSettings(false);
@@ -106,31 +118,27 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
     }
   };
 
+  const AGE_REQUIRED_MESSAGE =
+    'За да включим аналитиката, потвърди възрастта (или съгласието на родител/настойник) — или избери „Само необходими“.';
+
   const handleAcceptAll = () => {
-    saveConsent({
-      necessary: true,
-      functional: true,
-      analytics: true,
-      timestamp: new Date().toISOString()
-    });
+    if (!ageConfirmed) {
+      setAgeError(AGE_REQUIRED_MESSAGE);
+      return;
+    }
+    saveConsent(buildConsent({ functional: true, analytics: true, ageConfirmed }));
   };
 
   const handleAcceptNecessary = () => {
-    saveConsent({
-      necessary: true,
-      functional: false,
-      analytics: false,
-      timestamp: new Date().toISOString()
-    });
+    saveConsent(buildConsent({ functional: false, analytics: false, ageConfirmed }));
   };
 
   const handleSavePreferences = () => {
-    saveConsent({
-      necessary: true,
-      functional: functionalConsent,
-      analytics: analyticsConsent,
-      timestamp: new Date().toISOString()
-    });
+    if (analyticsConsent && !ageConfirmed) {
+      setAgeError(AGE_REQUIRED_MESSAGE);
+      return;
+    }
+    saveConsent(buildConsent({ functional: functionalConsent, analytics: analyticsConsent, ageConfirmed }));
   };
 
   if (!isVisible && !forceOpen) return null;
@@ -217,9 +225,12 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
               </div>
               <input
                 type="checkbox"
-                checked={analyticsConsent}
+                aria-label="Аналитика (Google Analytics 4 и Microsoft Clarity)"
+                aria-describedby="cookie-age-confirmation"
+                checked={analyticsConsent && ageConfirmed}
+                disabled={!ageConfirmed}
                 onChange={(e) => setAnalyticsConsent(e.target.checked)}
-                className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300 mt-1 cursor-pointer"
+                className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300 mt-1 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
               />
             </div>
           </div>
@@ -263,6 +274,31 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
             Условия & DSA
           </button>
         </div>
+
+        {/* чл. 25в ЗЗЛД: потвърждение за възраст, нужно само за аналитиката */}
+        <label
+          id="cookie-age-confirmation"
+          className="mt-4 flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-700 leading-relaxed cursor-pointer"
+        >
+          <input
+            type="checkbox"
+            checked={ageConfirmed}
+            onChange={(e) => {
+              setAgeConfirmed(e.target.checked);
+              if (e.target.checked) setAgeError(null);
+              else setAnalyticsConsent(false);
+            }}
+            className="w-4 h-4 mt-0.5 rounded text-blue-600 focus:ring-blue-500 border-slate-300 shrink-0 cursor-pointer"
+          />
+          <span>
+            {AGE_CONFIRMATION_TEXT} <span className="text-slate-500">Нужно е само за аналитиката — „Само необходими“ работи и без него.</span>
+          </span>
+        </label>
+        {ageError && (
+          <p role="alert" className="mt-2 text-[11px] font-semibold text-rose-700">
+            {ageError}
+          </p>
+        )}
 
         {/* Action Buttons */}
         <div className="mt-4 pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2.5">

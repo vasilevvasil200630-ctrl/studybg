@@ -80,7 +80,29 @@ export const mailingService = {
       subscribedAt: new Date().toISOString()
     };
 
-    // 1. Local Storage
+    // 1. Облак: само INSERT (RLS не позволява четене/промяна на чужди имейли).
+    // supabase-js връща грешките, вместо да ги хвърля — проверяваме ги изрично.
+    let savedInCloud = false;
+    try {
+      const { supabase, isSupabaseConfigured } = await import('./supabaseClient');
+      if (isSupabaseConfigured()) {
+        const { error } = await supabase
+          .from('newsletter_subscribers')
+          .upsert({ email: cleanEmail, grade }, { onConflict: 'email', ignoreDuplicates: true });
+        if (error) console.warn('Newsletter save failed:', error.message);
+        savedInCloud = !error;
+      }
+    } catch (err) {
+      console.warn('Newsletter save failed:', err);
+    }
+    if (!savedInCloud) {
+      return {
+        success: false,
+        message: 'Абонаментът не можа да бъде записан в момента. Моля, опитайте отново по-късно.'
+      };
+    }
+
+    // 2. Локално — само за да помним, че този браузър е абониран
     try {
       const raw = localStorage.getItem(LOCAL_STORAGE_SUBSCRIBERS_KEY);
       const parsedExisting: unknown = raw ? JSON.parse(raw) : [];
@@ -93,17 +115,6 @@ export const mailingService = {
       console.warn('LocalStorage save error:', e);
     }
 
-    // 2. Supabase Cloud Sync (dynamically imported only when user submits)
-    try {
-      const { supabase, isSupabaseConfigured } = await import('./supabaseClient');
-      if (isSupabaseConfigured()) {
-        await supabase
-          .from('newsletter_subscribers')
-          .upsert({ email: cleanEmail, grade, created_at: newSub.subscribedAt }, { onConflict: 'email' });
-      }
-    } catch (err) {
-      console.warn('Supabase newsletter table notice:', err);
-    }
 
     // Сайтът е статичен и не изпраща автоматични имейли — не обещаваме приветствено писмо
     return {
@@ -136,10 +147,9 @@ export const mailingService = {
     try {
       const { supabase, isSupabaseConfigured } = await import('./supabaseClient');
       if (isSupabaseConfigured()) {
-        await supabase
-          .from('newsletter_subscribers')
-          .delete()
-          .eq('email', cleanEmail);
+        // Защитена функция: изтрива само подадения имейл, без да дава достъп до таблицата
+        const { error } = await supabase.rpc('unsubscribe_newsletter', { p_email: cleanEmail });
+        if (error) console.warn('Supabase unsubscribe failed:', error.message);
       }
     } catch (err) {
       console.warn('Supabase unsubscribe notice:', err);

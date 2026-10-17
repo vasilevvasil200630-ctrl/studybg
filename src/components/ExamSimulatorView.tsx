@@ -21,7 +21,7 @@ import {
   Award
 } from 'lucide-react';
 import type { QuizQuestion, LessonData } from '../types';
-import { getExamModulesForLesson } from '../data/examModulesData';
+import type { FullExamData } from '../data/examModulesData';
 import { evaluateEssayWithGemini, STRUCTURAL_ANALYSIS_LABEL, type EssayEvaluationResult } from '../services/geminiService';
 import { examHistoryService } from '../services/examHistoryService';
 import { ExcellenceCertificateModal } from './ExcellenceCertificateModal';
@@ -115,12 +115,107 @@ interface ExamSimulatorViewProps {
   onRecordError?: (q: QuizQuestion, optIdx: number) => void;
 }
 
-export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
+interface ExamSimulatorScreenProps extends ExamSimulatorViewProps {
+  examData: FullExamData;
+}
+
+// Изпитните модули (~110 kB) се зареждат с import() едва когато са нужни
+type ExamModulesModule = typeof import('../data/examModulesData');
+let examModulesPromise: Promise<ExamModulesModule> | null = null;
+const loadExamModules = (): Promise<ExamModulesModule> => {
+  if (!examModulesPromise) {
+    examModulesPromise = import('../data/examModulesData').catch((err: unknown) => {
+      examModulesPromise = null; // следващият опит зарежда наново
+      throw err;
+    });
+  }
+  return examModulesPromise;
+};
+
+const ExamPapersView = lazy(() => import('./ExamPapersView').then((m) => ({ default: m.ExamPapersView })));
+
+type SimulatorMode = 'lesson' | 'papers';
+
+/**
+ * Обвивка на симулатора: избор на режим (по урок / пълни изпитни варианти) и
+ * динамично зареждане на данните за модулите само за режима „по урок“.
+ */
+export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = (props) => {
+  const [mode, setMode] = useState<SimulatorMode>('lesson');
+  const [examModules, setExamModules] = useState<ExamModulesModule | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadAttempt, setLoadAttempt] = useState(0);
+
+  useEffect(() => {
+    if (mode !== 'lesson' || examModules) return;
+    let active = true;
+    loadExamModules()
+      .then((mod) => {
+        if (active) setExamModules(mod);
+      })
+      .catch(() => {
+        if (active) setLoadError('Изпитните модули не успяха да се заредят. Проверете връзката и опитайте отново.');
+      });
+    return () => {
+      active = false;
+    };
+  }, [mode, examModules, loadAttempt]);
+
+  const examData = useMemo(
+    () => (examModules ? examModules.getExamModulesForLesson(props.currentLesson) : null),
+    [examModules, props.currentLesson]
+  );
+
+  const tabClass = (active: boolean) =>
+    `px-3.5 py-2 rounded-xl text-xs font-semibold border transition-colors ${
+      active ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400'
+    }`;
+
+  return (
+    <div className="space-y-5">
+      <div role="tablist" aria-label="Режим на симулатора" className="flex flex-wrap items-center gap-2">
+        <button type="button" role="tab" aria-selected={mode === 'lesson'} onClick={() => setMode('lesson')} className={tabClass(mode === 'lesson')}>
+          Изпит по текущия урок
+        </button>
+        <button type="button" role="tab" aria-selected={mode === 'papers'} onClick={() => setMode('papers')} className={tabClass(mode === 'papers')}>
+          Пълни изпитни варианти с ключ
+        </button>
+      </div>
+
+      {mode === 'papers' ? (
+        <Suspense fallback={<div className="p-8 text-center text-xs text-slate-500">Зареждане на изпитните варианти…</div>}>
+          <ExamPapersView />
+        </Suspense>
+      ) : examData ? (
+        <ExamSimulatorScreen {...props} examData={examData} />
+      ) : (
+        <div role={loadError ? 'alert' : 'status'} className="p-8 rounded-2xl bg-slate-50 border border-slate-200 text-center text-xs text-slate-600">
+          {loadError ?? 'Зареждане на изпитните модули…'}
+          {loadError && (
+            <button
+              type="button"
+              onClick={() => {
+                setLoadError(null);
+                setLoadAttempt((n) => n + 1);
+              }}
+              className="mt-3 block mx-auto px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold"
+            >
+              Опитай отново
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const ExamSimulatorScreen: React.FC<ExamSimulatorScreenProps> = ({
   currentLesson,
   allLessons,
   onSelectLesson,
   onOpenErrorBank,
-  onRecordError
+  onRecordError,
+  examData
 }) => {
   const [examDurationMinutes, setExamDurationMinutes] = useState<number>(60);
   const [secondsLeft, setSecondsLeft] = useState<number>(60 * 60);
@@ -132,8 +227,6 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = ({
   const [activePreset, setActivePreset] = useState<string>('lesson');
   const [studentName, setStudentName] = useState<string>('Ученик StudyBG');
 
-  // Load lesson exam data (Module 1, 2, 3)
-  const examData = useMemo(() => getExamModulesForLesson(currentLesson), [currentLesson]);
   const questions = currentLesson.quiz;
 
   // Module 1 Answers: questionId -> optionIndex

@@ -13,7 +13,7 @@ export const ExamResultsBanner: React.FC<{ sim: ExamSimulatorState }> = ({ sim }
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
               <div>
                 <span className={`inline-block px-3 py-1 rounded text-xs font-semibold border mb-2 ${gradeInfo.badge}`}>
-                  Официална оценка: {gradeInfo.grade}
+                  Ориентировъчна оценка: {gradeInfo.grade}
                 </span>
                 <div className="flex items-baseline gap-3">
                   <h4 className="text-4xl font-extrabold text-slate-900 font-mono">

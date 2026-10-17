@@ -87,7 +87,7 @@ export const ExamModule2Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
                       <div className="mt-3 p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
                         <div>
                           <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                            Официален еталон на МОН за верен отговор
+                            Примерен еталонен отговор (StudyBG)
                           </span>
                           <p className="text-xs text-slate-800 mt-2 leading-relaxed font-medium">
                             {sq.modelAnswer}

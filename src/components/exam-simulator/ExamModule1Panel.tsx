@@ -93,7 +93,7 @@ export const ExamModule1Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
                     <div className="pl-0 sm:pl-9 pt-2">
                       <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
                         <div className="font-semibold text-slate-800">
-                          Официално обяснение на МОН:
+                          Обяснение към ключа (StudyBG):
                         </div>
                         <p>{q.explanation}</p>
                       </div>

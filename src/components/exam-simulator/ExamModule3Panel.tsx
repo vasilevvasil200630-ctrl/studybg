@@ -223,7 +223,7 @@ export const ExamModule3Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
                 {/* Sample Thesis from МОН */}
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
-                    Еталонна теза на МОН
+                    Примерна теза (StudyBG)
                   </span>
                   <p className="text-xs sm:text-sm text-slate-800 mt-2 font-serif italic leading-relaxed">
                     „{examData.module3.sampleThesis}“
@@ -235,10 +235,10 @@ export const ExamModule3Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
                   <div className="flex items-center justify-between">
                     <div>
                       <h5 className="text-sm font-bold text-slate-900">
-                        Официална скала за оценяване на МОН (Общо 30 точки)
+                        Скала за самооценка по модела на МОН (30 т. в симулатора)
                       </h5>
                       <p className="text-xs text-slate-500">
-                        Оценете вашето есе по четирите задължителни критерия:
+                        Оценете текста си по четирите критерия:
                       </p>
                     </div>
                     <span className="text-base font-bold font-mono text-blue-700 bg-blue-50 px-3 py-1 rounded-lg border border-blue-200">

@@ -59,12 +59,12 @@ export const ENGLISH_TRANSFORMATIONS: SentenceTransformationItem[] = [
     promptPrefix: 'Never before',
     promptSuffix: 'such a well-organised science exhibition.',
     options: [
-      'have I seen',
       'I have seen',
       'did I saw',
+      'have I seen',
       'had I see'
     ],
-    correctIndex: 0,
+    correctIndex: 2,
     grammarRule: 'Negative Adverbial + Auxiliary Verb + Subject + Main Verb (Never before + have + I + seen)',
     monExamTrap: 'На ДЗИ B2 след отрицателно наречие в началото на изречението (Never, Rarely, Seldom, Little) ЗАДЪЛЖИТЕЛНО се прилага словореда на въпросително изречение (инверсия).',
     explanationBg: 'Когато изречението започва с "Never before", спомагателният глагол "have" минава пред подлога "I": "Never before have I seen...".'
@@ -97,12 +97,12 @@ export const ENGLISH_TRANSFORMATIONS: SentenceTransformationItem[] = [
     promptPrefix: 'We are',
     promptSuffix: 'by a professional technician right now.',
     options: [
-      'having our school computers repaired',
       'repairing our school computers',
       'had our school computers repaired',
-      'having repaired our school computers'
+      'having repaired our school computers',
+      'having our school computers repaired'
     ],
-    correctIndex: 0,
+    correctIndex: 3,
     grammarRule: 'Causative Form: have / get + Object + Past Participle (V3)',
     monExamTrap: 'Внимавайте със словореда при Causative! Обектът ("our school computers") стои МЕЖДУ формата на "have" ("are having") и миналото причастие ("repaired").',
     explanationBg: 'Когато друг извършва услуга за нас, използваме Causative конструкция в същото глаголно време (Present Continuous): "are having + our school computers + repaired".'
@@ -116,12 +116,12 @@ export const ENGLISH_TRANSFORMATIONS: SentenceTransformationItem[] = [
     promptPrefix: 'Stefan',
     promptSuffix: 'Maria\'s tablet.',
     options: [
-      'apologised for breaking',
       'apologised to break',
+      'apologised for breaking',
       'apologised that he broke',
       'apologised of breaking'
     ],
-    correctIndex: 0,
+    correctIndex: 1,
     grammarRule: 'apologise (to somebody) FOR + Gerund (-ing) / having + V3',
     monExamTrap: 'Глаголът "apologise" изисква предлога "for", последван от герундий (-ing форма), а НЕ инфинитив с "to".',
     explanationBg: 'След reporting глагола "apologise" използваме предлога "for" + "-ing" форма на глагола: "apologised for breaking" (или "for having broken").'
@@ -135,12 +135,12 @@ export const ENGLISH_TRANSFORMATIONS: SentenceTransformationItem[] = [
     promptPrefix: 'Elena',
     promptSuffix: 'about our meeting.',
     options: [
-      'can\'t have forgotten',
       'mustn\'t have forgotten',
+      'can\'t have forgotten',
       'shouldn\'t have forgotten',
       'may not forget'
     ],
-    correctIndex: 0,
+    correctIndex: 1,
     grammarRule: 'Negative Logical Deduction in the Past: can\'t / couldn\'t + have + V3',
     monExamTrap: 'За отрицателно умозаключение в миналото („няма начин да е...“) се използва "can\'t have + V3", а НЕ "mustn\'t have + V3"!',
     explanationBg: 'Когато сме сигурни, че нещо НЕ се е случило в миналото, използваме "can\'t have + Past Participle" ("can\'t have forgotten").'
@@ -154,12 +154,12 @@ export const ENGLISH_TRANSFORMATIONS: SentenceTransformationItem[] = [
     promptPrefix: 'I',
     promptSuffix: 'Spanish fluently.',
     options: [
-      'wish I spoke',
       'wish I speak',
       'wish I would speak',
-      'wish I had spoken'
+      'wish I had spoken',
+      'wish I spoke'
     ],
-    correctIndex: 0,
+    correctIndex: 3,
     grammarRule: 'Wish about the Present: I wish / If only + Past Simple',
     monExamTrap: 'Съжаление за настоящ факт ("don\'t speak") се изразява с Past Simple след "I wish" ("I wish I spoke"), а Past Perfect се пази само за минали събития.',
     explanationBg: 'Тъй като изречението описва настоящето ("don\'t speak"), след "I wish" връщаме едно време назад към Past Simple: "I wish I spoke".'
@@ -192,12 +192,12 @@ export const ENGLISH_TRANSFORMATIONS: SentenceTransformationItem[] = [
     promptPrefix: 'Hardly',
     promptSuffix: 'for dinner when the power went out.',
     options: [
-      'had we sat down',
       'we had sat down',
       'did we sit down',
+      'had we sat down',
       'had we sit down'
     ],
-    correctIndex: 0,
+    correctIndex: 2,
     grammarRule: 'Hardly / Scarcely + had + Subject + V3 ... when + Past Simple (No sooner ... than)',
     monExamTrap: 'Запомнете двойките съюзи за матурата: "Hardly/Scarcely ... WHEN", но "No sooner ... THAN" — и двете изискват инверсия с Past Perfect ("had we sat down").',
     explanationBg: 'При "Hardly" в началото на изречението прилагаме инверсия в Past Perfect: "Hardly had we sat down... when...".'
@@ -211,12 +211,12 @@ export const ENGLISH_TRANSFORMATIONS: SentenceTransformationItem[] = [
     promptPrefix: 'The exam was',
     promptSuffix: 'I had expected.',
     options: [
-      'not as difficult as',
       'not so easier as',
       'as easy than',
+      'not as difficult as',
       'not as easy as'
     ],
-    correctIndex: 0,
+    correctIndex: 2,
     grammarRule: 'not as / so + Positive Adjective + as',
     monExamTrap: 'Ако изпитът е бил ПО-ЛЕСЕН от очакваното, значи НЕ е бил толкова ТРУДЕН ("not as difficult as"), колкото сте очаквали! "Not as easy as" обръща смисъла на обратното.',
     explanationBg: 'За да запазим първоначалния смисъл („по-лесен от очакваното“), при отрицателно сравнение използваме антонима в основна степен: "not as difficult as".'
@@ -249,12 +249,12 @@ export const ENGLISH_TRANSFORMATIONS: SentenceTransformationItem[] = [
     promptPrefix: 'But for',
     promptSuffix: ', the entire database would be compromised now.',
     options: [
-      'the firewall blocking the malicious packet',
       'the firewall had blocked the malicious packet',
       'blocking the firewall the malicious packet',
-      'if the firewall blocked the malicious packet'
+      'if the firewall blocked the malicious packet',
+      'the firewall blocking the malicious packet'
     ],
-    correctIndex: 0,
+    correctIndex: 3,
     grammarRule: 'Mixed Conditional with "But for" / "Were it not for" / "Had it not been for" + Noun Phrase / Gerund',
     monExamTrap: 'След израза "But for" (Ако не беше...) ЗАДЪЛЖИТЕЛНО следва съществително име или герундий (Noun Phrase), а НЕ глаголно изречение с "had"!',
     explanationBg: 'В смесено условно изречение (минала причина -> настоящ резултат) "If it had not been for..." се трансформира на ниво C1 чрез "But for + the firewall blocking...".'
@@ -268,12 +268,12 @@ export const ENGLISH_TRANSFORMATIONS: SentenceTransformationItem[] = [
     promptPrefix: 'The lead DevOps engineer insisted that the security patch',
     promptSuffix: 'immediately.',
     options: [
-      'be deployed',
       'is deployed',
+      'be deployed',
       'was deployed',
       'would be deployed'
     ],
-    correctIndex: 0,
+    correctIndex: 1,
     grammarRule: 'Mandative Subjunctive (C1): insist / demand / recommend / suggest + that + Subject + (should) + bare infinitive (be + V3)',
     monExamTrap: 'След глаголи като insist, demand, recommend, essential that в официален технически и юридически стил се използва Subjunctive Mood — основна форма "be deployed" без спрягане по време!',
     explanationBg: 'В официалния английски (C1 / ESP) след "insisted that" в страдателен залог се използва Subjunctive форма: "(should) be deployed".'
@@ -287,12 +287,12 @@ export const ENGLISH_TRANSFORMATIONS: SentenceTransformationItem[] = [
     promptPrefix: 'Under no circumstances',
     promptSuffix: 'your private cryptographic key.',
     options: [
-      'must you share',
       'you must share',
+      'must you share',
       'mustn\'t you share',
       'do you must share'
     ],
-    correctIndex: 0,
+    correctIndex: 1,
     grammarRule: 'Negative Prepositional Phrase ("Under no circumstances") + Affirmative Auxiliary + Subject + Bare Infinitive',
     monExamTrap: 'Тъй като "Under no circumstances" вече съдържа отрицанието "no", спомагателният глагол след него е в ПОЛОЖИТЕЛНА форма с инверсия ("must you share" / "should you share"), без второ отрицание!',
     explanationBg: 'Отрицателният израз в началото изисква инверсия с положителен модален глагол: "Under no circumstances must you share...".'
@@ -306,12 +306,12 @@ export const ENGLISH_TRANSFORMATIONS: SentenceTransformationItem[] = [
     promptPrefix: 'What caused the severe server latency',
     promptSuffix: 'the unindexed SQL query.',
     options: [
-      'was',
       'it was',
       'has been',
-      'were'
+      'were',
+      'was'
     ],
-    correctIndex: 0,
+    correctIndex: 3,
     grammarRule: 'Wh-Cleft Sentence for Emphasis: What + Clause + is/was + Emphasised Noun Phrase',
     monExamTrap: 'При Wh-Cleft изречение ("What caused ... was ...") цялата подчинена част с "What" играе ролята на подлог, затова след нея следва директно "was", БЕЗ допълнително местоимение "it"!',
     explanationBg: 'Емфатичната Cleft конструкция акцентира върху причината: "What caused the severe server latency was the unindexed SQL query."'
@@ -326,8 +326,8 @@ export const ENGLISH_PHRASAL_VERBS: PhrasalVerbItem[] = [
     formalEquivalent: 'tolerate / endure',
     meaningBg: 'търпя, понасям, примирявам се с',
     contextSentence: 'I cannot ________ that constant noise from the construction site any longer.',
-    options: ['put up with', 'put off with', 'come up with', 'get away with'],
-    correctIndex: 0,
+    options: ['put off with', 'put up with', 'come up with', 'get away with'],
+    correctIndex: 1,
     monTip: 'Много чест елемент в задачите за синоними: "tolerate" = "put up with".'
   },
   {
@@ -337,8 +337,8 @@ export const ENGLISH_PHRASAL_VERBS: PhrasalVerbItem[] = [
     formalEquivalent: 'anticipate with pleasure',
     meaningBg: 'очаквам с нетърпение',
     contextSentence: 'We are really looking forward to ________ from you soon.',
-    options: ['hearing', 'hear', 'be heard', 'have heard'],
-    correctIndex: 0,
+    options: ['hear', 'be heard', 'have heard', 'hearing'],
+    correctIndex: 3,
     monTip: 'Златно правило за писмата на матурата: в "look forward to" частицата "to" е ПРЕДЛОГ, затова след нея глаголът винаги е с "-ing" ("hearing")!'
   },
   {
@@ -348,8 +348,8 @@ export const ENGLISH_PHRASAL_VERBS: PhrasalVerbItem[] = [
     formalEquivalent: 'devise / suggest / invent',
     meaningBg: 'измислям, предлагам (идея, решение, план)',
     contextSentence: 'Our team needs to ________ an innovative solution before Friday\'s deadline.',
-    options: ['come up with', 'come across with', 'bring up to', 'make up for'],
-    correctIndex: 0,
+    options: ['come across with', 'bring up to', 'come up with', 'make up for'],
+    correctIndex: 2,
     monTip: 'Винаги се комбинира със съществителни като "an idea", "a plan", "a solution".'
   },
   {
@@ -370,8 +370,8 @@ export const ENGLISH_PHRASAL_VERBS: PhrasalVerbItem[] = [
     formalEquivalent: 'postpone / delay',
     meaningBg: 'отлагам за по-късна дата',
     contextSentence: 'Never ________ until tomorrow what you can accomplish today.',
-    options: ['put off', 'call off', 'set off', 'give off'],
-    correctIndex: 0,
+    options: ['call off', 'set off', 'give off', 'put off'],
+    correctIndex: 3,
     monTip: 'След "put off" при употреба на втори глагол задължително следва герундий (-ing): "put off making a decision".'
   },
   {
@@ -381,8 +381,8 @@ export const ENGLISH_PHRASAL_VERBS: PhrasalVerbItem[] = [
     formalEquivalent: 'compensate for',
     meaningBg: 'компенсирам, наваксвам',
     contextSentence: 'Nothing can ________ the time lost during the first months of preparation.',
-    options: ['make up for', 'make out with', 'do up for', 'get over with'],
-    correctIndex: 0,
+    options: ['make out with', 'make up for', 'do up for', 'get over with'],
+    correctIndex: 1,
     monTip: 'Често се пада при Sentence Transformations с ключова дума MAKE в значение на "compensate for".'
   },
   {
@@ -403,8 +403,8 @@ export const ENGLISH_PHRASAL_VERBS: PhrasalVerbItem[] = [
     formalEquivalent: 'cause / lead to / generate',
     meaningBg: 'причинявам, довеждам до (промяна, реформа)',
     contextSentence: 'Artificial intelligence is expected to ________ major transformations in modern education.',
-    options: ['bring about', 'bring up', 'bring round', 'bring back'],
-    correctIndex: 0,
+    options: ['bring up', 'bring round', 'bring about', 'bring back'],
+    correctIndex: 2,
     monTip: 'Отличен академичен израз за есе на ДЗИ! Не го бъркайте с "bring up" (отглеждам дете / повдигам тема за разговор).'
   },
   {
@@ -414,8 +414,8 @@ export const ENGLISH_PHRASAL_VERBS: PhrasalVerbItem[] = [
     formalEquivalent: 'conduct / perform / execute',
     meaningBg: 'провеждам, извършвам (експеримент, одит, тест, разследване)',
     contextSentence: 'The cybersecurity team will ________ a comprehensive penetration test on the production cluster.',
-    options: ['carry out', 'carry on', 'carry off', 'carry over'],
-    correctIndex: 0,
+    options: ['carry on', 'carry off', 'carry out', 'carry over'],
+    correctIndex: 2,
     monTip: 'Ключова колокация за STEM и ДИППК: "carry out an experiment / an audit / a test / research".'
   },
   {
@@ -425,8 +425,8 @@ export const ENGLISH_PHRASAL_VERBS: PhrasalVerbItem[] = [
     formalEquivalent: 'gradually discontinue / decommission',
     meaningBg: 'поетапно извеждам от употреба (остаряла технология, система)',
     contextSentence: 'The company plans to ________ legacy IPv4 routers and migrate entirely to IPv6 by next quarter.',
-    options: ['phase out', 'phase in', 'wipe out', 'rule out'],
-    correctIndex: 0,
+    options: ['phase in', 'phase out', 'wipe out', 'rule out'],
+    correctIndex: 1,
     monTip: 'Антонимът е "phase in" (въвеждам поетапно в експлоатация).'
   },
   {
@@ -436,8 +436,8 @@ export const ENGLISH_PHRASAL_VERBS: PhrasalVerbItem[] = [
     formalEquivalent: 'substantiate (a claim) / create a redundant data copy',
     meaningBg: 'подкрепям с доказателства (теза); правя резервно копие на данни',
     contextSentence: 'In an academic essay, you must always ________ your arguments with verifiable empirical evidence.',
-    options: ['back up', 'back down', 'back out', 'fall back'],
-    correctIndex: 0,
+    options: ['back down', 'back out', 'fall back', 'back up'],
+    correctIndex: 3,
     monTip: 'Двойно значение за матура и ИТ: 1) подкрепям твърдение с факти; 2) архивирам база данни.'
   },
   {

@@ -127,6 +127,40 @@ describe('кратки отговори', () => {
     expect(isShortAnswerCorrect(seqQ, 'S = 39 cm²')).toBe(true);
   });
 
+  it('числата с думи се разпознават само като цели думи', () => {
+    const q = (key: string): ShortAnswerQuestion => ({
+      id: 'w', number: 1, kind: 'short', answerType: 'number', prompt: 'p', acceptedAnswers: [key], points: 1, explanation: 'e'
+    });
+    expect(isShortAnswerCorrect(q('10'), 'двадесет')).toBe(false);
+    expect(isShortAnswerCorrect(q('10'), 'петдесет')).toBe(false);
+    expect(isShortAnswerCorrect(q('10'), 'шестнадесет')).toBe(false);
+    expect(isShortAnswerCorrect(q('20'), 'двадесет')).toBe(true);
+    expect(isShortAnswerCorrect(q('16'), 'шестнадесет')).toBe(true);
+    expect(isShortAnswerCorrect(q('25'), 'двадесет и пет')).toBe(true);
+    expect(isShortAnswerCorrect(q('10'), 'десетте')).toBe(true);
+  });
+
+  it('десетична запетая по българската норма; „1,500“ се приема и като 1.5, и като 1500', () => {
+    const q = (key: string): ShortAnswerQuestion => ({
+      id: 'd', number: 1, kind: 'short', answerType: 'number', prompt: 'p', acceptedAnswers: [key], points: 1, explanation: 'e'
+    });
+    expect(isShortAnswerCorrect(q('1.5'), '1,500')).toBe(true);
+    expect(isShortAnswerCorrect(q('1500'), '1,500')).toBe(true);
+    expect(isShortAnswerCorrect(q('2.125'), '2,125 m')).toBe(true);
+    expect(isShortAnswerCorrect(q('2.5'), '2,5')).toBe(true);
+    expect(isShortAnswerCorrect(q('-3'), 'x = −3')).toBe(true);
+  });
+
+  it('отговор с няколко числа (колебание) не носи точки', () => {
+    const q: ShortAnswerQuestion = {
+      id: 'h', number: 1, kind: 'short', answerType: 'number', prompt: 'p', acceptedAnswers: ['12'], points: 1, explanation: 'e'
+    };
+    expect(isShortAnswerCorrect(q, '12 или 15')).toBe(false);
+    expect(isShortAnswerCorrect(q, '12-15')).toBe(false);
+    expect(isShortAnswerCorrect(q, '12, 15')).toBe(false);
+    expect(isShortAnswerCorrect(q, '12 cm2')).toBe(true);
+  });
+
   it('текстът се сравнява без главни букви, кавички и крайна точка', () => {
     expect(isShortAnswerCorrect(textQ, '„Петнадесетте минути“.')).toBe(true);
     expect(isShortAnswerCorrect(textQ, 'петнадесетте  минути')).toBe(true);

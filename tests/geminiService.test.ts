@@ -227,6 +227,20 @@ describe('Supabase AI proxy (без локален ключ)', () => {
     expect(supabaseMock.invocations[0].body.model).toBe('gemini-3.8-flash');
   });
 
+  it('VITE_GEMINI_API_KEY в средата се игнорира — ключ на сайта никога не стига до браузъра', async () => {
+    vi.stubEnv('VITE_GEMINI_API_KEY', 'AQ.LEAKED_BUILD_KEY_SHOULD_BE_IGNORED_123456');
+    const { evaluateBelModuleTwoWithGemini, getActiveGeminiApiKey, isGeminiConfigured } = await loadService();
+    supabaseMock.invoke = async () => ({
+      data: geminiBody({ score: 2, feedback: 'ok', improvements: [], modelImprovedVersion: '' }),
+      error: null
+    });
+    expect(getActiveGeminiApiKey()).toBe('');
+    expect(isGeminiConfigured()).toBe(false);
+    await evaluateBelModuleTwoWithGemini(belParams);
+    expect(calls).toHaveLength(0);
+    expect(supabaseMock.invocations).toHaveLength(1);
+  });
+
   it('недеплойната функция (404) → структурен анализ и без повторни опити в сесията', async () => {
     const { evaluateEssayWithGemini, isAiAvailable } = await loadService();
     supabaseMock.invoke = async () => httpError(404, { code: 'NOT_FOUND' });

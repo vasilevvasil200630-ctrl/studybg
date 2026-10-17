@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/check-bundle-secrets.mjs",
+    "check:secrets": "node scripts/check-bundle-secrets.mjs",
     "typecheck": "tsc -b",
     "lint": "oxlint src --deny-warnings",
     "test": "vitest run",

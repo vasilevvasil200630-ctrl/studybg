@@ -402,9 +402,9 @@ export const EXAM_PAPERS: ExamPaper[] = [
           },
           {
             id: 'math1-q15', number: 15, kind: 'short', points: 5, answerType: 'number',
-            prompt: 'Цената на книга е 80 лв. Тя се намалява с 15%. Каква е новата цена в левове?',
+            prompt: 'Цената на книга е 80 €. Тя се намалява с 15%. Каква е новата цена в евро?',
             acceptedAnswers: ['68'],
-            explanation: '15% от 80 = 12 ⇒ 80 − 12 = 68 лв.'
+            explanation: '15% от 80 = 12 ⇒ 80 − 12 = 68 €'
           },
           {
             id: 'math1-q16', number: 16, kind: 'short', points: 5, answerType: 'number',

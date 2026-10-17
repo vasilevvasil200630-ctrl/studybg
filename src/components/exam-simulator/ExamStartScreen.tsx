@@ -16,10 +16,10 @@ export const ExamStartScreen: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) 
                 <ShieldAlert className="w-6 h-6" />
               </div>
               <h4 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-                Официален регламент и модел на изпита (100 точки)
+                Модел на изпита в симулатора (100 точки)
               </h4>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Симулацията пресъздава точната структура на държавните зрелостни изпити (ДЗИ) и НВО на МОН за <strong className="text-slate-900">{currentLesson.subject}</strong> ({currentLesson.grade}).
+                Симулацията следва структурата на ДЗИ и НВО на МОН (опростено: 40 + 30 + 30 точки) за <strong className="text-slate-900">{currentLesson.subject}</strong> ({currentLesson.grade}).
               </p>
             </div>
 

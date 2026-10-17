@@ -31,25 +31,17 @@ export class GeminiError extends Error {
   }
 }
 
-// Ключът идва само от VITE_ променлива при билд или от локално въведен ключ.
-// Всеки ключ във VITE_ се вгражда в публичния бъндъл — ползвайте само ключ с ограничения.
-const getEnvGeminiKey = (): string => {
-  const value = (import.meta.env.VITE_GEMINI_API_KEY as string | undefined)?.trim() ?? '';
-  return value.length > 10 && value !== 'undefined' ? value : '';
-};
-
+// Ключът идва САМО от локално въведен от потребителя ключ (собствен ключ, по избор).
+// Ключ на сайта никога не се вгражда в бъндъла: той е в Supabase secrets и се ползва
+// единствено през Edge Function `gemini-proxy` (сесия + дневни лимити).
 export const getActiveGeminiApiKey = (): string => {
-  if (typeof window !== 'undefined') {
-    try {
-      const stored = localStorage.getItem(API_KEY_STORAGE_KEY);
-      if (stored && stored.trim().length > 10) {
-        return stored.trim();
-      }
-    } catch {
-      // localStorage недостъпен — продължаваме с ключа от средата
-    }
+  if (typeof window === 'undefined') return '';
+  try {
+    const stored = localStorage.getItem(API_KEY_STORAGE_KEY);
+    return stored && stored.trim().length > 10 ? stored.trim() : '';
+  } catch {
+    return ''; // localStorage недостъпен (private mode)
   }
-  return getEnvGeminiKey();
 };
 
 export const setStoredGeminiApiKey = (key: string): void => {

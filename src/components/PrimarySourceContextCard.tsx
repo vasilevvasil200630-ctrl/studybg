@@ -76,7 +76,7 @@ export const PrimarySourceContextCard: React.FC<PrimarySourceContextCardProps> =
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => onNavigateTab('cases')}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-semibold text-xs transition-all shadow-xs"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 active:bg-amber-800 text-white font-semibold text-xs transition-all shadow-xs"
             >
               <Scale className="w-3.5 h-3.5" />
               <span>Отвори казусите за ДЗИ</span>
@@ -98,7 +98,7 @@ export const PrimarySourceContextCard: React.FC<PrimarySourceContextCardProps> =
       {/* Top Header Strip */}
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3 relative z-10">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-amber-600 text-white flex items-center justify-center shadow-2xs font-bold text-xs">
+          <div className="w-7 h-7 rounded-lg bg-amber-700 text-white flex items-center justify-center shadow-2xs font-bold text-xs">
             <BookOpen className="w-4 h-4" />
           </div>
           <span className="text-xs font-bold uppercase tracking-wider text-amber-950">
@@ -158,7 +158,7 @@ export const PrimarySourceContextCard: React.FC<PrimarySourceContextCardProps> =
       <div className="flex flex-col sm:flex-row items-center gap-2.5 relative z-10">
         <button
           onClick={() => onNavigateTab('cases')}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold text-xs shadow-xs transition-all hover:scale-[1.01]"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 active:bg-amber-800 text-white font-bold text-xs shadow-xs transition-all hover:scale-[1.01]"
         >
           <Scale className="w-3.5 h-3.5" />
           <span>Разгледай пълния казус с двете тези</span>

@@ -696,7 +696,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                   onClick={() => handleSelectTargetGrade(grade)}
                   className={`px-2.5 py-1.5 rounded-lg font-semibold transition-all cursor-pointer flex items-center gap-1 ${
                     progress.targetGrade === grade
-                      ? 'bg-amber-500 text-white shadow-2xs font-bold'
+                      ? 'bg-amber-700 text-white shadow-2xs font-bold'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -739,7 +739,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                       onClick={() => handleToggleDay(day.id)}
                       className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
                         isCompleted
-                          ? 'bg-emerald-600 text-white'
+                          ? 'bg-emerald-700 text-white'
                           : 'bg-white text-slate-600 border border-slate-200 hover:border-emerald-400'
                       }`}
                     >
@@ -911,7 +911,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                         onClick={() => handleToggleLesson(lesson.id)}
                         className={`px-2.5 py-0.5 rounded-lg text-[11px] font-bold cursor-pointer ${
                           isMastered
-                            ? 'bg-emerald-600 text-white'
+                            ? 'bg-emerald-700 text-white'
                             : 'bg-white text-slate-600 border border-slate-200 hover:border-blue-400'
                         }`}
                       >

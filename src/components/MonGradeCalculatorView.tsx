@@ -757,7 +757,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
             <button
               type="button"
               onClick={() => setShowSpkCertificateModal(true)}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-xs transition-all cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-xs transition-all cursor-pointer"
             >
               <Award className="w-4 h-4" />
               <span>📜 Издай Свидетелство за Трета СПК + EUROPASS (A4 PDF)</span>

@@ -659,7 +659,7 @@ const ExamSimulatorScreen: React.FC<ExamSimulatorScreenProps> = ({
               onClick={() => handleSelectExamPreset('dzi12-bel-tyutyun')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 activePreset.startsWith('dzi12')
-                  ? 'bg-amber-600 text-white shadow-xs'
+                  ? 'bg-amber-700 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -683,7 +683,7 @@ const ExamSimulatorScreen: React.FC<ExamSimulatorScreenProps> = ({
               onClick={() => handleSelectExamPreset('nvo10-history-simeon')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 activePreset.startsWith('nvo10')
-                  ? 'bg-teal-600 text-white shadow-xs'
+                  ? 'bg-teal-700 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -907,7 +907,7 @@ const ExamSimulatorScreen: React.FC<ExamSimulatorScreenProps> = ({
               <div className="flex flex-wrap items-center gap-1.5">
                 <button
                   onClick={() => handleStartExam(240)}
-                  className="px-3 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
+                  className="px-3 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 active:bg-amber-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
                   title="Официален изпитен регламент на МОН за ДЗИ 12. клас: 240 минути"
                 >
                   <GraduationCap className="w-3.5 h-3.5" />
@@ -915,7 +915,7 @@ const ExamSimulatorScreen: React.FC<ExamSimulatorScreenProps> = ({
                 </button>
                 <button
                   onClick={() => handleStartExam(90)}
-                  className="px-3 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
+                  className="px-3 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 active:bg-teal-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
                   title="Официален изпитен регламент на МОН за НВО 10. клас: 90 минути"
                 >
                   <Clock className="w-3.5 h-3.5" />
@@ -956,7 +956,7 @@ const ExamSimulatorScreen: React.FC<ExamSimulatorScreenProps> = ({
             <div className="flex items-center gap-2">
               <button
                 onClick={handleRestoreDraft}
-                className="px-3 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-colors"
+                className="px-3 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold transition-colors"
               >
                 Продължи изпита
               </button>
@@ -1007,7 +1007,7 @@ const ExamSimulatorScreen: React.FC<ExamSimulatorScreenProps> = ({
               <div className="flex flex-wrap items-center gap-2.5">
                 <button
                   onClick={() => setIsCertModalOpen(true)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold transition-colors shadow-xs"
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-700 hover:bg-amber-800 text-white text-xs font-extrabold transition-colors shadow-xs"
                 >
                   <Award className="w-3.5 h-3.5" />
                   <span>Дигитална Грамота / Сертификат (A4)</span>
@@ -1315,7 +1315,7 @@ const ExamSimulatorScreen: React.FC<ExamSimulatorScreenProps> = ({
                               onClick={() => setModule2Scores(prev => ({ ...prev, [sq.id]: 5 }))}
                               className={`px-3 py-1 rounded text-xs font-semibold border transition-colors ${
                                 currentScore === 5
-                                  ? 'bg-amber-600 text-white border-amber-600'
+                                  ? 'bg-amber-700 text-white border-amber-600'
                                   : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
                               }`}
                             >
@@ -1325,7 +1325,7 @@ const ExamSimulatorScreen: React.FC<ExamSimulatorScreenProps> = ({
                               onClick={() => setModule2Scores(prev => ({ ...prev, [sq.id]: 10 }))}
                               className={`px-3 py-1 rounded text-xs font-semibold border transition-colors ${
                                 currentScore === 10
-                                  ? 'bg-emerald-600 text-white border-emerald-600'
+                                  ? 'bg-emerald-700 text-white border-emerald-600'
                                   : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
                               }`}
                             >

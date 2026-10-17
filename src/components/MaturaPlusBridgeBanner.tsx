@@ -25,7 +25,7 @@ export const MaturaPlusBridgeBanner: React.FC<MaturaPlusBridgeBannerProps> = ({
         className={`flex items-center justify-between gap-3 p-3 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border border-emerald-200/90 text-xs text-slate-800 shadow-2xs ${className}`}
       >
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs font-bold text-xs">
+          <div className="w-7 h-7 rounded-lg bg-emerald-700 text-white flex items-center justify-center shrink-0 shadow-2xs font-bold text-xs">
             M+
           </div>
           <div>
@@ -37,7 +37,7 @@ export const MaturaPlusBridgeBanner: React.FC<MaturaPlusBridgeBannerProps> = ({
         </div>
         <button
           onClick={handleGoToMaturaPlus}
-          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold text-xs transition-colors shrink-0 shadow-2xs"
+          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-800 text-white font-semibold text-xs transition-colors shrink-0 shadow-2xs"
         >
           <span>Към Matura+</span>
           <ArrowUpRight className="w-3.5 h-3.5" />

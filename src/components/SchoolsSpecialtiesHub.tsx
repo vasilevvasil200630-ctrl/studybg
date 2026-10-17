@@ -985,7 +985,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 onClick={() => setActiveSectionFilter(secTab)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                   activeSectionFilter === secTab
-                    ? 'bg-emerald-600 text-white'
+                    ? 'bg-emerald-700 text-white'
                     : 'bg-slate-950 text-slate-400 border border-slate-800 hover:text-white'
                 }`}
               >
@@ -1415,7 +1415,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 <div className="pt-2">
                   <button
                     onClick={() => handleOpenLessonById(activeDefense.linkedLessonId)}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-500 text-white text-xs font-bold transition-colors"
                   >
                     <BookOpen className="w-4 h-4" />
                     Отвори пълния теоретичен урок за тази защита
@@ -1488,7 +1488,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               onClick={() => setAdmissionCalcTab('university_vuz')}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 admissionCalcTab === 'university_vuz'
-                  ? 'bg-emerald-600 text-white shadow-sm'
+                  ? 'bg-emerald-700 text-white shadow-sm'
                   : 'text-slate-300 hover:text-white'
               }`}
             >

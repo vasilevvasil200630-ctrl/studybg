@@ -139,7 +139,7 @@ export const CultureSidebar: React.FC<CultureSidebarProps> = ({
                   <div
                     className={`w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 transition-colors ${
                       isActive
-                        ? 'bg-amber-600 text-white'
+                        ? 'bg-amber-700 text-white'
                         : 'bg-slate-100 text-slate-500 group-hover:text-slate-700'
                     }`}
                   >

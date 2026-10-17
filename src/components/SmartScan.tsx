@@ -313,7 +313,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
               <div className="flex flex-wrap gap-2 pt-1">
                 <button
                   onClick={() => setActiveMode('paste')}
-                  className="px-3 py-1.5 rounded-lg bg-amber-600 text-white font-semibold text-xs hover:bg-amber-700 transition-colors"
+                  className="px-3 py-1.5 rounded-lg bg-amber-700 text-white font-semibold text-xs hover:bg-amber-800 transition-colors"
                 >
                   Въведи текст на ръка
                 </button>

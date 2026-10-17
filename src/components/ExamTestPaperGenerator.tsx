@@ -344,7 +344,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
             onClick={() => setPaperMode('dippk_ticket')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               paperMode === 'dippk_ticket'
-                ? 'bg-amber-600 text-white shadow-xs'
+                ? 'bg-amber-700 text-white shadow-xs'
                 : 'bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100'
             }`}
           >

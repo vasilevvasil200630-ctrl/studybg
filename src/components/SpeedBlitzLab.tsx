@@ -738,7 +738,7 @@ export const SpeedBlitzLab: React.FC = () => {
 
           {/* Personal Best Card */}
           <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 sm:p-5 flex items-center gap-4 shrink-0">
-            <div className="w-12 h-12 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs">
+            <div className="w-12 h-12 rounded-xl bg-amber-700 text-white flex items-center justify-center shadow-xs">
               <Trophy className="w-6 h-6" />
             </div>
             <div>

@@ -481,7 +481,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => handleCultureNavClick('mysteries')}
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   portalMode === 'culture'
-                    ? 'bg-amber-500 text-white shadow-2xs'
+                    ? 'bg-amber-700 text-white shadow-2xs'
                     : 'text-slate-600 hover:text-amber-800'
                 }`}
                 title="Обща култура, конспиративни досиета и мистични зони"
@@ -726,7 +726,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => handleCultureNavClick('mysteries')}
                 className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
                   portalMode === 'culture'
-                    ? 'bg-amber-500 text-white shadow-2xs'
+                    ? 'bg-amber-700 text-white shadow-2xs'
                     : 'text-slate-600'
                 }`}
               >

@@ -130,14 +130,30 @@ export function App() {
   const [isPendingTab, startTabTransition] = useTransition();
 
   // Top-level portal partition: 'study' (Academic Academy & OCR) vs 'culture' (General Knowledge & Mysteries)
-  const [portalMode, setPortalMode] = useState<'study' | 'culture'>('study');
-  const [cultureSubTab, setCultureSubTab] = useState<CultureSubTab>('mysteries');
+  // Първоначалният изглед идва от адреса още при първия рендер — без „скок“ от началната страница (CLS)
+  const [initialRoute] = useState(() =>
+    typeof window === 'undefined' ? null : parseLocation(window.location.pathname, window.location.hash, STUDY_TABS).route
+  );
+  const [portalMode, setPortalMode] = useState<'study' | 'culture'>(initialRoute?.portal ?? 'study');
+  const [cultureSubTab, setCultureSubTab] = useState<CultureSubTab>(
+    initialRoute?.portal === 'culture' ? initialRoute.subTab : 'mysteries'
+  );
 
   const [lessons, setLessons] = useState<LessonData[]>(CURRICULUM_LESSONS);
-  const [currentLesson, setCurrentLesson] = useState<LessonData>(CURRICULUM_LESSONS[0]);
+  const [currentLesson, setCurrentLesson] = useState<LessonData>(
+    () =>
+      (initialRoute?.portal === 'study' && initialRoute.lessonId
+        ? CURRICULUM_LESSONS.find((l) => l.id === initialRoute.lessonId)
+        : undefined) ?? CURRICULUM_LESSONS[0]
+  );
   const totalLessonsDisplayCount = Math.max(lessons.length, TOTAL_CURRICULUM_LESSONS_COUNT);
 
-  const [activeTab, setActiveTab] = useState<AppNavTab>('home');
+  const [activeTab, setActiveTab] = useState<AppNavTab>(() => {
+    if (initialRoute?.portal !== 'study') return 'home';
+    if (!initialRoute.lessonId) return initialRoute.tab;
+    // /lesson/<id> от базовия пакет се отваря веднага; иначе каталогът го дозарежда
+    return CURRICULUM_LESSONS.some((l) => l.id === initialRoute.lessonId) ? 'summary' : 'catalog';
+  });
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
   const [isFormulaModalOpen, setIsFormulaModalOpen] = useState(false);
   const [isQuickLessonModalOpen, setIsQuickLessonModalOpen] = useState(false);
@@ -526,7 +542,7 @@ export function App() {
           />
         </main>
       ) : (
-        <main id="workspace" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
+        <main id="workspace" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 min-h-[100svh]">
           {portalMode === 'study' ? (
             <div>
             
@@ -1001,7 +1017,7 @@ export function App() {
                     onClick={() => handleNavigateCultureTab(p.tab as CultureSubTab)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
                       isActive
-                        ? 'bg-amber-600 text-white shadow-xs'
+                        ? 'bg-amber-700 text-white shadow-xs'
                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                     }`}
                   >

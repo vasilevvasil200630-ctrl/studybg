@@ -485,13 +485,13 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
     const scoreRatio = Math.min(1, kwRatio * 0.75 + lengthBonus);
 
     if (scoreRatio >= 0.75 || (matchedKeywords.length >= 4 && wordCount >= 18)) {
-      return { numeric: 6.0, label: 'Отличен (6.00)', color: 'bg-emerald-600 text-white', badge: 'bg-emerald-50 text-emerald-900 border-emerald-300' };
+      return { numeric: 6.0, label: 'Отличен (6.00)', color: 'bg-emerald-700 text-white', badge: 'bg-emerald-50 text-emerald-900 border-emerald-300' };
     }
     if (scoreRatio >= 0.55 || matchedKeywords.length >= 3) {
       return { numeric: 5.25, label: 'Много добър (5.25)', color: 'bg-blue-600 text-white', badge: 'bg-blue-50 text-blue-900 border-blue-300' };
     }
     if (scoreRatio >= 0.35 || matchedKeywords.length >= 2) {
-      return { numeric: 4.25, label: 'Добър (4.25)', color: 'bg-amber-600 text-white', badge: 'bg-amber-50 text-amber-900 border-amber-300' };
+      return { numeric: 4.25, label: 'Добър (4.25)', color: 'bg-amber-700 text-white', badge: 'bg-amber-50 text-amber-900 border-amber-300' };
     }
     if (wordCount >= 8 || matchedKeywords.length >= 1) {
       return { numeric: 3.25, label: 'Среден (3.25)', color: 'bg-orange-600 text-white', badge: 'bg-orange-50 text-orange-900 border-orange-300' };
@@ -705,7 +705,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
           }}
           className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
             oralMode === 'university'
-              ? 'bg-amber-600 text-white border-amber-600 shadow-sm'
+              ? 'bg-amber-700 text-white border-amber-600 shadow-sm'
               : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200'
           }`}
         >
@@ -913,7 +913,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
                   title={`Кликни, за да вмъкнеш или виж жокер: ${rk.hint}`}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
                     isMatched
-                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs'
+                      ? 'bg-emerald-700 text-white border-emerald-600 shadow-2xs'
                       : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300'
                   }`}
                 >
@@ -1003,7 +1003,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
                 }
               }}
               disabled={!studentAnswer.trim() || isAiEvaluating}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white text-xs sm:text-sm font-bold shadow-xs transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 disabled:opacity-40 text-white text-xs sm:text-sm font-bold shadow-xs transition-all cursor-pointer"
             >
               {isAiEvaluating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
               <span>{isAiEvaluating ? 'Комисията оценява...' : `🤖 AI оценка от комисията (${AI_EXAMINER_LABEL})`}</span>

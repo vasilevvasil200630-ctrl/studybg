@@ -122,7 +122,7 @@ export const CultureWondersView: React.FC = () => {
 
         <button
           onClick={handleRandomWonder}
-          className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold shadow-xs transition-colors"
+          className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-semibold shadow-xs transition-colors"
         >
           <Sparkles className="w-4 h-4" />
           <span>Изненадай ме с природно чудо</span>
@@ -244,7 +244,7 @@ export const CultureWondersView: React.FC = () => {
                       onClick={() => handleToggleAudio(wonder)}
                       className={`p-2 rounded-xl text-xs font-medium border transition-colors shadow-2xs ${
                         isAudioPlaying
-                          ? 'bg-teal-600 text-white border-teal-600'
+                          ? 'bg-teal-700 text-white border-teal-600'
                           : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
                       }`}
                       title={isAudioPlaying ? 'Спри четенето' : 'Слушай разказа с аудио'}
@@ -287,7 +287,7 @@ export const CultureWondersView: React.FC = () => {
                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-2xs ${
                       isExpanded
                         ? 'bg-slate-100 hover:bg-slate-200 text-slate-800'
-                        : 'bg-teal-600 hover:bg-teal-700 text-white'
+                        : 'bg-teal-700 hover:bg-teal-800 text-white'
                     }`}
                   >
                     <span>{isExpanded ? 'Свий досието' : 'Разгледай феномена'}</span>

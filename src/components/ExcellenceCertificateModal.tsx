@@ -386,7 +386,7 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
                 Генератор на Грамота за 6.00 & Свидетелство за Трета СПК (EUROPASS)
               </h2>
               <p className="text-xs text-slate-500">
-                Персонализирай и разпечатай като официален А4 документ своето удостоверение
+                Персонализирай и разпечатай като А4 документ своето удостоверение от StudyBG (не е официален документ)
               </p>
             </div>
           </div>

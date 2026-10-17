@@ -151,7 +151,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
         </div>
 
         <p className="text-xs sm:text-sm text-blue-100 max-w-3xl leading-relaxed">
-          Изчислете точната си оценка по официалната линейна формула на МОН (Наредба № 11 за ДЗИ — праг <strong>30 т.</strong>) или по Наредба № 1 за <strong>ДИППК / Трета СПК</strong> (Теория + Практика на професията — праг <strong>50 т.</strong>).
+          Изчислете ориентировъчната си оценка по линейна скала (Наредба № 11 за ДЗИ — праг <strong>30 т.</strong>) или по Наредба № 1 за <strong>ДИППК / Трета СПК</strong> (Теория + Практика на професията — праг <strong>50 т.</strong>).
         </p>
       </div>
 

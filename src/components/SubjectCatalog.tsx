@@ -117,7 +117,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                 className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer ${
                   isSelected
                     ? isJunior
-                      ? 'bg-emerald-600 text-white shadow-xs font-semibold'
+                      ? 'bg-emerald-700 text-white shadow-xs font-semibold'
                       : 'bg-blue-600 text-white shadow-xs font-semibold'
                     : isJunior
                     ? 'bg-emerald-50/70 text-emerald-800 hover:bg-emerald-100/80 border border-emerald-200'

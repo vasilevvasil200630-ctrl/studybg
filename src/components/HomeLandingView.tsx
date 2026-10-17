@@ -252,13 +252,6 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       {/* 1. HERO & OMNI-SEARCH COMMAND CENTER */}
       {/* ========================================================================= */}
       <section className="relative pt-6 sm:pt-10 pb-4 text-center">
-        {/* Soft Ambient Radial Background Accent */}
-        <div 
-          className="absolute inset-0 -z-10 pointer-events-none flex items-center justify-center overflow-hidden"
-          aria-hidden="true"
-        >
-          <div className="w-[min(720px,100vw)] h-[380px] rounded-full bg-gradient-to-tr from-blue-100/70 via-blue-100/50 to-amber-100/30 blur-3xl opacity-85" />
-        </div>
 
         <div className="max-w-5xl mx-auto px-4 space-y-6">
           
@@ -318,7 +311,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
 
             {/* Quick Search Suggestions Strip */}
             <div className="mt-2.5 flex flex-wrap items-center justify-center gap-1.5 text-[11px]">
-              <span className="text-slate-400 font-semibold">Бързо търсене:</span>
+              <span className="text-slate-500 font-semibold">Бързо търсене:</span>
               {[
                 { label: '📚 Талев & Димов (ДЗИ)', query: 'Талев' },
                 { label: '📐 Производни & Екстремуми', query: 'Производни' },
@@ -505,7 +498,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 >
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shadow-xs">
+                      <div className="w-10 h-10 rounded-xl bg-amber-700 text-white flex items-center justify-center shadow-xs">
                         <Compass className="w-5 h-5" />
                       </div>
                       <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-200/80 text-amber-950 border border-amber-300">
@@ -971,7 +964,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             <button
               type="button"
               onClick={() => onNavigateCultureTab?.('mysteries')}
-              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-colors cursor-pointer shadow-xs"
+              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs transition-colors cursor-pointer shadow-xs"
             >
               <Compass className="w-4 h-4 text-white" />
               <span>Отвори 40-те секретни досиета</span>

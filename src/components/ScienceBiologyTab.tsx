@@ -108,7 +108,7 @@ export const ScienceBiologyTab: React.FC = () => {
                   }}
                   className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-colors cursor-pointer ${
                     dnaInput === preset.dnaTemplate
-                      ? 'bg-emerald-600 text-white border-emerald-600'
+                      ? 'bg-emerald-700 text-white border-emerald-600'
                       : 'bg-slate-50 hover:bg-slate-100 hover:text-emerald-700 text-slate-700 border-slate-200'
                   }`}
                 >
@@ -192,7 +192,7 @@ export const ScienceBiologyTab: React.FC = () => {
                   <div
                     className={`py-1.5 px-2 rounded-lg text-xs font-bold ${
                       item.aa.type === 'start'
-                        ? 'bg-emerald-600 text-white'
+                        ? 'bg-emerald-700 text-white'
                         : item.aa.type === 'stop'
                         ? 'bg-rose-600 text-white'
                         : 'bg-amber-100 text-amber-950 border border-amber-300'

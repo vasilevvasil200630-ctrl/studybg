@@ -463,7 +463,7 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
           {activeZone.linkedMysteryId && onOpenMysteryDossier && (
             <button
               onClick={() => onOpenMysteryDossier(activeZone.linkedMysteryId!)}
-              className="w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer"
             >
               <Eye className="w-4 h-4" />
               <span>Отвори пълното разследване в „Конспирации & Досиета“</span>

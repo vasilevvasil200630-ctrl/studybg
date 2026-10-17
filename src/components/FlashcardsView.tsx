@@ -272,7 +272,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
 
         <button
           onClick={() => handleMarkMastered(card.id)}
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold transition-all active:scale-98 shadow-xs"
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs sm:text-sm font-semibold transition-all active:scale-98 shadow-xs"
         >
           <CheckCircle2 className="w-4 h-4" />
           <span>Усвоено</span>

@@ -971,7 +971,7 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
                   onClick={() => setProgType('arithmetic')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${
                     progType === 'arithmetic'
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-emerald-700 text-white'
                       : 'bg-white border border-slate-300 text-slate-700'
                   }`}
                 >
@@ -981,7 +981,7 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
                   onClick={() => setProgType('geometric')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer ${
                     progType === 'geometric'
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-emerald-700 text-white'
                       : 'bg-white border border-slate-300 text-slate-700'
                   }`}
                 >

@@ -230,7 +230,7 @@ export const EnglishDziLab: React.FC = () => {
           onClick={() => setActiveTab('writing')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
             activeTab === 'writing'
-              ? 'bg-emerald-600 text-white shadow-xs'
+              ? 'bg-emerald-700 text-white shadow-xs'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
           }`}
         >
@@ -538,7 +538,7 @@ export const EnglishDziLab: React.FC = () => {
                   }}
                   className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                     selectedBlueprintId === bp.id
-                      ? 'bg-emerald-600 text-white shadow-xs'
+                      ? 'bg-emerald-700 text-white shadow-xs'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
@@ -756,7 +756,7 @@ export const EnglishDziLab: React.FC = () => {
                       }
                     }}
                     disabled={!draftText.trim() || isAiEngLoading}
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white text-xs sm:text-sm font-bold shadow-xs transition-all cursor-pointer"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 disabled:opacity-40 text-white text-xs sm:text-sm font-bold shadow-xs transition-all cursor-pointer"
                   >
                     {isAiEngLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                     <span>

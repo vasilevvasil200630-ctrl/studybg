@@ -791,7 +791,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                 onClick={() => setQuizSubjectFilter('История и цивилизации')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
                   quizSubjectFilter === 'История и цивилизации'
-                    ? 'bg-amber-600 text-white'
+                    ? 'bg-amber-700 text-white'
                     : 'bg-white border border-slate-300 text-slate-700'
                 }`}
               >
@@ -801,7 +801,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                 onClick={() => setQuizSubjectFilter('География и икономика')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
                   quizSubjectFilter === 'География и икономика'
-                    ? 'bg-emerald-600 text-white'
+                    ? 'bg-emerald-700 text-white'
                     : 'bg-white border border-slate-300 text-slate-700'
                 }`}
               >

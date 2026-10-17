@@ -57,7 +57,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
           onClick={() => setActiveTab('biology')}
           className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'biology'
-              ? 'bg-emerald-600 text-white shadow-xs'
+              ? 'bg-emerald-700 text-white shadow-xs'
               : 'text-slate-700 hover:bg-white'
           }`}
         >

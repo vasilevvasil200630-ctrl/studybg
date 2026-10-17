@@ -255,7 +255,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
           <span>•</span>
           <button
             onClick={() => onOpenPolicy('accessibility')}
-            className="text-emerald-600 hover:underline font-medium"
+            className="text-emerald-700 hover:underline font-medium"
           >
             Достъпност (EAA)
           </button>

@@ -176,7 +176,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
               onClick={handleToggleMastered}
               className={`inline-flex items-center gap-1 text-[11px] px-2.5 py-0.5 rounded-full font-bold border transition-all cursor-pointer ${
                 isMastered
-                  ? 'bg-emerald-600 text-white border-emerald-700 shadow-2xs'
+                  ? 'bg-emerald-700 text-white border-emerald-700 shadow-2xs'
                   : 'bg-white hover:bg-slate-100 text-slate-600 hover:text-emerald-800 border-slate-300'
               }`}
               title="Отбележи този урок като научен в твоя План за 6.00"

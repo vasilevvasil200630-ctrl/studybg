@@ -260,7 +260,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
 
             <button
               onClick={handleRandomMystery}
-              className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shadow-xs transition-colors"
+              className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white text-xs font-semibold shadow-xs transition-colors"
             >
               <Sparkles className="w-4 h-4" />
               <span>Случайна загадка</span>
@@ -408,7 +408,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
                           onClick={() => handleToggleMysteryAudio(item)}
                           className={`p-2 rounded-xl text-xs font-medium border transition-colors shadow-2xs ${
                             isAudioPlaying
-                              ? 'bg-amber-600 text-white border-amber-600'
+                              ? 'bg-amber-700 text-white border-amber-600'
                               : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
                           }`}
                           title={isAudioPlaying ? 'Спри четенето' : 'Слушай загадката с аудио'}
@@ -451,7 +451,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-2xs ${
                           isExpanded
                             ? 'bg-slate-100 hover:bg-slate-200 text-slate-800'
-                            : 'bg-amber-600 hover:bg-amber-700 text-white'
+                            : 'bg-amber-700 hover:bg-amber-800 text-white'
                         }`}
                       >
                         <span>{isExpanded ? 'Свий досието' : 'Разгледай досието'}</span>
@@ -758,7 +758,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
                       <div className="flex items-center gap-3">
                         <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold ${
                           showResult && isCorrect
-                            ? 'bg-emerald-600 text-white'
+                            ? 'bg-emerald-700 text-white'
                             : showResult && isChosen && !isCorrect
                             ? 'bg-rose-600 text-white'
                             : 'bg-white border border-slate-300 text-slate-700'

@@ -34,8 +34,14 @@ export const OfflineStatusBanner: React.FC = () => {
   }
 
   return (
-    <aside data-print-hide aria-label="Системни известия за връзка" className="w-full bg-slate-900 text-white text-xs border-b border-slate-800 transition-all z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-3">
+    // Плаващо известие (fixed) — не измества съдържанието, когато се появи след зареждане (CLS = 0)
+    <aside
+      data-print-hide
+      aria-label="Системни известия за връзка"
+      aria-live="polite"
+      className="fixed bottom-3 left-3 right-3 sm:left-auto sm:right-4 sm:bottom-4 sm:max-w-md z-40 rounded-2xl bg-slate-900 text-white text-xs border border-slate-800 shadow-2xl"
+    >
+      <div className="px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
         {/* Offline indicator */}
         {!isOnline && (
           <div className="flex items-center gap-2 text-amber-300 font-semibold">
@@ -53,7 +59,7 @@ export const OfflineStatusBanner: React.FC = () => {
             <span>Налице е обновена версия на учебното съдържание.</span>
             <button
               onClick={handleUpdateClick}
-              className="ml-2 px-2.5 py-1 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold transition-colors"
+              className="ml-2 px-2.5 py-1 rounded-md bg-emerald-700 hover:bg-emerald-500 text-white text-[11px] font-bold transition-colors"
             >
               Презареди сега
             </button>

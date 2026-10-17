@@ -137,7 +137,7 @@ export const CultureHeritageView: React.FC<CultureHeritageViewProps> = ({
                 onClick={() => setSelectedCategory(c.id)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   selectedCategory === c.id
-                    ? 'bg-amber-600 text-white shadow-2xs'
+                    ? 'bg-amber-700 text-white shadow-2xs'
                     : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
                 }`}
               >

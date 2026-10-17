@@ -2,10 +2,10 @@ import type { LessonData } from '../types';
 import { verbalGrade } from '../lib/monGradeScale';
 import { isSupabaseConfigured } from './supabaseConfig';
 
-// Стабилен модел, към който минаваме автоматично, ако зададеният с VITE_GEMINI_MODEL върне 404.
-const FALLBACK_MODEL = 'gemini-3.8-flash';
-// Основният модел може да се смени с VITE_GEMINI_MODEL без промяна в кода.
-const PRIMARY_MODEL = (import.meta.env.VITE_GEMINI_MODEL as string | undefined)?.trim() || FALLBACK_MODEL;
+// Основният модел (може да се смени с VITE_GEMINI_MODEL без промяна в кода).
+const PRIMARY_MODEL = (import.meta.env.VITE_GEMINI_MODEL as string | undefined)?.trim() || 'gemini-3.8-flash';
+// Друг работещ модел, към който минаваме автоматично, ако основният върне 404 (напр. спрян от Google).
+const FALLBACK_MODEL = 'gemini-3.6-flash';
 
 // Етикети за интерфейса — без твърдо закодирани версии на модела в компонентите
 export const AI_EXAMINER_LABEL = 'AI Екзаминатор';
@@ -151,6 +151,9 @@ async function callGeminiViaProxy(body: GeminiRequest): Promise<GeminiResponse> 
     }
     if (detail?.error === 'daily_limit_reached') {
       throw new GeminiError('Достигнахте дневния лимит за AI оценки. Опитайте отново утре.', 429);
+    }
+    if (detail?.error === 'global_limit_reached') {
+      throw new GeminiError('AI оценяването е временно изчерпано за днес за всички потребители. Опитайте отново утре.', 429);
     }
 
     const retryable = status === undefined || status === 429 || status >= 500;

@@ -155,15 +155,22 @@ describe('callGeminiContent (през evaluateBelModuleTwoWithGemini)', () => {
     expect(getActiveGeminiModel()).toBe('gemini-3.8-flash');
   });
 
-  it('404 за зададения модел → повторение с gemini-3.8-flash', async () => {
-    const { evaluateBelModuleTwoWithGemini, getActiveGeminiModel } = await loadService('gemini-2.5-flash');
+  it('404 за основния gemini-3.8-flash → повторение с резервния gemini-3.6-flash', async () => {
+    const { evaluateBelModuleTwoWithGemini, getActiveGeminiModel } = await loadService();
     script = [status(404), ok({ score: 0, feedback: 'празно', improvements: [], modelImprovedVersion: '' })];
     const result = await evaluateBelModuleTwoWithGemini(belParams);
-    expect(calls[0].url).toContain('/models/gemini-2.5-flash:');
-    expect(calls[1].url).toContain('/models/gemini-3.8-flash:');
-    expect(getActiveGeminiModel()).toBe('gemini-3.8-flash');
+    expect(calls[0].url).toContain('/models/gemini-3.8-flash:');
+    expect(calls[1].url).toContain('/models/gemini-3.6-flash:');
+    expect(getActiveGeminiModel()).toBe('gemini-3.6-flash');
     expect(result.score).toBe(0);
     expect(result.modelImprovedVersion).toBe('');
+  });
+
+  it('404 и на резервния модел → грешка, без безкраен цикъл', async () => {
+    const { evaluateBelModuleTwoWithGemini } = await loadService();
+    script = [status(404), status(404)];
+    await expect(evaluateBelModuleTwoWithGemini(belParams)).rejects.toThrow(/404/);
+    expect(calls).toHaveLength(2);
   });
 
   it('429 → повторен опит и успех', async () => {
@@ -228,6 +235,13 @@ describe('Supabase AI proxy (без локален ключ)', () => {
     expect(first.fallbackReason).toMatch(/не е включен/);
     expect(isAiAvailable()).toBe(false);
     await evaluateEssayWithGemini(essay, 'Тема', rubric);
+    expect(supabaseMock.invocations).toHaveLength(1);
+  });
+
+  it('глобален дневен таван → отделно съобщение, без повторни опити', async () => {
+    const { evaluateBelModuleTwoWithGemini } = await loadService();
+    supabaseMock.invoke = async () => httpError(429, { error: 'global_limit_reached' });
+    await expect(evaluateBelModuleTwoWithGemini(belParams)).rejects.toThrow(/за всички потребители/);
     expect(supabaseMock.invocations).toHaveLength(1);
   });
 

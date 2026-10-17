@@ -2,17 +2,22 @@
 // Ключът за Gemini живее в Supabase secrets, а не във Vercel и не в браузъра.
 //
 // Деплой:
-//   supabase secrets set GEMINI_API_KEY=... [GEMINI_MODEL=gemini-2.5-flash] [AI_DAILY_LIMIT=30]
+//   supabase secrets set GEMINI_API_KEY=... [GEMINI_MODEL=gemini-3.8-flash] [GEMINI_FALLBACK_MODEL=gemini-3.6-flash]
+//                        [AI_DAILY_LIMIT=30] [AI_GLOBAL_DAILY_LIMIT=500]
 //   supabase functions deploy gemini-proxy
 //
 // Изисква валидна потребителска сесия (включително анонимна) и миграцията
-// supabase/migrations/20261016_rls_and_ai_usage.sql (consume_ai_quota).
+// supabase/migrations/20261018_global_ai_quota.sql (consume_ai_quota с глобален таван).
+// SUPABASE_SERVICE_ROLE_KEY се подава автоматично от Supabase на Edge Functions.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-const FALLBACK_MODEL = 'gemini-3.8-flash';
-const DEFAULT_MODEL = Deno.env.get('GEMINI_MODEL') ?? FALLBACK_MODEL;
-const ALLOWED_MODELS = new Set([FALLBACK_MODEL, DEFAULT_MODEL, 'gemini-3.6-flash', 'gemini-2.5-flash']);
+// Два различни модела: при 404 на основния (напр. спрян за нови потребители) минаваме към резервния
+const DEFAULT_MODEL = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3.8-flash';
+const FALLBACK_MODEL = Deno.env.get('GEMINI_FALLBACK_MODEL') ?? 'gemini-3.6-flash';
+const ALLOWED_MODELS = new Set([DEFAULT_MODEL, FALLBACK_MODEL]);
 const DAILY_LIMIT = Number(Deno.env.get('AI_DAILY_LIMIT') ?? '30');
+// Общ таван за деня за всички потребители — бот с нови анонимни сесии не може да изчерпи бюджета
+const GLOBAL_DAILY_LIMIT = Number(Deno.env.get('AI_GLOBAL_DAILY_LIMIT') ?? '500');
 const MAX_BODY_BYTES = 6 * 1024 * 1024; // снимки за разпознаване на ръкопис
 const ALLOWED_ORIGINS = (
   Deno.env.get('ALLOWED_ORIGINS') ?? 'https://studybg.vercel.app,http://localhost:5173,http://localhost:4173'
@@ -61,10 +66,7 @@ Deno.serve(async (req) => {
   } = await supabase.auth.getUser();
   if (!user) return json({ error: 'auth_required' }, 401, headers);
 
-  const { data: allowed, error: quotaError } = await supabase.rpc('consume_ai_quota', { p_limit: DAILY_LIMIT });
-  if (quotaError) return json({ error: 'quota_check_failed' }, 500, headers);
-  if (allowed !== true) return json({ error: 'daily_limit_reached', limit: DAILY_LIMIT }, 429, headers);
-
+  // Невалидна заявка не бива да харчи квота — проверяваме я преди лимита
   let payload: { model?: unknown; contents?: unknown; systemInstruction?: unknown; generationConfig?: unknown };
   try {
     payload = await req.json();
@@ -74,6 +76,18 @@ Deno.serve(async (req) => {
   if (!Array.isArray(payload.contents) || payload.contents.length === 0) {
     return json({ error: 'invalid_request' }, 400, headers);
   }
+
+  // Квотата се отчита със service_role: потребителите не могат да викат consume_ai_quota директно
+  const admin = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '');
+  const { data: quota, error: quotaError } = await admin.rpc('consume_ai_quota', {
+    p_user_id: user.id,
+    p_limit: DAILY_LIMIT,
+    p_global_limit: GLOBAL_DAILY_LIMIT
+  });
+  if (quotaError) return json({ error: 'quota_check_failed' }, 500, headers);
+  if (quota === 'user_limit') return json({ error: 'daily_limit_reached', limit: DAILY_LIMIT }, 429, headers);
+  if (quota === 'global_limit') return json({ error: 'global_limit_reached' }, 429, headers);
+  if (quota !== 'ok') return json({ error: 'quota_check_failed' }, 500, headers);
 
   // Препращаме само позволените полета — клиентът не може да подмени ключ, URL или инструменти
   const body = JSON.stringify({

@@ -82,7 +82,9 @@
     }
     </script>
     
-    <!-- Без уеб шрифтове: Plus Jakarta Sans няма основна кирилица, а системният шрифт е мигновен, без CLS и без заявки към Google преди съгласие -->
+    <!-- Onest (самостоятелно хостван, с кирилица): preload на кирилицата и латиницата + font-display: optional → без CLS и без заявки към трети страни -->
+    <link rel="preload" href="/fonts/onest/onest-cyrillic-wght-5.3.1.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/onest/onest-latin-wght-5.3.1.woff2" as="font" type="font/woff2" crossorigin>
   </head>
   <body class="bg-slate-50 text-slate-900 antialiased selection:bg-blue-100 selection:text-blue-900">
     <div id="root"></div>

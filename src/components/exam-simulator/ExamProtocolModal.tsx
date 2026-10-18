@@ -3,7 +3,7 @@ import { Printer, X } from 'lucide-react';
 import type { ExamSimulatorState } from './useExamSimulator';
 
 export const ExamProtocolModal: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) => {
-  const { currentLesson, isPrintModalOpen, setIsPrintModalOpen, studentName, setStudentName, module1Points, module2Points, module3Points, totalPoints, gradeInfo } = sim;
+  const { currentLesson, isPrintModalOpen, setIsPrintModalOpen, studentName, setStudentName, module1Points, module2Points, module3Points, totalPoints, gradeInfo, examScale } = sim;
 
   return (
     <>
@@ -103,7 +103,7 @@ export const ExamProtocolModal: React.FC<{ sim: ExamSimulatorState }> = ({ sim }
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 font-sans flex items-center justify-between">
                 <div>
                   <span className="text-[11px] text-slate-500 uppercase tracking-wider block">
-                    Окончателна държавна оценка по скалата на МОН:
+                    {examScale.scale ? `Ориентировъчна оценка по скалата за ${examScale.label}:` : 'Резултат (НВО се оценява само в точки):'}
                   </span>
                   <div className="text-xl font-extrabold text-slate-900 mt-0.5">
                     {gradeInfo.grade}

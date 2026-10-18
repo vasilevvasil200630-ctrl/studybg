@@ -1,9 +1,19 @@
 import React from 'react';
 import { Clock, ShieldAlert, ArrowRight, Scale } from 'lucide-react';
 import type { ExamSimulatorState } from './useExamSimulator';
+import { gradeBands } from '../../lib/monGradeScale';
+
+const BAND_STYLES = [
+  { box: 'bg-rose-50 border-rose-200', points: 'text-rose-900', label: 'text-rose-700' },
+  { box: 'bg-orange-50 border-orange-200', points: 'text-orange-900', label: 'text-orange-700' },
+  { box: 'bg-amber-50 border-amber-200', points: 'text-amber-900', label: 'text-amber-700' },
+  { box: 'bg-sky-50 border-sky-200', points: 'text-sky-900', label: 'text-sky-700' },
+  { box: 'bg-emerald-50 border-emerald-200', points: 'text-emerald-900', label: 'text-emerald-700' }
+];
+const BAND_LABELS = ['Слаб 2.00', 'Среден 3 (праг)', 'Добър 4', 'Мн. добър 5', 'Отличен 6'];
 
 export const ExamStartScreen: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) => {
-  const { currentLesson, examDurationMinutes, setExamDurationMinutes, isExamRunning, isSubmitted, handleStartExam } = sim;
+  const { currentLesson, examDurationMinutes, setExamDurationMinutes, isExamRunning, isSubmitted, handleStartExam, examScale } = sim;
 
   return (
     <>
@@ -77,38 +87,33 @@ export const ExamStartScreen: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) 
               </div>
             </div>
 
-            {/* Official МОН Grading Scale Bar */}
+            {/* Скала за преобразуване: зависи от изпита (ДЗИ, ДИППК или само точки за НВО) */}
             <div className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-3">
-              <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center justify-between gap-2 text-xs">
                 <span className="font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
                   <Scale className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Държавна скала на МОН за преобразуване на точките в оценка:</span>
+                  <span>{examScale.scale ? 'Скала за преобразуване на точките в оценка:' : 'Резултатът е само в точки:'}</span>
                 </span>
-                <span className="text-slate-500 font-mono text-[11px]">ДЗИ / НВО 100-точкова система</span>
+                <span className="text-slate-500 font-mono text-[11px]">{examScale.label}</span>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs">
-                <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200">
-                  <span className="block font-bold text-rose-900 font-mono">0 – 29,5 т.</span>
-                  <span className="text-[11px] text-rose-700 font-medium">Слаб 2.00</span>
+              {examScale.scale ? (
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs">
+                  {gradeBands(examScale.scale).map((band, i) => (
+                    <div key={band.label} className={`p-2.5 rounded-lg border ${BAND_STYLES[i].box} ${i === 4 ? 'col-span-2 sm:col-span-1' : ''}`}>
+                      <span className={`block font-bold font-mono ${BAND_STYLES[i].points}`}>{band.from} – {band.to} т.</span>
+                      <span className={`text-[11px] font-medium ${BAND_STYLES[i].label}`}>{BAND_LABELS[i]}</span>
+                    </div>
+                  ))}
                 </div>
-                <div className="p-2.5 rounded-lg bg-orange-50 border border-orange-200">
-                  <span className="block font-bold text-orange-900 font-mono">30 – 41,5 т.</span>
-                  <span className="text-[11px] text-orange-700 font-medium">Среден 3 (Праг)</span>
-                </div>
-                <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-200">
-                  <span className="block font-bold text-amber-900 font-mono">42 – 64,5 т.</span>
-                  <span className="text-[11px] text-amber-700 font-medium">Добър 4</span>
-                </div>
-                <div className="p-2.5 rounded-lg bg-sky-50 border border-sky-200">
-                  <span className="block font-bold text-sky-900 font-mono">65 – 88 т.</span>
-                  <span className="text-[11px] text-sky-700 font-medium">Мн. добър 5</span>
-                </div>
-                <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 col-span-2 sm:col-span-1">
-                  <span className="block font-bold text-emerald-900 font-mono">88,5 – 100 т.</span>
-                  <span className="text-[11px] text-emerald-700 font-medium">Отличен 6</span>
-                </div>
-              </div>
+              ) : (
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  НВО в 7. и 10. клас няма официално превръщане в шестобална оценка — резултатът се отчита в точки (0–100). Тук виждате и разпределението по модули.
+                </p>
+              )}
+              {examScale.scale && (
+                <p className="text-[11px] text-slate-500">Праговете са ориентировъчни — сверете ги с актуалната заповед на МОН за сесията.</p>
+              )}
             </div>
 
             {/* Duration Selector & Launch Call-to-action */}

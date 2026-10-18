@@ -16,7 +16,8 @@ export interface ExamAttemptRecord {
   module3Points: number;
   totalPoints: number;
   gradeEquivalent: string;
-  gradeNumeric: number;
+  /** null = само точки (НВО няма официално превръщане в шестобална оценка) */
+  gradeNumeric: number | null;
   passed: boolean;
   hasAiEvaluation?: boolean;
 }
@@ -25,7 +26,8 @@ export interface ExamAnalyticsSummary {
   totalAttempts: number;
   averageScore: number;
   highestScore: number;
-  averageGrade: number;
+  /** null, ако няма нито един опит с шестобална оценка (напр. само НВО) */
+  averageGrade: number | null;
   passRate: number;
   attempts: ExamAttemptRecord[];
   latestAttempt: ExamAttemptRecord | null;
@@ -101,7 +103,7 @@ export const examHistoryService = {
         totalAttempts: 0,
         averageScore: 0,
         highestScore: 0,
-        averageGrade: 0,
+        averageGrade: null,
         passRate: 0,
         attempts: [],
         latestAttempt: null
@@ -113,17 +115,22 @@ export const examHistoryService = {
     let sumGrade = 0;
     let maxScore = 0;
     let passedCount = 0;
+    let gradedCount = 0;
 
     attempts.forEach(a => {
       sumScore += a.totalPoints;
-      sumGrade += a.gradeNumeric;
       if (a.totalPoints > maxScore) maxScore = a.totalPoints;
-      if (a.passed) passedCount++;
+      // Оценка и праг има само при ДЗИ / ДИППК; опитите за НВО са само в точки
+      if (a.gradeNumeric !== null) {
+        gradedCount++;
+        sumGrade += a.gradeNumeric;
+        if (a.passed) passedCount++;
+      }
     });
 
     const averageScore = Math.round(sumScore / totalAttempts);
-    const averageGrade = Number((sumGrade / totalAttempts).toFixed(2));
-    const passRate = Math.round((passedCount / totalAttempts) * 100);
+    const averageGrade = gradedCount > 0 ? Number((sumGrade / gradedCount).toFixed(2)) : null;
+    const passRate = gradedCount > 0 ? Math.round((passedCount / gradedCount) * 100) : 0;
 
     return {
       totalAttempts,
@@ -243,7 +250,7 @@ function rowToRecord(row: ExamAttemptRow): ExamAttemptRecord {
     module3Points: row.module3_points,
     totalPoints: row.total_points,
     gradeEquivalent: row.grade_equivalent ?? '',
-    gradeNumeric: Number(row.grade_numeric ?? 2),
+    gradeNumeric: row.grade_numeric === null || row.grade_numeric === undefined ? null : Number(row.grade_numeric),
     passed: row.passed
   };
 }

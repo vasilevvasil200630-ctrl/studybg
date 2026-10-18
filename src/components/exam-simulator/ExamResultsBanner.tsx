@@ -3,7 +3,7 @@ import { RefreshCw, ArrowRight, Printer, TrendingUp, Award } from 'lucide-react'
 import type { ExamSimulatorState } from './useExamSimulator';
 
 export const ExamResultsBanner: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) => {
-  const { onOpenErrorBank, examDurationMinutes, isSubmitted, setIsPrintModalOpen, setIsCertModalOpen, setIsHistoryModalOpen, handleStartExam, module1Points, module2Points, module3Points, totalPoints, gradeInfo } = sim;
+  const { onOpenErrorBank, examDurationMinutes, isSubmitted, setIsPrintModalOpen, setIsCertModalOpen, setIsHistoryModalOpen, handleStartExam, module1Points, module2Points, module3Points, totalPoints, gradeInfo, examScale } = sim;
 
   return (
     <>
@@ -13,7 +13,7 @@ export const ExamResultsBanner: React.FC<{ sim: ExamSimulatorState }> = ({ sim }
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
               <div>
                 <span className={`inline-block px-3 py-1 rounded text-xs font-semibold border mb-2 ${gradeInfo.badge}`}>
-                  Ориентировъчна оценка: {gradeInfo.grade}
+                  {examScale.scale ? `Ориентировъчна оценка (${examScale.label}): ${gradeInfo.grade}` : examScale.label}
                 </span>
                 <div className="flex items-baseline gap-3">
                   <h4 className="text-4xl font-extrabold text-slate-900 font-mono">

@@ -3,7 +3,7 @@ import type { QuizQuestion, LessonData } from '../../types';
 import type { FullExamData } from '../../data/examModulesData';
 import { evaluateEssayWithGemini, type EssayEvaluationResult } from '../../services/geminiService';
 import { examHistoryService } from '../../services/examHistoryService';
-import { DZI_SCALE, formatGrade, pointsToGrade, type VerbalGrade } from '../../lib/monGradeScale';
+import { examScaleForLesson, formatGrade, pointsToGrade, type GradeScale, type VerbalGrade } from '../../lib/monGradeScale';
 
 // Цялата логика на 100-точковия симулатор (състояние, таймер, чернова, оценяване) —
 // изнесена от ExamSimulatorView, за да остане компонентът само подредба.
@@ -19,7 +19,7 @@ interface ExamDraft {
   savedAt: number;
 }
 
-const EXAM_GRADE_STYLES: Record<VerbalGrade, { badge: string; status: string; color: string }> = {
+const examGradeStyles = (scale: GradeScale): Record<VerbalGrade, { badge: string; status: string; color: string }> => ({
   'Отличен': {
     badge: 'bg-emerald-50 text-emerald-800 border-emerald-200',
     status: 'Пълно покритие на държавните образователни стандарти за ДЗИ / НВО',
@@ -37,14 +37,20 @@ const EXAM_GRADE_STYLES: Record<VerbalGrade, { badge: string; status: string; co
   },
   'Среден': {
     badge: 'bg-orange-50 text-orange-800 border-orange-200',
-    status: `Покрит минимален праг за преминаване (${DZI_SCALE.passPoints} точки). Налице са съществени пропуски`,
+    status: `Покрит минимален праг за преминаване (${scale.passPoints} точки). Налице са съществени пропуски`,
     color: 'text-orange-700'
   },
   'Слаб': {
     badge: 'bg-rose-50 text-rose-800 border-rose-200',
-    status: `Под прага за издържан изпит (под ${DZI_SCALE.passPoints} от ${DZI_SCALE.maxPoints} точки)`,
+    status: `Под прага за издържан изпит (под ${scale.passPoints} от ${scale.maxPoints} точки)`,
     color: 'text-rose-700'
   }
+});
+
+const POINTS_ONLY_STYLE = {
+  badge: 'bg-slate-100 text-slate-800 border-slate-300',
+  status: 'НВО се оценява само в точки — няма официално превръщане в шестобална оценка.',
+  color: 'text-slate-700'
 };
 
 const examDraftKey = (lessonId: string) => `studybg_exam_draft_v1_${lessonId}`;
@@ -441,14 +447,22 @@ export function useExamSimulator({
 
   const totalPoints = module1Points + module2Points + module3Points;
 
-  // Единна монотонна скала (src/lib/monGradeScale.ts)
-  const gradeResult = pointsToGrade(totalPoints, DZI_SCALE);
-  const gradeInfo = {
-    grade: formatGrade(gradeResult),
-    numeric: gradeResult.numeric,
-    passed: gradeResult.passed,
-    ...EXAM_GRADE_STYLES[gradeResult.label]
-  };
+  // Скалата зависи от изпита: ДЗИ, ДИППК или само точки за НВО (src/lib/monGradeScale.ts)
+  const examScale = useMemo(() => examScaleForLesson(currentLesson), [currentLesson]);
+  const gradeResult = examScale.scale ? pointsToGrade(totalPoints, examScale.scale) : null;
+  const gradeInfo = gradeResult && examScale.scale
+    ? {
+        grade: formatGrade(gradeResult),
+        numeric: gradeResult.numeric as number | null,
+        passed: gradeResult.passed,
+        ...examGradeStyles(examScale.scale)[gradeResult.label]
+      }
+    : {
+        grade: `${totalPoints} / 100 точки`,
+        numeric: null as number | null,
+        passed: false,
+        ...POINTS_ONLY_STYLE
+      };
 
   // Auto-record completed attempt to examHistoryService (LocalStorage & Supabase)
   useEffect(() => {
@@ -557,6 +571,7 @@ export function useExamSimulator({
     totalPoints,
     gradeResult,
     gradeInfo,
+    examScale,
     formatTimer,
     mod1CompletedCount,
     mod2CompletedCount,

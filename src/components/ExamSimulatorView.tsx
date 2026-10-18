@@ -109,7 +109,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = (props) => {
 
 const ExamSimulatorScreen: React.FC<ExamSimulatorScreenProps> = (props) => {
   const sim = useExamSimulator(props);
-  const { currentLesson, secondsLeft, isExamRunning, isCertModalOpen, setIsCertModalOpen, isHistoryModalOpen, setIsHistoryModalOpen, setHistoryCount, handleSubmitExam, module1Points, module2Points, module3Points, totalPoints, gradeInfo, formatTimer, mod1CompletedCount, mod2CompletedCount } = sim;
+  const { currentLesson, secondsLeft, isExamRunning, isCertModalOpen, setIsCertModalOpen, isHistoryModalOpen, setIsHistoryModalOpen, setHistoryCount, handleSubmitExam, module1Points, module2Points, module3Points, totalPoints, gradeInfo, examScale, formatTimer, mod1CompletedCount, mod2CompletedCount } = sim;
 
   return (
     <div className="space-y-6">
@@ -174,7 +174,7 @@ const ExamSimulatorScreen: React.FC<ExamSimulatorScreenProps> = (props) => {
         achievementTitle={`100-точкова Изпитна Симулация: ${currentLesson.title}`}
         examOrTrackLabel={`${currentLesson.subject} • ${currentLesson.grade}`}
         scoreText={`Резултат: ${totalPoints} / 100 точки`}
-        gradeLabel={`Оценка: ${gradeInfo.grade}`}
+        gradeLabel={examScale.scale ? `Оценка: ${gradeInfo.grade}` : `Резултат: ${gradeInfo.grade} (НВО)`}
         highlights={[
           `Модул 1 (Тест): ${module1Points} / 40 т.`,
           `Модул 2 (Извори): ${module2Points} / 30 т.`,

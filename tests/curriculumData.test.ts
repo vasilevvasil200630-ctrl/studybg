@@ -3,6 +3,7 @@ import { loadFullCurriculumLessons } from '../src/data/curriculumDatabase';
 import { BULGARIAN_CURRICULUM_TREE } from '../src/data/bulgarianCurriculumTree';
 import { classifyAndDiagnoseNotebook } from '../src/services/curriculumClassifier';
 import { generateLessonFromInput } from '../src/services/aiGenerator';
+import { shuffleQuestionOptions, buildTopicVariantQuiz } from '../src/components/QuizView';
 import { LESSON_GRADES, LESSON_SUBJECTS } from '../src/types';
 import { validateLessons } from '../scripts/lib/validateLessons.mjs';
 
@@ -62,6 +63,20 @@ describe('данни за уроците', () => {
       expect(q.correctIndex).toBeGreaterThanOrEqual(0);
       expect(q.correctIndex).toBeLessThan(4);
     }
+  });
+
+  it('shuffleQuestionOptions и buildTopicVariantQuiz пазят верния отговор и генерират 10 уникални въпроса', async () => {
+    const lessons = await loadFullCurriculumLessons();
+    const sample = lessons[0];
+    for (const q of sample.quiz) {
+      const expectedCorrectText = q.options[q.correctIndex];
+      const shuffled = shuffleQuestionOptions(q);
+      expect(shuffled.options[shuffled.correctIndex]).toBe(expectedCorrectText);
+    }
+    const variant = buildTopicVariantQuiz(sample, lessons, 10);
+    expect(variant.length).toBe(10);
+    const uniqueStems = new Set(variant.map((q) => q.question));
+    expect(uniqueStems.size).toBe(10);
   });
 });
 

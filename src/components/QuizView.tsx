@@ -1,11 +1,129 @@
 import React, { useState } from 'react';
-import { RefreshCw, ArrowRight, CheckSquare, HelpCircle, Mail } from 'lucide-react';
-import type { QuizQuestion } from '../types';
+import { RefreshCw, ArrowRight, CheckSquare, HelpCircle, Mail, Shuffle, Sparkles } from 'lucide-react';
+import type { LessonData, QuizQuestion } from '../types';
 import type { AppNavTab } from './Navbar';
 import { EmailShareModal } from './EmailShareModal';
 
+const POSITIONAL_OPTION_RE = /^(всички изброени|и двете|никое от|горните|точки а и б)/i;
+
+/**
+ * Разбърква опциите (А/Б/В/Г) на въпрос и актуализира correctIndex,
+ * така че верният отговор винаги да сочи към същия текст.
+ */
+export function shuffleQuestionOptions(q: QuizQuestion): QuizQuestion {
+  if (!Array.isArray(q.options) || q.options.length < 2) return q;
+  if (q.options.some((opt) => POSITIONAL_OPTION_RE.test(opt.trim()))) {
+    return q;
+  }
+  const indices = q.options.map((_, idx) => idx);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  const newOptions = indices.map((idx) => q.options[idx]);
+  const newCorrectIndex = indices.indexOf(q.correctIndex);
+  return {
+    ...q,
+    options: newOptions,
+    correctIndex: newCorrectIndex >= 0 ? newCorrectIndex : q.correctIndex,
+  };
+}
+
+/**
+ * Разбърква реда на въпросите и техните опции (А/Б/В/Г), запазвайки уникални id-та.
+ */
+export function shuffleQuizSet(questions: QuizQuestion[]): QuizQuestion[] {
+  const copy = [...questions];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy.map((q, idx) => ({
+    ...shuffleQuestionOptions(q),
+    id: idx + 1,
+  }));
+}
+
+/**
+ * Генерира нов вариант по темата (до targetCount въпроса), като комбинира
+ * въпроси от текущия урок и най-близките уроци по същия предмет и клас.
+ */
+export function buildTopicVariantQuiz(
+  baseLesson: LessonData,
+  allLessons: LessonData[],
+  targetCount = 10
+): QuizQuestion[] {
+  const sameSubject = allLessons.filter((l) => l.subject === baseLesson.subject && l.id !== baseLesson.id);
+  const titleWords = baseLesson.title
+    .toLowerCase()
+    .split(/[\s,.;:!?()[\]"'„“–—/-]+/)
+    .filter((w) => w.length >= 4);
+  const gradeNum = (g: string) => Number((g.match(/(\d+)/) || [])[1] || 0);
+  const baseGradeNum = gradeNum(baseLesson.grade);
+
+  const rankedNeighbors = sameSubject
+    .map((l) => {
+      const hay = `${l.title} ${l.summary.overview}`.toLowerCase();
+      let score = 0;
+      for (const w of titleWords) {
+        if (hay.includes(w)) score += 4;
+      }
+      if (l.grade === baseLesson.grade) score += 6;
+      else if (baseGradeNum && gradeNum(l.grade)) {
+        score -= Math.abs(gradeNum(l.grade) - baseGradeNum);
+      }
+      if (l.examType && l.examType === baseLesson.examType) score += 3;
+      return { lesson: l, score };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  const baseShuffled = shuffleQuizSet(baseLesson.quiz);
+  const neighborPool: QuizQuestion[] = [];
+  for (const { lesson } of rankedNeighbors.slice(0, 5)) {
+    neighborPool.push(...lesson.quiz);
+  }
+  const neighborShuffled = shuffleQuizSet(neighborPool);
+
+  const combined: QuizQuestion[] = [];
+  const seenStems = new Set<string>();
+
+  // Вземаме разбъркано 4–5 въпроса от основния урок + допълнителни от най-близките теми
+  const baseQuota = Math.min(baseShuffled.length, Math.max(4, Math.ceil(targetCount * 0.5)));
+  for (const q of baseShuffled) {
+    if (combined.length >= baseQuota) break;
+    const key = q.question.trim().toLowerCase();
+    if (!seenStems.has(key)) {
+      seenStems.add(key);
+      combined.push(q);
+    }
+  }
+
+  for (const q of neighborShuffled) {
+    if (combined.length >= targetCount) break;
+    const key = q.question.trim().toLowerCase();
+    if (!seenStems.has(key)) {
+      seenStems.add(key);
+      combined.push(q);
+    }
+  }
+
+  // Ако още има свободно място, допълваме с останалите от основния урок
+  for (const q of baseShuffled) {
+    if (combined.length >= targetCount) break;
+    const key = q.question.trim().toLowerCase();
+    if (!seenStems.has(key)) {
+      seenStems.add(key);
+      combined.push(q);
+    }
+  }
+
+  return shuffleQuizSet(combined);
+}
+
 interface QuizViewProps {
   questions: QuizQuestion[];
+  currentLesson?: LessonData;
+  allLessons?: LessonData[];
   onReviewFlashcards: () => void;
   onNavigateTab?: (tab: AppNavTab) => void;
   onRecordError?: (q: QuizQuestion, chosenIndex: number) => void;
@@ -13,15 +131,21 @@ interface QuizViewProps {
 
 export const QuizView: React.FC<QuizViewProps> = ({
   questions,
+  currentLesson,
+  allLessons,
   onReviewFlashcards,
   onNavigateTab,
   onRecordError
 }) => {
+  const [activeQuestions, setActiveQuestions] = useState<QuizQuestion[]>(() =>
+    questions.map((q) => shuffleQuestionOptions(q))
+  );
+  const [variantNumber, setVariantNumber] = useState<number>(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
-  if (questions.length === 0) {
+  if (activeQuestions.length === 0) {
     return (
       <div className="p-6 rounded-xl bg-amber-50/60 border border-amber-200 text-sm text-amber-900 space-y-3">
         <p className="font-semibold">За този урок още няма проверен тест.</p>
@@ -45,11 +169,11 @@ export const QuizView: React.FC<QuizViewProps> = ({
   };
 
   const answeredCount = Object.keys(selectedAnswers).length;
-  const isAllAnswered = answeredCount === questions.length;
+  const isAllAnswered = answeredCount === activeQuestions.length;
 
   const calculateScore = () => {
     let correct = 0;
-    questions.forEach((q) => {
+    activeQuestions.forEach((q) => {
       if (selectedAnswers[q.id] === q.correctIndex) {
         correct++;
       }
@@ -106,7 +230,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
     setIsSubmitted(true);
 
     // Automatically record any mistakes to the Error Bank
-    questions.forEach((q) => {
+    activeQuestions.forEach((q) => {
       const chosen = selectedAnswers[q.id];
       if (chosen !== undefined && chosen !== q.correctIndex) {
         onRecordError?.(q, chosen);
@@ -114,15 +238,36 @@ export const QuizView: React.FC<QuizViewProps> = ({
     });
   };
 
-  const handleReset = () => {
+  const handleResetAndShuffle = () => {
+    setActiveQuestions((prev) => shuffleQuizSet(prev));
+    setSelectedAnswers({});
+    setIsSubmitted(false);
+  };
+
+  const handleGenerateTopicVariant = () => {
+    if (currentLesson && allLessons && allLessons.length > 0) {
+      const nextVariant = buildTopicVariantQuiz(currentLesson, allLessons, 10);
+      setActiveQuestions(nextVariant);
+      setVariantNumber((n) => n + 1);
+    } else {
+      setActiveQuestions((prev) => shuffleQuizSet(prev));
+      setVariantNumber((n) => n + 1);
+    }
+    setSelectedAnswers({});
+    setIsSubmitted(false);
+  };
+
+  const handleRestoreBaseQuiz = () => {
+    setActiveQuestions(questions.map((q) => shuffleQuestionOptions(q)));
+    setVariantNumber(0);
     setSelectedAnswers({});
     setIsSubmitted(false);
   };
 
   const correctScore = calculateScore();
-  const gradeInfo = getBulgarianGrade(correctScore, questions.length);
-  const gradeBg = Math.max(2, Math.min(6, 2 + (correctScore / (questions.length || 1)) * 4));
-  const missedQuestions = questions
+  const gradeInfo = getBulgarianGrade(correctScore, activeQuestions.length);
+  const gradeBg = Math.max(2, Math.min(6, 2 + (correctScore / (activeQuestions.length || 1)) * 4));
+  const missedQuestions = activeQuestions
     .filter((q) => selectedAnswers[q.id] !== undefined && selectedAnswers[q.id] !== q.correctIndex)
     .map((q) => q.question);
 
@@ -131,27 +276,53 @@ export const QuizView: React.FC<QuizViewProps> = ({
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-xl bg-slate-50 border border-slate-200">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-50 border border-blue-200 text-blue-700 mb-1">
-            <CheckSquare className="w-3.5 h-3.5" />
-            <span>Тест за самопроверка по урока</span>
+          <div className="flex flex-wrap items-center gap-2 mb-1">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-50 border border-blue-200 text-blue-700">
+              <CheckSquare className="w-3.5 h-3.5" />
+              <span>{variantNumber > 0 ? `Разширен вариант #${variantNumber} по темата` : 'Тест за самопроверка по урока'}</span>
+            </div>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 border border-emerald-200 text-emerald-800">
+              <Shuffle className="w-3 h-3" />
+              <span>Разбъркани А/Б/В/Г</span>
+            </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-            Проверка на знанията ({questions.length} въпроса)
+            Проверка на знанията ({activeQuestions.length} въпроса)
           </h2>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="text-xs font-medium text-slate-600">
-            Попълнени: <strong className="text-slate-900 font-mono">{answeredCount}</strong> / {questions.length}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="text-xs font-medium text-slate-600 mr-1">
+            Попълнени: <strong className="text-slate-900 font-mono">{answeredCount}</strong> / {activeQuestions.length}
           </div>
 
-          {isSubmitted && (
+          <button
+            type="button"
+            onClick={handleResetAndShuffle}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 transition-colors shadow-2xs cursor-pointer"
+            title="Разбъркай реда на въпросите и опциите А/Б/В/Г"
+          >
+            <RefreshCw className="w-3.5 h-3.5 text-blue-600" />
+            <span>{isSubmitted ? 'Повтори с разбъркване' : 'Разбъркай теста'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleGenerateTopicVariant}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition-colors shadow-2xs cursor-pointer"
+            title="Генерирай нов 10-въпросен вариант с допълнителни задачи по същия предмет и клас"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Нов вариант по темата</span>
+          </button>
+
+          {variantNumber > 0 && (
             <button
-              onClick={handleReset}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 transition-colors shadow-2xs"
+              type="button"
+              onClick={handleRestoreBaseQuiz}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-200/80 hover:bg-slate-300/80 text-slate-800 transition-colors cursor-pointer"
             >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>Повтори теста</span>
+              <span>Основен ({questions.length})</span>
             </button>
           )}
         </div>
@@ -159,7 +330,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
 
       {/* Question Navigation Numbers Bar */}
       <div className="flex items-center gap-1.5 overflow-x-auto p-2 rounded-xl bg-slate-100 border border-slate-200 no-scrollbar">
-        {questions.map((q, idx) => {
+        {activeQuestions.map((q, idx) => {
           const isAns = selectedAnswers[q.id] !== undefined;
           const isCorrect = isSubmitted && selectedAnswers[q.id] === q.correctIndex;
 
@@ -196,7 +367,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                 Резултат: {gradeInfo.grade}
               </span>
               <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 font-mono">
-                {correctScore} от {questions.length} верни отговора ({questions.length > 0 ? Math.round((correctScore / questions.length) * 100) : 0}%)
+                {correctScore} от {activeQuestions.length} верни отговора ({activeQuestions.length > 0 ? Math.round((correctScore / activeQuestions.length) * 100) : 0}%)
               </h3>
               <p className="mt-2 text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed">
                 {gradeInfo.comment}
@@ -204,6 +375,13 @@ export const QuizView: React.FC<QuizViewProps> = ({
             </div>
 
             <div className="flex flex-col sm:flex-row flex-wrap items-center gap-2.5">
+              <button
+                onClick={handleGenerateTopicVariant}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Нов вариант по темата</span>
+              </button>
               <button
                 onClick={onReviewFlashcards}
                 className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
@@ -243,7 +421,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
 
       {/* Question List */}
       <div className="space-y-4">
-        {questions.map((q, idx) => {
+        {activeQuestions.map((q, idx) => {
           const selectedOption = selectedAnswers[q.id];
           const isAnswered = selectedOption !== undefined;
           const isCorrect = isAnswered && selectedOption === q.correctIndex;
@@ -330,7 +508,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
         <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-xs sm:text-sm text-slate-600 text-center sm:text-left">
             {!isAllAnswered ? (
-              <span>Маркирайте отговори на всички {questions.length} въпроса преди предаване.</span>
+              <span>Маркирайте отговори на всички {activeQuestions.length} въпроса преди предаване.</span>
             ) : (
               <span className="text-emerald-700 font-medium">Всички въпроси са попълнени. Можете да предадете теста.</span>
             )}
@@ -351,9 +529,11 @@ export const QuizView: React.FC<QuizViewProps> = ({
         isOpen={isEmailModalOpen}
         onClose={() => setIsEmailModalOpen(false)}
         testResult={{
-          lessonTitle: `Тест за самопроверка (${questions.length} въпроса)`,
+          lessonTitle: currentLesson
+            ? `${currentLesson.title} (${activeQuestions.length} въпроса)`
+            : `Тест за самопроверка (${activeQuestions.length} въпроса)`,
           score: correctScore,
-          total: questions.length,
+          total: activeQuestions.length,
           gradeBg,
           missedQuestions
         }}

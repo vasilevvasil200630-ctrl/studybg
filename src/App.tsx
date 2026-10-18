@@ -84,7 +84,7 @@ const STUDY_TABS: AppNavTab[] = [
 
 // Изгледи, които показват или търсят във всички уроци
 const FULL_CURRICULUM_TABS: ReadonlySet<AppNavTab> = new Set<AppNavTab>([
-  'catalog', 'simulator', 'generator', 'blitz', 'specialties', 'errorbank', 'oralexam', 'planner', 'scan'
+  'catalog', 'quiz', 'simulator', 'generator', 'blitz', 'specialties', 'errorbank', 'oralexam', 'planner', 'scan'
 ]);
 
 function prefetchStudyTabChunk(tab: AppNavTab): void {
@@ -865,6 +865,8 @@ export function App() {
                       <QuizView
                         key={`${currentLesson.id}-${practiceQuestions ? `custom-${practiceQuestions.length}` : 'lesson'}`}
                         questions={practiceQuestions || currentLesson.quiz}
+                        currentLesson={currentLesson}
+                        allLessons={lessons}
                         onReviewFlashcards={() => handleNavigateStudyTab('flashcards')}
                         onNavigateTab={handleNavigateStudyTab}
                         onRecordError={handleRecordError}

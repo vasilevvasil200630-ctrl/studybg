@@ -345,7 +345,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
                           <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-amber-50 border border-amber-200 text-amber-800">
                             {item.categoryLabel}
                           </span>
-                          <span className="text-[11px] text-slate-500 font-medium px-2 py-0.5 rounded bg-slate-100">
+                          <span className="text-[11px] text-slate-600 font-medium px-2 py-0.5 rounded bg-slate-100">
                             {item.unsolvedYearOrPeriod}
                           </span>
                         </div>

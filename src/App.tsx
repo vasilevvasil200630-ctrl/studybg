@@ -175,7 +175,8 @@ export function App() {
     if (curriculumHydratedRef.current || !needsFullCurriculum) return;
     let isMounted = true;
 
-    loadFullCurriculumLessons()
+    // ~1.5 MB данни: сваляме ги, когато браузърът е свободен, за да не се борят с първия рендер (LCP)
+    const load = () => loadFullCurriculumLessons()
       .then((fullLessons) => {
         if (!isMounted) return;
         curriculumHydratedRef.current = true;
@@ -192,8 +193,15 @@ export function App() {
         console.warn('Full curriculum load failed:', err);
       });
 
+    const idle = typeof window.requestIdleCallback === 'function'
+      ? window.requestIdleCallback(() => void load(), { timeout: 2000 })
+      : null;
+    const timer = idle === null ? window.setTimeout(() => void load(), 300) : null;
+
     return () => {
       isMounted = false;
+      if (idle !== null) window.cancelIdleCallback(idle);
+      if (timer !== null) window.clearTimeout(timer);
     };
   }, [needsFullCurriculum]);
 
@@ -327,7 +335,7 @@ export function App() {
   const pendingLessonIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    const applyLocation = () => {
+    const applyLocation = (initial: boolean) => {
       const { route, fromLegacyHash } = parseLocation(window.location.pathname, window.location.hash, STUDY_TABS);
 
       if (!route) {
@@ -362,6 +370,9 @@ export function App() {
         prefetchStudyTabChunk(route.tab);
       }
 
+      // При първото зареждане не скролваме: страницата вече е отгоре, а програмен
+      // плавен скрол при зареждане кара Chrome да не отчете LCP (Core Web Vitals)
+      if (initial) return;
       if (route.portal === 'study' && route.tab === 'home' && !route.lessonId) {
         window.scrollTo({ top: 0 });
       } else {
@@ -369,12 +380,13 @@ export function App() {
       }
     };
 
-    applyLocation();
-    window.addEventListener('popstate', applyLocation);
-    window.addEventListener('hashchange', applyLocation);
+    const onNavigate = () => applyLocation(false);
+    applyLocation(true);
+    window.addEventListener('popstate', onNavigate);
+    window.addEventListener('hashchange', onNavigate);
     return () => {
-      window.removeEventListener('popstate', applyLocation);
-      window.removeEventListener('hashchange', applyLocation);
+      window.removeEventListener('popstate', onNavigate);
+      window.removeEventListener('hashchange', onNavigate);
     };
   }, []);
 

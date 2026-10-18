@@ -29,41 +29,39 @@ interface CookieConsentBannerProps {
   onCloseForceOpen?: () => void;
 }
 
+const readStoredConsent = (): ReturnType<typeof parseStoredConsent> => {
+  if (typeof window === 'undefined') return { status: 'missing' };
+  try {
+    return parseStoredConsent(localStorage.getItem(COOKIE_STORAGE_KEY));
+  } catch {
+    return { status: 'missing' };
+  }
+};
+
 export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
   onOpenPolicy,
   forceOpen = false,
   onCloseForceOpen
 }) => {
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+  // Съгласието се чете синхронно при първия рендер: банерът се рисува заедно със съдържанието,
+  // а не в отделен по-късен рендер (иначе става LCP елементът и забавя LCP за нови посетители)
+  const [initialConsent] = useState(readStoredConsent);
+  const initialPrefs = initialConsent.status === 'valid' ? initialConsent.prefs : null;
+  // Липсващо, невалидно или старо съгласие без потвърдена възраст → банерът се показва отново
+  const [isVisible, setIsVisible] = useState<boolean>(initialConsent.status !== 'valid');
   const [showSettings, setShowSettings] = useState<boolean>(false);
 
   // Записаното съгласие решава дали се зарежда аналитиката; полетата по-долу са само чернова в банера
-  const [savedConsent, setSavedConsent] = useState<CookiePreferences | null>(null);
-  const [functionalConsent, setFunctionalConsent] = useState<boolean>(true);
+  const [savedConsent, setSavedConsent] = useState<CookiePreferences | null>(initialPrefs);
+  const [functionalConsent, setFunctionalConsent] = useState<boolean>(initialPrefs?.functional ?? true);
   // Аналитиката е строго opt-in: GA4 и Clarity се зареждат САМО след изрично съгласие (GDPR / ePrivacy)
-  const [analyticsConsent, setAnalyticsConsent] = useState<boolean>(false);
+  const [analyticsConsent, setAnalyticsConsent] = useState<boolean>(initialPrefs?.analytics ?? false);
   // чл. 25в ЗЗЛД: под 14 г. съгласието за аналитика се дава от родител/настойник
-  const [ageConfirmed, setAgeConfirmed] = useState<boolean>(false);
+  const [ageConfirmed, setAgeConfirmed] = useState<boolean>(initialPrefs?.ageConfirmed ?? false);
   const [ageError, setAgeError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    let state: ReturnType<typeof parseStoredConsent>;
-    try {
-      state = parseStoredConsent(localStorage.getItem(COOKIE_STORAGE_KEY));
-    } catch {
-      state = { status: 'missing' };
-    }
-    if (state.status === 'valid') {
-      setSavedConsent(state.prefs);
-      setFunctionalConsent(state.prefs.functional);
-      setAnalyticsConsent(state.prefs.analytics);
-      setAgeConfirmed(state.prefs.ageConfirmed);
-    }
-    // Липсващо, невалидно или старо съгласие без потвърдена възраст → банерът се показва отново
-    if (state.status !== 'valid' || forceOpen) {
-      setIsVisible(true);
-    }
+    if (forceOpen) setIsVisible(true);
   }, [forceOpen]);
 
   const analyticsAllowed = isAnalyticsAllowed(savedConsent);

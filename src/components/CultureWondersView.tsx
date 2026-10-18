@@ -206,7 +206,7 @@ export const CultureWondersView: React.FC = () => {
                       <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-teal-50 border border-teal-200 text-teal-800">
                         {wonder.region}
                       </span>
-                      <span className="inline-flex items-center gap-1 text-[11px] text-slate-500 font-medium px-2 py-0.5 rounded bg-slate-100">
+                      <span className="inline-flex items-center gap-1 text-[11px] text-slate-600 font-medium px-2 py-0.5 rounded bg-slate-100">
                         <Navigation className="w-3 h-3 text-slate-400" />
                         <span>{wonder.locationInfo}</span>
                       </span>

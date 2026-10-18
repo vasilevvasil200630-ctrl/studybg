@@ -118,7 +118,7 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
                 <span>{opt.label}</span>
                 {opt.badge && (
                   <span className={`text-[9px] px-1 py-0.2 rounded font-semibold ${
-                    selectedStage === opt.id ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-500'
+                    selectedStage === opt.id ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-600'
                   }`}>
                     {opt.badge}
                   </span>

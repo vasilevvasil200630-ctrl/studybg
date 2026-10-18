@@ -221,7 +221,7 @@ export function App() {
       return;
     }
     const tabTitleMap: Partial<Record<AppNavTab, string>> = {
-      home: 'StudyBG — Национална дигитална академия за НВО, ДЗИ и Трета СПК (8.–12. клас)',
+      home: 'StudyBG — Национална дигитална академия за НВО, ДЗИ и Трета СПК (5.–12. клас)',
       specialties: 'Училища, 64+ Специалности, ДИППК & Калкулатор за Бал (7. и 12. кл.) | StudyBG',
       planner: 'Моят План за Отличен 6.00, Стратегия & Седмичен График | StudyBG',
       oralexam: 'Гласов Симулатор: Устен изпит, Защита на Дипломен проект (ДИППК) & ВУЗ | StudyBG',
@@ -237,7 +237,7 @@ export function App() {
       simulator: '100-точков Изпитен Симулатор за ДЗИ, НВО и Трета СПК | StudyBG',
       generator: 'Генератор на Тестове (Група А/Б) & Държавни изпитни билети за ДИППК | StudyBG',
       calculator: 'МОН Калкулатор за Оценка, ВУЗ Бал и Свидетелство Трета СПК (EUROPASS) | StudyBG',
-      catalog: `Пълен Учебен Каталог (${lessons.length} теми за 8.–12. клас) | StudyBG`,
+      catalog: `Пълен Учебен Каталог (${totalLessonsDisplayCount} теми за 5.–12. клас) | StudyBG`,
       cases: 'Академични Казуси с Архивни Извори (11.–12. клас) | StudyBG',
       errorbank: 'Интерактивна Банка с Грешки и Персонален Тест | StudyBG',
     };
@@ -251,7 +251,7 @@ export function App() {
         page_path: window.location.pathname,
       });
     }
-  }, [portalMode, activeTab, cultureSubTab, currentLesson, lessons.length]);
+  }, [portalMode, activeTab, cultureSubTab, currentLesson, totalLessonsDisplayCount]);
 
   // Legal Policies and Cookie Consent State
   const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
@@ -582,7 +582,7 @@ export function App() {
                     <span>StudyBG</span>
                   </a>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="text-blue-700 font-semibold">Гимназиална академия (8.–12. кл)</span>
+                  <span className="text-blue-700 font-semibold">Учебна академия (5.–12. кл)</span>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   {activeTab === 'specialties' ? (
                     <span className="text-blue-700 font-semibold">Специални секции по училища, специалности и класове (8.–12. клас)</span>

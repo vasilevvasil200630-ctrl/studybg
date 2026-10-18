@@ -88,7 +88,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onScrollToCatalog,
   onOpenFormulaModal,
   onOpenQuickSearch,
-  totalLessonsCount = 108
+  totalLessonsCount = 125
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLabsDropdownOpen, setIsLabsDropdownOpen] = useState(false);
@@ -454,7 +454,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     Study<span className="text-blue-600">BG</span>
                   </span>
                   <span className="text-[10px] font-bold tracking-wide uppercase px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200">
-                    8.–12. клас
+                    5.–12. клас
                   </span>
                 </div>
                 <span className="text-[10px] text-slate-500 font-medium hidden sm:inline">
@@ -472,7 +472,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     ? 'bg-white text-blue-700 shadow-2xs border border-slate-200/60'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
-                title="Гимназиална учебна академия по МОН (8.–12. клас)"
+                title="Учебна академия по МОН (5.–12. клас)"
               >
                 <GraduationCap className="w-3.5 h-3.5 text-blue-600" />
                 <span>Академия ({totalLessonsCount})</span>
@@ -562,7 +562,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
                     <div>
                       <span className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
-                        🧪 Специализирани интерактивни лаборатории (МОН 8.–12. клас)
+                        🧪 Специализирани интерактивни лаборатории (МОН 5.–12. клас)
                       </span>
                       <p className="text-[11px] text-slate-500 mt-0.5">
                         Избери тренажор за директно упражнение, решаване на задачи или устно изпитване
@@ -735,10 +735,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             </div>
 
-            {/* Section 1: High School Core Tools (8.–12. grade) */}
+            {/* Section 1: High School Core Tools (5.–12. grade) */}
             <div>
               <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1 mb-2">
-                Гимназиална академия & Лаборатории (8.–12. клас)
+                Учебна академия & Лаборатории (5.–12. клас)
               </div>
               <div className="grid grid-cols-2 gap-1.5">
                 {highSchoolNavItems.map((item) => (

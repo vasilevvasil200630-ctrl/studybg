@@ -8,6 +8,7 @@ import { DeferredSection } from './DeferredSection';
 import type { UnsolvedMysteryItem } from '../data/generalKnowledgeData';
 
 import { errorBankService } from '../services/errorBankService';
+import { TOTAL_CURRICULUM_LESSONS_COUNT } from '../data/curriculumDatabase';
 
 const HomeSchoolsSection = lazy(() => import('./HomeSchoolsSection').then((m) => ({ default: m.HomeSchoolsSection })));
 const HomeTrainerSection = lazy(() => import('./HomeTrainerSection').then((m) => ({ default: m.HomeTrainerSection })));
@@ -34,7 +35,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
   onNavigateCultureTab,
   onRequestFullCurriculum
 }) => {
-  const totalLessonsCount = Math.max(lessons.length, 108);
+  const totalLessonsCount = Math.max(lessons.length, TOTAL_CURRICULUM_LESSONS_COUNT);
 
   // 1. Live Omni-Search State
   const [omniSearchQuery, setOmniSearchQuery] = useState('');
@@ -271,12 +272,12 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
 
           {/* Main Display Headline */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.12]">
-            Национална дигитална академия за <span className="text-blue-600">НВО 10</span> и <span className="text-blue-600">ДЗИ 12</span>
+            Национална дигитална академия за <span className="text-emerald-600">НВО 7</span>, <span className="text-blue-600">НВО 10</span> и <span className="text-blue-600">ДЗИ 12</span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-sm sm:text-base lg:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-            Професионална образователна платформа с работещи симулатори за 100 точки, гласово устно изпитване пред дъската, STEM лаборатории по природни науки и математика, SmartScan OCR и портал за обща култура и мистерии.
+            Професионална образователна платформа (5.–12. клас) с работещи симулатори за 100 точки, гласово устно изпитване пред дъската, STEM лаборатории по природни науки и математика, SmartScan OCR и портал за обща култура и мистерии.
           </p>
 
           {/* LIVE OMNI-SEARCH ENGINE BAR */}
@@ -347,7 +348,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
 
                 {omniResults.total === 0 ? (
                   <div className="py-6 text-center text-xs text-slate-500">
-                    Няма директно съвпадение. Опитай с друга ключова дума или разгледай пълния каталог с {lessons.length} урока.
+                    Няма директно съвпадение. Опитай с друга ключова дума или разгледай пълния каталог със {totalLessonsCount} урока.
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -458,7 +459,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
 
               {/* Main Entrance Call-to-Actions */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Entrance 1: The Study Academy (8.-12. grade) */}
+                {/* Entrance 1: The Study Academy (5.-12. grade) */}
                 <button
                   onClick={() => onNavigateTab('summary')}
                   className="group relative p-5 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white flex flex-col justify-between transition-all shadow-sm hover:shadow-md cursor-pointer text-left"
@@ -469,12 +470,12 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                         <GraduationCap className="w-5 h-5 text-white" />
                       </div>
                       <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-white/15 text-white border border-white/20">
-                        {lessons.length} УРОКА • 9 ПРЕДМЕТА
+                        {totalLessonsCount} УРОКА • 13 ПРЕДМЕТА
                       </span>
                     </div>
                     <div>
                       <div className="text-[11px] uppercase tracking-wider font-bold text-blue-200">
-                        Портал 1 • Официална подготовка по МОН (8.–12. клас)
+                        Портал 1 • Официална подготовка по МОН (5.–12. клас)
                       </div>
                       <div className="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-1.5 pt-0.5">
                         <span>Влез в Учебната академия</span>
@@ -482,7 +483,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                       </div>
                     </div>
                     <p className="text-xs text-blue-100/95 leading-relaxed">
-                      Пълни учебни конспекти, гласово устно изпитване пред дъската, 100-точков симулатор за НВО 10 и ДЗИ, STEM лаборатории и бележник към всеки урок.
+                      Пълни учебни конспекти, гласово устно изпитване пред дъската, 100-точков симулатор за НВО 7, НВО 10 и ДЗИ, STEM лаборатории и бележник към всеки урок.
                     </p>
                   </div>
                   <div className="pt-3.5 text-xs font-bold text-blue-100 flex items-center justify-between border-t border-white/15 mt-3">

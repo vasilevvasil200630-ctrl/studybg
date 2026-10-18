@@ -79,13 +79,13 @@ export const Footer: React.FC<FooterProps> = ({
                 <div className="flex items-center gap-2">
                   <span className="font-extrabold text-slate-900 text-base tracking-tight">StudyBG</span>
                   <span className="text-[10px] uppercase font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded border border-blue-200">
-                    8.–12. клас
+                    5.–12. клас
                   </span>
                 </div>
               </div>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Специализирана учебна академия за гимназиален етап. Подготовка за НВО 10 и ДЗИ 12 по стандартите на МОН: 100-точкови симулации, 4-критерийна рубрика за есе и исторически контекст за Отличен 6.00.
+              Национална учебна академия за 5.–12. клас. Подготовка за НВО 7, НВО 10, ДЗИ 12 и ДИППК по стандартите на МОН: 100-точкови симулации, 4-критерийна рубрика за есе и исторически контекст за Отличен 6.00.
             </p>
             
             {/* Quick Actions */}
@@ -308,7 +308,7 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
                   <BookOpen className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Гимназиален каталог (8.–12. клас)</span>
+                  <span>Пълен учебен каталог (5.–12. клас)</span>
                 </button>
               </li>
             </ul>
@@ -327,7 +327,7 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-amber-800 transition-colors flex items-center gap-2 font-semibold text-amber-900"
                 >
                   <Compass className="w-3.5 h-3.5 text-amber-700" />
-                  <span>33 Конспиративни досиета & Загадки</span>
+                  <span>40 Конспиративни досиета & Загадки</span>
                 </button>
               </li>
               <li>
@@ -363,7 +363,7 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Куиз за ерудити (42 въпроса)</span>
+                  <span>Куиз за ерудити (48 въпроса)</span>
                 </button>
               </li>
             </ul>
@@ -427,7 +427,7 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="pt-4 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-600">
           <div className="flex items-center gap-2 text-slate-700 font-medium">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>Съобразено с държавните образователни изисквания на МОН за гимназиален етап (8.–12. клас)</span>
+            <span>Съобразено с държавните образователни изисквания на МОН (5.–12. клас)</span>
           </div>
           <div className="flex items-center gap-3 text-slate-500 text-[11px]">
             <span className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 font-medium">

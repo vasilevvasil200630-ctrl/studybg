@@ -16,10 +16,10 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
   const [selectedCurriculumTrack, setSelectedCurriculumTrack] = useState<'dzi' | 'nvo' | 'nvo7' | 'stem' | 'dippk' | 'all'>('dzi');
   const [showAllInTrack, setShowAllInTrack] = useState(false);
 
-  // Смяна на пътеката или „Покажи всички“ → тогава вече трябват всички уроци
+  // Когато отложената секция с учебната база се рендерира на екрана, дозареждаме пълните 125 урока
   useEffect(() => {
-    if (selectedCurriculumTrack !== 'dzi' || showAllInTrack) onRequestFullCurriculum?.();
-  }, [selectedCurriculumTrack, showAllInTrack, onRequestFullCurriculum]);
+    onRequestFullCurriculum?.();
+  }, [onRequestFullCurriculum]);
 
   // Curated DZI 12 High-Yield Lessons
   const dziLessons = lessons.filter(
@@ -68,7 +68,7 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
   return (
     <>
         {/* ========================================================================= */}
-        {/* 4. CURATED EXAM PATHWAYS: ALL 120 MON LESSONS WITH MULTI-ACTION LAUNCH */}
+        {/* 4. CURATED EXAM PATHWAYS: ALL 125 MON LESSONS WITH MULTI-ACTION LAUNCH */}
         {/* ========================================================================= */}
         <section id="curriculum" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
           <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-xs">
@@ -272,7 +272,7 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/70 border border-slate-200 hover:border-blue-200 text-slate-700 hover:text-blue-800 text-xs font-semibold transition-colors cursor-pointer"
               >
                 <BookMarked className="w-4 h-4 text-blue-600" />
-                <span>Отвори пълния каталог с всички {totalLessonsCount} теми по програмите на МОН за 8.–12. клас</span>
+                <span>Отвори пълния каталог с всички {totalLessonsCount} теми по програмите на МОН за 5.–12. клас</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>

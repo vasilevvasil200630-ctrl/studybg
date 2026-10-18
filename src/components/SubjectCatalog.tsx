@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { Search, BookOpen, ChevronRight, Layers, GraduationCap, Clock } from 'lucide-react';
-import type { LessonData, GradeLevel, SubjectName } from '../types';
+import { Search, BookOpen, Layers, GraduationCap, Clock, CheckSquare, Zap } from 'lucide-react';
+import type { LessonData, GradeLevel, SubjectName, QuizQuestion } from '../types';
+import type { AppNavTab } from './Navbar';
 import { GRADES_LIST, SUBJECTS_LIST } from '../data/curriculumDatabase';
 import { MaturaPlusBridgeBanner } from './MaturaPlusBridgeBanner';
 
 interface SubjectCatalogProps {
   lessons: LessonData[];
   currentLessonId: string;
-  onSelectLesson: (lesson: LessonData) => void;
+  onSelectLesson: (lesson: LessonData, targetTab?: AppNavTab) => void;
+  onStartFilteredQuiz?: (questions: QuizQuestion[]) => void;
   onAddNewScan: () => void;
 }
 
@@ -15,6 +17,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
   lessons,
   currentLessonId,
   onSelectLesson,
+  onStartFilteredQuiz,
 }) => {
   const [selectedGrade, setSelectedGrade] = useState<GradeLevel>('Всички класове');
   const [selectedSubject, setSelectedSubject] = useState<SubjectName>('Всички предмети');
@@ -179,14 +182,41 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
 
       {/* Subject Filter Row */}
       <div className="mb-6">
-        <div className="flex items-center justify-between gap-2 text-xs font-medium text-slate-600 mb-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-medium text-slate-600 mb-2">
           <div className="flex items-center gap-2">
             <Layers className="w-3.5 h-3.5 text-slate-500" />
             <span>Учебна дисциплина:</span>
           </div>
-          <span className="text-[11px] font-semibold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
-            Показани: {filteredLessons.length} от {lessons.length} теми
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[11px] font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
+              Показани: {filteredLessons.length} от {lessons.length} теми
+            </span>
+            {onStartFilteredQuiz && filteredLessons.length > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  const pool = filteredLessons.flatMap((l) => l.quiz);
+                  const shuffled = [...pool];
+                  for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                  }
+                  const picked = shuffled.slice(0, Math.min(12, shuffled.length)).map((q, idx) => ({
+                    ...q,
+                    id: idx + 1,
+                  }));
+                  if (picked.length > 0) {
+                    onStartFilteredQuiz(picked);
+                  }
+                }}
+                className="inline-flex items-center gap-1.5 text-[11px] font-bold text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-full shadow-2xs transition-colors cursor-pointer"
+                title="Генерирай сборен тест от показаните в момента теми"
+              >
+                <Zap className="w-3 h-3" />
+                <span>Генерирай сборен тест ({Math.min(12, filteredLessons.reduce((acc, l) => acc + l.quiz.length, 0))} въпроса)</span>
+              </button>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-1.5 overflow-x-auto pb-2 no-scrollbar">
           {SUBJECTS_LIST.map((subj) => {
@@ -239,7 +269,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
           return (
             <div
               key={lesson.id}
-              onClick={() => onSelectLesson(lesson)}
+              onClick={() => onSelectLesson(lesson, 'summary')}
               className={`cv-card p-4 sm:p-5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between group ${
                 isCurrent
                   ? 'bg-blue-50/70 border-blue-400 shadow-xs ring-1 ring-blue-400/40'
@@ -279,17 +309,44 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span className="text-slate-500 text-[11px] flex items-center gap-1.5">
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-1.5 text-xs">
+                <span className="text-slate-500 text-[11px] flex items-center gap-1">
                   <Clock className="w-3 h-3 text-slate-400" />
-                  <span>{lesson.notebookChecklist ? `${lesson.notebookChecklist.length} критерия` : 'Стандарт МОН'}</span>
+                  <span>{lesson.notebookChecklist ? `${lesson.notebookChecklist.length} крит.` : 'МОН'}</span>
                 </span>
-                <span className={`font-medium flex items-center gap-1 text-xs ${
-                  isCurrent ? 'text-blue-700 font-semibold' : 'text-slate-500 group-hover:text-slate-800'
-                }`}>
-                  <span>{isCurrent ? 'Активен урок' : 'Преглед'}</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectLesson(lesson, 'summary');
+                    }}
+                    className="px-2 py-1 rounded-md text-[11px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
+                  >
+                    Конспект
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectLesson(lesson, 'flashcards');
+                    }}
+                    className="px-2 py-1 rounded-md text-[11px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
+                  >
+                    Карти ({lesson.flashcards.length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectLesson(lesson, 'quiz');
+                    }}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-2xs transition-colors cursor-pointer"
+                  >
+                    <CheckSquare className="w-3 h-3" />
+                    <span>Тест ({lesson.quiz.length})</span>
+                  </button>
+                </div>
               </div>
             </div>
           );

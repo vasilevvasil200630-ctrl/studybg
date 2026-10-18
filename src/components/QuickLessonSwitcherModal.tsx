@@ -1,15 +1,17 @@
 import React, { useState, useMemo } from 'react';
-import { Search, X, BookOpen, GraduationCap, ChevronRight, Check, ExternalLink } from 'lucide-react';
+import { Search, X, BookOpen, GraduationCap, ChevronRight, Check, ExternalLink, CheckSquare } from 'lucide-react';
 import type { LessonData } from '../types';
+import type { AppNavTab } from './Navbar';
 import { NativeDialog } from './NativeDialog';
 
-type StageFilter = 'all' | 'dzi12' | 'nvo10' | 'gymnasium89';
+type StageFilter = 'all' | 'dzi12' | 'nvo10' | 'gymnasium89' | 'junior57';
 
 const STAGE_OPTIONS: { id: StageFilter; label: string; badge?: string }[] = [
-  { id: 'all', label: 'Всички (8.–12. кл.)' },
+  { id: 'all', label: 'Всички (5.–12. кл.)' },
   { id: 'dzi12', label: 'ДЗИ 12 (Матура)', badge: '11.–12. кл.' },
   { id: 'nvo10', label: 'НВО 10. клас', badge: '10. кл.' },
   { id: 'gymnasium89', label: '8.–9. клас', badge: 'Преговор' },
+  { id: 'junior57', label: '5.–7. клас (НВО)', badge: '5.–7. кл.' },
 ];
 
 interface QuickLessonSwitcherModalProps {
@@ -17,7 +19,7 @@ interface QuickLessonSwitcherModalProps {
   onClose: () => void;
   lessons: LessonData[];
   currentLessonId: string;
-  onSelectLesson: (lesson: LessonData) => void;
+  onSelectLesson: (lesson: LessonData, targetTab?: AppNavTab) => void;
 }
 
 export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> = ({
@@ -47,6 +49,8 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
         matchesStage = l.grade.includes('10') || (Boolean(l.examType) && l.examType!.includes('10'));
       } else if (selectedStage === 'gymnasium89') {
         matchesStage = l.grade.includes('8') || l.grade.includes('9');
+      } else if (selectedStage === 'junior57') {
+        matchesStage = l.grade.includes('5.') || l.grade.includes('6.') || l.grade.includes('7.');
       }
 
       const query = searchQuery.toLowerCase().trim();
@@ -198,16 +202,39 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
                     <div className="text-xs text-slate-500 line-clamp-1">{lesson.summary.overview}</div>
                   </div>
 
-                  {isSelected ? (
-                    <div className="flex items-center gap-1 text-xs text-blue-700 font-bold bg-blue-100 px-2 py-1 rounded-lg border border-blue-200">
-                      <Check className="w-3.5 h-3.5" />
-                      <span>Активен</span>
-                    </div>
-                  ) : (
-                    <div className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 bg-slate-100">
-                      <ChevronRight className="w-4 h-4" />
-                    </div>
-                  )}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectLesson(lesson, 'quiz');
+                        onClose();
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.stopPropagation();
+                          onSelectLesson(lesson, 'quiz');
+                          onClose();
+                        }
+                      }}
+                      className="inline-flex items-center gap-1 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 px-2.5 py-1 rounded-lg shadow-2xs transition-colors"
+                      title="Стартирай директно теста по този урок"
+                    >
+                      <CheckSquare className="w-3.5 h-3.5" />
+                      <span>Тест ({lesson.quiz.length})</span>
+                    </span>
+                    {isSelected ? (
+                      <div className="flex items-center gap-1 text-xs text-blue-700 font-bold bg-blue-100 px-2 py-1 rounded-lg border border-blue-200">
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Активен</span>
+                      </div>
+                    ) : (
+                      <div className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 bg-slate-100">
+                        <ChevronRight className="w-4 h-4" />
+                      </div>
+                    )}
+                  </div>
                 </button>
               );
             })

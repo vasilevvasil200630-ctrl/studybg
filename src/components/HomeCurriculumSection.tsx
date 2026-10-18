@@ -13,7 +13,7 @@ interface HomeCurriculumSectionProps {
 
 // Изнесено от HomeLandingView — зарежда се отложено, когато секцията приближи екрана
 export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ lessons, totalLessonsCount, onNavigateTab, onSelectLesson, onRequestFullCurriculum }) => {
-  const [selectedCurriculumTrack, setSelectedCurriculumTrack] = useState<'dzi' | 'nvo' | 'stem' | 'dippk' | 'all'>('dzi');
+  const [selectedCurriculumTrack, setSelectedCurriculumTrack] = useState<'dzi' | 'nvo' | 'nvo7' | 'stem' | 'dippk' | 'all'>('dzi');
   const [showAllInTrack, setShowAllInTrack] = useState(false);
 
   // Смяна на пътеката или „Покажи всички“ → тогава вече трябват всички уроци
@@ -28,6 +28,9 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
 
   // Curated NVO 10 Lessons
   const nvo10Lessons = lessons.filter((l) => l.grade.includes('10') || l.grade.includes('9') || l.grade.includes('8'));
+
+  // Curated 5.–7. Grade & NVO 7 Lessons
+  const juniorLessons = lessons.filter((l) => l.grade.includes('5.') || l.grade.includes('6.') || l.grade.includes('7.'));
 
   // STEM / Science Lessons
   const stemLessons = lessons.filter(
@@ -52,6 +55,8 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
       ? dziLessons
       : selectedCurriculumTrack === 'nvo'
       ? nvo10Lessons
+      : selectedCurriculumTrack === 'nvo7'
+      ? juniorLessons
       : selectedCurriculumTrack === 'stem'
       ? stemLessons
       : selectedCurriculumTrack === 'dippk'
@@ -63,7 +68,7 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
   return (
     <>
         {/* ========================================================================= */}
-        {/* 4. CURATED EXAM PATHWAYS: ALL 108 MON LESSONS WITH MULTI-ACTION LAUNCH */}
+        {/* 4. CURATED EXAM PATHWAYS: ALL 120 MON LESSONS WITH MULTI-ACTION LAUNCH */}
         {/* ========================================================================= */}
         <section id="curriculum" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
           <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-xs">
@@ -72,7 +77,7 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
               <div>
                 <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
                   <BookOpen className="w-3.5 h-3.5" />
-                  <span>Пълна учебна база по предмети (8.–12. клас)</span>
+                  <span>Пълна учебна база по предмети (5.–12. клас)</span>
                 </div>
                 <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
                   Учебни конспекти, устно изпитване и тестове ({totalLessonsCount} урока)
@@ -109,6 +114,19 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
                   }`}
                 >
                   8.–10. кл & НВО ({nvo10Lessons.length})
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedCurriculumTrack('nvo7');
+                    setShowAllInTrack(false);
+                  }}
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                    selectedCurriculumTrack === 'nvo7'
+                      ? 'bg-white text-emerald-700 shadow-xs font-bold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  5.–7. кл & НВО 7 ({juniorLessons.length})
                 </button>
                 <button
                   onClick={() => {

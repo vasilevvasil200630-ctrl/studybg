@@ -315,6 +315,7 @@ export function App() {
     prefetchStudyTabChunk(preferredTab);
     startTabTransition(() => {
       setPortalMode('study');
+      setPracticeQuestions(null);
       setCurrentLesson(lesson);
       setActiveTab(preferredTab);
     });
@@ -529,7 +530,13 @@ export function App() {
             onClose={() => setIsQuickLessonModalOpen(false)}
             lessons={lessons}
             currentLessonId={currentLesson.id}
-            onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+            onSelectLesson={(l, targetTab) =>
+              handleLessonSelected(
+                l,
+                targetTab ??
+                  (['quiz', 'flashcards', 'oralexam', 'audit'].includes(activeTab) ? activeTab : 'summary')
+              )
+            }
           />
         )}
 
@@ -856,6 +863,7 @@ export function App() {
 
                     {activeTab === 'quiz' && (
                       <QuizView
+                        key={`${currentLesson.id}-${practiceQuestions ? `custom-${practiceQuestions.length}` : 'lesson'}`}
                         questions={practiceQuestions || currentLesson.quiz}
                         onReviewFlashcards={() => handleNavigateStudyTab('flashcards')}
                         onNavigateTab={handleNavigateStudyTab}
@@ -895,7 +903,8 @@ export function App() {
                         <SubjectCatalog
                           lessons={lessons}
                           currentLessonId={currentLesson.id}
-                          onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+                          onSelectLesson={(l, targetTab = 'summary') => handleLessonSelected(l, targetTab)}
+                          onStartFilteredQuiz={handleStartCustomQuizFromErrors}
                           onAddNewScan={() => setIsScanModalOpen(true)}
                         />
                       </div>

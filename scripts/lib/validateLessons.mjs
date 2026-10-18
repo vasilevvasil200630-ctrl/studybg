@@ -6,6 +6,7 @@ const MIXED_SCRIPT_WORD = /[A-Za-z][А-Яа-яЁё]|[А-Яа-яЁё][A-Za-z]/;
 const ROMAN_GROUP_TOKEN = /(^|[\s(„"'])(?:I|II|III|IV|V|VI|VII|VIII)[АБ](?=$|[\s)“"',.;:—–-])/g;
 const ARABIC_CHAR = /[\u0600-\u06FF]/;
 const BOILERPLATE_DISTRACTOR = /Твърдението е невалидно и противоречи на основните принципи/;
+const FORMULA_SWAP_STEM = /^(Кое съответства на|Кое е вярно за|За кое понятие от урока се отнася)/;
 
 const isNonEmptyString = (v) => typeof v === 'string' && v.trim().length > 0;
 const isNonEmptyArray = (v) => Array.isArray(v) && v.length > 0;
@@ -108,6 +109,8 @@ export function validateLessons(lessons, { subjects, grades }) {
           errors.push(`${qWhere}: празен въпрос`);
         } else if (hasTextCorruption(q.question)) {
           errors.push(`${qWhere}: смесени латински/кирилски знаци във въпроса`);
+        } else if (FORMULA_SWAP_STEM.test(q.question.trim())) {
+          errors.push(`${qWhere}: механичен шаблонен въпрос („${q.question}“)`);
         }
         if (!Array.isArray(q?.options) || q.options.length < 2) {
           errors.push(`${qWhere}: по-малко от 2 отговора`);

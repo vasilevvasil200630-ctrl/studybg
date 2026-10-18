@@ -21,6 +21,21 @@ export const QuizView: React.FC<QuizViewProps> = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
+  if (questions.length === 0) {
+    return (
+      <div className="p-6 rounded-xl bg-amber-50/60 border border-amber-200 text-sm text-amber-900 space-y-3">
+        <p className="font-semibold">За този урок още няма проверен тест.</p>
+        <p>Прегледай конспекта и флашкартите или избери урок от каталога — всеки урок там има тест с ключ.</p>
+        <button
+          onClick={onReviewFlashcards}
+          className="px-4 py-2 rounded-lg bg-white hover:bg-amber-100 border border-amber-300 text-xs font-semibold"
+        >
+          Към флашкартите
+        </button>
+      </div>
+    );
+  }
+
   const handleSelectOption = (questionId: number, optionIndex: number) => {
     if (isSubmitted) return;
     setSelectedAnswers(prev => ({
@@ -42,36 +57,47 @@ export const QuizView: React.FC<QuizViewProps> = ({
     return correct;
   };
 
+  // Оценка по стандартната формула за тест: 2 + 4 · (верни / всички),
+  // с обичайните прагове: < 3.00 Слаб, 3.00–3.49 Среден, 3.50–4.49 Добър, 4.50–5.49 Мн. добър, ≥ 5.50 Отличен.
   const getBulgarianGrade = (correct: number, total: number) => {
-    const ratio = correct / total;
-    if (ratio >= 0.9) {
+    const numeric = total > 0 ? 2 + 4 * (correct / total) : 2;
+    const shown = numeric.toFixed(2);
+    if (numeric >= 5.5) {
       return {
-        grade: 'Отличен 6.00',
+        grade: `Отличен ${shown}`,
         badge: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-        comment: 'Пълно покритие на изпитните стандарти. Всички ключови дефиниции и концепции са усвоени отлично.',
+        comment: 'Отлично усвояване на урока. Всички ключови понятия са разпознати правилно.',
         readyForExam: true
       };
     }
-    if (ratio >= 0.7) {
+    if (numeric >= 4.5) {
       return {
-        grade: 'Мн. добър 5.00',
+        grade: `Мн. добър ${shown}`,
         badge: 'bg-blue-50 text-blue-800 border-blue-200',
-        comment: 'Много добра подготовка. Препоръчва се бърз преговор на допуснатите грешки за достигане на 6.00.',
+        comment: 'Много добра подготовка. Прегледай допуснатите грешки, за да стигнеш до 6.00.',
         readyForExam: true
       };
     }
-    if (ratio >= 0.5) {
+    if (numeric >= 3.5) {
       return {
-        grade: 'Добър 4.00',
+        grade: `Добър ${shown}`,
         badge: 'bg-amber-50 text-amber-800 border-amber-200',
-        comment: 'Базова ориентация по темата, но са допуснати грешки при ключови формулировки.',
+        comment: 'Базова ориентация по темата, но има грешки при ключови понятия.',
+        readyForExam: false
+      };
+    }
+    if (numeric >= 3) {
+      return {
+        grade: `Среден ${shown}`,
+        badge: 'bg-orange-50 text-orange-800 border-orange-200',
+        comment: 'Има съществени пропуски. Прегледай конспекта и флашкартите и опитай отново.',
         readyForExam: false
       };
     }
     return {
-      grade: 'Среден 3.00 / Необходим преговор',
+      grade: `Слаб ${shown}`,
       badge: 'bg-rose-50 text-rose-800 border-rose-200',
-      comment: 'Има съществени пропуски. Препоръчва се повторно преглеждане на конспекта и флашкартите.',
+      comment: 'Темата не е усвоена. Започни от конспекта, после флашкартите и чак тогава повтори теста.',
       readyForExam: false
     };
   };
@@ -107,7 +133,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
         <div>
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-50 border border-blue-200 text-blue-700 mb-1">
             <CheckSquare className="w-3.5 h-3.5" />
-            <span>Стандартизиран контролен тест (МОН)</span>
+            <span>Тест за самопроверка по урока</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
             Проверка на знанията ({questions.length} въпроса)
@@ -170,7 +196,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                 Резултат: {gradeInfo.grade}
               </span>
               <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 font-mono">
-                {correctScore} от {questions.length} верни отговора ({Math.round((correctScore / questions.length) * 100)}%)
+                {correctScore} от {questions.length} верни отговора ({questions.length > 0 ? Math.round((correctScore / questions.length) * 100) : 0}%)
               </h3>
               <p className="mt-2 text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed">
                 {gradeInfo.comment}

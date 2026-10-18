@@ -16,6 +16,8 @@ export interface NotebookDiagnosis {
   detectedTraps: string[];
   teacherAdvice: string;
   lessonData: LessonData;
+  /** true, когато няма отделен урок точно по темата и е избран най-близкият урок по същия предмет */
+  lessonIsApproximate?: boolean;
 }
 
 export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): NotebookDiagnosis {
@@ -167,29 +169,89 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
   else if (qualityScore >= 50) gradeEstimate = 'Частично покритие на темата';
   else gradeEstimate = 'Начално ниво (Препоръчва се попълване на пропуските)';
 
-  // Check if we have an existing rich lesson in curriculum database
+  // Изрична карта на всички 51 подтеми от дървото на МОН към техните проверени уроци и тестове
+  const SUBDOMAIN_LESSON_MAP: Record<string, string> = {
+    'bel-5-sub1': 'bel-5-myth-prometey',
+    'bel-5-sub2': 'bel-5-tri-bratya-zlatnata-yabalka',
+    'bel-6-sub1': 'bel-6-hubava-si-moya-goro',
+    'bel-6-sub2': 'bel-6-vazov-pod-igoto',
+    'bel-7-sub1': 'bel-7-edna-balgarka',
+    'bel-7-sub2': 'literature-botev-dzi',
+    'bel-7-sub3': 'bel-7-opalchentsite-shipka',
+    'bel-7-sub4': 'bel-grammar-full-short-article',
+    'bel-7-sub5': 'bel-grammar-full-short-article',
+    'bel-10-sub1': 'bel-10-paisiy-istoriya-slavyanobalgarska',
+    'bel-11-sub1': 'literature-geratsite',
+    'bel-11-sub2': 'literature-aleko-dzi',
+    'bel-11-sub3': 'literature-yavorov-gradushka',
+    'bel-12-sub1': 'literature-tyutyun',
+    'bel-12-sub2': 'bel-talev-dimov-romani-dzi',
+    'bel-12-sub3': 'bel-8-10-bulgarian-grammar-syntax-punctuation-nvo10',
+    'bel-12-sub4': 'bel-12-vaptsarov-vyara-pesen',
+    'hist-5-sub1': 'hist-5-ancient-thrace-odrysian',
+    'hist-6-sub1': 'history-asparukh-681',
+    'hist-6-sub2': 'hist-6-khan-krum-laws-811',
+    'hist-10-sub0': 'history-simeon-golden-age',
+    'hist-10-sub1': 'hist-10-unification-independence-1885-1908',
+    'hist-10-sub2': 'hist-10-unification-independence-1885-1908',
+    'hist-10-sub3': 'history-balkan-wars-ww1-catastrophes',
+    'hist-11-sub1': 'history-april-uprising',
+    'math-5-sub1': 'math-5-fractions-decimals',
+    'math-6-sub1': 'math-6-rational-numbers-powers',
+    'math-7-sub1': 'math-7-linear-equations',
+    'math-7-sub2': 'math-7-linear-equations',
+    'math-7-sub3': 'math-short-multiplication',
+    'math-8-sub1': 'math-10-quadratic-equations-vieta',
+    'math-8-sub2': 'math-pythagorean-theorem',
+    'math-10-sub1': 'math-quadratic-vieta-progressions',
+    'math-10-sub2': 'math-trigonometry-sine-cosine-nvo10',
+    'phys-7-sub1': 'physics-ohms-law',
+    'phys-8-sub1': 'phys-newton-laws-mechanics',
+    'phys-8-sub2': 'phys-newton-laws-mechanics',
+    'geo-5-sub1': 'geo-5-great-discoveries-continents',
+    'geo-7-sub1': 'geography-danubian-plain',
+    'geo-10-sub1': 'geo-bulgaria-population-settlements-tertiary-dzi',
+    'bio-8-sub1': 'bio-medicine-anatomy-biotech-pharmacy-8-12',
+    'bio-8-sub2': 'bio-11-12-immunology-virology-neurobiology-endocrinology',
+    'bio-9-sub1': 'biology-cell-division',
+    'bio-10-sub1': 'bio-genetics-mendel-laws',
+    'chem-8-sub1': 'chemistry-periodic-system',
+    'chem-8-sub2': 'chem-redox-electrochemistry-dzi',
+    'chem-9-sub1': 'chem-organic-hydrocarbons-alcohols',
+    'eng-8-sub1': 'eng-conditionals-passive-reported',
+    'eng-10-sub1': 'english-present-perfect-vs-past',
+    'eng-10-sub2': 'english-present-perfect-vs-past',
+    'civ-10-sub1': 'civic-powers-separation'
+  };
+
+  const mappedLessonId = SUBDOMAIN_LESSON_MAP[matched.subDomain.id] || matched.subDomain.id;
   const subNameLower = matched.subDomain.name.toLowerCase();
-  const existing =
+  const exact =
+    activeLessonsPool.find((l) => l.id === mappedLessonId) ||
     activeLessonsPool.find((l) => l.id === matched.subDomain.id) ||
-    activeLessonsPool.find(
-      (l) =>
-        l.title.toLowerCase().includes(subNameLower.slice(0, 15)) ||
-        subNameLower.includes(l.title.toLowerCase().slice(0, 15))
-    ) ||
     activeLessonsPool.find((l) => {
-      if (l.subject !== matched.subject) return false;
-      const lTitle = l.title.toLowerCase();
-      return matched.subDomain.keywords.some(
-        (kw) => kw.length >= 4 && lTitle.includes(kw.toLowerCase())
-      );
+      const t = l.title.toLowerCase();
+      return t.includes(subNameLower) || (t.length >= 12 && subNameLower.includes(t));
     });
 
-  const lessonData = existing || generateLessonFromInput(
-    matched.subDomain.name,
-    inputText,
-    matched.subject,
-    matched.grade
-  );
+  const gradeNum = (g: string) => Number((g.match(/(\d+)/) || [])[1] || 0);
+  const targetGrade = gradeNum(matched.grade);
+  const closest = exact
+    ? undefined
+    : activeLessonsPool
+        .filter((l) => l.subject === matched.subject)
+        .map((l) => {
+          const haystack = `${l.title} ${l.summary.overview} ${l.summary.keyPoints.join(' ')}`.toLowerCase();
+          const kwHits = matched.subDomain.keywords.filter((kw) => kw.length >= 4 && haystack.includes(kw.toLowerCase())).length;
+          const gradeGap = targetGrade && gradeNum(l.grade) ? Math.abs(gradeNum(l.grade) - targetGrade) : 3;
+          return { l, score: kwHits * 3 - gradeGap };
+        })
+        .sort((a, b) => b.score - a.score)[0]?.l;
+
+  const lessonData =
+    exact ||
+    closest ||
+    generateLessonFromInput(matched.subDomain.name, inputText, matched.subject, matched.grade);
 
   return {
     isMatched: true,
@@ -203,6 +265,7 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
     missingCrucialPoints: missingPoints.length > 0 ? missingPoints : ['Всички основни точки са записани!'],
     detectedTraps: matched.subDomain.commonPitfalls,
     teacherAdvice: matched.subDomain.advice,
-    lessonData
+    lessonData,
+    lessonIsApproximate: !exact
   };
 }

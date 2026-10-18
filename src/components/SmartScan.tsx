@@ -494,6 +494,25 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
             </div>
           </div>
 
+          <div
+            className={`p-3.5 rounded-xl border text-xs ${
+              diagnosisPreview.lessonIsApproximate
+                ? 'bg-amber-50/60 border-amber-200 text-amber-900'
+                : 'bg-slate-50 border-slate-200 text-slate-800'
+            }`}
+          >
+            {diagnosisPreview.lessonIsApproximate ? (
+              <>
+                За темата „{diagnosisPreview.subDomainName}“ още няма отделен урок с проверен тест. Ще отворим най-близкия
+                урок по същия предмет: <strong>{diagnosisPreview.lessonData.title}</strong>.
+              </>
+            ) : (
+              <>
+                Урок и тест по темата: <strong>{diagnosisPreview.lessonData.title}</strong>.
+              </>
+            )}
+          </div>
+
           {diagnosisPreview.missingCrucialPoints.length > 0 && (
             <div className="p-3.5 rounded-xl bg-amber-50/60 border border-amber-200 text-xs">
               <span className="font-bold text-amber-900 flex items-center gap-1.5 mb-1.5">

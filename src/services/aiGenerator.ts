@@ -1,5 +1,11 @@
 import { toLessonGrade, type LessonData, type LessonSubject, type Flashcard, type QuizQuestion } from '../types';
+import { getCachedOrCoreLessons } from '../data/curriculumDatabase';
 
+/**
+ * Създава урок от потребителски записки, като комбинира конспекта от записките
+ * с проверени тестови въпроси от най-близките уроци по същия предмет и клас в базата на МОН.
+ * Никога не генерира шаблонни псевдо-въпроси и никога не връща празен тест.
+ */
 export function generateLessonFromInput(
   titleOrFileName: string,
   rawText: string,
@@ -9,229 +15,103 @@ export function generateLessonFromInput(
   const cleanTitle = titleOrFileName
     .replace(/\.(jpg|jpeg|png|heic|pdf|txt)$/i, '')
     .replace(/[-_]/g, ' ')
-    .trim() || 'Сканиран урок от тетрадка';
+    .trim() || 'Записки от тетрадка';
 
-  // Extract lines and sentences
-  const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  const pool = getCachedOrCoreLessons();
+  const subjectLessons = pool.filter((l) => l.subject === subjectHint);
+  const candidateLessons = subjectLessons.length > 0 ? subjectLessons : pool;
 
-  // Generate overview
-  const overview = rawText.length > 60
-    ? `Синтезиран преглед от сканираните записки: ${rawText.slice(0, 220)}... Този урок обхваща ключови понятия, процеси и взаимовръзки, съобразени с българската учебна програма.`
-    : `Този урок по ${subjectHint} съдържа най-важните акценти и структурирани знания от вашата тетрадка. Подготвен е за светкавичен 5-минутен преговор преди контролна работа или изпит.`;
+  const queryWords = `${cleanTitle} ${rawText}`
+    .toLowerCase()
+    .split(/[\s,.;:!?()[\]"'„“–—/-]+/)
+    .filter((w) => w.length >= 4);
 
-  // Generate key points
-  const keyPoints: string[] = [];
-  if (lines.length >= 3) {
-    lines.slice(0, 5).forEach((line, idx) => {
-      keyPoints.push(`Точка ${idx + 1}: ${line.length > 120 ? line.slice(0, 120) + '...' : line}`);
-    });
-  } else {
-    keyPoints.push(
-      `Основни дефиниции и понятиен апарат: Вникнете в причинно-следствените връзки на темата.`,
-      `Главни процеси и механизми: Проследете последователността на събитията стъпка по стъпка.`,
-      `Приложение и практически примери: Свържете теорията с реални задачи и матурни формати.`,
-      `Обобщение и изводи: Формулирайте най-важните заключения със свои думи.`
-    );
+  const gradeNum = (g: string) => Number((g.match(/(\d+)/) || [])[1] || 0);
+  const targetGrade = gradeNum(gradeHint);
+
+  const rankedLessons = [...candidateLessons]
+    .map((l) => {
+      const hay = `${l.title} ${l.summary.overview} ${l.summary.keyPoints.join(' ')}`.toLowerCase();
+      let score = 0;
+      for (const w of queryWords) {
+        if (hay.includes(w)) score += 3;
+      }
+      if (targetGrade && gradeNum(l.grade)) {
+        score -= Math.abs(gradeNum(l.grade) - targetGrade);
+      }
+      return { lesson: l, score };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  const primaryLesson = rankedLessons[0]?.lesson || pool[0];
+
+  const selectedQuiz: QuizQuestion[] = [];
+  const seenQuestions = new Set<string>();
+  for (const { lesson } of rankedLessons) {
+    for (const q of lesson.quiz) {
+      const key = q.question.trim().toLowerCase();
+      if (!seenQuestions.has(key)) {
+        seenQuestions.add(key);
+        selectedQuiz.push({
+          ...q,
+          id: selectedQuiz.length + 1
+        });
+      }
+      if (selectedQuiz.length >= 6) break;
+    }
+    if (selectedQuiz.length >= 6) break;
   }
 
-  // Generate flashcards
-  const flashcards: Flashcard[] = [
-    {
-      id: `fc-gen-1`,
-      front: `Какво е главното послание или дефиниция в „${cleanTitle}“?`,
-      back: keyPoints[0] || 'Основната същност на концепцията, записана в началото на темата.',
-      hint: 'Погледни първите 2 реда от записките си.',
-      tag: 'Основна концепция'
-    },
-    {
-      id: `fc-gen-2`,
-      front: `Кой е най-важният процес или събитие, разгледано в този урок?`,
-      back: keyPoints[1] || 'Централният механизъм или повратна точка в учебния материал.',
-      hint: 'Свързано е с динамиката на темата.',
-      tag: 'Ключов процес'
-    },
-    {
-      id: `fc-gen-3`,
-      front: `Каква е формулата / логическото правило, което не бива да се бърка?`,
-      back: 'Всяко правило изисква внимание към изключенията и правилната терминология.',
-      hint: 'Често се появява на второ ниво в тестовете.',
-      tag: 'Правило'
-    },
-    {
-      id: `fc-gen-4`,
-      front: `Какъв е крайният резултат или извод от разгледаната тема?`,
-      back: keyPoints[keyPoints.length - 1] || 'Крайното състояние или исторически/научен извод.',
-      hint: 'Търси заключителния абзац.',
-      tag: 'Извод'
-    },
-    {
-      id: `fc-gen-5`,
-      front: `Коя е най-честата грешка, която учениците допускат по тази тема?`,
-      back: 'Смесване на сродни понятия или неточно цитиране на дати, формули и зависимости.',
-      hint: 'Обърни внимание на знаците и мерните единици.',
-      tag: 'Клопка'
-    }
-  ];
+  const lines = rawText.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
+  const keyPoints =
+    lines.length >= 2
+      ? lines.slice(0, 6).map((line) => (line.length > 160 ? `${line.slice(0, 160)}…` : line))
+      : [...(primaryLesson?.summary.keyPoints || [])];
 
-  // Generate 10 Quiz questions with balanced correctIndex (0, 1, 2, 3)
-  const quiz: QuizQuestion[] = [
-    {
-      id: 1,
-      question: `Кое е водещото понятие или основната теза в „${cleanTitle}“?`,
-      options: [
-        `Основен акцент: ${keyPoints[0]?.slice(0, 65) || 'Дефиницията и главната закономерност по темата'}`,
-        'Вторично и несъществено отклонение извън обхвата на урока',
-        'Отхвърлена хипотеза без приложение в учебната програма',
-        'Случайно съвпадение на независими факти'
-      ],
-      correctIndex: 0,
-      explanation: 'Това е фундаменталното положение в записките, от което произтичат останалите изводи в урока.'
-    },
-    {
-      id: 2,
-      question: `Кой е вторият ключов механизъм или етап, разгледан в записките по „${cleanTitle}“?`,
-      options: [
-        'Пълна липса на причинно-следствена връзка между явленията',
-        `Етап / процес: ${keyPoints[1]?.slice(0, 65) || 'Преходът от теоретична постановка към конкретен механизъм'}`,
-        'Отричане на дефиниционните условия на темата',
-        'Свободна интерпретация без опора в научните факти'
-      ],
-      correctIndex: 1,
-      explanation: 'Вторият ключов акцент в конспекта проследява развитието на процеса и връзката между елементите.'
-    },
-    {
-      id: 3,
-      question: `Каква е логическата връзка между отделните компоненти в „${cleanTitle}“?`,
-      options: [
-        'Етапите са напълно произволни и независими един от друг',
-        'Съществува логическо противоречие между първата и втората част',
-        'Всеки следващ етап се основава на предходния в причинно-следствена верига',
-        'Липсва хронологична или структурна последователност'
-      ],
-      correctIndex: 2,
-      explanation: 'Разбирането на причинно-следствената последователност е задължително за пълен брой точки на изпит.'
-    },
-    {
-      id: 4,
-      question: `Коя е най-честата грешка при решаване на задачи и въпроси по „${cleanTitle}“?`,
-      options: [
-        'Точното спазване на научната и предметната терминология',
-        'Внимателното разграничаване на условие и заключение',
-        'Проверката на мерните единици, датите или езиковите норми',
-        'Смесването на основни закономерности с второстепенни белези или изключения'
-      ],
-      correctIndex: 3,
-      explanation: 'Изпитните дистрактори най-често залагат на смесване между общото правило и неговите гранични случаи.'
-    },
-    {
-      id: 5,
-      question: `Кой елемент от третата точка на конспекта е съществен за „${cleanTitle}“?`,
-      options: [
-        `Приложен акцент: ${keyPoints[2]?.slice(0, 65) || 'Свързването на правилото с конкретен пример и доказателство'}`,
-        'Игнориране на емпиричните данни и историческите/научните източници',
-        'Замяна на точните термини с разговорни изрази',
-        'Пропускане на междинните стъпки в аргументацията'
-      ],
-      correctIndex: 0,
-      explanation: 'Конкретното приложение и точната аргументация носят точките във втория и третия модул на изпитите.'
-    },
-    {
-      id: 6,
-      question: `Как трябва да се формулира кратък свободен отговор по темата „${cleanTitle}“?`,
-      options: [
-        'Чрез преразказ без използване на ключови термини от предмета',
-        'С точна дефиниция, посочване на причината/правилото и конкретен извод',
-        'Само с една дума без обосновка, дори когато въпросът изисква обяснение',
-        'Чрез цитиране на странични теми извън зададения въпрос'
-      ],
-      correctIndex: 1,
-      explanation: 'Критериите на МОН за свободен отговор изискват терминологична точност и ясна логическа връзка.'
-    },
-    {
-      id: 7,
-      question: `Какъв е обобщаващият извод от разгледания материал в „${cleanTitle}“?`,
-      options: [
-        'Темата няма връзка с останалите раздели от учебната програма',
-        'Явлението не подлежи на систематичен анализ',
-        `Обобщение: ${keyPoints[keyPoints.length - 1]?.slice(0, 65) || 'Синтез на основните закономерности и тяхното значение'}`,
-        'Всички разгледани процеси са обратими без външни условия'
-      ],
-      correctIndex: 2,
-      explanation: 'Заключителната част на конспекта обобщава резултата и значението на изученото явление.'
-    },
-    {
-      id: 8,
-      question: `При съпоставителен въпрос по ${subjectHint} върху „${cleanTitle}“, кое действие е правилно?`,
-      options: [
-        'Описване само на едното понятие без посочване на общ критерий за сравнение',
-        'Изброяване на случайни факти без хронологичен или логически ред',
-        'Пропускане на специфичните разлики между сродните понятия',
-        'Извеждане на ясен критерий за сравнение (общи черти и съществени разлики)'
-      ],
-      correctIndex: 3,
-      explanation: 'Всяка съпоставка на НВО и ДЗИ се оценява по наличието на ясен признак за сравнение.'
-    },
-    {
-      id: 9,
-      question: `Кое условие гарантира, че терминологията от „${cleanTitle}“ е усвоена функционално?`,
-      options: [
-        'Способността понятието да се разпознае в нов контекст и да се приложи в задача',
-        'Механичното наизустяване на текста без разбиране на връзките',
-        'Пропускането на таблиците, формулите и датите в конспекта',
-        'Разчитането само на интуиция при избор на отговор'
-      ],
-      correctIndex: 0,
-      explanation: 'Функционалната грамотност изисква прилагане на знанието в непозната практическа или текстова ситуация.'
-    },
-    {
-      id: 10,
-      question: `Коя финална проверка е задължителна преди предаване на писмена работа по „${cleanTitle}“?`,
-      options: [
-        'Съкращаване на аргументите до непълни изречения',
-        'Проверка за точност на термините, мерните единици/датите и езиковата норма',
-        'Замяна на научните понятия с метафори',
-        'Оставяне на въпросите с отворен отговор непопълнени'
-      ],
-      correctIndex: 1,
-      explanation: 'Самопроверката на терминологичната и езиковата точност предотвратява загубата на точки от технически грешки.'
-    }
-  ];
+  const flashcards: Flashcard[] =
+    lines.length >= 3
+      ? lines.slice(0, 6).map((line, idx) => ({
+          id: `fc-notes-${idx + 1}`,
+          front: `Ключов акцент ${idx + 1} по „${cleanTitle}“`,
+          back: line,
+          hint: primaryLesson?.summary.examGoldenRule || 'Сравни със записките от урока.',
+          tag: subjectHint
+        }))
+      : [...(primaryLesson?.flashcards || [])];
 
   return {
     id: `custom-lesson-${Date.now()}`,
     title: cleanTitle,
     subject: subjectHint,
-    grade: toLessonGrade(gradeHint),
+    grade: toLessonGrade(gradeHint || primaryLesson?.grade || '10. клас (НВО)'),
     sourceType: 'notebook',
-    originalNoteExcerpt: rawText.slice(0, 300) || 'Сканиран ръкопис от тетрадка',
+    originalNoteExcerpt: rawText.slice(0, 300) || primaryLesson?.originalNoteExcerpt || cleanTitle,
     summary: {
-      overview,
+      overview:
+        rawText.length > 60
+          ? `Систематизиран конспект по „${cleanTitle}“: ${rawText.slice(0, 220)}…`
+          : primaryLesson?.summary.overview || `Учебен синтез по ${subjectHint} (${cleanTitle}).`,
       keyPoints,
-      examGoldenRule: `Внимавай в детайлите на „${cleanTitle}“: Учителите изискват точни дефиниции и ясна връзка между причини и следствия!`,
-      commonTraps: [
-        'Смесване на основни понятия с второстепенни термини.',
-        'Пропускане на изключенията от общото правило при тестовите въпроси.'
-      ],
-      formulasOrDates: [
-        { label: 'Ключов акцент', value: cleanTitle },
-        { label: 'Предмет', value: subjectHint },
-        { label: 'Стандарт', value: 'МОН (ДЗИ / НВО)' }
-      ]
+      examGoldenRule:
+        primaryLesson?.summary.examGoldenRule ||
+        'При решаване на теста проверявай внимателно условията и ключовите термини от програмата на МОН.',
+      commonTraps: primaryLesson?.summary.commonTraps || [],
+      formulasOrDates: primaryLesson?.summary.formulasOrDates || []
     },
     flashcards,
-    quiz,
-    notebookChecklist: keyPoints.slice(0, 4).map((kp, idx) => ({
-      id: `nb-gen-${idx + 1}`,
-      requirement: kp,
-      whyNeeded: 'Ключов акцент от сканираните записки за пълно покритие на темата.',
-      suggestedNotes: kp,
-      isEssentialForSix: idx < 2
-    })),
+    quiz: selectedQuiz,
+    notebookChecklist:
+      primaryLesson?.notebookChecklist ||
+      keyPoints.slice(0, 4).map((kp, idx) => ({
+        id: `nb-gen-${idx + 1}`,
+        requirement: kp,
+        whyNeeded: 'Ключов елемент от учебното съдържание по темата.',
+        suggestedNotes: kp,
+        isEssentialForSix: idx < 3
+      })),
     quickQuestions: [
-      `Обясни ми „${cleanTitle}“ ясно и структурирано 💬`,
-      'Кой въпрос най-вероятно ще се падне на контролно? 🎯',
-      'Дай ми кратък пример или задача по темата 💡',
-      'Как да запомня основното правило най-лесно? 🧠'
+      `Обясни ми „${cleanTitle}“ ясно и структурирано`,
+      'Дай ми конкретна изпитна задача по темата'
     ]
   };
 }

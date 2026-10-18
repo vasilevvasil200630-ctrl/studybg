@@ -32,6 +32,7 @@ vi.mock('../src/services/supabaseClient', () => {
 
 const { examHistoryService } = await import('../src/services/examHistoryService');
 
+const STORAGE_KEY = 'studybg_exam_history';
 let store: Record<string, string> = {};
 
 beforeEach(() => {
@@ -113,5 +114,23 @@ describe('examHistoryService.syncWithCloud', () => {
 
     expect(cloud.upserted).toHaveLength(1);
     expect(cloud.upserted[0]).toMatchObject({ id: 'exam-local-1', user_id: 'user-123', total_points: 50 });
+  });
+});
+
+describe('examHistoryService.getAnalytics', () => {
+  it('опитите само в точки (НВО) не влизат в средната оценка и успеваемостта', () => {
+    const nvo = { ...localAttempt, id: 'exam-nvo', gradeEquivalent: '50 / 100 точки', gradeNumeric: null, passed: false };
+    const dzi = { ...localAttempt, id: 'exam-dzi', grade: '12. клас (ДЗИ / Матура)', totalPoints: 80, gradeNumeric: 5.14, passed: true };
+    store[STORAGE_KEY] = JSON.stringify([nvo, dzi]);
+    const analytics = examHistoryService.getAnalytics();
+    expect(analytics.totalAttempts).toBe(2);
+    expect(analytics.averageGrade).toBe(5.14);
+    expect(analytics.passRate).toBe(100);
+    expect(analytics.averageScore).toBe(65);
+  });
+
+  it('само НВО опити → средна оценка null', () => {
+    store[STORAGE_KEY] = JSON.stringify([{ ...localAttempt, gradeNumeric: null, passed: false }]);
+    expect(examHistoryService.getAnalytics().averageGrade).toBeNull();
   });
 });

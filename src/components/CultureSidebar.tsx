@@ -140,7 +140,7 @@ export const CultureSidebar: React.FC<CultureSidebarProps> = ({
                     className={`w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 transition-colors ${
                       isActive
                         ? 'bg-amber-700 text-white'
-                        : 'bg-slate-100 text-slate-500 group-hover:text-slate-700'
+                        : 'bg-slate-100 text-slate-600 group-hover:text-slate-700'
                     }`}
                   >
                     <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : item.accentColor}`} />

@@ -1,8 +1,5 @@
 User-agent: *
 Allow: /
 
-# Disallow internal serverless API endpoints from search indexing
-Disallow: /api/
-
 # Primary XML Sitemap for Google Search Console & Bing Webmaster Tools
 Sitemap: https://studybg.vercel.app/sitemap.xml

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { RefreshCw, ArrowRight, CheckSquare, HelpCircle, Mail, Shuffle, Sparkles } from 'lucide-react';
+import { RefreshCw, ArrowRight, CheckSquare, HelpCircle, Mail, Shuffle, Sparkles, Printer, Copy, Check } from 'lucide-react';
 import type { LessonData, QuizQuestion } from '../types';
 import type { AppNavTab } from './Navbar';
 import { EmailShareModal } from './EmailShareModal';
 
 const POSITIONAL_OPTION_RE = /^(всички изброени|и двете|никое от|горните|точки а и б)/i;
+const OPTION_LETTERS = ['А', 'Б', 'В', 'Г'] as const;
 
 /**
  * Разбърква опциите (А/Б/В/Г) на въпрос и актуализира correctIndex,
@@ -120,6 +121,91 @@ export function buildTopicVariantQuiz(
   return shuffleQuizSet(combined);
 }
 
+export interface DualGroupWorksheet {
+  title: string;
+  subject: string;
+  grade: string;
+  groupA: QuizQuestion[];
+  groupB: QuizQuestion[];
+}
+
+/**
+ * Създава работен лист с две независими групи (Група А и Група Б),
+ * всяка с различно разбъркани въпроси и опции А/Б/В/Г + ключ за всяка група.
+ */
+export function buildDualGroupWorksheet(
+  questions: QuizQuestion[],
+  title = 'Проверка на знанията',
+  subject = 'Общообразователна подготовка',
+  grade = 'МОН'
+): DualGroupWorksheet {
+  const groupA = shuffleQuizSet(questions);
+  let groupB = shuffleQuizSet(questions);
+  if (groupA.length >= 2 && groupB[0]?.question === groupA[0]?.question) {
+    const [first, ...rest] = groupB;
+    groupB = [...rest, first].map((q, idx) => ({ ...q, id: idx + 1 }));
+  }
+  return {
+    title,
+    subject,
+    grade,
+    groupA,
+    groupB,
+  };
+}
+
+/**
+ * Форматира работния лист (Група А + Група Б + опционален ключ с верни отговори и обяснения)
+ * като чист текст, готов за копиране във Word/Google Docs или печат.
+ */
+export function formatWorksheetAsText(ws: DualGroupWorksheet, includeKey = true): string {
+  const lines: string[] = [];
+  lines.push('====================================================================');
+  lines.push(`РАБОТЕН ЛИСТ / ТЕСТ ПО МОН — ${ws.title.toUpperCase()}`);
+  lines.push(`Предмет: ${ws.subject} | Клас: ${ws.grade} | Брой въпроси: ${ws.groupA.length}`);
+  lines.push('Име, презиме и фамилия: _________________________________ Клас: _____ № ___');
+  lines.push('====================================================================');
+  lines.push('');
+
+  const renderGroup = (label: string, list: QuizQuestion[]) => {
+    lines.push(`--- ${label} ---`);
+    list.forEach((q, idx) => {
+      lines.push(`${idx + 1}. ${q.question}`);
+      q.options.forEach((opt, optIdx) => {
+        lines.push(`   ${OPTION_LETTERS[optIdx] || String.fromCharCode(1040 + optIdx)}) ${opt}`);
+      });
+      lines.push('');
+    });
+  };
+
+  renderGroup('ГРУПА А', ws.groupA);
+  renderGroup('ГРУПА Б', ws.groupB);
+
+  if (includeKey) {
+    lines.push('====================================================================');
+    lines.push('КЛЮЧ С ВЕРНИ ОТГОВОРИ И МЕТОДИЧЕСКИ ОБЯСНЕНИЯ');
+    lines.push('====================================================================');
+    lines.push('');
+    lines.push('Ключ за ГРУПА А:');
+    ws.groupA.forEach((q, idx) => {
+      const letter = OPTION_LETTERS[q.correctIndex] || 'А';
+      lines.push(
+        `  ${idx + 1}. ${letter}) ${q.options[q.correctIndex]} — ${q.explanation}`
+      );
+    });
+    lines.push('');
+    lines.push('Ключ за ГРУПА Б:');
+    ws.groupB.forEach((q, idx) => {
+      const letter = OPTION_LETTERS[q.correctIndex] || 'А';
+      lines.push(
+        `  ${idx + 1}. ${letter}) ${q.options[q.correctIndex]} — ${q.explanation}`
+      );
+    });
+  }
+
+  return lines.join('\n');
+}
+
 interface QuizViewProps {
   questions: QuizQuestion[];
   currentLesson?: LessonData;
@@ -144,6 +230,10 @@ export const QuizView: React.FC<QuizViewProps> = ({
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [isWorksheetOpen, setIsWorksheetOpen] = useState(false);
+  const [worksheetTab, setWorksheetTab] = useState<'A' | 'B' | 'KEY'>('A');
+  const [worksheetData, setWorksheetData] = useState<DualGroupWorksheet | null>(null);
+  const [copiedMode, setCopiedMode] = useState<'withKey' | 'noKey' | null>(null);
 
   if (activeQuestions.length === 0) {
     return (
@@ -264,6 +354,52 @@ export const QuizView: React.FC<QuizViewProps> = ({
     setIsSubmitted(false);
   };
 
+  const handleToggleWorksheet = () => {
+    if (!isWorksheetOpen) {
+      setWorksheetData(
+        buildDualGroupWorksheet(
+          activeQuestions,
+          currentLesson?.title || 'Проверка на знанията',
+          currentLesson?.subject || 'Общообразователна подготовка',
+          currentLesson?.grade || 'МОН'
+        )
+      );
+      setIsWorksheetOpen(true);
+    } else {
+      setIsWorksheetOpen(false);
+    }
+  };
+
+  const handleRegenerateWorksheet = () => {
+    setWorksheetData(
+      buildDualGroupWorksheet(
+        activeQuestions,
+        currentLesson?.title || 'Проверка на знанията',
+        currentLesson?.subject || 'Общообразователна подготовка',
+        currentLesson?.grade || 'МОН'
+      )
+    );
+  };
+
+  const handleCopyWorksheet = async (includeKey: boolean) => {
+    const ws =
+      worksheetData ||
+      buildDualGroupWorksheet(
+        activeQuestions,
+        currentLesson?.title || 'Проверка на знанията',
+        currentLesson?.subject || 'Общообразователна подготовка',
+        currentLesson?.grade || 'МОН'
+      );
+    const text = formatWorksheetAsText(ws, includeKey);
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedMode(includeKey ? 'withKey' : 'noKey');
+      setTimeout(() => setCopiedMode(null), 2200);
+    } catch {
+      // Fallback silent ignore if clipboard API unavailable
+    }
+  };
+
   const correctScore = calculateScore();
   const gradeInfo = getBulgarianGrade(correctScore, activeQuestions.length);
   const gradeBg = Math.max(2, Math.min(6, 2 + (correctScore / (activeQuestions.length || 1)) * 4));
@@ -316,6 +452,20 @@ export const QuizView: React.FC<QuizViewProps> = ({
             <span>Нов вариант по темата</span>
           </button>
 
+          <button
+            type="button"
+            onClick={handleToggleWorksheet}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors shadow-2xs cursor-pointer ${
+              isWorksheetOpen
+                ? 'bg-amber-100 border-amber-300 text-amber-900'
+                : 'bg-white hover:bg-slate-100 border-slate-300 text-slate-700'
+            }`}
+            title="Генерирай работен лист с Група А, Група Б и ключ за учителя (копиране и принтиране)"
+          >
+            <Printer className="w-3.5 h-3.5 text-amber-700" />
+            <span>Работен лист (Група А/Б)</span>
+          </button>
+
           {variantNumber > 0 && (
             <button
               type="button"
@@ -327,6 +477,153 @@ export const QuizView: React.FC<QuizViewProps> = ({
           )}
         </div>
       </div>
+
+      {/* Dual-Group Printable / Copyable Worksheet Panel */}
+      {isWorksheetOpen && worksheetData && (
+        <div className="p-5 rounded-xl bg-amber-50/40 border border-amber-200 space-y-4">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3 border-b border-amber-200/80">
+            <div>
+              <span className="inline-block px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300 mb-1">
+                Контролна работа / Работен лист за класната стая
+              </span>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                {worksheetData.title} — Група А и Група Б ({worksheetData.groupA.length} въпроса)
+              </h3>
+              <p className="text-xs text-slate-600">
+                Два независими варианта с различен ред на въпросите и разбъркани отговори А/Б/В/Г + автоматичен ключ.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={handleRegenerateWorksheet}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-amber-50 text-slate-800 border border-amber-300 transition-colors cursor-pointer"
+              >
+                <RefreshCw className="w-3.5 h-3.5 text-amber-700" />
+                <span>Нови Група А/Б</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleCopyWorksheet(false)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-amber-50 text-slate-800 border border-amber-300 transition-colors cursor-pointer"
+              >
+                {copiedMode === 'noKey' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-600" />}
+                <span>{copiedMode === 'noKey' ? 'Копирано (без ключ)!' : 'Копирай без ключ'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleCopyWorksheet(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white transition-colors cursor-pointer"
+              >
+                {copiedMode === 'withKey' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>{copiedMode === 'withKey' ? 'Копирано с ключ!' : 'Копирай с ключ за учителя'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition-colors cursor-pointer"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Принтирай</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Worksheet Tabs */}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setWorksheetTab('A')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
+                worksheetTab === 'A'
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              Група А ({worksheetData.groupA.length} въпроса)
+            </button>
+            <button
+              type="button"
+              onClick={() => setWorksheetTab('B')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
+                worksheetTab === 'B'
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              Група Б ({worksheetData.groupB.length} въпроса)
+            </button>
+            <button
+              type="button"
+              onClick={() => setWorksheetTab('KEY')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
+                worksheetTab === 'KEY'
+                  ? 'bg-emerald-700 text-white border-emerald-700'
+                  : 'bg-white text-emerald-800 border-emerald-200 hover:bg-emerald-50'
+              }`}
+            >
+              Ключ с верни отговори (Група А + Б)
+            </button>
+          </div>
+
+          {worksheetTab !== 'KEY' ? (
+            <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3 max-h-96 overflow-y-auto">
+              <div className="text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 pb-2">
+                {worksheetTab === 'A' ? 'ГРУПА А — Въпросник за ученика' : 'ГРУПА Б — Въпросник за ученика'}
+              </div>
+              {(worksheetTab === 'A' ? worksheetData.groupA : worksheetData.groupB).map((q, idx) => (
+                <div key={q.id} className="text-xs sm:text-sm text-slate-800 space-y-1 pb-2.5 border-b border-slate-100 last:border-b-0">
+                  <div className="font-semibold text-slate-900">
+                    {idx + 1}. {q.question}
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 pl-4 text-slate-700">
+                    {q.options.map((opt, optIdx) => (
+                      <div key={optIdx}>
+                        <span className="font-mono font-bold text-slate-900">{OPTION_LETTERS[optIdx]})</span> {opt}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-white border border-emerald-200 space-y-2 max-h-96 overflow-y-auto">
+                <div className="text-xs font-bold text-emerald-800 uppercase tracking-wider border-b border-emerald-100 pb-2">
+                  Ключ за ГРУПА А
+                </div>
+                {worksheetData.groupA.map((q, idx) => (
+                  <div key={q.id} className="text-xs text-slate-700 pb-2 border-b border-slate-100 last:border-b-0">
+                    <div>
+                      <strong className="font-mono text-slate-900">{idx + 1}. {OPTION_LETTERS[q.correctIndex]})</strong>{' '}
+                      <span className="font-semibold text-emerald-900">{q.options[q.correctIndex]}</span>
+                    </div>
+                    <div className="text-[11px] text-slate-500 mt-0.5">{q.explanation}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="p-4 rounded-xl bg-white border border-emerald-200 space-y-2 max-h-96 overflow-y-auto">
+                <div className="text-xs font-bold text-emerald-800 uppercase tracking-wider border-b border-emerald-100 pb-2">
+                  Ключ за ГРУПА Б
+                </div>
+                {worksheetData.groupB.map((q, idx) => (
+                  <div key={q.id} className="text-xs text-slate-700 pb-2 border-b border-slate-100 last:border-b-0">
+                    <div>
+                      <strong className="font-mono text-slate-900">{idx + 1}. {OPTION_LETTERS[q.correctIndex]})</strong>{' '}
+                      <span className="font-semibold text-emerald-900">{q.options[q.correctIndex]}</span>
+                    </div>
+                    <div className="text-[11px] text-slate-500 mt-0.5">{q.explanation}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Question Navigation Numbers Bar */}
       <div className="flex items-center gap-1.5 overflow-x-auto p-2 rounded-xl bg-slate-100 border border-slate-200 no-scrollbar">

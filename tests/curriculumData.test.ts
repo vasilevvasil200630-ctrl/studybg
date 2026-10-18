@@ -3,14 +3,19 @@ import { loadFullCurriculumLessons } from '../src/data/curriculumDatabase';
 import { BULGARIAN_CURRICULUM_TREE } from '../src/data/bulgarianCurriculumTree';
 import { classifyAndDiagnoseNotebook } from '../src/services/curriculumClassifier';
 import { generateLessonFromInput } from '../src/services/aiGenerator';
-import { shuffleQuestionOptions, buildTopicVariantQuiz } from '../src/components/QuizView';
+import {
+  shuffleQuestionOptions,
+  buildTopicVariantQuiz,
+  buildDualGroupWorksheet,
+  formatWorksheetAsText
+} from '../src/components/QuizView';
 import { LESSON_GRADES, LESSON_SUBJECTS } from '../src/types';
 import { validateLessons } from '../scripts/lib/validateLessons.mjs';
 
 describe('данни за уроците', () => {
   it('всички уроци минават валидацията и имат балансирани верни отговори', async () => {
     const lessons = await loadFullCurriculumLessons();
-    expect(lessons.length).toBeGreaterThanOrEqual(120);
+    expect(lessons.length).toBeGreaterThanOrEqual(125);
     expect(validateLessons(lessons, { subjects: LESSON_SUBJECTS, grades: LESSON_GRADES })).toEqual([]);
 
     const dist = [0, 0, 0, 0];
@@ -29,7 +34,7 @@ describe('данни за уроците', () => {
     }
   });
 
-  it('всяка от 51-те теми в дървото на МОН има точен урок (lessonIsApproximate = false) и реален тест', async () => {
+  it('всяка от 56-те теми в дървото на МОН има точен урок (lessonIsApproximate = false) и реален тест', async () => {
     await loadFullCurriculumLessons();
     let count = 0;
     for (const subject of BULGARIAN_CURRICULUM_TREE) {
@@ -46,7 +51,7 @@ describe('данни за уроците', () => {
         }
       }
     }
-    expect(count).toBe(51);
+    expect(count).toBe(56);
   });
 
   it('generateLessonFromInput винаги връща проверен тест с реални предметни въпроси', async () => {
@@ -65,7 +70,7 @@ describe('данни за уроците', () => {
     }
   });
 
-  it('shuffleQuestionOptions и buildTopicVariantQuiz пазят верния отговор и генерират 10 уникални въпроса', async () => {
+  it('shuffleQuestionOptions, buildTopicVariantQuiz и buildDualGroupWorksheet пазят верния отговор и генерират Група А/Б с ключ', async () => {
     const lessons = await loadFullCurriculumLessons();
     const sample = lessons[0];
     for (const q of sample.quiz) {
@@ -77,6 +82,19 @@ describe('данни за уроците', () => {
     expect(variant.length).toBe(10);
     const uniqueStems = new Set(variant.map((q) => q.question));
     expect(uniqueStems.size).toBe(10);
+
+    const ws = buildDualGroupWorksheet(sample.quiz, sample.title, sample.subject, sample.grade);
+    expect(ws.groupA.length).toBe(sample.quiz.length);
+    expect(ws.groupB.length).toBe(sample.quiz.length);
+    expect(ws.groupA[0].question).not.toBe(ws.groupB[0].question);
+
+    const textWithKey = formatWorksheetAsText(ws, true);
+    expect(textWithKey).toContain('ГРУПА А');
+    expect(textWithKey).toContain('ГРУПА Б');
+    expect(textWithKey).toContain('КЛЮЧ С ВЕРНИ ОТГОВОРИ');
+
+    const textNoKey = formatWorksheetAsText(ws, false);
+    expect(textNoKey).not.toContain('КЛЮЧ С ВЕРНИ ОТГОВОРИ');
   });
 });
 

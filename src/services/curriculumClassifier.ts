@@ -169,7 +169,7 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
   else if (qualityScore >= 50) gradeEstimate = 'Частично покритие на темата';
   else gradeEstimate = 'Начално ниво (Препоръчва се попълване на пропуските)';
 
-  // Изрична карта на всички 51 подтеми от дървото на МОН към техните проверени уроци и тестове
+  // Изрична карта на всички 56 подтеми от дървото на МОН към техните проверени уроци и тестове
   const SUBDOMAIN_LESSON_MAP: Record<string, string> = {
     'bel-5-sub1': 'bel-5-myth-prometey',
     'bel-5-sub2': 'bel-5-tri-bratya-zlatnata-yabalka',
@@ -205,19 +205,24 @@ export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): N
     'math-8-sub2': 'math-pythagorean-theorem',
     'math-10-sub1': 'math-quadratic-vieta-progressions',
     'math-10-sub2': 'math-trigonometry-sine-cosine-nvo10',
+    'phys-6-sub1': 'phys-5-6-forces-motion-heat',
     'phys-7-sub1': 'physics-ohms-law',
     'phys-8-sub1': 'phys-newton-laws-mechanics',
     'phys-8-sub2': 'phys-newton-laws-mechanics',
     'geo-5-sub1': 'geo-5-great-discoveries-continents',
     'geo-7-sub1': 'geography-danubian-plain',
     'geo-10-sub1': 'geo-bulgaria-population-settlements-tertiary-dzi',
+    'bio-6-sub1': 'bio-5-6-cell-human-nature',
+    'bio-7-sub1': 'bio-7-vertebrates-ecosystems',
     'bio-8-sub1': 'bio-medicine-anatomy-biotech-pharmacy-8-12',
     'bio-8-sub2': 'bio-11-12-immunology-virology-neurobiology-endocrinology',
     'bio-9-sub1': 'biology-cell-division',
     'bio-10-sub1': 'bio-genetics-mendel-laws',
+    'chem-7-sub1': 'chem-7-substances-mixtures-equations',
     'chem-8-sub1': 'chemistry-periodic-system',
     'chem-8-sub2': 'chem-redox-electrochemistry-dzi',
     'chem-9-sub1': 'chem-organic-hydrocarbons-alcohols',
+    'eng-7-sub1': 'eng-5-7-tenses-modals-reading-nvo',
     'eng-8-sub1': 'eng-conditionals-passive-reported',
     'eng-10-sub1': 'english-present-perfect-vs-past',
     'eng-10-sub2': 'english-present-perfect-vs-past',

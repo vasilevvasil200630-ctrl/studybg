@@ -1130,7 +1130,7 @@ function buildInterleavedCurriculum(allLessons: LessonData[]): LessonData[] {
   return [...interleaved, ...otherBucket];
 }
 
-export const TOTAL_CURRICULUM_LESSONS_COUNT = 120;
+export const TOTAL_CURRICULUM_LESSONS_COUNT = 125;
 
 export const CURRICULUM_LESSONS: LessonData[] = buildInterleavedCurriculum(
   CORE_CURRICULUM_LESSONS.map(ensureNotebookChecklist)

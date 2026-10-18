@@ -8,10 +8,11 @@ interface HomeSchoolsSectionProps {
   lessons: LessonData[];
   onNavigateTab: (tab: AppNavTab) => void;
   onSelectLesson?: (lesson: LessonData, targetTab?: AppNavTab) => void;
+  onRequestFullCurriculum?: () => void;
 }
 
 // Изнесено от HomeLandingView — зарежда се отложено, когато секцията приближи екрана
-export const HomeSchoolsSection: React.FC<HomeSchoolsSectionProps> = ({ lessons, onNavigateTab, onSelectLesson }) => {
+export const HomeSchoolsSection: React.FC<HomeSchoolsSectionProps> = ({ lessons, onNavigateTab, onSelectLesson, onRequestFullCurriculum }) => {
   const [schoolSections, setSchoolSections] = useState<SchoolCategorySection[]>([]);
   const [gradeMatrices, setGradeMatrices] = useState<GradeCurriculumMatrix[]>([]);
   const [activeHomeSchoolId, setActiveHomeSchoolId] = useState<string>('pmg-smg-npmg');
@@ -25,6 +26,7 @@ export const HomeSchoolsSection: React.FC<HomeSchoolsSectionProps> = ({ lessons,
     const loadSchoolsData = () => {
       if (loaded) return;
       loaded = true;
+      onRequestFullCurriculum?.();
       import('../data/schoolsSpecialtiesDatabase').then((mod) => {
         if (!active) return;
         setSchoolSections(mod.SCHOOL_SPECIALTIES_SECTIONS);
@@ -57,7 +59,7 @@ export const HomeSchoolsSection: React.FC<HomeSchoolsSectionProps> = ({ lessons,
         active = false;
       };
     }
-  }, []);
+  }, [onRequestFullCurriculum]);
 
   return (
     <>

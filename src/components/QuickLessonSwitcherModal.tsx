@@ -78,7 +78,7 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
             </div>
             <div>
               <h3 id="quick-lesson-switcher-title" className="text-base font-bold text-slate-900">Бърза смяна на урок</h3>
-              <p className="text-xs text-slate-500">Гимназиален каталог: избери тема за НВО 10 и ДЗИ 12 ({lessons.length} теми)</p>
+              <p className="text-xs text-slate-500">Пълен учебен каталог (5.–12. клас): НВО 7, НВО 10, ДЗИ 12 и ДИППК ({lessons.length} теми)</p>
             </div>
           </div>
 

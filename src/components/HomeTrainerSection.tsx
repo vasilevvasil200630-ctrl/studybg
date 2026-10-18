@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Sparkles, Compass } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -7,10 +7,15 @@ interface HomeTrainerSectionProps {
   lessons: LessonData[];
   onNavigateTab: (tab: AppNavTab) => void;
   onSelectLesson?: (lesson: LessonData, targetTab?: AppNavTab) => void;
+  onRequestFullCurriculum?: () => void;
 }
 
 // Изнесено от HomeLandingView — зарежда се отложено, когато секцията приближи екрана
-export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons, onNavigateTab, onSelectLesson }) => {
+export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons, onNavigateTab, onSelectLesson, onRequestFullCurriculum }) => {
+  useEffect(() => {
+    onRequestFullCurriculum?.();
+  }, [onRequestFullCurriculum]);
+
   // 5. University & Career Admission Compass State
   const [selectedUniId, setSelectedUniId] = useState<
     'su-fmi' | 'mu-med' | 'tu-eng' | 'unwe-econ' | 'uacg-arch' | 'su-law-hum'

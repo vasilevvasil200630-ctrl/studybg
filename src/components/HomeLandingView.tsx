@@ -160,6 +160,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
   };
 
   const handleNextDailyQuestion = () => {
+    onRequestFullCurriculum?.();
     setSelectedOptionIdx(null);
     setDailyQuestionIndex((prev) => (prev + 1) % Math.max(1, allQuizPool.length));
   };
@@ -889,11 +890,11 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       </section>
 
       <DeferredSection minHeight={1100}>
-        <HomeSchoolsSection lessons={lessons} onNavigateTab={onNavigateTab} onSelectLesson={onSelectLesson} />
+        <HomeSchoolsSection lessons={lessons} onNavigateTab={onNavigateTab} onSelectLesson={onSelectLesson} onRequestFullCurriculum={onRequestFullCurriculum} />
       </DeferredSection>
 
       <DeferredSection minHeight={900}>
-        <HomeTrainerSection lessons={lessons} onNavigateTab={onNavigateTab} onSelectLesson={onSelectLesson} />
+        <HomeTrainerSection lessons={lessons} onNavigateTab={onNavigateTab} onSelectLesson={onSelectLesson} onRequestFullCurriculum={onRequestFullCurriculum} />
       </DeferredSection>
 
       <DeferredSection minHeight={1000}>

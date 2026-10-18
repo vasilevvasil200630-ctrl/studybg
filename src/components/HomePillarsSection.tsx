@@ -26,7 +26,7 @@ export const HomePillarsSection: React.FC<HomePillarsSectionProps> = ({ totalLes
               Специализирани лаборатории за Отличен 6.00
             </h2>
             <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-              Всички модули са директно свързани с учебните програми на МОН за 8.–12. клас и работят в реално време.
+              Всички модули са директно свързани с учебните програми на МОН за 5.–12. клас и работят в реално време.
             </p>
           </div>
 

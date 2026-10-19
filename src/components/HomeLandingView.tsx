@@ -266,7 +266,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             <span className="text-slate-300">•</span>
             <span>{totalLessonsCount} академични урока</span>
             <span className="text-slate-300">•</span>
-            <span className="text-amber-800 font-bold">40 секретни досиета</span>
+            <span className="text-amber-800 font-bold">41 секретни досиета</span>
             <span className="text-slate-300 hidden sm:inline">•</span>
             <span className="text-blue-700 font-bold hidden sm:inline">12 интерактивни лаборатории</span>
           </div>
@@ -517,7 +517,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                       </div>
                     </div>
                     <p className="text-xs text-slate-700 leading-relaxed">
-                      40 секретни досиета (Царичина, Бастет в Странджа, Варненското злато Φ=1.618, Побитите камъни, Раковски, Космическата програма „СВЕТ“ & „Люлин“), гео-радарна карта и 48 куиз въпроса.
+                      41 секретни досиета (Царичина, Бастет в Странджа, Варненското злато Φ=1.618, Побитите камъни, Раковски, Космическата програма „СВЕТ“ & „Люлин“), гео-радарна карта и 38 куиз въпроса.
                     </p>
                   </div>
                   <div className="pt-3.5 text-xs font-bold text-amber-900 flex items-center justify-between border-t border-amber-200/80 mt-3">
@@ -955,7 +955,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               <span>🕵️ Портал „Обща култура, Конспирации & Загадки“</span>
             </div>
             <h2 className="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-              40 конспиративни досиета и мистерии, 12 гео-радарни зони, 18 природни феномена и 48 куиз въпроса
+              41 конспиративни досиета и мистерии, 12 гео-радарни зони, 18 природни феномена и 38 куиз въпроса
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               Операция „Слава“ в Царичина, експедицията за богинята Бастет и светилището Индипасха в Странджа, кодът на Златното сечение (Φ=1.618) във Варненското злато, Побитите камъни, шифрите на Раковски, космическата оранжерия „СВЕТ“ и дозиметрите „Люлин“ около Марс!
@@ -969,7 +969,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs transition-colors cursor-pointer shadow-xs"
             >
               <Compass className="w-4 h-4 text-white" />
-              <span>Отвори 40-те секретни досиета</span>
+              <span>Отвори 41-те секретни досиета</span>
             </button>
             <button
               type="button"

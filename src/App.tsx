@@ -211,7 +211,7 @@ export function App() {
     // Каноничният URL следва реалния път, иначе всички страници се броят за дубликати на „/“
     syncCanonicalUrl(window.location.pathname);
     if (portalMode === 'culture') {
-      document.title = 'Обща култура, 40 Секретни досиета & Мистична карта | StudyBG';
+      document.title = 'Обща култура, 41 Секретни досиета & Мистична карта | StudyBG';
       if (typeof w.gtag === 'function') {
         w.gtag('event', 'page_view', {
           page_title: document.title,
@@ -1002,7 +1002,7 @@ export function App() {
                   {cultureSubTab === 'heritage'
                     ? '🏆 Български принос & ЮНЕСКО (16)'
                     : cultureSubTab === 'mysteries'
-                    ? '🕵️ Конспирации, секретни досиета & загадки (40)'
+                    ? '🕵️ Конспирации, секретни досиета & загадки (41)'
                     : cultureSubTab === 'mysticmap'
                     ? '🛸 Карта на мистичните и секретни зони (12 координати)'
                     : cultureSubTab === 'timeline'
@@ -1012,7 +1012,7 @@ export function App() {
                     : cultureSubTab === 'wonders'
                     ? '🗺️ Природни чудеса & мистични зони (18)'
                     : cultureSubTab === 'trivia'
-                    ? '🧠 Куиз за ерудити (48 въпроса)'
+                    ? '🧠 Куиз за ерудити (38 въпроса)'
                     : cultureSubTab === 'myths'
                     ? '⚖️ Факт, Мит или Конспирация? (24)'
                     : '🏛️ Златен фонд & Мъдрост на епохите (16)'}
@@ -1023,11 +1023,11 @@ export function App() {
             {/* Mobile / Tablet Horizontal Quick Tab Strip for Culture (visible only on small viewports) */}
             <div className="lg:hidden mb-6 p-1.5 rounded-xl bg-white border border-slate-200 shadow-xs overflow-x-auto no-scrollbar flex items-center gap-1.5">
               {[
-                { tab: 'mysteries', label: '🕵️ Конспирации & Загадки (40)' },
+                { tab: 'mysteries', label: '🕵️ Конспирации & Загадки (41)' },
                 { tab: 'mysticmap', label: '🛸 Карта на мистичните зони (12)' },
                 { tab: 'heritage', label: 'Принос & ЮНЕСКО (16)' },
                 { tab: 'wonders', label: 'Природни чудеса (18)' },
-                { tab: 'trivia', label: 'Куиз за ерудити (48)' },
+                { tab: 'trivia', label: 'Куиз за ерудити (38)' },
                 { tab: 'myths', label: 'Факт или Конспирация (24)' },
                 { tab: 'timeline', label: 'Хронология' },
                 { tab: 'cases', label: 'Казуси & Есета (12)' },

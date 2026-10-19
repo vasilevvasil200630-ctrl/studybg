@@ -327,7 +327,7 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-amber-800 transition-colors flex items-center gap-2 font-semibold text-amber-900"
                 >
                   <Compass className="w-3.5 h-3.5 text-amber-700" />
-                  <span>40 Конспиративни досиета & Загадки</span>
+                  <span>41 Конспиративни досиета & Загадки</span>
                 </button>
               </li>
               <li>
@@ -363,7 +363,7 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Куиз за ерудити (48 въпроса)</span>
+                  <span>Куиз за ерудити (38 въпроса)</span>
                 </button>
               </li>
             </ul>

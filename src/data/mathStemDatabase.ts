@@ -788,7 +788,7 @@ export const MATH_QUIZ_QUESTIONS: MathQuizQuestion[] = [
     "question": "Какъв е ъгловият коефициент k на допирателната към графиката на функцията f(x) = x² - 4x + 7 в точката с абсциса x₀ = 3?",
     "options": [
       "k = 4",
-      "k = 2 (tg α = 2)",
+      "k = 2",
       "k = -4",
       "k = 3"
     ],

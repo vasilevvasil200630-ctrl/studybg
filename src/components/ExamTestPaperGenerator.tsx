@@ -67,7 +67,7 @@ const DIPPK_OFFICIAL_WRITTEN_TICKETS: DippkWrittenTicketTemplate[] = [
     section2CalculationTaskB: {
       prompt: 'Напишете алгоритъм (псевдокод или C#/Java/Python/JS) за Двоично търсене (Binary Search) на елемент X в сортиран масив A[0..N-1] и изчислете максималния брой сравнения при N = 1024 елемента.',
       points: 30,
-      solutionSteps: 'Инициализация left=0, right=N-1, цикъл while(left<=right) с mid = left + (right-left)/2: 20 т. | Изчисление log₂(1024) = 10 сравнения (сложност O(log N)): 10 т.'
+      solutionSteps: 'Инициализация left=0, right=N-1, цикъл while(left<=right) с mid = left + (right-left)/2: 20 т. | Изчисление: в най-лошия случай ⌊log₂ 1024⌋ + 1 = 10 + 1 = 11 сравнения (сложност O(log N)): 10 т.'
     },
     section3ZbutAndStandards: {
       prompt: 'Опишете техническите и организационни мерки за информационна сигурност по GDPR / ISO 27001 и ергономичните норми за работа с видеодисплеи по Наредба № 7.',

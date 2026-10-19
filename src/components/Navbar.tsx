@@ -412,13 +412,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   const contextCultureNavItems: { subTab: CultureSubTab; label: string; icon: React.ReactNode }[] = [
-    { subTab: 'mysteries', label: 'Конспирации & Досиета (40)', icon: <Compass className="w-3.5 h-3.5 text-amber-600" /> },
+    { subTab: 'mysteries', label: 'Конспирации & Досиета (41)', icon: <Compass className="w-3.5 h-3.5 text-amber-600" /> },
     { subTab: 'mysticmap', label: 'Карта на мистичните зони (12)', icon: <MapPin className="w-3.5 h-3.5 text-slate-600" /> },
     { subTab: 'heritage', label: 'Принос & ЮНЕСКО (16)', icon: <Award className="w-3.5 h-3.5 text-orange-600" /> },
     { subTab: 'timeline', label: 'Хронология (681–1908)', icon: <Clock className="w-3.5 h-3.5 text-emerald-600" /> },
     { subTab: 'cases', label: 'Отворени казуси (12)', icon: <Scale className="w-3.5 h-3.5 text-amber-700" /> },
     { subTab: 'wonders', label: 'Природни чудеса (18)', icon: <MapPin className="w-3.5 h-3.5 text-teal-600" /> },
-    { subTab: 'trivia', label: 'Куиз за ерудити (48)', icon: <Sparkles className="w-3.5 h-3.5 text-sky-600" /> },
+    { subTab: 'trivia', label: 'Куиз за ерудити (38)', icon: <Sparkles className="w-3.5 h-3.5 text-sky-600" /> },
     { subTab: 'myths', label: 'Факт или Конспирация (24)', icon: <HelpCircle className="w-3.5 h-3.5 text-rose-600" /> },
     { subTab: 'wisdom', label: 'Златен фонд & Мъдрост (16)', icon: <Quote className="w-3.5 h-3.5 text-blue-600" /> }
   ];
@@ -487,7 +487,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 title="Обща култура, конспиративни досиета и мистични зони"
               >
                 <Compass className={`w-3.5 h-3.5 ${portalMode === 'culture' ? 'text-white' : 'text-amber-600'}`} />
-                <span>Мистерии (40)</span>
+                <span>Мистерии (41)</span>
               </button>
             </div>
           </div>
@@ -622,7 +622,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }`}
             >
               <Compass className="w-3.5 h-3.5 text-amber-600" />
-              <span>Мистерии (40)</span>
+              <span>Мистерии (41)</span>
             </button>
           </nav>
 
@@ -731,7 +731,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <Compass className={`w-4 h-4 ${portalMode === 'culture' ? 'text-white' : 'text-amber-600'}`} />
-                <span>Мистерии (40)</span>
+                <span>Мистерии (41)</span>
               </button>
             </div>
 

@@ -441,7 +441,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
     linkedLessonIds: [
       'cs-algorithms-oop-databases-8-12',
       'cs-web-cybersecurity-ai-10-12',
-      'voc-engineering-electronics-mechatronics-8-12',
+      'phys-electromagnetic-induction-faraday-maxwell-dzi',
       'math-combinatorics-probability-stats-10-12'
     ],
     specialtyQuiz: [
@@ -622,28 +622,28 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Строителство и архитектура (Професия „Строителен техник“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Строителна механика и Съпротивление на материалите', 'Сградостроителство и Архитектурно проектиране', 'Стоманобетонни, метални и дървени конструкции', 'Организация, ценообразуване (КСС) и технология на строителството'],
-        linkedLessonId: 'voc-architecture-construction-cad-8-12'
+        linkedLessonId: 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
       },
       {
         code: '5810101',
         name: 'Геодезия (Професия „Геодезист“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Инженерна геодезия и Топографско чертане', 'Нивелация, полигонометрия и тахиметрия с тотални станции', 'Глобални навигационни спътникови системи (GNSS) и Фотограметрия', 'Кадастър, регулация и Географски информационни системи (ГИС)'],
-        linkedLessonId: 'voc-architecture-construction-cad-8-12'
+        linkedLessonId: 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
       },
       {
         code: '5820301',
         name: 'Транспортно строителство & Водно строителство (5820402)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Проектиране на пътища, улици, мостове и жп линии', 'Хидравлика, водоснабдяване и канализация (ВиК мрежи)', 'Земна механика и фундиране', 'AutoCAD / Revit / Civil 3D инженерно чертане'],
-        linkedLessonId: 'voc-architecture-construction-cad-8-12'
+        linkedLessonId: 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
       },
       {
         code: '6220102',
         name: 'Парково строителство и озеленяване (Професия „Техник-озеленител“ 622010 — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Дендрология, цветарство и екология на градската среда', 'Парково и ландшафтно проектиране', 'Геодезическо трасиране и вертикално планиране', 'Изобразително изкуство и перспективно рисуване'],
-        linkedLessonId: 'voc-architecture-construction-cad-8-12'
+        linkedLessonId: 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
       }
     ],
     gradeProgression: [
@@ -706,7 +706,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'voc-architecture-construction-cad-8-12',
+      'math-10-12-solid-geometry-prisms-pyramids-spheres-cones',
       'math-financial-stereometry-11-12',
       'math-trigonometry-stereometry-10',
       'physics-mechanics-10'
@@ -750,28 +750,28 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Мехатроника (Професия „Мехатроник“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Сензори, актуатори и задвижвания (DC, Серво, Стъпкови двигатели)', 'Програмируеми логически контролери (PLC) и PID регулатори', 'Пневматика, хидравлика и индустриална роботика', 'CAD/CAM проектиране и CNC машини с ЦПУ'],
-        linkedLessonId: 'voc-engineering-electronics-mechatronics-8-12'
+        linkedLessonId: 'phys-electromagnetic-induction-faraday-maxwell-dzi'
       },
       {
         code: '5230301',
         name: 'Промишлена електроника & Микропроцесорна техника',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Полупроводникови елементи (Диоди, BJT и MOSFET транзистори, ОУ)', 'Аналогова и цифрова схемотехника (Тригери, Регистри, Броячи, ЦАП/АЦП)', 'Микроконтролери (ARM / AVR / ESP32) и комуникационни шини (I2C, SPI, CAN)', 'Проектиране на печатни платки (PCB Design) и измервателна техника'],
-        linkedLessonId: 'voc-engineering-electronics-mechatronics-8-12'
+        linkedLessonId: 'phys-electromagnetic-induction-faraday-maxwell-dzi'
       },
       {
         code: '5220103',
         name: 'Електрообзавеждане на производството & Възобновяеми енергийни източници (ВЕИ)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Теоретична електротехника (Закони на Ом и Кирхоф, Променлив и трифазен ток)', 'Електрически машини и трансформатори (Асинхронни и синхронни двигатели)', 'Фотоволтаични (PV) централи, инвертори и акумулаторни системи за съхранение', 'Електробезопасност, релейна защита и автоматика'],
-        linkedLessonId: 'voc-engineering-electronics-mechatronics-8-12'
+        linkedLessonId: 'phys-electromagnetic-induction-faraday-maxwell-dzi'
       },
       {
         code: '5250101',
         name: 'Автотранспортна техника и Електрически превозни средства',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Двигатели с вътрешно горене (Цикли на Ото и Дизел) и турбокомпресори', 'Електромобили (EV) и Хибридни системи — батерии Li-Ion, BMS и инвертори', 'Автомобилна електроника, CAN шина, ABS/ESP и компютърна диагностика (OBD-II)', 'Ходова част, трансмисии и спирачни уредби'],
-        linkedLessonId: 'voc-engineering-electronics-mechatronics-8-12'
+        linkedLessonId: 'phys-electromagnetic-induction-faraday-maxwell-dzi'
       }
     ],
     gradeProgression: [
@@ -829,7 +829,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'voc-engineering-electronics-mechatronics-8-12',
+      'phys-electromagnetic-induction-faraday-maxwell-dzi',
       'physics-electricity-magnetism-9-10',
       'physics-oscillations-waves-optics-11',
       'cs-algorithms-oop-databases-8-12'
@@ -997,28 +997,28 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Компютърна графика, Графичен дизайн и Рекламна графика',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Векторна и растерна графика (Adobe Illustrator, Photoshop, InDesign)', 'Типография, шрифт, предпечатна подготовка (CMYK, 300 DPI, Bleed) и брандинг', 'UI/UX дизайн на потребителски интерфейси (Figma) и 3D моделиране', 'История на изкуството, цветознание и композиция'],
-        linkedLessonId: 'voc-tourism-hospitality-design-arts-8-12'
+        linkedLessonId: 'econ-marketing-management-ecommerce-10-12'
       },
       {
         code: '2140104',
         name: 'Интериорен дизайн & Моден дизайн',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Ергономия, антропометрия и функционално зониране на пространството', 'Перспектива, архитектурно заснемане и 3D визуализация', 'Материалознание в интериора/текстила, осветление и акустика', 'История на стиловете в архитектурата, мебелите и модата'],
-        linkedLessonId: 'voc-tourism-hospitality-design-arts-8-12'
+        linkedLessonId: 'econ-marketing-management-ecommerce-10-12'
       },
       {
         code: '8120101',
         name: 'Организация на туризма и свободното време & Екскурзоводство',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Туроператорска и турагентска дейност (формиране на пакетни цени)', 'Туристически ресурси на България и света (ЮНЕСКО обекти, балнео-, еко- и културен туризъм)', 'Екскурзоводска беседа, анимация и протокол', 'Два чужди езика по професията (Английски + Немски / Френски / Испански / Руски)'],
-        linkedLessonId: 'voc-tourism-hospitality-design-arts-8-12'
+        linkedLessonId: 'econ-marketing-management-ecommerce-10-12'
       },
       {
         code: '8110101',
         name: 'Организация на хотелиерството & Кетъринг и кулинарни технологии',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Хотелиерски мениджмънт, Front Office и показатели (Occupancy, ADR, RevPAR)', 'Организация и технология на обслужването в ресторантьорството и сомелиерство', 'Технология на кулинарната продукция, калкулации и система за безопасност HACCP', 'Маркетинг, дигитални резервационни системи (GDS / PMS) и счетоводство в туризма'],
-        linkedLessonId: 'voc-tourism-hospitality-design-arts-8-12'
+        linkedLessonId: 'econ-marketing-management-ecommerce-10-12'
       }
     ],
     gradeProgression: [
@@ -1076,7 +1076,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'voc-tourism-hospitality-design-arts-8-12',
+      'econ-marketing-management-ecommerce-10-12',
       'econ-marketing-management-ecommerce-10-12',
       'geo-bulgaria-population-settlements-economy-10',
       'lang-german-french-spanish-b1-b2-8-12'
@@ -1125,28 +1125,28 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Спедиция, транспортна и складова логистика (Професия „Спедитор-логистик“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Международни правила за търговия Incoterms 2020 (EXW, FOB, CIF, DDP)', 'Интермодален и комбиниран транспорт, товарителници CMR, CIM и Коносамент', 'Управление на складови запаси (Формула на Уилсън EOQ, ABC/XYZ анализ)', 'Митническо представителство, ТАРИК и транспортна география'],
-        linkedLessonId: 'voc-aviation-maritime-logistics-transport-8-12'
+        linkedLessonId: 'phys-newton-laws-mechanics'
       },
       {
         code: '8400101',
         name: 'Корабоводене — морско и речно & Корабни машини и механизми (5250901)',
         qualification: 'Трета степен на професионална квалификация (ДИППК + IMO STCW)',
         coreSubjects: ['Теория и устройство на кораба (Плаваемост, Остойчивост и Метацентрична височина)', 'Навигация, лоция, морски карти и електронни системи (ECDIS,AIS, Радар ARPA)', 'Морска астрономия, метеорология и МППСМ (правила за предпазване от сблъскване)', 'Корабни дизелови двигатели, спомагателни механизми и електрообзавеждане'],
-        linkedLessonId: 'voc-aviation-maritime-logistics-transport-8-12'
+        linkedLessonId: 'phys-newton-laws-mechanics'
       },
       {
         code: '5251401',
         name: 'Авиационна техника, Авионика и Безпилотни летателни системи (Дронове)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Аеродинамика и динамика на полета (Уравнение на Бернули, подемна сила и челно съпротивление)', 'Конструкция на самолета, вертолета и газотурбинни/реактивни двигатели', 'Авиационни прибори, радионавигация (VOR, ILS, GNSS) и автопилоти', 'Техническо обслужване и безопасност на полетите по стандарти на ИКАО / EASA'],
-        linkedLessonId: 'voc-aviation-maritime-logistics-transport-8-12'
+        linkedLessonId: 'phys-newton-laws-mechanics'
       },
       {
         code: '5250601',
         name: 'Локомотиви и вагони & Осигурителни и комуникационни инсталации в ЖП транспорта',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Електрически и дизелови локомотиви (Контактна мрежа 25 kV, 50 Hz)', 'Спирачни системи, тягови изчисления и динамика на влака', 'Маршрутно-релейни и компютърни централизации, автоблокировка и ETCS / ERTMS', 'Организация и безопасност на железопътното движение'],
-        linkedLessonId: 'voc-aviation-maritime-logistics-transport-8-12'
+        linkedLessonId: 'phys-newton-laws-mechanics'
       }
     ],
     gradeProgression: [
@@ -1204,9 +1204,9 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'voc-aviation-maritime-logistics-transport-8-12',
-      'voc-automotive-ev-renewable-energy-10-12',
-      'voc-engineering-electronics-mechatronics-8-12',
+      'phys-newton-laws-mechanics',
+      'phys-8-10-mechanics-thermodynamics-electricity-complete',
+      'phys-electromagnetic-induction-faraday-maxwell-dzi',
       'physics-mechanics-10'
     ],
     specialtyQuiz: [
@@ -1253,28 +1253,28 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Технология и контрол на качеството на храни и напитки (Професия „Техник-технолог в ХВП“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Микробиология и биохимия на ферментационните процеси (млечнокисела и алкохолна ферментация)', 'Технология на месни, млечни, хлебни продукти, вино и безалкохолни напитки', 'Топлинно консервиране (Пастьоризация vs. Стерилизация в автоклав)', 'Физикохимичен и органолептичен анализ и система HACCP'],
-        linkedLessonId: 'voc-food-tech-polygraphy-forestry-textile-8-12'
+        linkedLessonId: 'chem-organic-hydrocarbons-alcohols'
       },
       {
         code: '2130401',
         name: 'Полиграфия, Фотография и Мултимедийни технологии (НПГПФ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Технология на офсетовия, флексо-, дълбокия и дигиталния печат', 'Експозиционен триъгълник във фотографията (Бленда f-stop, Скорост на затвора, ISO) и студийно осветление', 'Предпечатна подготовка, цветоотделяне, растер (LPI / DPI) и книговезки процеси', 'Аудио-визуална продукция, видеомонтаж и колор грейдинг'],
-        linkedLessonId: 'voc-food-tech-polygraphy-forestry-textile-8-12'
+        linkedLessonId: 'chem-organic-hydrocarbons-alcohols'
       },
       {
         code: '5430101',
         name: 'Мебелно производство, Дървообработване & Горско и ловно стопанство (6230101)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Дървесинознание, сушене и влажност на дървесината W%', 'Конструиране на мебели с CAD/CAM системи и CNC дървообработващи центрове', 'Лесовъдство, дендрология, горска таксация и опазване на горите от вредители и пожари', 'Дизайн и реставрация на стилови мебели'],
-        linkedLessonId: 'voc-food-tech-polygraphy-forestry-textile-8-12'
+        linkedLessonId: 'chem-organic-hydrocarbons-alcohols'
       },
       {
         code: '5420101',
         name: 'Конструиране, моделиране и технология на облеклото от текстил',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Текстилно материалознание (естествени и химични влакна; сплитки: лито, кепър, атлаз)', 'Антропометрия, конструиране на кройки и градиране с CAD системи', 'Моделиране на облекло и модна илюстрация', 'Технология на шевното производство и автоматизирани кроячни комплекси'],
-        linkedLessonId: 'voc-food-tech-polygraphy-forestry-textile-8-12'
+        linkedLessonId: 'chem-organic-hydrocarbons-alcohols'
       }
     ],
     gradeProgression: [
@@ -1332,8 +1332,8 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'voc-food-tech-polygraphy-forestry-textile-8-12',
-      'voc-tourism-hospitality-design-arts-8-12',
+      'chem-organic-hydrocarbons-alcohols',
+      'econ-marketing-management-ecommerce-10-12',
       'chem-organic-functional-groups-proteins-9-12',
       'bio-medicine-anatomy-biotech-pharmacy-8-12'
     ],
@@ -1376,21 +1376,21 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Спорт (Професия „Помощник-треньор“ / „Спортен инструктор“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК в Спортните училища)',
         coreSubjects: ['Теория и методика на спортната тренировка (периодизация, макро- и микроцикли, суперкомпенсация)', 'Анатомия, спортна физиология и биохимия (АТФ-КФ, гликолиза, VO₂ max)', 'Спортна биомеханика, кинезиология и спортно-педагогически контрол', 'Спортна психология, хигиена, възстановяване и антидопингов контрол'],
-        linkedLessonId: 'voc-sports-biomechanics-music-performing-arts-8-12'
+        linkedLessonId: 'bio-medicine-anatomy-biotech-pharmacy-8-12'
       },
       {
         code: '2120101',
         name: 'Музикално изкуство: Инструментално, Вокално и Фоклорно изпълнителство (напр. професия „Музикант-инструменталист“ 212010, специалност 2120101 „Пиано“)',
         qualification: 'Трета степен на професионална квалификация (ДИППК в НМУ / НУИ / НУФИ)',
         coreSubjects: ['Елементарна теория на музиката, Солфеж и слухов анализ', 'Хармония, Полифония, Музикални форми и анализ', 'История на музиката (Барок, Класицизъм, Романтизъм, XX век и Българска музикална култура)', 'Специален инструмент / Класическо и народно пеене, Камерна и оркестрова музика'],
-        linkedLessonId: 'voc-sports-biomechanics-music-performing-arts-8-12'
+        linkedLessonId: 'bio-medicine-anatomy-biotech-pharmacy-8-12'
       },
       {
         code: '2120501',
         name: 'Танцово изкуство: Български танци (2120501) и Модерен танц (2120502) — професия „Танцьор“ 212050; Класически балет — професия „Балетист“ 212040',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Класически екзерсис, па-дьо-дьо, характерни и исторически танци / Българска хореография', 'Актьорско майсторство, сценична реч, правоговор и сценично движение', 'История на театъра, балета и драматургията', 'Анатомия и биомеханика на танцовото движение'],
-        linkedLessonId: 'voc-sports-biomechanics-music-performing-arts-8-12'
+        linkedLessonId: 'bio-medicine-anatomy-biotech-pharmacy-8-12'
       }
     ],
     gradeProgression: [
@@ -1443,7 +1443,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'voc-sports-biomechanics-music-performing-arts-8-12',
+      'bio-medicine-anatomy-biotech-pharmacy-8-12',
       'bio-medicine-anatomy-biotech-pharmacy-8-12',
       'physics-mechanics-10',
       'phil-psychology-logic-ethics-law-8-10'
@@ -1618,28 +1618,28 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Ядрена енергетика и Топлоенергетика (Професия „Техник-енергетик“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Физика и устройство на ядрени реактори с вода под налягане (ВВЕР-1000 — Първи и Втори контур)', 'Термодинамика, парогенератори, парни турбини и Цикъл на Ранкин', 'Йонизиращи лъчения (α, β, γ, n), Дозиметрия (Gy, Sv) и Радиационна защита (ALARA)', 'Автоматизирано управление и системи за ядрена безопасност'],
-        linkedLessonId: 'voc-nuclear-energy-optics-lasers-metallurgy-8-12'
+        linkedLessonId: 'phys-quantum-nuclear-astrophysics'
       },
       {
         code: '5210501',
         name: 'Лазерна и оптична техника & Прецизна уредостроителна техника (НПГПТО)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Геометрична и физична оптика (Закон на Снелиус, пълно вътрешно отражение, оптични лещи и призми)', 'Квантова електроника и устройство на лазери (инверсна населеност, спонтанно и стимулирано излъчване)', 'Влакнесто-оптични комуникационни линии и оптоелектронни сензори', 'Оптични уреди, микроскопи, спектрометри и медицинска лазерна апаратура'],
-        linkedLessonId: 'voc-nuclear-energy-optics-lasers-metallurgy-8-12'
+        linkedLessonId: 'phys-quantum-nuclear-astrophysics'
       },
       {
         code: '5210601',
         name: 'Металургия на черните и цветните метали & Термична обработка',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Желязо-въглеродна диаграма (Fe–C): ферит, аустенит, перлит, цементит и ледебурит', 'Стомани (C < 2.14%) и Чугуни (C > 2.14%), легирани и инструментални стомани', 'Термична обработка на металите (Закаляване в мартензит, Отвръщане, Отгряване, Нормализация)', 'Пирометалургия и хидрометалургия (електролиза на мед и цинк) и изпитване на твърдост (HB, HRC, HV)'],
-        linkedLessonId: 'voc-nuclear-energy-optics-lasers-metallurgy-8-12'
+        linkedLessonId: 'phys-quantum-nuclear-astrophysics'
       },
       {
         code: '5440101',
         name: 'Геологопроучвателно дело, Минна електромеханика и Обогатяване на полезни изкопаеми',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Обща геология, минералогия (Скала на Моос 1–10) и петрография (магмени, седиментни, метаморфни скали)', 'Открит и подземен добив на руди и въглища, пробивно-взривни работи и крепежни конструкции', 'Минна вентилация, водоотлив, взривозащитено електрообзавеждане и маркшайдерство', 'Флотация, гравитационно и магнитно обогатяване на руди'],
-        linkedLessonId: 'voc-nuclear-energy-optics-lasers-metallurgy-8-12'
+        linkedLessonId: 'phys-quantum-nuclear-astrophysics'
       }
     ],
     gradeProgression: [
@@ -1697,7 +1697,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'voc-nuclear-energy-optics-lasers-metallurgy-8-12',
+      'phys-quantum-nuclear-astrophysics',
       'phys-8-10-mechanics-thermodynamics-electricity-complete',
       'chem-8-10-inorganic-organic-periodic-table-complete',
       'physics-quantum-nuclear-astrophysics-12'
@@ -1750,28 +1750,28 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Физическа охрана на обекти и Банкова охрана и инкасова дейност (8610103 / 8610101 — професия „Охранител“ 861010, III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Закон за частната охранителна дейност (ЗЧОД), Наказателно и Административно право', 'Технически системи за сигурност (СОТ, видеонаблюдение CCTV, биометричен контрол на достъпа, периметрова охрана)', 'Оценка на риска, тактика на охраната, самоотбрана и долекарска помощ (BLS/CPR)', 'Криминология, психология на екстремните ситуации и защита на класифицирана информация'],
-        linkedLessonId: 'voc-law-security-criminalistics-fire-safety-8-12'
+        linkedLessonId: 'phil-ethics-law-democracy-economy'
       },
       {
         code: '3460101',
         name: 'Съдебна администрация, Правораздаване и Основи на правото',
         qualification: 'Профилирана и професионална юридическа подготовка',
         coreSubjects: ['Обща теория на правото (Структура на правната норма: Хипотеза, Диспозиция, Санкция)', 'Конституционно, Гражданско, Облигационно и Вещно право (Правоспособност и Дееспособност)', 'Наказателно право и процес (неизбежна отбрана, крайна необходимост, форми на вината: умисъл и непредпазливост)', 'Съдебно деловодство, архивистика и юридическа латинска терминология'],
-        linkedLessonId: 'voc-law-security-criminalistics-fire-safety-8-12'
+        linkedLessonId: 'phil-ethics-law-democracy-economy'
       },
       {
         code: 'ПРОФИЛ-КРИМ-АМВР',
         name: 'Криминалистика, Трасология и Съдебни експертизи (Иновативен профил / Академия на МВР)',
         qualification: 'Специализирана подготовка за Академия на МВР и Криминалистични лаборатории',
         coreSubjects: ['Дактилоскопия (папиларни линии — дъги, примки, спирали; дактилоскопни прахове и нинхидрин)', 'Трасология, Съдебна балистика (нарези по куршума, гилзи, огнестрелни следи) и Почеркознание', 'ДНК профилиране (STR маркери и PCR анализ) и токсикологична химия', 'Методика на оглед на местопроизшествие и веществени доказателствени средства'],
-        linkedLessonId: 'voc-law-security-criminalistics-fire-safety-8-12'
+        linkedLessonId: 'phil-ethics-law-democracy-economy'
       },
       {
         code: 'ПРОФИЛ-ПАБ',
         name: 'Пожарна и аварийна безопасност и защита на населението (Иновативен профил / Академия на МВР; не е специалност по СППОО)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Физикохимия на горенето и експлозията (Триъгълник на горенето: горимо вещество, окислител O₂, източник на запалване)', 'Класификация на пожарите по БДС EN 2 (Класове A, B, C, D, F) и избор на гасителни вещества (вода, пяна, CO₂, прах)', 'Пожароизвестяване, спринклерни и дренчерни инсталации и евакуационно проектиране', 'Аварийно-спасителна дейност при бедствия, земетресения, наводнения и химически аварии'],
-        linkedLessonId: 'voc-law-security-criminalistics-fire-safety-8-12'
+        linkedLessonId: 'phil-ethics-law-democracy-economy'
       }
     ],
     gradeProgression: [
@@ -1829,7 +1829,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'voc-law-security-criminalistics-fire-safety-8-12',
+      'phil-ethics-law-democracy-economy',
       'civics-constitution-democracy-eu-11-12',
       'phil-psychology-logic-ethics-law-8-10',
       'history-bulgaria-wars-20th-century-10-12'
@@ -1878,28 +1878,28 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Кинотехника, Аудио- и Видеосистеми & Анимация (НПГПФ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Операторско майсторство, кинооптика, сензори, кадрова честота (24/25/60 fps) и правило на 180-те градуса за затвора', 'Акустика и звукоинженерство: Честота на дискретизация (Теорема на Котелников-Шанън — 44.1 / 48 kHz), динамичен обхват в децибели (dB) и микрофони', 'Студийно триточково осветление (Key, Fill, Back light) и цветна температура в Келвини (3200 K vs. 5600 K)', 'Нелинеен видеомонтаж, звуков постпродукт, VFX и колор грейдинг (Rec.709 / Log / RAW)'],
-        linkedLessonId: 'voc-cinema-audio-video-woodcarving-iconography-8-12'
+        linkedLessonId: 'bel-dzi-syntax-editing-essay-mastery'
       },
       {
         code: '2150401',
         name: 'Дърворезбарство (2150401), Иконопис и Консервация/Реставрация (НГПИ Трявна / Св. Лука)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Технология на иконописта: дървена основа, паволока, левкас (туткално-креден грунд), позлата с листово злато и яйчна темпера', 'Православен иконографски канон, обратна перспектива и ерминии (Тревненска и Самоковска школа)', 'Художествена дърворезба: овчарска, пастирска, плитка и дълбока ажурна църковна резба (иконостаси и слънца)', 'Анатомия, пластика, орнаментика и реставрация на културни ценности'],
-        linkedLessonId: 'voc-cinema-audio-video-woodcarving-iconography-8-12'
+        linkedLessonId: 'bel-dzi-syntax-editing-essay-mastery'
       },
       {
         code: '2150601',
         name: 'Каменоделство (2150601 — професия „Каменоделец“ 215060), Архитектурна пластика и Скулптура (ПГК Кунино)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Петрография и материалознание на декоративните скали (мрамор, варовик, пясъчник, гранит, базалт)', 'Класическа скулптура, моделиране с глина, снемане на гипсов калъп и пунктиране в камък', 'Архитектурно-декоративни профили, капители, балюстради и монументална пластика', 'Машинна и CNC обработка на скални материали, гравиране и реставрация на каменна пластика'],
-        linkedLessonId: 'voc-cinema-audio-video-woodcarving-iconography-8-12'
+        linkedLessonId: 'bel-dzi-syntax-editing-essay-mastery'
       },
       {
         code: '2150702',
         name: 'Художествена керамика (2150702), Стъкло и Художествен метал (НГПИ Троян / Св. Лука)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Технология на силикатите и керамичните маси (глина, каолин, кварц, фелдшпат; Троянска шарка)', 'Точене на грънчарско колело, отливане в гипсови форми и бисквитно/глазурно изпичане (950–1300 °C)', 'Глазури, ангоби, емайли и художествена обработка на стъкло (витраж и фюзинг)', 'Художествено леене, коване, гравиране и ювелирна техника при благородни и цветни метали'],
-        linkedLessonId: 'voc-cinema-audio-video-woodcarving-iconography-8-12'
+        linkedLessonId: 'bel-dzi-syntax-editing-essay-mastery'
       }
     ],
     gradeProgression: [
@@ -1957,9 +1957,9 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'voc-cinema-audio-video-woodcarving-iconography-8-12',
-      'voc-food-tech-polygraphy-forestry-textile-8-12',
-      'voc-tourism-hospitality-design-arts-8-12',
+      'bel-dzi-syntax-editing-essay-mastery',
+      'chem-organic-hydrocarbons-alcohols',
+      'econ-marketing-management-ecommerce-10-12',
       'physics-oscillations-waves-optics-11'
     ],
     specialtyQuiz: [
@@ -2005,28 +2005,28 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Изпълнител на термални процедури в балнеолечебни и СПА центрове (III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Балнеология и хидротерапия: класификация на минералните води по температура (хипо-, изо- и хипертермални > 37 °C) и минерализация (радонови, сулфидни, силициеви, въглекисели)', 'Пелоидотерапия (калолечение с лиманна и торфена кал), таласотерапия и климатолечение', 'Класически, рефлекторен и лимфен масаж, сауна/парна баня протоколи и физиотерапевтична етика', 'Анатомия, физиология, кардио-респираторни противопоказания и първа долекарска помощ'],
-        linkedLessonId: 'voc-balneology-spa-dermatology-social-work-8-12'
+        linkedLessonId: 'bio-medicine-anatomy-biotech-pharmacy-8-12'
       },
       {
         code: '8150201',
         name: 'Козметични услуги и Медицинска естетика (Професия „Козметик“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Дерматология и хистология на кожата (Епидермис, Дерма с колаген и еластин, Хиподерма; киселинна мантия pH 4.5–5.5)', 'Козметична химия: емулсии (М/В и В/М), ПАВ, антиоксиданти, ретиноиди, AHA/BHA киселини и хиалуронова киселина', 'Апаратна физиотерапия в козметиката (дарсонвал, йонофореза, ултразвукова шпатула, радиочестотен RF лифтинг)', 'Санитарно-хигиенни норми, дезинфекция и стерилизация в автоклав'],
-        linkedLessonId: 'voc-balneology-spa-dermatology-social-work-8-12'
+        linkedLessonId: 'bio-medicine-anatomy-biotech-pharmacy-8-12'
       },
       {
         code: '8150101',
         name: 'Фризьорство, Колористика и Перукерско изкуство (Професия „Фризьор“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Трихология и строеж на косъма (кутикула, кортекс, медула; α-кератин и дисулфидни връзки —S—S—)', 'Химия на колористиката (Звезда на Освалд — неутрализация на допълнителни цветове, нива на тона 1–10 и оксиданти H₂O₂ 3%, 6%, 9%, 12%)', 'Технология на подстригването, стайлинга и перукерството за театър и кино', 'Организация и мениджмънт на салон за красота и СПА център'],
-        linkedLessonId: 'voc-balneology-spa-dermatology-social-work-8-12'
+        linkedLessonId: 'bio-medicine-anatomy-biotech-pharmacy-8-12'
       },
       {
         code: '7620101',
         name: 'Социална работа с деца и възрастни, Педагогика и Логопедична подкрепа (III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Възрастова и педагогическа психология (Когнитивни стадии на Жан Пиаже и „Зона на близкото развитие“ на Лев Виготски)', 'Приобщаващо образование, работа с деца със СОП, ерготерапия и арттерапия', 'Социално законодателство (Закон за закрила на детето, Закон за социалните услуги, Закон за хората с увреждания)', 'Геронтология, палиативни и рехабилитационни грижи, медиация и емпатийно консултиране'],
-        linkedLessonId: 'voc-balneology-spa-dermatology-social-work-8-12'
+        linkedLessonId: 'bio-medicine-anatomy-biotech-pharmacy-8-12'
       }
     ],
     gradeProgression: [
@@ -2084,7 +2084,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'voc-balneology-spa-dermatology-social-work-8-12',
+      'bio-medicine-anatomy-biotech-pharmacy-8-12',
       'bio-medicine-anatomy-biotech-pharmacy-8-12',
       'phil-psychology-logic-ethics-law-8-10',
       'chem-solutions-ph-kinetics-equilibrium-10-12'
@@ -2197,7 +2197,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'СГСАГ, ПГМЕ, НПГПТО, НТБГ, НГПИ, НМУ, Спортни и Професионални гимназии',
         keyTopics: 'Ортогонални и аксонометрични проекции, стандарти по чертане (БДС ISO), Безопасност на труда (ЗБУТ), Предприемаческо мислене, Академична рисунка, Елементарна теория на музиката и Спортна подготовка',
         weeklyHoursNote: '2–8 ч./седм.',
-        linkedLessonId: 'voc-architecture-construction-cad-8-12'
+        linkedLessonId: 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
       },
       {
         subjectName: 'Геодезия, Фотограметрия, Картография, ГИС, Пътно и Водно строителство (8.–12. клас — СГСАГ)',
@@ -2205,7 +2205,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'СГСАГ „Христо Ботев“, Професионални гимназии по строителство, архитектура и геодезия (ПГСАГ)',
         keyTopics: 'Геодезическа координатна система, ъгли в гради (400 gon), геометрична нивелация, права и обратна геодезическа задача, ГИС слоеве, фотограметрия с дронове (GSD), пътна конструкция и формула на Манинг',
         weeklyHoursNote: '4–10 ч./седм.',
-        linkedLessonId: 'voc-geodesy-photogrammetry-cartography-gis-water-construction-8-12'
+        linkedLessonId: 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
       },
       {
         subjectName: 'Графичен дизайн, UI/UX Проектиране, 3D Моделиране и Архитектурна визуализация (8.–12. клас)',
@@ -2213,7 +2213,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'НГПИ „Св. Лука“, ПГД „Елисавета Вазова“, Художествени и ИТ гимназии',
         keyTopics: 'UI/UX дизайн във Figma (Auto Layout, 8-pt Grid, WCAG 2.1 контраст 4.5:1), Полигонално 3D моделиране (Quads, Subdivision), UV Unwrapping, PBR металик-грапавост шейдъри и Физически базиран Ray Tracing',
         weeklyHoursNote: '4–10 ч./седм.',
-        linkedLessonId: 'voc-graphic-design-ui-ux-3d-modeling-architectural-visualization-8-12'
+        linkedLessonId: 'cs-web-cybersecurity-ai-10-12'
       }
     ]
   },
@@ -2293,7 +2293,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'ТУЕС, НТБГ, НФСГ, СГСАГ, ПГМЕ, НПГПТО, ПГЯЕ, ВМГ, НПГПФ, НГПИ',
         keyTopics: 'ИТ: Обектно-ориентирано програмиране; Бизнес: Микроикономика; Инженерство: Техническа механика, Електротехника, Геометрична оптика, Fe–C диаграма; Изкуства: Акустика, Иконография и Дърворезба',
         weeklyHoursNote: '6–10 ч./седм.',
-        linkedLessonId: 'voc-nuclear-energy-optics-lasers-metallurgy-8-12'
+        linkedLessonId: 'phys-quantum-nuclear-astrophysics'
       },
       {
         subjectName: 'CNC Металорежещи машини (G-Code/M-Code), Заваряване, Хидравлика, Пневматика и Роботика (8.–12. клас)',
@@ -2301,7 +2301,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'ПГМЕ, ТМТ, Машиностроителни и Мехатронни професионални гимназии',
         keyTopics: 'Програмиране на стругове и фрези с ЦПУ (G00, G01, G02/G03, G90/G91), Скорост на рязане v_c = π·D·n/1000, MIG/MAG и TIG заваряване, Закон на Паскал за хидравлични цилиндри и Кинематика на индустриални роботи',
         weeklyHoursNote: '6–12 ч./седм.',
-        linkedLessonId: 'voc-cnc-machining-welding-hydraulics-pneumatics-robotics-8-12'
+        linkedLessonId: 'phys-newton-laws-mechanics'
       },
       {
         subjectName: 'Прецизно земеделие (NDVI & GPS), Лозарство, Енология и Ветеринарна клиника (8.–12. клас)',
@@ -2309,7 +2309,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'НПГВМ „Иван Павлов“, ПГ по земеделие, лозарство, винарство и горско стопанство',
         keyTopics: 'Агрохимия (NPK баланс и pH на почвата), Сателитен индекс NDVI и RTK-GPS навигация (2 cm точност), Алкохолна и малолактична ферментация на вина, Триас в клиничната ветеринарна диагностика и дозиране на медикаменти',
         weeklyHoursNote: '6–12 ч./седм.',
-        linkedLessonId: 'voc-agronomy-viticulture-oenology-Precision-agriculture-veterinary-8-12'
+        linkedLessonId: 'bio-evolution-hardy-weinberg-ecology-dzi'
       }
     ]
   },
@@ -2389,7 +2389,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'ТУЕС, НТБГ, СГСАГ, ПГМЕ, ПГТЕ, ПГХВТ, НПГПФ, НПГВМ, ПГТ, НГПИ',
         keyTopics: 'ИТ: Релационни БД (SQL), Linux и Мрежи; Бизнес: Макроикономика и Обща теория на счетоводството; Строителство: Съпротивление на материалите и AutoCAD; Кино, Аудио, Балнеология, Право и Пожарна безопасност',
         weeklyHoursNote: '8–12 ч./седм.',
-        linkedLessonId: 'voc-cinema-audio-video-woodcarving-iconography-8-12'
+        linkedLessonId: 'bel-dzi-syntax-editing-essay-mastery'
       },
       {
         subjectName: 'Фармацевтична технология, Козметични емулсии, Клинична микробиология и Контрол на храните (8.–12. клас)',
@@ -2397,7 +2397,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'НПГБТ, ПГХХТ, Медицински, Биотехнологични и Химични гимназии',
         keyTopics: 'Лекарствени форми, Изотонични разтвори (0.9% NaCl), Фармакокинетика (ADME), Емулсии М/В и В/М (HLB баланс), Оцветяване по Грам, Автоклавиране (121 °C) и Антибиограма по Кърби-Бауер',
         weeklyHoursNote: '6–12 ч./седм.',
-        linkedLessonId: 'voc-pharmaceutical-tech-cosmetology-microbiology-food-safety-8-12'
+        linkedLessonId: 'bio-medicine-anatomy-biotech-pharmacy-8-12'
       }
     ]
   },
@@ -2485,7 +2485,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'ТУЕС, НТБГ, СГСАГ, ПГМЕ, НПГПТО, ПГЯЕ, ВМГ, ПГТ, НГПИ, Спортни училища',
         keyTopics: 'Ядрени реактори ВВЕР-1000 и лазерна оптика; Наказателно право, дактилоскопия и пожарна безопасност (класове A–F); Балнеолечение, медицинска козметика и педагогическа психология; Банково дело, Стоманобетон, PLC и Логистика',
         weeklyHoursNote: '12–16 ч./седм.',
-        linkedLessonId: 'voc-law-security-criminalistics-fire-safety-8-12'
+        linkedLessonId: 'phil-ethics-law-democracy-economy'
       }
     ]
   },
@@ -2557,7 +2557,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'Всички професионални гимназии (ТУЕС, НТБГ, НФСГ, СГСАГ, ПГМЕ, ПГТЕ, НПГПТО, ПГЯЕ, ВМГ, ПГХВТ, НПГПФ, НПГВМ, ПГТ, НГПИ, Спортни училища)',
         keyTopics: 'Защита на дипломен проект пред Държавна квалификационна комисия: Софтуерна/AI система / Счетоводен и данъчен отчет / Архитектурно-конструктивен проект / Мехатронна, Ядрена, Лазерна или EV система / Логистичен или навигационен план / Кино-аудио продукция или Иконопис / СПА-балнео терапия',
         weeklyHoursNote: '14–18 ч./седм.',
-        linkedLessonId: 'voc-balneology-spa-dermatology-social-work-8-12'
+        linkedLessonId: 'bio-medicine-anatomy-biotech-pharmacy-8-12'
       }
     ]
   }

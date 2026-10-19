@@ -152,7 +152,7 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  ДИППК & Професии ({dippkLessons.length})
+                  ИТ, Икономика & ДИППК ({dippkLessons.length})
                 </button>
                 <button
                   onClick={() => {

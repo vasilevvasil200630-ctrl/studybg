@@ -93,7 +93,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                     lessonIds: [
                       'bio-11-12-immunology-virology-neurobiology-endocrinology',
                       'chem-11-12-electrochemistry-galvanic-electrolysis-corrosion',
-                      'voc-pharmaceutical-tech-cosmetology-microbiology-food-safety-8-12'
+                      'bio-medicine-anatomy-biotech-pharmacy-8-12'
                     ]
                   },
                   'tu-eng': {
@@ -109,7 +109,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                     calcScore: (p: number, _s: number, d1: number, d2: number) => 3 * p + d1 + d2,
                     lessonIds: [
                       'phys-11-12-relativity-photoelectric-bohr-standard-model',
-                      'voc-cnc-machining-welding-hydraulics-pneumatics-robotics-8-12',
+                      'phys-electromagnetic-induction-faraday-maxwell-dzi',
                       'cs-cybersecurity-cryptography-ai-machine-learning-11-12'
                     ]
                   },
@@ -142,9 +142,9 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                     dip2Label: 'Оценка от диплома по БЕЛ (×1)',
                     calcScore: (p: number, s: number, d1: number, d2: number) => 2 * p + 2 * s + d1 + d2,
                     lessonIds: [
-                      'voc-geodesy-photogrammetry-cartography-gis-water-construction-8-12',
+                      'phys-newton-laws-mechanics',
                       'math-10-12-solid-geometry-prisms-pyramids-spheres-cones',
-                      'voc-graphic-design-ui-ux-3d-modeling-architectural-visualization-8-12'
+                      'math-derivatives-extremums-dzi'
                     ]
                   },
                   'su-law-hum': {

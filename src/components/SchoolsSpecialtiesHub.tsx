@@ -115,7 +115,7 @@ const DIPLOMA_DEFENSE_ASSIGNMENTS: {
         a: 'Чрез отношението e = c / a: при елипса 0 < e < 1 (c² = a² - b²), а при хипербола e > 1 (c² = a² + b²).'
       }
     ],
-    linkedLessonId: 'math-11-12-calculus-integrals-complex-conics-dzi'
+    linkedLessonId: 'math-derivatives-extremums-dzi'
   },
   {
     id: 'defense-eg-languages',
@@ -138,7 +138,7 @@ const DIPLOMA_DEFENSE_ASSIGNMENTS: {
         a: 'Vorgangspassiv описва самия процес на извършване на действието, докато Zustandspassiv описва вече завършеното състояние след действието.'
       }
     ],
-    linkedLessonId: 'lang-german-french-spanish-advanced-grammar-dzi-11-12'
+    linkedLessonId: 'lang-german-french-spanish-b1-b2-8-12'
   },
   {
     id: 'defense-banking-economics',
@@ -161,7 +161,7 @@ const DIPLOMA_DEFENSE_ASSIGNMENTS: {
         a: 'Означава, че дисконтираните бъдещи парични потоци надвишават първоначалната инвестиция и проектът е икономически изгоден.'
       }
     ],
-    linkedLessonId: 'econ-accounting-banking-fintech-customs-11-12'
+    linkedLessonId: 'econ-micro-macro-accounting-finance-8-12'
   },
   {
     id: 'defense-architecture-sgsag',
@@ -184,7 +184,7 @@ const DIPLOMA_DEFENSE_ASSIGNMENTS: {
         a: 'От задния отчет по латата b се изважда предният отчет f: h = b - f (никога обратното!).'
       }
     ],
-    linkedLessonId: 'voc-architecture-bim-geodesy-civil-eng-11-12'
+    linkedLessonId: 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
   },
   {
     id: 'defense-engineering-mechatronics',
@@ -207,7 +207,7 @@ const DIPLOMA_DEFENSE_ASSIGNMENTS: {
         a: 'Тя реагира на скоростта на изменение на грешката (de/dt), предвижда отклоненията и гаси колебанията (пререгулирането).'
       }
     ],
-    linkedLessonId: 'voc-electrical-engineering-plc-mechatronics-renewable-11-12'
+    linkedLessonId: 'phys-electromagnetic-induction-faraday-maxwell-dzi'
   },
   {
     id: 'defense-medicine-biotech-agro',
@@ -253,7 +253,7 @@ const DIPLOMA_DEFENSE_ASSIGNMENTS: {
         a: 'Минимум 72–75 °C в центъра на продукта за гарантирано унищожаване на патогенни бактерии като Salmonella и Listeria.'
       }
     ],
-    linkedLessonId: 'voc-tourism-hospitality-design-arts-8-12'
+    linkedLessonId: 'econ-marketing-management-ecommerce-10-12'
   },
   {
     id: 'defense-aviation-maritime-logistics',
@@ -276,7 +276,7 @@ const DIPLOMA_DEFENSE_ASSIGNMENTS: {
         a: 'Корабът, който вижда другия откъм своя десен борд (вижда зелената му бордова светлина нощем), е длъжен да отстъпи път.'
       }
     ],
-    linkedLessonId: 'voc-aviation-aerodynamics-maritime-navigation-11-12'
+    linkedLessonId: 'phys-newton-laws-mechanics'
   },
   {
     id: 'defense-food-polygraphy-forestry-textile',
@@ -299,7 +299,7 @@ const DIPLOMA_DEFENSE_ASSIGNMENTS: {
         a: 'Масата в грамове на 1000 метра (1 километър) текстилна нишка: T [tex] = m [g] / L [km].'
       }
     ],
-    linkedLessonId: 'voc-food-tech-polygraphy-forestry-textile-8-12'
+    linkedLessonId: 'chem-organic-hydrocarbons-alcohols'
   },
   {
     id: 'defense-sports-performing-arts',
@@ -322,7 +322,7 @@ const DIPLOMA_DEFENSE_ASSIGNMENTS: {
         a: 'При ръченицата удълженият тривременен дял е на третото време (2+2+3), докато при македонското хоро е на първото време (3+2+2).'
       }
     ],
-    linkedLessonId: 'voc-performing-arts-music-theater-sports-biomechanics-11-12'
+    linkedLessonId: 'bio-medicine-anatomy-biotech-pharmacy-8-12'
   },
   {
     id: 'defense-classical-oriental-languages',
@@ -345,7 +345,7 @@ const DIPLOMA_DEFENSE_ASSIGNMENTS: {
         a: 'Канджи изразяват корените на думите, Хирагана изписва граматическите окончания и частици, а Катакана — чуждите заемки и научно-техническите термини.'
       }
     ],
-    linkedLessonId: 'lang-classical-latin-greek-russian-italian-oriental-11-12'
+    linkedLessonId: 'lang-russian-italian-latin-classical-8-12'
   },
   {
     id: 'defense-mining-metallurgy-nuclear',
@@ -368,7 +368,7 @@ const DIPLOMA_DEFENSE_ASSIGNMENTS: {
         a: 'Стоманите съдържат до 2.14% въглерод и са ковки и пластични, докато чугуните съдържат от 2.14% до 6.67% въглерод и притежават отлични леярски качества.'
       }
     ],
-    linkedLessonId: 'voc-mining-metallurgy-chemical-geology-engineering-11-12'
+    linkedLessonId: 'phys-quantum-nuclear-astrophysics'
   },
   {
     id: 'defense-security-criminalistics-law',
@@ -391,7 +391,7 @@ const DIPLOMA_DEFENSE_ASSIGNMENTS: {
         a: 'При мазнините водата се изпарява мигновено и предизвиква взривно разпръскване на пламъка, а при електроуредите провежда електрическия ток.'
       }
     ],
-    linkedLessonId: 'voc-security-criminalistics-fire-safety-law-11-12'
+    linkedLessonId: 'phil-ethics-law-democracy-economy'
   },
   {
     id: 'defense-applied-arts-cinema-ceramics',
@@ -414,7 +414,7 @@ const DIPLOMA_DEFENSE_ASSIGNMENTS: {
         a: 'Бисквитното изпичане (900–1000 °C) уякчава черепа, но го оставя порьозен за поемане на глазурата, докато глазурното изпичане (1200–1400 °C) го остъклява и водоуплътнява.'
       }
     ],
-    linkedLessonId: 'voc-cinema-audio-video-woodcarving-iconography-8-12'
+    linkedLessonId: 'bel-dzi-syntax-editing-essay-mastery'
   },
   {
     id: 'defense-pedagogy-social-work-spa',
@@ -437,7 +437,7 @@ const DIPLOMA_DEFENSE_ASSIGNMENTS: {
         a: 'При остри възпалителни и инфекциозни процеси, декомпенсирана сърдечно-съдова недостатъчност, злокачествени новообразувания и активни кръвоизливи.'
       }
     ],
-    linkedLessonId: 'voc-pedagogy-social-work-balneology-spa-cosmetology-11-12'
+    linkedLessonId: 'phil-psychology-logic-ethics-law-8-10'
   }
 ];
 

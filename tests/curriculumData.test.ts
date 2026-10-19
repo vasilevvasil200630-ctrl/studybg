@@ -15,7 +15,7 @@ import { validateLessons } from '../scripts/lib/validateLessons.mjs';
 describe('данни за уроците', () => {
   it('всички уроци минават валидацията и имат балансирани верни отговори', async () => {
     const lessons = await loadFullCurriculumLessons();
-    expect(lessons.length).toBeGreaterThanOrEqual(125);
+    expect(lessons.length).toBe(108);
     expect(validateLessons(lessons, { subjects: LESSON_SUBJECTS, grades: LESSON_GRADES })).toEqual([]);
 
     const dist = [0, 0, 0, 0];

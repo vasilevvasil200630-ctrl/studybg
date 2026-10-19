@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Square, CheckCircle2, Copy, Check, CheckSquare, HelpCircle, PenTool, Award, ArrowRight, AlertCircle, Zap, GraduationCap } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
@@ -16,14 +16,56 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({
   onNavigateTab
 }) => {
   const checklist = lesson.notebookChecklist || [];
-  const [checkedIds, setCheckedIds] = useState<string[]>([]);
+  const auditStorageKey = `studybg_audit_checked_v1_${lesson.id}`;
+  const [checkedIds, setCheckedIds] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem(auditStorageKey);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === 'string') : [];
+    } catch {
+      return [];
+    }
+  });
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [savedToBankIds, setSavedToBankIds] = useState<string[]>([]);
 
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(auditStorageKey);
+      if (!raw) {
+        setCheckedIds([]);
+        return;
+      }
+      const parsed = JSON.parse(raw);
+      setCheckedIds(Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === 'string') : []);
+    } catch {
+      setCheckedIds([]);
+    }
+  }, [auditStorageKey]);
+
+  const saveCheckedIds = (next: string[]) => {
+    setCheckedIds(next);
+    try {
+      localStorage.setItem(auditStorageKey, JSON.stringify(next));
+    } catch {
+      // ignore storage errors
+    }
+  };
+
   const toggleCheck = (id: string) => {
-    setCheckedIds(prev =>
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-    );
+    const next = checkedIds.includes(id)
+      ? checkedIds.filter(i => i !== id)
+      : [...checkedIds, id];
+    saveCheckedIds(next);
+  };
+
+  const toggleAllChecks = () => {
+    if (checkedIds.length === checklist.length) {
+      saveCheckedIds([]);
+    } else {
+      saveCheckedIds(checklist.map((item) => item.id));
+    }
   };
 
   const handleCopyNote = (id: string, text: string) => {
@@ -154,13 +196,24 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({
 
       {/* Checklist Items */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
             Детайлен чек-лист по официалната програма:
           </h3>
-          <span className="text-xs text-slate-500">
-            {checkedCount} / {totalItems} отбелязани
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-slate-500">
+              {checkedCount} / {totalItems} отбелязани
+            </span>
+            {totalItems > 0 && (
+              <button
+                type="button"
+                onClick={toggleAllChecks}
+                className="px-2.5 py-1 rounded-md text-xs font-semibold bg-white hover:bg-slate-100 text-blue-700 border border-slate-200 transition-colors cursor-pointer"
+              >
+                {checkedCount === totalItems ? 'Изчисти всички' : 'Маркирай всички'}
+              </button>
+            )}
+          </div>
         </div>
 
         {checklist.map((item, idx) => {

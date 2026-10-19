@@ -80,6 +80,26 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
     window.speechSynthesis?.cancel();
   }, []);
 
+  // Автоматично отваряне и позициониране към досие, избрано от Omni-Search
+  useEffect(() => {
+    if (activeSubTab !== 'mysteries') return;
+    try {
+      const focusId = sessionStorage.getItem('studybg_focus_mystery_id');
+      if (focusId) {
+        sessionStorage.removeItem('studybg_focus_mystery_id');
+        setSelectedMysteryCategory('all');
+        setMysterySearchQuery('');
+        setExpandedMysteryId(focusId);
+        window.setTimeout(() => {
+          const el = document.getElementById(`mystery-${focusId}`);
+          el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 120);
+      }
+    } catch {
+      // ignore storage errors
+    }
+  }, [activeSubTab]);
+
   const [bookmarkedMysteryIds, setBookmarkedMysteryIds] = useState<string[]>(() =>
     readStoredArray('studybg_bookmarked_mysteries', isString)
   );

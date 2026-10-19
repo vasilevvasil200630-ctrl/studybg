@@ -8,6 +8,7 @@ import { DeferredSection } from './DeferredSection';
 import type { UnsolvedMysteryItem } from '../data/generalKnowledgeData';
 
 import { errorBankService } from '../services/errorBankService';
+import { studyProgressService } from '../services/studyProgressService';
 import { TOTAL_CURRICULUM_LESSONS_COUNT } from '../data/curriculumDatabase';
 
 const HomeSchoolsSection = lazy(() => import('./HomeSchoolsSection').then((m) => ({ default: m.HomeSchoolsSection })));
@@ -172,11 +173,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
     // Без записани опити не показваме измислена средна оценка
     let oralAvgGrade = '—';
     try {
-      const rawMastered = localStorage.getItem('studybg_planner_mastered_lessons_v1');
-      if (rawMastered) {
-        const parsed = JSON.parse(rawMastered);
-        if (Array.isArray(parsed)) masteredCount = parsed.length;
-      }
+      masteredCount = studyProgressService.getProgress().masteredLessonIds.length;
       const rawOral = localStorage.getItem('studybg_oral_exam_history_v1');
       if (rawOral) {
         const parsedOral: unknown = JSON.parse(rawOral);
@@ -205,7 +202,9 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
   const [mysteriesPool, setMysteriesPool] = useState<UnsolvedMysteryItem[]>([]);
 
   useEffect(() => {
-    if (!omniSearchQuery.trim() || mysteriesPool.length > 0) return;
+    if (!omniSearchQuery.trim()) return;
+    onRequestFullCurriculum?.();
+    if (mysteriesPool.length > 0) return;
     let active = true;
     import('../data/generalKnowledgeData').then((m) => {
       if (active) {
@@ -215,7 +214,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
     return () => {
       active = false;
     };
-  }, [omniSearchQuery, mysteriesPool.length]);
+  }, [omniSearchQuery, mysteriesPool.length, onRequestFullCurriculum]);
 
   // Omni-search filtered results
   const omniResults = useMemo(() => {
@@ -290,7 +289,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 value={omniSearchQuery}
                 onChange={(e) => setOmniSearchQuery(e.target.value)}
                 onFocus={onRequestFullCurriculum}
-                placeholder={`Търси мигновено сред ${totalLessonsCount} урока, 40 мистерии, формули или автори (напр. Талев, производна, митоза, Царичина)...`}
+                placeholder={`Търси мигновено сред ${totalLessonsCount} урока, 41 мистерии, формули или автори (напр. Талев, производна, митоза, Царичина)...`}
                 className="w-full py-3.5 px-3 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none bg-transparent"
               />
               {omniSearchQuery && (
@@ -324,7 +323,10 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               ].map((chip) => (
                 <button
                   key={chip.label}
-                  onClick={() => setOmniSearchQuery(chip.query)}
+                  onClick={() => {
+                    onRequestFullCurriculum?.();
+                    setOmniSearchQuery(chip.query);
+                  }}
                   className="px-2.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-600 hover:text-blue-700 border border-slate-200 hover:border-blue-300 font-medium transition-colors cursor-pointer shadow-2xs"
                 >
                   {chip.label}
@@ -419,6 +421,11 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                           <div
                             key={mystery.id}
                             onClick={() => {
+                              try {
+                                sessionStorage.setItem('studybg_focus_mystery_id', mystery.id);
+                              } catch {
+                                // ignore storage errors
+                              }
                               setOmniSearchQuery('');
                               onNavigateCultureTab?.('mysteries');
                             }}
@@ -504,7 +511,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                         <Compass className="w-5 h-5" />
                       </div>
                       <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-200/80 text-amber-950 border border-amber-300">
-                        40 ДОСИЕТА • 12 РАДАРНИ ЗОНИ
+                        41 ДОСИЕТА • 12 РАДАРНИ ЗОНИ
                       </span>
                     </div>
                     <div>
@@ -615,7 +622,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                     🎯 Тренажор на живо
                   </span>
                   <span className="text-xs font-bold text-slate-700">
-                    Изпитни въпроси от всички предмети ({allQuizPool.length} въпроса)
+                    Изпитни въпроси от всички предмети ({trainerSubjectFilter === 'all' ? Math.max(allQuizPool.length, 720) : allQuizPool.length} въпроса)
                   </span>
                 </div>
                 <div className="flex items-center gap-2">

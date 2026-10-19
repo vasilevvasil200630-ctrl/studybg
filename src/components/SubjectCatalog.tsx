@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Search, BookOpen, Layers, GraduationCap, Clock, CheckSquare, Zap } from 'lucide-react';
+import { Search, BookOpen, Layers, GraduationCap, Clock, CheckSquare, Zap, CheckCircle2 } from 'lucide-react';
 import type { LessonData, GradeLevel, SubjectName, QuizQuestion } from '../types';
 import type { AppNavTab } from './Navbar';
 import { GRADES_LIST, SUBJECTS_LIST } from '../data/curriculumDatabase';
 import { MaturaPlusBridgeBanner } from './MaturaPlusBridgeBanner';
+import { studyProgressService } from '../services/studyProgressService';
 
 interface SubjectCatalogProps {
   lessons: LessonData[];
@@ -22,7 +23,16 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
   const [selectedGrade, setSelectedGrade] = useState<GradeLevel>('Всички класове');
   const [selectedSubject, setSelectedSubject] = useState<SubjectName>('Всички предмети');
   const [selectedExamType, setSelectedExamType] = useState<string>('Всички изпити');
+  const [masteryFilter, setMasteryFilter] = useState<'all' | 'unmastered' | 'mastered'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [masteredIds, setMasteredIds] = useState<string[]>(
+    () => studyProgressService.getProgress().masteredLessonIds
+  );
+
+  const handleToggleMastered = (lessonId: string) => {
+    const updated = studyProgressService.toggleMasteredLesson(lessonId);
+    setMasteredIds(updated.masteredLessonIds);
+  };
 
   const examTypesList = [
     { id: 'Всички изпити', label: 'Всички изпитни формати' },
@@ -63,6 +73,11 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
       selectedSubject === 'Всички предмети' || lesson.subject === selectedSubject;
     const matchesExam =
       selectedExamType === 'Всички изпити' || lesson.examType === selectedExamType;
+    const isMastered = masteredIds.includes(lesson.id);
+    const matchesMastery =
+      masteryFilter === 'all' ||
+      (masteryFilter === 'mastered' && isMastered) ||
+      (masteryFilter === 'unmastered' && !isMastered);
     const q = searchQuery.toLowerCase().trim();
     const matchesQuery =
       !q ||
@@ -70,7 +85,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
       lesson.subject.toLowerCase().includes(q) ||
       lesson.summary.overview.toLowerCase().includes(q) ||
       lesson.summary.keyPoints.some((kp) => kp.toLowerCase().includes(q));
-    return matchesGrade && matchesSubject && matchesExam && matchesQuery;
+    return matchesGrade && matchesSubject && matchesExam && matchesMastery && matchesQuery;
   });
 
   return (
@@ -188,6 +203,35 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
             <span>Учебна дисциплина:</span>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <div className="inline-flex items-center rounded-full bg-slate-100 p-0.5 border border-slate-200 text-[11px] font-semibold">
+              <button
+                type="button"
+                onClick={() => setMasteryFilter('all')}
+                className={`px-2.5 py-0.5 rounded-full transition-colors cursor-pointer ${
+                  masteryFilter === 'all' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Всички
+              </button>
+              <button
+                type="button"
+                onClick={() => setMasteryFilter('unmastered')}
+                className={`px-2.5 py-0.5 rounded-full transition-colors cursor-pointer ${
+                  masteryFilter === 'unmastered' ? 'bg-white text-blue-700 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                За учене
+              </button>
+              <button
+                type="button"
+                onClick={() => setMasteryFilter('mastered')}
+                className={`px-2.5 py-0.5 rounded-full transition-colors cursor-pointer ${
+                  masteryFilter === 'mastered' ? 'bg-emerald-600 text-white shadow-2xs' : 'text-emerald-800 hover:text-emerald-950'
+                }`}
+              >
+                Усвоени ✓ ({lessons.filter((l) => masteredIds.includes(l.id)).length})
+              </button>
+            </div>
             <span className="text-[11px] font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
               Показани: {filteredLessons.length} от {lessons.length} теми
             </span>
@@ -261,6 +305,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
         {filteredLessons.map((lesson) => {
           const isCurrent = lesson.id === currentLessonId;
+          const isMastered = masteredIds.includes(lesson.id);
           const isJuniorLesson =
             lesson.grade.includes('7.') ||
             lesson.grade.includes('6.') ||
@@ -284,6 +329,22 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                     {lesson.subject}
                   </span>
                   <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleMastered(lesson.id);
+                      }}
+                      className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded border transition-colors cursor-pointer ${
+                        isMastered
+                          ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
+                          : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100 hover:text-slate-700'
+                      }`}
+                      title={isMastered ? 'Отбелязан като усвоен урок (клик за промяна)' : 'Отбележи урока като усвоен'}
+                    >
+                      <CheckCircle2 className={`w-3 h-3 ${isMastered ? 'text-emerald-600' : 'text-slate-400'}`} />
+                      <span>{isMastered ? 'Усвоен' : 'Отбележи'}</span>
+                    </button>
                     {lesson.examType && (
                       <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
                         {lesson.examType}

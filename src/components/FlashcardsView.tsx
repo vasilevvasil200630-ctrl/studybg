@@ -9,6 +9,28 @@ interface FlashcardsViewProps {
   onNavigateTab?: (tab: AppNavTab) => void;
 }
 
+const FLASHCARDS_MASTERED_KEY = 'studybg_flashcards_mastered_v1';
+const FLASHCARDS_REVIEW_KEY = 'studybg_flashcards_review_v1';
+
+function readStoredIds(key: string): string[] {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeStoredIds(key: string, ids: string[]): void {
+  try {
+    localStorage.setItem(key, JSON.stringify(Array.from(new Set(ids))));
+  } catch {
+    // ignore storage errors
+  }
+}
+
 export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   flashcards,
   onProceedToQuiz,
@@ -17,20 +39,29 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   const [cards, setCards] = useState<Flashcard[]>(flashcards);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [masteredIds, setMasteredIds] = useState<string[]>([]);
-  const [reviewIds, setReviewIds] = useState<string[]>([]);
+  const [onlyReviewMode, setOnlyReviewMode] = useState(false);
+  const [masteredIds, setMasteredIds] = useState<string[]>(() => {
+    const lessonCardIds = new Set(flashcards.map((c) => c.id));
+    return readStoredIds(FLASHCARDS_MASTERED_KEY).filter((id) => lessonCardIds.has(id));
+  });
+  const [reviewIds, setReviewIds] = useState<string[]>(() => {
+    const lessonCardIds = new Set(flashcards.map((c) => c.id));
+    return readStoredIds(FLASHCARDS_REVIEW_KEY).filter((id) => lessonCardIds.has(id));
+  });
 
   // Update cards when lesson changes
   useEffect(() => {
+    const lessonCardIds = new Set(flashcards.map((c) => c.id));
     setCards(flashcards);
     setCurrentIndex(0);
     setIsFlipped(false);
-    setMasteredIds([]);
-    setReviewIds([]);
+    setOnlyReviewMode(false);
+    setMasteredIds(readStoredIds(FLASHCARDS_MASTERED_KEY).filter((id) => lessonCardIds.has(id)));
+    setReviewIds(readStoredIds(FLASHCARDS_REVIEW_KEY).filter((id) => lessonCardIds.has(id)));
   }, [flashcards]);
 
   const card = cards[currentIndex] || cards[0];
-  const progressPercent = Math.round(((currentIndex + 1) / cards.length) * 100);
+  const progressPercent = Math.round(((currentIndex + 1) / Math.max(1, cards.length)) * 100);
 
   const handleNext = useCallback(() => {
     setIsFlipped(false);
@@ -72,21 +103,46 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleToggleFlip, handleNext, handlePrev]);
 
+  const syncLessonStorage = (nextMastered: string[], nextReview: string[]) => {
+    const lessonCardIds = new Set(flashcards.map((c) => c.id));
+    const otherMastered = readStoredIds(FLASHCARDS_MASTERED_KEY).filter((id) => !lessonCardIds.has(id));
+    const otherReview = readStoredIds(FLASHCARDS_REVIEW_KEY).filter((id) => !lessonCardIds.has(id));
+    writeStoredIds(FLASHCARDS_MASTERED_KEY, [...otherMastered, ...nextMastered]);
+    writeStoredIds(FLASHCARDS_REVIEW_KEY, [...otherReview, ...nextReview]);
+  };
+
   const handleMarkMastered = (id: string) => {
-    if (!masteredIds.includes(id)) {
-      const updated = [...masteredIds, id];
-      setMasteredIds(updated);
-      setReviewIds(reviewIds.filter((item) => item !== id));
-    }
+    const nextMastered = masteredIds.includes(id) ? masteredIds : [...masteredIds, id];
+    const nextReview = reviewIds.filter((item) => item !== id);
+    setMasteredIds(nextMastered);
+    setReviewIds(nextReview);
+    syncLessonStorage(nextMastered, nextReview);
     handleNext();
   };
 
   const handleMarkReview = (id: string) => {
-    if (!reviewIds.includes(id)) {
-      setReviewIds([...reviewIds, id]);
-      setMasteredIds(masteredIds.filter((item) => item !== id));
-    }
+    const nextReview = reviewIds.includes(id) ? reviewIds : [...reviewIds, id];
+    const nextMastered = masteredIds.filter((item) => item !== id);
+    setReviewIds(nextReview);
+    setMasteredIds(nextMastered);
+    syncLessonStorage(nextMastered, nextReview);
     handleNext();
+  };
+
+  const handleToggleOnlyReviewMode = () => {
+    if (!onlyReviewMode) {
+      const filtered = flashcards.filter((c) => reviewIds.includes(c.id));
+      if (filtered.length === 0) return;
+      setCards(filtered);
+      setOnlyReviewMode(true);
+      setCurrentIndex(0);
+      setIsFlipped(false);
+    } else {
+      setCards(flashcards);
+      setOnlyReviewMode(false);
+      setCurrentIndex(0);
+      setIsFlipped(false);
+    }
   };
 
   const handleShuffle = () => {
@@ -100,8 +156,10 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
     setCards(flashcards);
     setCurrentIndex(0);
     setIsFlipped(false);
+    setOnlyReviewMode(false);
     setMasteredIds([]);
     setReviewIds([]);
+    syncLessonStorage([], []);
   };
 
   if (!card) return null;
@@ -113,7 +171,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
         <div>
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-50 border border-blue-200 text-blue-700 mb-1">
             <Layers className="w-3.5 h-3.5" />
-            <span>Активно припомняне (Active Recall)</span>
+            <span>{onlyReviewMode ? 'Режим: Само карти за преговор' : 'Активно припомняне (Active Recall)'}</span>
           </div>
           <div className="text-sm font-semibold text-slate-700">
             Карта <span className="text-slate-900 font-bold">{currentIndex + 1}</span> от{' '}
@@ -128,10 +186,28 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
             <span>Усвоени: {masteredIds.length}</span>
           </div>
 
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium">
-            <RotateCcw className="w-3.5 h-3.5 text-rose-600" />
-            <span>За преговор: {reviewIds.length}</span>
-          </div>
+          <button
+            type="button"
+            onClick={handleToggleOnlyReviewMode}
+            disabled={!onlyReviewMode && reviewIds.length === 0}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
+              onlyReviewMode
+                ? 'bg-rose-600 text-white border-rose-600 font-bold cursor-pointer'
+                : reviewIds.length > 0
+                ? 'bg-rose-50 hover:bg-rose-100 border-rose-200 text-rose-800 cursor-pointer'
+                : 'bg-rose-50 border-rose-200 text-rose-800 opacity-75'
+            }`}
+            title={
+              onlyReviewMode
+                ? 'Покажи отново всички флашкарти от урока'
+                : reviewIds.length > 0
+                ? 'Филтрирай и упражни само картите, отбелязани за преговор'
+                : 'Отбележи карти със „За преговор“, за да ги упражниш отделно'
+            }
+          >
+            <RotateCcw className={`w-3.5 h-3.5 ${onlyReviewMode ? 'text-white' : 'text-rose-600'}`} />
+            <span>{onlyReviewMode ? `Всички карти (${flashcards.length})` : `За преговор: ${reviewIds.length}`}</span>
+          </button>
 
           <button
             onClick={handleShuffle}

@@ -27,14 +27,13 @@ import type { AppNavTab } from './Navbar';
 import { AudioReader } from './AudioReader';
 import { EmailShareModal } from './EmailShareModal';
 import { askGeminiMentor, isAiAvailable, isGeminiConfigured, AI_PROVIDER_LABEL } from '../services/geminiService';
+import { studyProgressService } from '../services/studyProgressService';
 
 interface SummaryViewProps {
   lesson: LessonData;
   onProceedToFlashcards: () => void;
   onNavigateTab?: (tab: AppNavTab) => void;
 }
-
-const MASTERED_STORAGE_KEY = 'studybg_planner_mastered_lessons_v1';
 
 export const SummaryView: React.FC<SummaryViewProps> = ({
   lesson,
@@ -62,14 +61,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
     setMentorQuestion('');
     setMentorError(null);
     try {
-      const rawMastered = localStorage.getItem(MASTERED_STORAGE_KEY);
-      if (rawMastered) {
-        const parsed: string[] = JSON.parse(rawMastered);
-        setIsMastered(Array.isArray(parsed) && parsed.includes(lesson.id));
-      } else {
-        setIsMastered(false);
-      }
-
+      setIsMastered(studyProgressService.isLessonMastered(lesson.id));
       const savedNote = localStorage.getItem(noteStorageKey);
       setPersonalNote(savedNote || '');
     } catch {
@@ -107,22 +99,8 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
   };
 
   const handleToggleMastered = () => {
-    try {
-      const rawMastered = localStorage.getItem(MASTERED_STORAGE_KEY);
-      const parsed: string[] = rawMastered ? JSON.parse(rawMastered) : [];
-      const currentList = Array.isArray(parsed) ? parsed : [];
-      let updated: string[];
-      if (currentList.includes(lesson.id)) {
-        updated = currentList.filter((id) => id !== lesson.id);
-        setIsMastered(false);
-      } else {
-        updated = [...currentList, lesson.id];
-        setIsMastered(true);
-      }
-      localStorage.setItem(MASTERED_STORAGE_KEY, JSON.stringify(updated));
-    } catch {
-      // Ignore storage errors
-    }
+    const updated = studyProgressService.toggleMasteredLesson(lesson.id);
+    setIsMastered(updated.masteredLessonIds.includes(lesson.id));
   };
 
   const handleNoteChange = (value: string) => {

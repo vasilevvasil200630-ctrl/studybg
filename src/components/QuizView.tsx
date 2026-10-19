@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { RefreshCw, ArrowRight, CheckSquare, HelpCircle, Mail, Shuffle, Sparkles, Printer, Copy, Check } from 'lucide-react';
+import { RefreshCw, ArrowRight, CheckSquare, HelpCircle, Mail, Shuffle, Sparkles, Printer, Copy, Check, CheckCircle2 } from 'lucide-react';
 import type { LessonData, QuizQuestion } from '../types';
 import type { AppNavTab } from './Navbar';
 import { EmailShareModal } from './EmailShareModal';
+import { studyProgressService } from '../services/studyProgressService';
 
 const POSITIONAL_OPTION_RE = /^(всички изброени|и двете|никое от|горните|точки а и б)/i;
 const OPTION_LETTERS = ['А', 'Б', 'В', 'Г'] as const;
@@ -234,6 +235,9 @@ export const QuizView: React.FC<QuizViewProps> = ({
   const [worksheetTab, setWorksheetTab] = useState<'A' | 'B' | 'KEY'>('A');
   const [worksheetData, setWorksheetData] = useState<DualGroupWorksheet | null>(null);
   const [copiedMode, setCopiedMode] = useState<'withKey' | 'noKey' | null>(null);
+  const [isLessonMastered, setIsLessonMastered] = useState<boolean>(() =>
+    currentLesson ? studyProgressService.isLessonMastered(currentLesson.id) : false
+  );
 
   if (activeQuestions.length === 0) {
     return (
@@ -320,12 +324,40 @@ export const QuizView: React.FC<QuizViewProps> = ({
     setIsSubmitted(true);
 
     // Automatically record any mistakes to the Error Bank
+    let correctCount = 0;
     activeQuestions.forEach((q) => {
       const chosen = selectedAnswers[q.id];
-      if (chosen !== undefined && chosen !== q.correctIndex) {
+      if (chosen === q.correctIndex) {
+        correctCount++;
+      } else if (chosen !== undefined) {
         onRecordError?.(q, chosen);
       }
     });
+
+    // Автоматично отбелязване на урока като усвоен при Отличен (>= 5.50)
+    if (currentLesson && activeQuestions.length > 0) {
+      const numericGrade = 2 + 4 * (correctCount / activeQuestions.length);
+      if (numericGrade >= 5.5) {
+        studyProgressService.markLessonMastered(currentLesson.id);
+        setIsLessonMastered(true);
+      }
+    }
+  };
+
+  const handleToggleLessonMastered = () => {
+    if (!currentLesson) return;
+    const updated = studyProgressService.toggleMasteredLesson(currentLesson.id);
+    setIsLessonMastered(updated.masteredLessonIds.includes(currentLesson.id));
+  };
+
+  const handleRetryMistakes = () => {
+    const missed = activeQuestions.filter(
+      (q) => selectedAnswers[q.id] !== undefined && selectedAnswers[q.id] !== q.correctIndex
+    );
+    if (missed.length === 0) return;
+    setActiveQuestions(shuffleQuizSet(missed));
+    setSelectedAnswers({});
+    setIsSubmitted(false);
   };
 
   const handleResetAndShuffle = () => {
@@ -660,9 +692,26 @@ export const QuizView: React.FC<QuizViewProps> = ({
         <div className="p-6 sm:p-7 rounded-xl bg-white border border-slate-200 shadow-sm">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
             <div>
-              <span className={`inline-block px-3 py-1 rounded-md text-xs font-semibold border mb-2 ${gradeInfo.badge}`}>
-                Резултат: {gradeInfo.grade}
-              </span>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-2">
+                <span className={`inline-block px-3 py-1 rounded-md text-xs font-semibold border ${gradeInfo.badge}`}>
+                  Резултат: {gradeInfo.grade}
+                </span>
+                {currentLesson && (
+                  <button
+                    type="button"
+                    onClick={handleToggleLessonMastered}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border transition-colors cursor-pointer ${
+                      isLessonMastered
+                        ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
+                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                    }`}
+                    title="Синхронизира се автоматично с „Моят План за 6.00“ и Конспекта"
+                  >
+                    <CheckCircle2 className={`w-3.5 h-3.5 ${isLessonMastered ? 'text-emerald-600' : 'text-slate-400'}`} />
+                    <span>{isLessonMastered ? 'Усвоен урок в Плана за 6.00 ✓' : 'Отбележи като усвоен урок'}</span>
+                  </button>
+                )}
+              </div>
               <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 font-mono">
                 {correctScore} от {activeQuestions.length} верни отговора ({activeQuestions.length > 0 ? Math.round((correctScore / activeQuestions.length) * 100) : 0}%)
               </h3>
@@ -672,6 +721,16 @@ export const QuizView: React.FC<QuizViewProps> = ({
             </div>
 
             <div className="flex flex-col sm:flex-row flex-wrap items-center gap-2.5">
+              {missedQuestions.length > 0 && (
+                <button
+                  onClick={handleRetryMistakes}
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
+                  title="Стартирай кратък тест само със сгрешените въпроси от този опит"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Пререши само грешните ({missedQuestions.length})</span>
+                </button>
+              )}
               <button
                 onClick={handleGenerateTopicVariant}
                 className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"

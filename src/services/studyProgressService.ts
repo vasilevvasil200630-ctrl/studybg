@@ -76,12 +76,29 @@ export const MON_OFFICIAL_EXAMS: MonOfficialExamDate[] = [
 ];
 
 const PROGRESS_STORAGE_KEY = 'studybg_user_progress_v1';
+const LEGACY_MASTERED_LESSONS_KEY = 'studybg_planner_mastered_lessons_v1';
+
+const LEGACY_LESSON_ID_MAP: Record<string, string> = {
+  'bel-11-botev-pat': 'bel-botev-poeziya',
+  'hist-10-12-aprilsko-1876': 'history-april-uprising'
+};
+
+function normalizeMasteredIds(ids: unknown[]): string[] {
+  const result = new Set<string>();
+  for (const item of ids) {
+    if (typeof item === 'string' && item.trim()) {
+      const normalized = LEGACY_LESSON_ID_MAP[item] ?? item;
+      result.add(normalized);
+    }
+  }
+  return Array.from(result);
+}
 
 const DEFAULT_PROGRESS: UserStudyProgress = {
   targetExam: 'dzi_bel',
   dailyGoalMinutes: 45,
   targetGrade: 6.0,
-  masteredLessonIds: ['bel-11-botev-pat', 'hist-10-12-aprilsko-1876'],
+  masteredLessonIds: ['bel-botev-poeziya', 'history-april-uprising'],
   masteredAuthorIds: ['botev', 'vazov', 'aleko'],
   grammarQuestionsSolved: 5,
   grammarBestStreak: 4,
@@ -92,14 +109,39 @@ export const studyProgressService = {
   getProgress(): UserStudyProgress {
     try {
       const raw = localStorage.getItem(PROGRESS_STORAGE_KEY);
-      if (!raw) return DEFAULT_PROGRESS;
+      const legacyRaw = localStorage.getItem(LEGACY_MASTERED_LESSONS_KEY);
+      let legacyIds: string[] = [];
+      if (legacyRaw) {
+        try {
+          const parsedLegacy = JSON.parse(legacyRaw);
+          if (Array.isArray(parsedLegacy)) {
+            legacyIds = normalizeMasteredIds(parsedLegacy);
+          }
+        } catch {
+          // ignore invalid legacy JSON
+        }
+      }
+
+      if (!raw) {
+        const mergedDefault = legacyIds.length > 0
+          ? normalizeMasteredIds([...DEFAULT_PROGRESS.masteredLessonIds, ...legacyIds])
+          : DEFAULT_PROGRESS.masteredLessonIds;
+        return {
+          ...DEFAULT_PROGRESS,
+          masteredLessonIds: mergedDefault
+        };
+      }
+
       const parsed = JSON.parse(raw) as Partial<UserStudyProgress>;
+      const baseMastered = Array.isArray(parsed.masteredLessonIds)
+        ? parsed.masteredLessonIds
+        : DEFAULT_PROGRESS.masteredLessonIds;
+      const mergedMastered = normalizeMasteredIds([...baseMastered, ...legacyIds]);
+
       return {
         ...DEFAULT_PROGRESS,
         ...parsed,
-        masteredLessonIds: Array.isArray(parsed.masteredLessonIds)
-          ? parsed.masteredLessonIds
-          : DEFAULT_PROGRESS.masteredLessonIds,
+        masteredLessonIds: mergedMastered,
         masteredAuthorIds: Array.isArray(parsed.masteredAuthorIds)
           ? parsed.masteredAuthorIds
           : DEFAULT_PROGRESS.masteredAuthorIds,
@@ -114,7 +156,12 @@ export const studyProgressService = {
 
   saveProgress(progress: UserStudyProgress): void {
     try {
-      localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(progress));
+      const normalized = {
+        ...progress,
+        masteredLessonIds: normalizeMasteredIds(progress.masteredLessonIds)
+      };
+      localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(normalized));
+      localStorage.setItem(LEGACY_MASTERED_LESSONS_KEY, JSON.stringify(normalized.masteredLessonIds));
     } catch {
       // ignore storage errors
     }
@@ -129,12 +176,32 @@ export const studyProgressService = {
     return updated;
   },
 
-  toggleMasteredLesson(lessonId: string): UserStudyProgress {
+  isLessonMastered(lessonId: string): boolean {
+    const normalizedId = LEGACY_LESSON_ID_MAP[lessonId] ?? lessonId;
+    return this.getProgress().masteredLessonIds.includes(normalizedId);
+  },
+
+  markLessonMastered(lessonId: string): UserStudyProgress {
+    const normalizedId = LEGACY_LESSON_ID_MAP[lessonId] ?? lessonId;
     const current = this.getProgress();
-    const exists = current.masteredLessonIds.includes(lessonId);
+    if (current.masteredLessonIds.includes(normalizedId)) {
+      return current;
+    }
+    const updated = {
+      ...current,
+      masteredLessonIds: [...current.masteredLessonIds, normalizedId]
+    };
+    this.saveProgress(updated);
+    return updated;
+  },
+
+  toggleMasteredLesson(lessonId: string): UserStudyProgress {
+    const normalizedId = LEGACY_LESSON_ID_MAP[lessonId] ?? lessonId;
+    const current = this.getProgress();
+    const exists = current.masteredLessonIds.includes(normalizedId);
     const masteredLessonIds = exists
-      ? current.masteredLessonIds.filter(id => id !== lessonId)
-      : [...current.masteredLessonIds, lessonId];
+      ? current.masteredLessonIds.filter(id => id !== normalizedId)
+      : [...current.masteredLessonIds, normalizedId];
     const updated = { ...current, masteredLessonIds };
     this.saveProgress(updated);
     return updated;

@@ -279,22 +279,25 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
         <div className="max-w-5xl mx-auto px-4 space-y-6">
           
           {/* Top Status Pill */}
-          <div className="inline-flex flex-wrap items-center justify-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/90 shadow-2xs text-xs font-semibold text-slate-700">
-            <span className="inline-flex items-center gap-1.5 text-blue-700 font-bold">
-              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+          <div className="inline-flex flex-wrap items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-white border-2 border-blue-200/80 shadow-xs text-xs font-bold text-slate-700">
+            <span className="inline-flex items-center gap-1.5 text-emerald-700 font-extrabold">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
               МОН Програми 2026/2027
             </span>
             <span className="text-slate-300">•</span>
-            <span>{totalLessonsCount} академични урока</span>
+            <span className="text-blue-700 font-extrabold">{totalLessonsCount} академични урока</span>
             <span className="text-slate-300">•</span>
-            <span className="text-amber-800 font-bold">41 секретни досиета</span>
+            <span className="text-amber-700 font-extrabold">41 секретни досиета</span>
             <span className="text-slate-300 hidden sm:inline">•</span>
-            <span className="text-blue-700 font-bold hidden sm:inline">12 интерактивни лаборатории</span>
+            <span className="text-violet-700 font-extrabold hidden sm:inline">12 интерактивни лаборатории</span>
           </div>
 
           {/* Main Display Headline */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.12]">
-            Национална дигитална академия за <span className="text-emerald-600">НВО 7</span>, <span className="text-blue-600">НВО 10</span> и <span className="text-blue-600">ДЗИ 12</span>
+            Национална дигитална академия за{' '}
+            <span className="bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">НВО 7</span>,{' '}
+            <span className="bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">НВО 10</span> и{' '}
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">ДЗИ 12</span>
           </h1>
 
           {/* Subtitle */}
@@ -304,7 +307,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
 
           {/* LIVE OMNI-SEARCH ENGINE BAR */}
           <div className="max-w-3xl mx-auto pt-1 relative text-left">
-            <div className="relative flex items-center bg-white rounded-2xl border-2 border-slate-200/90 focus-within:border-blue-500 shadow-sm hover:shadow-md transition-all">
+            <div className="relative flex items-center bg-white rounded-2xl border-2 border-blue-300/90 focus-within:border-blue-600 shadow-md shadow-blue-500/10 hover:shadow-lg transition-all">
               <Search className="w-5 h-5 text-blue-600 ml-4 shrink-0" />
               <input
                 type="text"
@@ -325,7 +328,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               )}
               <button
                 onClick={() => onNavigateTab('catalog')}
-                className="hidden sm:inline-flex items-center gap-1.5 mr-2 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors shrink-0 cursor-pointer"
+                className="hidden sm:inline-flex items-center gap-1.5 mr-2 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-b-2 border-indigo-900 text-xs font-extrabold transition-all shrink-0 cursor-pointer shadow-xs"
               >
                 <span>Пълен каталог</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -334,14 +337,14 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
 
             {/* Quick Search Suggestions Strip */}
             <div className="mt-2.5 flex flex-wrap items-center justify-center gap-1.5 text-[11px]">
-              <span className="text-slate-500 font-semibold">Бързо търсене:</span>
+              <span className="text-slate-500 font-bold">Бързо търсене:</span>
               {[
-                { label: '📚 Талев & Димов (ДЗИ)', query: 'Талев' },
-                { label: '📐 Производни & Екстремуми', query: 'Производни' },
-                { label: '🧬 Митоза и Мейоза', query: 'Митоза' },
-                { label: '⚡ ОРП & Електрохимия', query: 'Окислително' },
-                { label: '🕵️ Варненското злато (Φ=1.618)', query: 'Варненското злато' },
-                { label: '🛸 Операция Царичина', query: 'Царичина' }
+                { label: '📚 Талев & Димов (ДЗИ)', query: 'Талев', style: 'bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-900 border-fuchsia-200' },
+                { label: '📐 Производни & Екстремуми', query: 'Производни', style: 'bg-cyan-50 hover:bg-cyan-100 text-cyan-900 border-cyan-200' },
+                { label: '🧬 Митоза и Мейоза', query: 'Митоза', style: 'bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border-emerald-200' },
+                { label: '⚡ ОРП & Електрохимия', query: 'Окислително', style: 'bg-violet-50 hover:bg-violet-100 text-violet-900 border-violet-200' },
+                { label: '🕵️ Варненското злато (Φ=1.618)', query: 'Варненското злато', style: 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-200' },
+                { label: '🛸 Операция Царичина', query: 'Царичина', style: 'bg-rose-50 hover:bg-rose-100 text-rose-900 border-rose-200' }
               ].map((chip) => (
                 <button
                   key={chip.label}
@@ -349,7 +352,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                     onRequestFullCurriculum?.();
                     setOmniSearchQuery(chip.query);
                   }}
-                  className="px-2.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-600 hover:text-blue-700 border border-slate-200 hover:border-blue-300 font-medium transition-colors cursor-pointer shadow-2xs"
+                  className={`px-2.5 py-1 rounded-full border font-bold transition-colors cursor-pointer shadow-2xs ${chip.style}`}
                 >
                   {chip.label}
                 </button>
@@ -358,7 +361,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
 
             {/* Instant Omni-Search Results Dropdown Panel */}
             {omniResults && (
-              <div className="mt-3 p-4 sm:p-5 rounded-2xl bg-white border-2 border-blue-200 shadow-xl space-y-4 z-30">
+              <div className="mt-3 p-4 sm:p-5 rounded-2xl bg-white border-2 border-blue-300 shadow-xl space-y-4 z-30">
                 <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                   <span className="text-xs font-bold text-slate-700">
                     Намерени резултати за „<span className="text-blue-600">{omniSearchQuery}</span>“ ({omniResults.total})
@@ -412,7 +415,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                                   setOmniSearchQuery('');
                                   onSelectLesson?.(lesson, 'quiz');
                                 }}
-                                className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-[11px] font-semibold transition-colors cursor-pointer"
+                                className="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-[11px] font-bold transition-colors cursor-pointer"
                               >
                                 ✅ Тест ({lesson.quiz.length})
                               </button>
@@ -421,7 +424,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                                   setOmniSearchQuery('');
                                   onSelectLesson?.(lesson, 'oralexam');
                                 }}
-                                className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 text-[11px] font-semibold transition-colors cursor-pointer"
+                                className="px-2.5 py-1 rounded-lg bg-violet-50 hover:bg-violet-100 text-violet-800 border border-violet-200 text-[11px] font-bold transition-colors cursor-pointer"
                               >
                                 🎙️ Устен
                               </button>
@@ -471,14 +474,14 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
 
           {/* Dedicated Dual Portal Gateway Card */}
           <div className="pt-2 max-w-4xl mx-auto">
-            <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-5 sm:p-7 space-y-5 text-left">
+            <div className="bg-white rounded-3xl border-2 border-blue-200/85 shadow-md shadow-blue-950/5 p-5 sm:p-7 space-y-5 text-left">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
                 <div className="space-y-0.5">
-                  <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-600">
+                  <div className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-blue-600">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>Двупортална архитектура • Избери режим на работа</span>
                   </div>
-                  <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
+                  <h2 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
                     Влез в Учебната академия или изследвай Секретните досиета
                   </h2>
                 </div>
@@ -487,7 +490,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                     <button
                       type="button"
                       onClick={onOpenAuthModal}
-                      className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white hover:bg-blue-50/80 text-slate-900 border-2 border-blue-600/85 hover:border-blue-700 text-xs font-bold shadow-xs transition-all cursor-pointer"
+                      className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-white via-blue-50/40 to-indigo-50/40 hover:from-blue-50 hover:to-indigo-100 text-slate-900 border-2 border-blue-600 hover:border-indigo-600 text-xs font-extrabold shadow-xs transition-all cursor-pointer"
                     >
                       <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
                         <path
@@ -512,12 +515,12 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                           ? `${heroUserProfile?.fullName?.split(/\s+/)[0] || 'Профил'} • Ниво ${heroLevelInfo.level}`
                           : 'Вход с Google • Облачен профил'}
                       </span>
-                      <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 font-mono text-[10px] font-extrabold border border-amber-300">
+                      <span className="px-1.5 py-0.5 rounded bg-gradient-to-r from-amber-100 to-orange-100 text-orange-950 font-mono text-[10px] font-extrabold border border-orange-300">
                         🔥 {heroDailyStreak}д
                       </span>
                     </button>
                   )}
-                  <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                  <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300">
                     ✓ Работи и без регистрация
                   </span>
                 </div>
@@ -528,19 +531,19 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 {/* Entrance 1: The Study Academy (5.-12. grade) */}
                 <button
                   onClick={() => onNavigateTab('summary')}
-                  className="group relative p-5 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white flex flex-col justify-between transition-all shadow-sm hover:shadow-md cursor-pointer text-left"
+                  className="group relative p-5 rounded-2xl bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-700 hover:from-sky-600 hover:via-blue-700 hover:to-indigo-800 border-b-4 border-indigo-900 text-white flex flex-col justify-between transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer text-left"
                 >
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center text-white border border-white/20 shadow-2xs">
+                      <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-white border border-white/30 shadow-2xs">
                         <GraduationCap className="w-5 h-5 text-white" />
                       </div>
-                      <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-white/15 text-white border border-white/20">
+                      <span className="text-[11px] font-mono font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-400/25 text-white border border-emerald-300/40">
                         {totalLessonsCount} УРОКА • 13 ПРЕДМЕТА
                       </span>
                     </div>
                     <div>
-                      <div className="text-[11px] uppercase tracking-wider font-bold text-blue-200">
+                      <div className="text-[11px] uppercase tracking-wider font-bold text-sky-100">
                         Портал 1 • Официална подготовка по МОН (5.–12. клас)
                       </div>
                       <div className="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-1.5 pt-0.5">
@@ -548,11 +551,11 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
-                    <p className="text-xs text-blue-100/95 leading-relaxed">
+                    <p className="text-xs text-blue-50/95 leading-relaxed">
                       Пълни учебни конспекти, гласово устно изпитване пред дъската, 100-точков симулатор за НВО 7, НВО 10 и ДЗИ, STEM лаборатории и бележник към всеки урок.
                     </p>
                   </div>
-                  <div className="pt-3.5 text-xs font-bold text-blue-100 flex items-center justify-between border-t border-white/15 mt-3">
+                  <div className="pt-3.5 text-xs font-extrabold text-white flex items-center justify-between border-t border-white/20 mt-3">
                     <span>Отвори учебното пространство</span>
                     <ChevronRight className="w-4 h-4" />
                   </div>
@@ -561,31 +564,31 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 {/* Entrance 2: Cultural Context & Mysteries */}
                 <button
                   onClick={() => onNavigateCultureTab?.('mysteries')}
-                  className="group relative p-5 rounded-2xl bg-gradient-to-br from-amber-50 via-orange-50/70 to-amber-100/50 hover:from-amber-100/90 hover:to-orange-100/80 border-2 border-amber-300/80 text-slate-900 flex flex-col justify-between transition-all shadow-2xs hover:shadow-md cursor-pointer text-left"
+                  className="group relative p-5 rounded-2xl bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-100/80 hover:from-amber-100/90 hover:to-orange-100/90 border-2 border-amber-300 border-b-4 border-b-amber-500 text-slate-900 flex flex-col justify-between transition-all shadow-2xs hover:shadow-md hover:-translate-y-0.5 cursor-pointer text-left"
                 >
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-amber-700 text-white flex items-center justify-center shadow-xs">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-center shadow-xs">
                         <Compass className="w-5 h-5" />
                       </div>
-                      <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-200/80 text-amber-950 border border-amber-300">
+                      <span className="text-[11px] font-mono font-extrabold px-2.5 py-0.5 rounded-full bg-amber-200/80 text-amber-950 border border-amber-400">
                         41 ДОСИЕТА • 12 РАДАРНИ ЗОНИ
                       </span>
                     </div>
                     <div>
-                      <div className="text-[11px] uppercase tracking-wider font-bold text-amber-800">
+                      <div className="text-[11px] uppercase tracking-wider font-extrabold text-amber-800">
                         Портал 2 • Конспирации, Мистерии & Ерудиция
                       </div>
                       <div className="text-base sm:text-lg font-black tracking-tight text-slate-900 flex items-center gap-1.5 pt-0.5">
                         <span>Влез в „Обща култура & Загадки“</span>
-                        <ArrowRight className="w-4 h-4 text-amber-700 group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="w-4 h-4 text-orange-600 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
                     <p className="text-xs text-slate-700 leading-relaxed">
                       41 секретни досиета (Царичина, Бастет в Странджа, Варненското злато Φ=1.618, Побитите камъни, Раковски, Космическата програма „СВЕТ“ & „Люлин“), гео-радарна карта и 38 куиз въпроса.
                     </p>
                   </div>
-                  <div className="pt-3.5 text-xs font-bold text-amber-900 flex items-center justify-between border-t border-amber-200/80 mt-3">
+                  <div className="pt-3.5 text-xs font-extrabold text-amber-950 flex items-center justify-between border-t border-amber-300/80 mt-3">
                     <span>Отвори секретните досиета и картата</span>
                     <ChevronRight className="w-4 h-4" />
                   </div>
@@ -594,18 +597,18 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
 
               {/* Interactive Quick-Launch Laboratory Pills */}
               <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center gap-1.5 text-xs">
-                <span className="font-bold text-slate-800 mr-1">Лаборатории с 1 клик:</span>
+                <span className="font-extrabold text-slate-800 mr-1">Лаборатории с 1 клик:</span>
                 <button
                   type="button"
                   onClick={() => onNavigateTab('specialties')}
-                  className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition-colors cursor-pointer shadow-2xs"
+                  className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold transition-colors cursor-pointer shadow-2xs"
                 >
                   🏫 Училища & Специалности (8.–12. кл.)
                 </button>
                 <button
                   type="button"
                   onClick={() => onNavigateTab('oralexam')}
-                  className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-900 font-bold transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-violet-50 hover:bg-violet-100 border border-violet-200 text-violet-900 font-bold transition-colors cursor-pointer"
                 >
                   🎙️ Устно изпитване
                 </button>
@@ -626,21 +629,21 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 <button
                   type="button"
                   onClick={() => onNavigateTab('grammar')}
-                  className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-900 font-semibold transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-900 font-bold transition-colors cursor-pointer"
                 >
                   ✍️ Правопис БЕЛ (Модул 1)
                 </button>
                 <button
                   type="button"
                   onClick={() => onNavigateTab('moduletwo')}
-                  className="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 font-semibold transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-900 font-bold transition-colors cursor-pointer"
                 >
                   🪶 Тропи & Резюме (Модул 2)
                 </button>
                 <button
                   type="button"
                   onClick={() => onNavigateTab('literature')}
-                  className="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 font-semibold transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-fuchsia-50 hover:bg-fuchsia-100 border border-fuchsia-200 text-fuchsia-900 font-bold transition-colors cursor-pointer"
                 >
                   📚 Литературен Канон (41. в-с)
                 </button>
@@ -672,11 +675,11 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
           
           {/* Widget A: Live Interactive "Question of the Day" (7 cols on lg) */}
-          <div className="lg:col-span-7 p-5 sm:p-6 rounded-3xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between space-y-4 cv-widget">
+          <div className="lg:col-span-7 p-5 sm:p-6 rounded-3xl bg-white border-2 border-blue-100/90 border-b-4 border-b-blue-500 shadow-xs flex flex-col justify-between space-y-4 cv-widget">
             <div className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-1 rounded-lg bg-blue-600 text-white text-[11px] font-extrabold uppercase tracking-wider">
+                  <span className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[11px] font-extrabold uppercase tracking-wider shadow-2xs">
                     🎯 Тренажор на живо
                   </span>
                   <span className="text-xs font-bold text-slate-700">
@@ -685,13 +688,13 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 </div>
                 <div className="flex items-center gap-2">
                   {dailyStreakCount > 0 && (
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold">
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-800 text-[11px] font-extrabold">
                       🔥 Серия: {dailyStreakCount} верни
                     </span>
                   )}
                   <button
                     onClick={handleNextDailyQuestion}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-extrabold transition-colors cursor-pointer"
                     title="Зареди въпрос от следващ предмет и урок"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
@@ -720,8 +723,8 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                       onClick={() => handleSelectTrainerFilter(pill.id)}
                       className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer border ${
                         isActive
-                          ? 'bg-slate-900 text-white border-slate-900 shadow-2xs'
-                          : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'
+                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-indigo-700 shadow-2xs'
+                          : 'bg-slate-50 hover:bg-blue-50/70 text-slate-700 border-slate-200 hover:border-blue-300'
                       }`}
                     >
                       {pill.label}
@@ -733,12 +736,12 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               {currentDailyItem && (
                 <>
                   <div className="flex items-center justify-between gap-2 text-xs text-slate-500">
-                    <span className="font-semibold text-blue-700">
+                    <span className="font-bold text-blue-700">
                       {currentDailyItem.lesson.subject} • {currentDailyItem.lesson.grade}
                     </span>
                     <button
                       onClick={() => onSelectLesson?.(currentDailyItem.lesson, 'summary')}
-                      className="text-blue-600 hover:underline font-medium"
+                      className="text-blue-600 hover:underline font-bold"
                     >
                       Към урока: {currentDailyItem.lesson.title.slice(0, 38)}... →
                     </button>
@@ -816,7 +819,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               </span>
               <button
                 onClick={() => onNavigateTab('simulator')}
-                className="inline-flex items-center gap-1.5 font-bold text-blue-600 hover:text-blue-800 cursor-pointer"
+                className="inline-flex items-center gap-1.5 font-extrabold text-blue-600 hover:text-blue-800 cursor-pointer"
               >
                 <span>Пусни 100-точков симулатор</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -825,22 +828,22 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
           </div>
 
           {/* Widget B: Live Study Focus Timer (Pomodoro) & Student Telemetry (5 cols on lg) */}
-          <div className="lg:col-span-5 p-5 sm:p-6 rounded-3xl bg-slate-900 text-white shadow-sm flex flex-col justify-between space-y-5 cv-widget">
+          <div className="lg:col-span-5 p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-indigo-950 via-blue-950 to-slate-900 border-2 border-indigo-400/30 text-white shadow-md flex flex-col justify-between space-y-5 cv-widget">
             
             {/* Pomodoro Focus Timer Header */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-800">
+              <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/15">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-emerald-400" />
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400">
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-300">
                     Фокус Таймер & Телеметрия
                   </span>
                 </div>
-                <div className="flex items-center gap-1 bg-slate-800 p-0.5 rounded-lg border border-slate-700 text-[11px]">
+                <div className="flex items-center gap-1 bg-white/10 p-0.5 rounded-lg border border-white/15 text-[11px]">
                   <button
                     onClick={() => handleSelectTimerMode(25)}
                     className={`px-2 py-0.5 rounded-md font-bold transition-colors cursor-pointer ${
-                      timerModeMinutes === 25 ? 'bg-emerald-500 text-emerald-950' : 'text-slate-300 hover:text-white'
+                      timerModeMinutes === 25 ? 'bg-emerald-400 text-emerald-950' : 'text-blue-100 hover:text-white'
                     }`}
                   >
                     25 мин
@@ -848,7 +851,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                   <button
                     onClick={() => handleSelectTimerMode(45)}
                     className={`px-2 py-0.5 rounded-md font-bold transition-colors cursor-pointer ${
-                      timerModeMinutes === 45 ? 'bg-emerald-500 text-emerald-950' : 'text-slate-300 hover:text-white'
+                      timerModeMinutes === 45 ? 'bg-emerald-400 text-emerald-950' : 'text-blue-100 hover:text-white'
                     }`}
                   >
                     45 мин (Урок)
@@ -857,9 +860,9 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               </div>
 
               {/* Digital Clock & Controls */}
-              <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-between gap-4">
+              <div className="p-4 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-between gap-4">
                 <div>
-                  <div className="text-[11px] text-slate-400 font-medium">
+                  <div className="text-[11px] text-blue-200 font-medium">
                     Сесия за дълбока концентрация
                   </div>
                   <div className="text-3xl sm:text-4xl font-mono font-black tracking-wider text-white mt-0.5">
@@ -869,10 +872,10 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setIsTimerRunning(!isTimerRunning)}
-                    className={`px-3.5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                    className={`px-3.5 py-2.5 rounded-xl font-extrabold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${
                       isTimerRunning
-                        ? 'bg-amber-500 hover:bg-amber-400 text-amber-950'
-                        : 'bg-emerald-500 hover:bg-emerald-400 text-emerald-950'
+                        ? 'bg-amber-400 hover:bg-amber-300 text-amber-950'
+                        : 'bg-emerald-400 hover:bg-emerald-300 text-emerald-950'
                     }`}
                   >
                     {isTimerRunning ? (
@@ -892,7 +895,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                       setIsTimerRunning(false);
                       setSecondsLeft(timerModeMinutes * 60);
                     }}
-                    className="p-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 transition-colors cursor-pointer"
+                    className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-colors cursor-pointer"
                     title="Нулирай таймера"
                   >
                     <RotateCcw className="w-4 h-4" />
@@ -904,47 +907,47 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
               <div className="grid grid-cols-3 gap-2.5">
                 <button
                   onClick={() => onNavigateTab('planner')}
-                  className="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70 text-left transition-colors cursor-pointer"
+                  className="p-3 rounded-xl bg-white/10 hover:bg-white/15 border border-emerald-400/30 text-left transition-colors cursor-pointer"
                 >
-                  <div className="text-[10px] text-slate-400 uppercase font-bold">Усвоени теми</div>
-                  <div className="text-base sm:text-lg font-black text-emerald-400 mt-0.5">
+                  <div className="text-[10px] text-emerald-200 uppercase font-bold">Усвоени теми</div>
+                  <div className="text-base sm:text-lg font-black text-emerald-300 mt-0.5">
                     {telemetry.masteredCount} / {totalLessonsCount}
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">Отвори Планера →</div>
+                  <div className="text-[10px] text-blue-200 mt-0.5">Отвори Планера →</div>
                 </button>
 
                 <button
                   onClick={() => onNavigateTab('oralexam')}
-                  className="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70 text-left transition-colors cursor-pointer"
+                  className="p-3 rounded-xl bg-white/10 hover:bg-white/15 border border-sky-400/30 text-left transition-colors cursor-pointer"
                 >
-                  <div className="text-[10px] text-slate-400 uppercase font-bold">Устен изпит</div>
-                  <div className="text-base sm:text-lg font-black text-blue-400 mt-0.5">
+                  <div className="text-[10px] text-sky-200 uppercase font-bold">Устен изпит</div>
+                  <div className="text-base sm:text-lg font-black text-sky-300 mt-0.5">
                     {telemetry.oralExamCount > 0 ? `Ср. ${telemetry.oralAvgGrade}` : 'Готов за тест'}
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">Пред дъската →</div>
+                  <div className="text-[10px] text-blue-200 mt-0.5">Пред дъската →</div>
                 </button>
 
                 <button
                   onClick={() => onNavigateTab('errorbank')}
-                  className="p-3 rounded-xl bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70 text-left transition-colors cursor-pointer"
+                  className="p-3 rounded-xl bg-white/10 hover:bg-white/15 border border-amber-400/30 text-left transition-colors cursor-pointer"
                 >
-                  <div className="text-[10px] text-slate-400 uppercase font-bold">Банка грешки</div>
-                  <div className="text-base sm:text-lg font-black text-amber-400 mt-0.5">
+                  <div className="text-[10px] text-amber-200 uppercase font-bold">Банка грешки</div>
+                  <div className="text-base sm:text-lg font-black text-amber-300 mt-0.5">
                     {telemetry.unresolvedErrors} за преговор
                   </div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">Поправи ги →</div>
+                  <div className="text-[10px] text-blue-200 mt-0.5">Поправи ги →</div>
                 </button>
               </div>
             </div>
 
-            <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-300">
+            <div className="pt-3 border-t border-white/15 flex items-center justify-between text-xs text-blue-100">
               <span className="flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-emerald-400" />
+                <Calendar className="w-3.5 h-3.5 text-emerald-300" />
                 <span>Персонален седмичен план за Отличен 6.00</span>
               </span>
               <button
                 onClick={() => onNavigateTab('planner')}
-                className="text-emerald-400 hover:text-emerald-300 font-bold cursor-pointer"
+                className="text-emerald-300 hover:text-emerald-200 font-extrabold cursor-pointer"
               >
                 Отвори планера →
               </button>
@@ -974,16 +977,16 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       {/* 5. SMARTSCAN AI BANNER: NOTEBOOK CAMERA DIAGNOSTIC */}
       {/* ========================================================================= */}
       <section id="smartscan" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
-        <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-blue-700 via-indigo-700 to-violet-800 border-b-4 border-indigo-950 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-3 max-w-2xl text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-400/30">
-              <Camera className="w-3.5 h-3.5 text-blue-400" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-extrabold bg-white/15 text-sky-200 border border-white/25">
+              <Camera className="w-3.5 h-3.5 text-emerald-300" />
               <span>SmartScan OCR • Изкуствен интелект</span>
             </div>
             <h2 className="text-xl sm:text-3xl font-black tracking-tight text-white">
               Имаш снимка на тетрадката или учебника?
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-blue-100 leading-relaxed">
               Качи снимка на своите записки — StudyBG разпознава ръкописния текст, извлича ключовите понятия по конспекта на МОН и генерира персонализиран тест за проверка на знанията за 5 секунди.
             </p>
           </div>
@@ -992,17 +995,17 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             <button
               type="button"
               onClick={() => onOpenScan?.()}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white border border-blue-400/30 text-xs font-bold transition-colors cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-300 hover:to-teal-400 text-emerald-950 border-b-2 border-teal-800 text-xs font-black transition-all cursor-pointer shadow-xs"
             >
-              <Camera className="w-4 h-4 text-white" />
+              <Camera className="w-4 h-4 text-emerald-950" />
               <span>Сканирай тетрадка (OCR)</span>
             </button>
             <button
               type="button"
               onClick={() => onOpenFormulaModal?.()}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition-colors cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white border border-white/25 text-xs font-bold transition-colors cursor-pointer"
             >
-              <FileText className="w-4 h-4 text-amber-400" />
+              <FileText className="w-4 h-4 text-amber-300" />
               <span>Справочници и свитъци на МОН</span>
             </button>
           </div>
@@ -1013,16 +1016,16 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
       {/* 6. CULTURAL CONTEXT & HISTORICAL MYSTERIES (PORTAL 2 BRIDGE) */}
       {/* ========================================================================= */}
       <section id="culture-preview" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
-        <div className="p-6 sm:p-8 rounded-3xl bg-amber-50/70 border border-amber-200/90 shadow-xs flex flex-col md:flex-row items-center justify-between gap-6 text-left">
+        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-amber-50 via-orange-50/80 to-yellow-100/70 border-2 border-amber-300 border-b-4 border-b-amber-500 shadow-xs flex flex-col md:flex-row items-center justify-between gap-6 text-left">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-200/70 text-amber-900 border border-amber-300">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-200/80 text-amber-950 border border-amber-400">
               <Award className="w-3.5 h-3.5 text-amber-800" />
               <span>🕵️ Портал „Обща култура, Конспирации & Загадки“</span>
             </div>
-            <h2 className="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
               41 конспиративни досиета и мистерии, 12 гео-радарни зони, 18 природни феномена и 38 куиз въпроса
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
               Операция „Слава“ в Царичина, експедицията за богинята Бастет и светилището Индипасха в Странджа, кодът на Златното сечение (Φ=1.618) във Варненското злато, Побитите камъни, шифрите на Раковски, космическата оранжерия „СВЕТ“ и дозиметрите „Люлин“ около Марс!
             </p>
           </div>
@@ -1031,7 +1034,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             <button
               type="button"
               onClick={() => onNavigateCultureTab?.('mysteries')}
-              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs transition-colors cursor-pointer shadow-xs"
+              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white border-b-2 border-orange-900 font-extrabold text-xs transition-all cursor-pointer shadow-xs"
             >
               <Compass className="w-4 h-4 text-white" />
               <span>Отвори 41-те секретни досиета</span>
@@ -1039,9 +1042,9 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
             <button
               type="button"
               onClick={() => onNavigateCultureTab?.('mysticmap')}
-              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-amber-100/80 text-amber-950 border border-amber-300 font-bold text-xs transition-colors cursor-pointer"
+              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-amber-100/80 text-amber-950 border-2 border-amber-300 font-extrabold text-xs transition-colors cursor-pointer"
             >
-              <Zap className="w-4 h-4 text-slate-600" />
+              <Zap className="w-4 h-4 text-amber-600" />
               <span>Гео-радарна карта (12 зони)</span>
             </button>
           </div>

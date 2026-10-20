@@ -59,8 +59,13 @@
 @theme {
   --color-brand-blue: #2563eb;
   --color-brand-blue-dark: #1d4ed8;
-  --color-brand-green: #059669;
+  --color-brand-sky: #0ea5e9;
+  --color-brand-green: #10b981;
+  --color-brand-green-dark: #059669;
   --color-brand-green-light: #d1fae5;
+  --color-brand-amber: #f59e0b;
+  --color-brand-purple: #7c3aed;
+  --color-brand-coral: #f43f5e;
   --font-sans: 'Onest', 'Onest Fallback', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
     Arial, sans-serif;
 }
@@ -73,11 +78,25 @@
 
 body {
   margin: 0;
-  background-color: #f8fafc;
+  background-color: #f4f8fd;
+  background-image:
+    radial-gradient(ellipse 85% 45% at 50% -8%, rgba(14, 165, 233, 0.14), rgba(99, 102, 241, 0.08) 48%, transparent 100%),
+    radial-gradient(ellipse 60% 35% at 90% 14%, rgba(16, 185, 129, 0.09), transparent 75%);
+  background-attachment: fixed;
   color: #0f172a;
   min-height: 100vh;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Поддръжка на Forced Colors Mode (Windows High Contrast) за запазване на границите при изключени градиенти */
+@media (forced-colors: active) {
+  button,
+  input,
+  a,
+  [role="button"] {
+    border-color: ButtonText;
+  }
 }
 
 /* Маркиране на текст в академичното синьо */
@@ -146,6 +165,7 @@ body {
 
   body {
     background-color: #ffffff !important;
+    background-image: none !important;
     color: #0f172a !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -193,5 +213,3 @@ body {
     scroll-behavior: auto !important;
   }
 }
-
-

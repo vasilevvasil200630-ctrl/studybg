@@ -203,8 +203,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       label: 'Устно изпитване пред дъската',
       desc: 'Гласов и писмен симулатор за 6.00 с AI рублика',
       badge: 'ТОП ЛАБ',
-      icon: <Mic className="w-4 h-4 text-blue-600" />,
-      accentBg: 'bg-blue-50 border-blue-200 text-blue-800'
+      icon: <Mic className="w-4 h-4 text-violet-600" />,
+      accentBg: 'bg-violet-50 border-violet-200 text-violet-800'
     },
     {
       tab: 'sciencelab',
@@ -227,16 +227,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       label: 'Тропи, Пароними & Резюме (Модул 2)',
       desc: 'Фигури на речта, четене с разбиране и резюмиране',
       badge: 'Модул 2',
-      icon: <Feather className="w-4 h-4 text-slate-600" />,
-      accentBg: 'bg-slate-50 border-slate-200 text-slate-800'
+      icon: <Feather className="w-4 h-4 text-indigo-600" />,
+      accentBg: 'bg-indigo-50 border-indigo-200 text-indigo-800'
     },
     {
       tab: 'literature',
       label: 'Литературен Канон (41. въпрос)',
       desc: 'Съпоставителни таблици, мотиви и тези за есе и ИС',
       badge: '30т. ДЗИ',
-      icon: <BookMarked className="w-4 h-4 text-slate-600" />,
-      accentBg: 'bg-slate-50 border-slate-200 text-slate-800'
+      icon: <BookMarked className="w-4 h-4 text-fuchsia-600" />,
+      accentBg: 'bg-fuchsia-50 border-fuchsia-200 text-fuchsia-800'
     },
     {
       tab: 'mathlab',
@@ -267,16 +267,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       label: 'Конституция на РБ & Европейски съюз',
       desc: 'Разделение на властите, права на гражданите и институции',
       badge: '11.–12. кл',
-      icon: <Scale className="w-4 h-4 text-blue-600" />,
-      accentBg: 'bg-blue-50 border-blue-200 text-blue-800'
+      icon: <Scale className="w-4 h-4 text-indigo-600" />,
+      accentBg: 'bg-indigo-50 border-indigo-200 text-indigo-800'
     },
     {
       tab: 'blitz',
       label: 'Скоростен Блиц Маратон (60 сек.)',
       desc: 'Бърза тренировка на термини, формули и дати с Combo x5',
       badge: 'Combo x5',
-      icon: <Zap className="w-4 h-4 text-amber-600" />,
-      accentBg: 'bg-amber-50 border-amber-200 text-amber-800'
+      icon: <Zap className="w-4 h-4 text-orange-600" />,
+      accentBg: 'bg-orange-50 border-orange-200 text-orange-800'
     },
     {
       tab: 'calculator',
@@ -297,7 +297,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   const highSchoolNavItems: { tab: AppNavTab; label: string; icon: React.ReactNode; badge?: React.ReactNode }[] = [
-    { tab: 'home', label: 'Начална страница', icon: <Home className="w-3.5 h-3.5 text-blue-600" /> },
+    { tab: 'home', label: 'Начална страница', icon: <Home className="w-3.5 h-3.5 text-sky-600" /> },
     {
       tab: 'specialties',
       label: 'Училища & Специалности 8–12 кл.',
@@ -331,9 +331,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'calculator',
       label: 'МОН Калкулатор',
-      icon: <Calculator className="w-3.5 h-3.5 text-blue-600" />,
+      icon: <Calculator className="w-3.5 h-3.5 text-teal-600" />,
       badge: (
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-bold border border-blue-200">
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-teal-100 text-teal-800 font-bold border border-teal-200">
           Оценка & бал
         </span>
       )
@@ -341,9 +341,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'cases',
       label: 'Казуси за ДЗИ',
-      icon: <Scale className="w-3.5 h-3.5 text-slate-600" />,
+      icon: <Scale className="w-3.5 h-3.5 text-rose-600" />,
       badge: (
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-bold border border-slate-200">
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold border border-rose-200">
           11–12 кл
         </span>
       )
@@ -361,9 +361,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'moduletwo',
       label: 'Тропи, Пароними & Резюме',
-      icon: <Feather className="w-3.5 h-3.5 text-slate-600" />,
+      icon: <Feather className="w-3.5 h-3.5 text-indigo-600" />,
       badge: (
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 font-bold border border-slate-200">
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
           Модул 2
         </span>
       )
@@ -371,9 +371,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'literature',
       label: 'Литературен Канон',
-      icon: <BookMarked className="w-3.5 h-3.5 text-slate-600" />,
+      icon: <BookMarked className="w-3.5 h-3.5 text-fuchsia-600" />,
       badge: (
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 font-bold border border-slate-200">
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-fuchsia-100 text-fuchsia-800 font-bold border border-fuchsia-200">
           41. въпрос
         </span>
       )
@@ -401,9 +401,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'oralexam',
       label: 'Устно изпитване',
-      icon: <Mic className="w-3.5 h-3.5 text-blue-600" />,
+      icon: <Mic className="w-3.5 h-3.5 text-violet-600" />,
       badge: (
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold border border-blue-200">
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-violet-100 text-violet-800 font-bold border border-violet-200">
           Пред дъската
         </span>
       )
@@ -431,9 +431,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'civics',
       label: 'Конституция & ЕС',
-      icon: <Scale className="w-3.5 h-3.5 text-blue-600" />,
+      icon: <Scale className="w-3.5 h-3.5 text-indigo-600" />,
       badge: (
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold border border-blue-200">
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
           ГО & ДЗИ
         </span>
       )
@@ -441,9 +441,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'blitz',
       label: 'Блиц за 60 сек.',
-      icon: <Zap className="w-3.5 h-3.5 text-amber-600" />,
+      icon: <Zap className="w-3.5 h-3.5 text-orange-600" />,
       badge: (
-        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
+        <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-800 font-bold border border-orange-200">
           Combo x5
         </span>
       )
@@ -462,13 +462,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         </span>
       ) : null
     },
-    { tab: 'generator', label: 'Група А & Б', icon: <Printer className="w-3.5 h-3.5 text-slate-600" /> },
-    { tab: 'catalog', label: `Каталог (${totalLessonsCount} урока)`, icon: <BookMarked className="w-3.5 h-3.5 text-blue-600" /> }
+    { tab: 'generator', label: 'Група А & Б', icon: <Printer className="w-3.5 h-3.5 text-violet-600" /> },
+    { tab: 'catalog', label: `Каталог (${totalLessonsCount} урока)`, icon: <BookMarked className="w-3.5 h-3.5 text-emerald-600" /> }
   ];
 
   const contextCultureNavItems: { subTab: CultureSubTab; label: string; icon: React.ReactNode }[] = [
     { subTab: 'mysteries', label: 'Конспирации & Досиета (41)', icon: <Compass className="w-3.5 h-3.5 text-amber-600" /> },
-    { subTab: 'mysticmap', label: 'Карта на мистичните зони (12)', icon: <MapPin className="w-3.5 h-3.5 text-slate-600" /> },
+    { subTab: 'mysticmap', label: 'Карта на мистичните зони (12)', icon: <MapPin className="w-3.5 h-3.5 text-violet-600" /> },
     { subTab: 'heritage', label: 'Принос & ЮНЕСКО (16)', icon: <Award className="w-3.5 h-3.5 text-orange-600" /> },
     { subTab: 'timeline', label: 'Хронология (681–1908)', icon: <Clock className="w-3.5 h-3.5 text-emerald-600" /> },
     { subTab: 'cases', label: 'Отворени казуси (12)', icon: <Scale className="w-3.5 h-3.5 text-amber-700" /> },
@@ -483,7 +483,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     interactiveLabsList.some((lab) => lab.tab === activeTab);
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/95 border-b border-slate-200/90 shadow-xs transition-all">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/95 border-b-2 border-blue-100/90 shadow-xs transition-all">
       <div className="max-w-7xl mx-auto px-3 sm:px-5 lg:px-6">
         
         {/* Main Platform Command Row — strictly constrained to viewport width (zero horizontal scroll) */}
@@ -499,44 +499,44 @@ export const Navbar: React.FC<NavbarProps> = ({
                 handleStudyNavClick('home');
               }}
             >
-              <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-xs group-hover:from-blue-700 group-hover:to-blue-800 transition-all shrink-0">
+              <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-600 text-white border-b-2 border-indigo-800 shadow-xs group-hover:scale-105 transition-all shrink-0">
                 <GraduationCap className="w-5 h-5 text-white" />
               </div>
               
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-base sm:text-lg font-extrabold tracking-tight text-slate-900">
-                    Study<span className="text-blue-600">BG</span>
+                  <span className="text-base sm:text-lg font-black tracking-tight text-slate-900">
+                    Study<span className="bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">BG</span>
                   </span>
-                  <span className="text-[10px] font-bold tracking-wide uppercase px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200 whitespace-nowrap">
+                  <span className="text-[10px] font-extrabold tracking-wide uppercase px-1.5 py-0.5 rounded-md bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-800 border border-emerald-300 whitespace-nowrap">
                     5.–12. кл.
                   </span>
                 </div>
-                <span className="text-[10px] text-slate-500 font-medium hidden 2xl:inline whitespace-nowrap">
+                <span className="text-[10px] text-slate-500 font-semibold hidden 2xl:inline whitespace-nowrap">
                   Национална образователна платформа
                 </span>
               </div>
             </a>
 
             {/* Segmented Portal Mode Switcher (Study Academy vs Culture & Mysteries) */}
-            <div className="hidden xl:flex items-center p-0.5 rounded-xl bg-slate-100 border border-slate-200/80">
+            <div className="hidden xl:flex items-center p-0.5 rounded-xl bg-slate-100 border border-slate-200/90">
               <button
                 onClick={() => handleStudyNavClick(activeTab === 'home' ? 'summary' : activeTab)}
-                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
                   portalMode === 'study'
-                    ? 'bg-white text-blue-700 shadow-2xs border border-slate-200/60'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-2xs'
+                    : 'text-slate-600 hover:text-blue-700'
                 }`}
                 title="Учебна академия по МОН (5.–12. клас)"
               >
-                <GraduationCap className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                <GraduationCap className={`w-3.5 h-3.5 shrink-0 ${portalMode === 'study' ? 'text-white' : 'text-blue-600'}`} />
                 <span>Академия</span>
               </button>
               <button
                 onClick={() => handleCultureNavClick('mysteries')}
-                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
                   portalMode === 'culture'
-                    ? 'bg-amber-700 text-white shadow-2xs'
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-2xs'
                     : 'text-slate-600 hover:text-amber-800'
                 }`}
                 title="Обща култура, конспиративни досиета и мистични зони"
@@ -551,34 +551,34 @@ export const Navbar: React.FC<NavbarProps> = ({
           <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 min-w-0">
             <button
               onClick={() => handleStudyNavClick('home')}
-              className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+              className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 portalMode === 'study' && activeTab === 'home'
-                  ? 'bg-slate-100 text-slate-900 font-bold'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  ? 'bg-sky-50 text-sky-900 border border-sky-200 shadow-2xs'
+                  : 'text-slate-700 hover:text-sky-800 hover:bg-sky-50/60'
               }`}
             >
-              <Home className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+              <Home className="w-3.5 h-3.5 text-sky-600 shrink-0" />
               <span>Начало</span>
             </button>
 
             <button
               onClick={() => handleStudyNavClick('catalog')}
-              className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+              className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 portalMode === 'study' && activeTab === 'catalog'
-                  ? 'bg-blue-50 text-blue-900 font-bold border border-blue-200'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  ? 'bg-emerald-50 text-emerald-900 border border-emerald-200 shadow-2xs'
+                  : 'text-slate-700 hover:text-emerald-800 hover:bg-emerald-50/60'
               }`}
             >
-              <BookMarked className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+              <BookMarked className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
               <span>Уроци ({totalLessonsCount})</span>
             </button>
 
             <button
               onClick={() => handleStudyNavClick('simulator')}
-              className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+              className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 portalMode === 'study' && activeTab === 'simulator'
-                  ? 'bg-amber-50 text-amber-900 font-bold border border-amber-200'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  ? 'bg-amber-50 text-amber-900 border border-amber-200 shadow-2xs'
+                  : 'text-slate-700 hover:text-amber-900 hover:bg-amber-50/60'
               }`}
             >
               <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
@@ -587,13 +587,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => handleStudyNavClick('oralexam')}
-              className={`hidden xl:flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+              className={`hidden xl:flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 portalMode === 'study' && activeTab === 'oralexam'
-                  ? 'bg-blue-50 text-blue-900 font-bold border border-blue-200'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  ? 'bg-violet-50 text-violet-900 border border-violet-200 shadow-2xs'
+                  : 'text-slate-700 hover:text-violet-800 hover:bg-violet-50/60'
               }`}
             >
-              <Mic className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+              <Mic className="w-3.5 h-3.5 text-violet-600 shrink-0" />
               <span>Устен изпит</span>
             </button>
 
@@ -601,22 +601,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="relative" ref={labsDropdownRef}>
               <button
                 onClick={() => setIsLabsDropdownOpen(!isLabsDropdownOpen)}
-                className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                   isLabActive || isLabsDropdownOpen
-                    ? 'bg-blue-50 text-blue-900 font-bold border border-blue-200'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    ? 'bg-indigo-50 text-indigo-900 border border-indigo-200 shadow-2xs'
+                    : 'text-slate-700 hover:text-indigo-800 hover:bg-indigo-50/60'
                 }`}
               >
-                <Layers className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                <Layers className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
                 <span>Лаборатории (12)</span>
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform shrink-0 ${isLabsDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {isLabsDropdownOpen && (
-                <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-[min(640px,calc(100vw-2rem))] p-4 rounded-2xl bg-white border border-slate-200 shadow-2xl z-50">
+                <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-[min(640px,calc(100vw-2rem))] p-4 rounded-2xl bg-white border-2 border-indigo-200 shadow-2xl z-50">
                   <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-100">
                     <div>
-                      <span className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
+                      <span className="text-xs font-extrabold text-indigo-950 uppercase tracking-wider">
                         🧪 Специализирани интерактивни лаборатории (МОН 5.–12. клас)
                       </span>
                       <p className="text-[11px] text-slate-500 mt-0.5">
@@ -643,7 +643,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         href="https://maturaplus.eu"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold transition-colors inline-flex items-center gap-1"
+                        className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-[11px] font-bold transition-colors inline-flex items-center gap-1 shadow-2xs"
                       >
                         <span>7. клас? Matura+</span>
                         <ArrowUpRight className="w-3 h-3" />
@@ -661,7 +661,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           className={`flex items-start gap-2.5 p-2.5 rounded-xl text-left transition-all border ${
                             active
                               ? 'bg-blue-50/90 border-blue-300 shadow-2xs'
-                              : 'bg-slate-50/60 hover:bg-slate-100/80 border-slate-200/70'
+                              : 'bg-slate-50/70 hover:bg-blue-50/40 border-slate-200/80 hover:border-blue-200'
                           }`}
                         >
                           <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
@@ -690,10 +690,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => handleCultureNavClick('mysteries')}
-              className={`xl:hidden flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+              className={`xl:hidden flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 portalMode === 'culture'
-                  ? 'bg-amber-50 text-amber-900 font-bold border border-amber-200'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  ? 'bg-amber-50 text-amber-900 border border-amber-200'
+                  : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/60'
               }`}
             >
               <Compass className="w-3.5 h-3.5 text-amber-600 shrink-0" />
@@ -707,10 +707,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             {onOpenQuickSearch && (
               <button
                 onClick={onOpenQuickSearch}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 border border-slate-200/90 text-xs font-semibold transition-all cursor-pointer whitespace-nowrap"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-sky-50/80 hover:bg-sky-100/90 text-sky-950 border border-sky-200 text-xs font-bold transition-all cursor-pointer whitespace-nowrap"
                 title="Бързо търсене на урок или тема (Ctrl+K)"
               >
-                <Search className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                <Search className="w-3.5 h-3.5 text-sky-600 shrink-0" />
                 <span className="hidden md:inline">Търси</span>
               </button>
             )}
@@ -718,17 +718,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Official MON Formula Sheets Button */}
             <button
               onClick={onOpenFormulaModal}
-              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold border border-slate-300 transition-colors shadow-2xs cursor-pointer whitespace-nowrap"
+              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white hover:bg-indigo-50/70 text-slate-700 hover:text-indigo-900 text-xs font-bold border border-slate-300 hover:border-indigo-300 transition-colors shadow-2xs cursor-pointer whitespace-nowrap"
               title="Официални свитъци и формули на МОН"
             >
-              <FileText className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+              <FileText className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
               <span>Формули</span>
             </button>
 
             {/* SmartScan OCR Button */}
             <button
               onClick={onOpenScan}
-              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all whitespace-nowrap cursor-pointer shadow-2xs"
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-extrabold border-b-2 border-teal-800 transition-all whitespace-nowrap cursor-pointer shadow-xs"
               title="Сканирай своя тетрадка с камера или качи PDF"
             >
               <Camera className="w-3.5 h-3.5 text-white shrink-0" />
@@ -746,10 +746,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                     ? `${userProfile?.fullName} • Облачната синхронизация е активна (GDPR защитен профил)`
                     : 'Вход с Google акаунт за автоматична облачна синхронизация, XP нива и значки'
                 }
-                className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-xs ${
+                className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap shadow-xs ${
                   isGoogleUser
                     ? 'bg-gradient-to-r from-blue-50 via-white to-indigo-50 hover:from-blue-100 hover:to-indigo-100 text-blue-950 border-2 border-blue-400'
-                    : 'bg-white hover:bg-blue-50/70 text-slate-900 border-2 border-blue-600/85 hover:border-blue-700 ring-2 ring-blue-500/10'
+                    : 'bg-gradient-to-r from-white via-blue-50/40 to-indigo-50/40 hover:from-blue-50 hover:to-indigo-50 text-slate-900 border-2 border-blue-600 hover:border-indigo-600 ring-2 ring-blue-500/10'
                 }`}
               >
                 {isGoogleUser && userProfile?.avatarUrl && !avatarLoadError ? (
@@ -770,8 +770,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span className="max-w-[115px] truncate">
                   {isGoogleUser ? userFirstName : 'Вход с Google'}
                 </span>
-                <span className="hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-900 font-mono text-[10px] font-extrabold border border-amber-300">
-                  <Flame className="w-3 h-3 text-amber-600 shrink-0" aria-hidden="true" />
+                <span className="hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-amber-100 to-orange-100 text-orange-950 font-mono text-[10px] font-extrabold border border-orange-300">
+                  <Flame className="w-3 h-3 text-orange-600 shrink-0" aria-hidden="true" />
                   {navDailyStreak}д • Н.{navLevelInfo.level}
                 </span>
                 {isGoogleUser && (
@@ -811,7 +811,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   setIsMobileMenuOpen(false);
                   onOpenAuthModal();
                 }}
-                className="w-full flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-blue-50 via-white to-indigo-50 border border-blue-200 text-xs text-slate-900 shadow-2xs font-semibold text-left"
+                className="w-full flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-blue-50 via-white to-indigo-50 border-2 border-blue-300 text-xs text-slate-900 shadow-2xs font-semibold text-left"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   {isGoogleUser && userProfile?.avatarUrl && !avatarLoadError ? (
@@ -842,7 +842,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </div>
                   </div>
                 </div>
-                <span className="px-2 py-1 rounded-lg bg-blue-600 text-white text-[11px] font-bold shrink-0">
+                <span className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[11px] font-bold shrink-0">
                   {isGoogleUser ? 'Профил' : 'Влез'}
                 </span>
               </button>
@@ -868,18 +868,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => handleStudyNavClick(activeTab === 'home' ? 'summary' : activeTab)}
                 className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
                   portalMode === 'study'
-                    ? 'bg-white text-blue-700 shadow-2xs'
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-2xs'
                     : 'text-slate-600'
                 }`}
               >
-                <GraduationCap className="w-4 h-4 text-blue-600" />
+                <GraduationCap className={`w-4 h-4 ${portalMode === 'study' ? 'text-white' : 'text-blue-600'}`} />
                 <span>Академия ({totalLessonsCount})</span>
               </button>
               <button
                 onClick={() => handleCultureNavClick('mysteries')}
                 className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
                   portalMode === 'culture'
-                    ? 'bg-amber-700 text-white shadow-2xs'
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-2xs'
                     : 'text-slate-600'
                 }`}
               >
@@ -919,7 +919,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="text-[11px] font-bold uppercase tracking-wider text-amber-800/80 px-1 mb-2 flex items-center justify-between">
                 <span>Обща култура, Мистерии & Конспирации</span>
                 <span className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded font-bold">
-                  40 Досиета
+                  41 Досиета
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-1.5">
@@ -948,9 +948,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                     setIsMobileMenuOpen(false);
                     onOpenQuickSearch();
                   }}
-                  className="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold border border-slate-200 flex items-center justify-center gap-2"
+                  className="w-full py-2.5 px-3 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-900 text-xs font-bold border border-sky-200 flex items-center justify-center gap-2"
                 >
-                  <Search className="w-4 h-4 text-blue-600" />
+                  <Search className="w-4 h-4 text-sky-600" />
                   <span>Бързо търсене из {totalLessonsCount}-те урока</span>
                 </button>
               )}
@@ -960,9 +960,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                   setIsMobileMenuOpen(false);
                   onOpenFormulaModal();
                 }}
-                className="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-medium border border-slate-200 flex items-center justify-center gap-2"
+                className="w-full py-2.5 px-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-900 text-xs font-bold border border-indigo-200 flex items-center justify-center gap-2"
               >
-                <FileText className="w-4 h-4 text-blue-600" />
+                <FileText className="w-4 h-4 text-indigo-600" />
                 <span>Официални формули и свитъци МОН</span>
               </button>
 
@@ -971,7 +971,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   setIsMobileMenuOpen(false);
                   onOpenScan();
                 }}
-                className="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-2"
+                className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-bold flex items-center justify-center gap-2"
               >
                 <Camera className="w-4 h-4 text-white" />
                 <span>Сканирай нова тетрадка / PDF (SmartScan OCR)</span>

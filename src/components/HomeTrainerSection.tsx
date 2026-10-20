@@ -59,7 +59,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
             
             {/* Left Panel (7 cols): Interactive University & Career Admission Compass */}
-            <div className="lg:col-span-7 p-5 sm:p-7 rounded-3xl bg-white border-2 border-emerald-200/90 shadow-xs flex flex-col justify-between space-y-5">
+            <div className="lg:col-span-7 p-5 sm:p-7 rounded-3xl bg-white border-2 border-emerald-200/90 border-b-4 border-b-emerald-500 shadow-xs flex flex-col justify-between space-y-5">
               {(() => {
                 const uniConfigs = {
                   'su-fmi': {
@@ -215,8 +215,8 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                               onClick={() => setSelectedUniId(uKey)}
                               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
                                 isSel
-                                  ? 'bg-emerald-700 text-white border-emerald-700 shadow-2xs'
-                                  : 'bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-emerald-800 border-slate-200 hover:border-emerald-300'
+                                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-teal-700 shadow-2xs'
+                                  : 'bg-slate-50 hover:bg-emerald-50/70 text-slate-700 hover:text-emerald-800 border-slate-200 hover:border-emerald-300'
                               }`}
                             >
                               {uniConfigs[uKey].shortTitle}
@@ -226,14 +226,14 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                       </div>
 
                       {/* Active University Formula Banner */}
-                      <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="p-3.5 rounded-2xl bg-emerald-50/50 border border-emerald-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="space-y-0.5">
                           <div className="text-xs font-extrabold text-slate-900">{activeUni.fullTitle}</div>
                           <div className="text-[11px] text-slate-600">
                             <strong>Формула за бал:</strong> {activeUni.formulaText}
                           </div>
                         </div>
-                        <div className="shrink-0 text-right bg-white px-3.5 py-2 rounded-xl border border-emerald-200 shadow-2xs">
+                        <div className="shrink-0 text-right bg-white px-3.5 py-2 rounded-xl border border-emerald-300 shadow-2xs">
                           <div className="text-[10px] font-bold uppercase text-slate-500">Твоят състезателен бал</div>
                           <div className="text-xl sm:text-2xl font-mono font-black text-emerald-700">
                             {calculatedBall.toFixed(2)}{' '}
@@ -340,11 +340,11 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
             </div>
 
             {/* Right Panel (5 cols): Live Interactive Flashcard Flip-Deck from all 108 Lessons */}
-            <div className="lg:col-span-5 p-5 sm:p-7 rounded-3xl bg-slate-900 text-white shadow-sm flex flex-col justify-between space-y-5">
+            <div className="lg:col-span-5 p-5 sm:p-7 rounded-3xl bg-gradient-to-br from-violet-950 via-indigo-950 to-blue-950 border-2 border-indigo-400/30 text-white shadow-md flex flex-col justify-between space-y-5">
               <div className="space-y-4">
-                <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10">
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/15">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <Sparkles className="w-4 h-4 text-amber-300" />
                     <span className="text-xs font-extrabold uppercase tracking-wider text-amber-300">
                       Експресни Флашкарти ({interleavedFlashcards.length} карти)
                     </span>
@@ -362,7 +362,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                       <span className="font-bold text-amber-300">
                         {currentFlashcardItem.lesson.subject} • {currentFlashcardItem.lesson.grade}
                       </span>
-                      <span className="font-mono text-[11px] text-slate-400">
+                      <span className="font-mono text-[11px] text-indigo-200">
                         Карта #{(flashcardIndex % interleavedFlashcards.length) + 1} / {interleavedFlashcards.length}
                       </span>
                     </div>
@@ -372,15 +372,15 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                       onClick={() => setIsFlashcardFlipped(!isFlashcardFlipped)}
                       className={`min-h-[210px] p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between select-none ${
                         isFlashcardFlipped
-                          ? 'bg-emerald-950/70 border-emerald-400/60 shadow-lg'
-                          : 'bg-white/10 hover:bg-white/15 border-white/20'
+                          ? 'bg-emerald-950/75 border-emerald-400/60 shadow-lg'
+                          : 'bg-white/10 hover:bg-white/15 border-white/25'
                       }`}
                     >
                       <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider">
-                        <span className={isFlashcardFlipped ? 'text-emerald-300' : 'text-blue-300'}>
+                        <span className={isFlashcardFlipped ? 'text-emerald-300' : 'text-sky-300'}>
                           {isFlashcardFlipped ? '💡 Академичен отговор / Формула' : '❓ Въпрос / Термин (Кликни за обръщане)'}
                         </span>
-                        <span className="px-2 py-0.5 rounded bg-white/10 text-white text-[10px]">
+                        <span className="px-2 py-0.5 rounded bg-white/15 text-white text-[10px]">
                           {isFlashcardFlipped ? 'Гръб' : 'Лице'}
                         </span>
                       </div>
@@ -397,11 +397,11 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                         </p>
                       </div>
 
-                      <div className="text-[11px] text-slate-300 flex items-center justify-between pt-2 border-t border-white/10">
+                      <div className="text-[11px] text-indigo-200 flex items-center justify-between pt-2 border-t border-white/15">
                         <span className="truncate max-w-[230px]">
                           Урок: {currentFlashcardItem.lesson.title}
                         </span>
-                        <span className="font-bold text-amber-300">Обърни ↻</span>
+                        <span className="font-extrabold text-amber-300">Обърни ↻</span>
                       </div>
                     </div>
 
@@ -410,7 +410,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                       <button
                         type="button"
                         onClick={() => setIsFlashcardFlipped(!isFlashcardFlipped)}
-                        className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-xs font-bold text-white transition-colors cursor-pointer"
+                        className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-bold text-white transition-colors cursor-pointer"
                       >
                         {isFlashcardFlipped ? 'Виж въпроса' : 'Виж отговора'}
                       </button>
@@ -421,7 +421,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                           setIsFlashcardFlipped(false);
                           setFlashcardIndex((prev) => (prev + 1) % Math.max(1, interleavedFlashcards.length));
                         }}
-                        className="py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-emerald-950 text-xs font-extrabold transition-colors cursor-pointer"
+                        className="py-2.5 px-3 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-emerald-950 text-xs font-extrabold transition-colors cursor-pointer"
                       >
                         ✓ Знам го (+1)
                       </button>
@@ -431,7 +431,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                           setIsFlashcardFlipped(false);
                           setFlashcardIndex((prev) => (prev + 1) % Math.max(1, interleavedFlashcards.length));
                         }}
-                        className="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors cursor-pointer"
+                        className="py-2.5 px-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-extrabold transition-colors cursor-pointer"
                       >
                         Следваща →
                       </button>
@@ -440,7 +440,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                 )}
               </div>
 
-              <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs text-blue-200">
+              <div className="pt-3 border-t border-white/15 flex items-center justify-between text-xs text-blue-200">
                 <button
                   type="button"
                   onClick={() => {
@@ -450,14 +450,14 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                       onNavigateTab('flashcards');
                     }
                   }}
-                  className="text-amber-300 hover:text-amber-200 font-bold cursor-pointer"
+                  className="text-amber-300 hover:text-amber-200 font-extrabold cursor-pointer"
                 >
                   Отвори всички флашкарти към урока →
                 </button>
                 <button
                   type="button"
                   onClick={() => onNavigateTab('blitz')}
-                  className="text-white hover:text-amber-300 font-semibold cursor-pointer"
+                  className="text-white hover:text-amber-300 font-bold cursor-pointer"
                 >
                   ⚡ 60-сек. Блиц
                 </button>

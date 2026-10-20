@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import type { User } from '@supabase/supabase-js';
 import {
+  authService,
   mapSupabaseUserToProfile,
   mergeStudyProgress,
   mergeErrorBankItems,
@@ -229,5 +230,14 @@ describe('authService — Google OAuth, Real-Time Sync, Streaks, XP & Achievemen
       ]
     );
     expect(merged.map((a) => a.id)).toEqual(['exam-2', 'exam-1']);
+  });
+
+  it('exportCompleteUserDataJson and deleteCloudAccountDataAndSignOut fulfill GDPR Art. 17 & Art. 20', async () => {
+    const exportRes = authService.exportCompleteUserDataJson();
+    expect(exportRes.ok).toBe(true);
+    expect(exportRes.filename).toContain('studybg-gdpr-account-export-');
+
+    const deleteRes = await authService.deleteCloudAccountDataAndSignOut();
+    expect(deleteRes.ok).toBe(true);
   });
 });

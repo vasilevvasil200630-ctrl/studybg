@@ -8,7 +8,8 @@ import { DeferredSection } from './DeferredSection';
 import type { UnsolvedMysteryItem } from '../data/generalKnowledgeData';
 
 import { errorBankService } from '../services/errorBankService';
-import { studyProgressService } from '../services/studyProgressService';
+import { studyProgressService, computeUserXpAndLevel, LOCAL_DATA_MUTATED_EVENT } from '../services/studyProgressService';
+import { getCachedGoogleProfile, AUTH_SYNC_EVENT, type GoogleUserProfile } from '../services/authService';
 import { TOTAL_CURRICULUM_LESSONS_COUNT } from '../data/curriculumDatabase';
 
 const HomeSchoolsSection = lazy(() => import('./HomeSchoolsSection').then((m) => ({ default: m.HomeSchoolsSection })));
@@ -22,6 +23,7 @@ interface HomeLandingViewProps {
   onNavigateTab: (tab: AppNavTab) => void;
   onOpenScan?: () => void;
   onOpenFormulaModal?: () => void;
+  onOpenAuthModal?: () => void;
   onNavigateCultureTab?: (tab: CultureSubTab) => void;
   /** Иска пълния каталог (~2 MB) само при реално взаимодействие с търсачката или пътеките */
   onRequestFullCurriculum?: () => void;
@@ -33,10 +35,30 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
   onNavigateTab,
   onOpenScan,
   onOpenFormulaModal,
+  onOpenAuthModal,
   onNavigateCultureTab,
   onRequestFullCurriculum
 }) => {
   const totalLessonsCount = Math.max(lessons.length, TOTAL_CURRICULUM_LESSONS_COUNT);
+  const [heroUserProfile, setHeroUserProfile] = useState<GoogleUserProfile | null>(() => getCachedGoogleProfile());
+  const [heroProgress, setHeroProgress] = useState(() => studyProgressService.getProgress());
+
+  useEffect(() => {
+    const syncHeroState = () => {
+      setHeroUserProfile(getCachedGoogleProfile());
+      setHeroProgress(studyProgressService.getProgress());
+    };
+    window.addEventListener(LOCAL_DATA_MUTATED_EVENT, syncHeroState);
+    window.addEventListener(AUTH_SYNC_EVENT, syncHeroState);
+    return () => {
+      window.removeEventListener(LOCAL_DATA_MUTATED_EVENT, syncHeroState);
+      window.removeEventListener(AUTH_SYNC_EVENT, syncHeroState);
+    };
+  }, []);
+
+  const heroLevelInfo = computeUserXpAndLevel(heroProgress);
+  const heroDailyStreak = heroProgress.currentDailyStreak ?? 1;
+  const isHeroGoogleUser = Boolean(heroUserProfile && !heroUserProfile.isAnonymous);
 
   // 1. Live Omni-Search State
   const [omniSearchQuery, setOmniSearchQuery] = useState('');
@@ -460,9 +482,45 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                     Влез в Учебната академия или изследвай Секретните досиета
                   </h2>
                 </div>
-                <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 self-start sm:self-auto">
-                  ✓ 100% работещи модули без регистрация
-                </span>
+                <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+                  {onOpenAuthModal && (
+                    <button
+                      type="button"
+                      onClick={onOpenAuthModal}
+                      className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white hover:bg-blue-50/80 text-slate-900 border-2 border-blue-600/85 hover:border-blue-700 text-xs font-bold shadow-xs transition-all cursor-pointer"
+                    >
+                      <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                          fill="#4285F4"
+                          d="M23.49 12.275c0-.85-.075-1.665-.215-2.45H12v4.635h6.445c-.28 1.495-1.125 2.765-2.395 3.615v3.005h3.875c2.265-2.085 3.565-5.16 3.565-8.805z"
+                        />
+                        <path
+                          fill="#34A853"
+                          d="M12 24c3.24 0 5.955-1.075 7.94-2.91l-3.875-3.005c-1.075.72-2.45 1.145-4.065 1.145-3.125 0-5.775-2.11-6.72-4.945H1.275v3.1C3.25 21.305 7.31 24 12 24z"
+                        />
+                        <path
+                          fill="#FBBC05"
+                          d="M5.28 14.285c-.24-.72-.375-1.49-.375-2.285s.135-1.565.375-2.285v-3.1H1.275C.465 8.23 0 10.065 0 12s.465 3.77 1.275 5.385l4.005-3.1z"
+                        />
+                        <path
+                          fill="#EA4335"
+                          d="M12 4.77c1.76 0 3.34.605 4.585 1.795l3.44-3.44C17.95 1.19 15.235 0 12 0 7.31 0 3.25 2.695 1.275 6.615l4.005 3.1C6.225 6.88 8.875 4.77 12 4.77z"
+                        />
+                      </svg>
+                      <span>
+                        {isHeroGoogleUser
+                          ? `${heroUserProfile?.fullName?.split(/\s+/)[0] || 'Профил'} • Ниво ${heroLevelInfo.level}`
+                          : 'Вход с Google • Облачен профил'}
+                      </span>
+                      <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 font-mono text-[10px] font-extrabold border border-amber-300">
+                        🔥 {heroDailyStreak}д
+                      </span>
+                    </button>
+                  )}
+                  <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    ✓ Работи и без регистрация
+                  </span>
+                </div>
               </div>
 
               {/* Main Entrance Call-to-Actions */}

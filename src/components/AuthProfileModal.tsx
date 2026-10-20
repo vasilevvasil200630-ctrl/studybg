@@ -16,7 +16,11 @@ import {
   Flame,
   Trophy,
   Target,
-  Feather
+  Feather,
+  Lock,
+  Download,
+  Trash2,
+  Scale
 } from 'lucide-react';
 import { NativeDialog } from './NativeDialog';
 import {
@@ -39,12 +43,13 @@ import {
 } from '../services/studyProgressService';
 import { errorBankService } from '../services/errorBankService';
 import { examHistoryService } from '../services/examHistoryService';
-import { SUPABASE_URL } from '../services/supabaseConfig';
 import type { AppNavTab } from './Navbar';
+import type { LegalPolicyTab } from './LegalPoliciesModal';
 
 interface AuthProfileModalProps {
   onClose: () => void;
   onNavigateTab?: (tab: AppNavTab) => void;
+  onOpenPolicyModal?: (tab: LegalPolicyTab) => void;
 }
 
 export const GoogleLogoSvg: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
@@ -93,7 +98,8 @@ function renderBadgeIcon(iconName: StudyAchievementBadge['iconName'], unlocked: 
 
 export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
   onClose,
-  onNavigateTab
+  onNavigateTab,
+  onOpenPolicyModal
 }) => {
   const [profile, setProfile] = useState<GoogleUserProfile | null>(() => getCachedGoogleProfile());
   const [isLoadingSession, setIsLoadingSession] = useState<boolean>(true);
@@ -108,6 +114,9 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
   const [syncResult, setSyncResult] = useState<CloudProfileSyncResult | null>(null);
   const [lastSyncIso, setLastSyncIso] = useState<string | null>(() => getLastCloudSyncTimestamp());
   const [badgeFilter, setBadgeFilter] = useState<'all' | 'unlocked' | 'locked'>('all');
+  const [confirmDeleteAccount, setConfirmDeleteAccount] = useState<boolean>(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState<boolean>(false);
+  const [gdprFeedbackMessage, setGdprFeedbackMessage] = useState<string | null>(null);
 
   const [progress, setProgress] = useState(() => studyProgressService.getProgress());
   const [allErrors, setAllErrors] = useState(() => errorBankService.getAllErrors());
@@ -202,6 +211,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
 
   const handleSignOut = async () => {
     setErrorMessage(null);
+    setGdprFeedbackMessage(null);
     setIsSigningOut(true);
     const res = await authService.signOut();
     setIsSigningOut(false);
@@ -210,6 +220,34 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
       setErrorMessage(res.error);
     } else {
       setProfile(null);
+    }
+  };
+
+  const handleExportAccountData = () => {
+    setErrorMessage(null);
+    const res = authService.exportCompleteUserDataJson();
+    if (res.ok) {
+      setGdprFeedbackMessage(
+        'Вашите данни от акаунта, прогресът и историята на симулациите бяха експортирани в JSON файл (чл. 15 и чл. 20 от GDPR).'
+      );
+    } else if (res.error) {
+      setErrorMessage(res.error);
+    }
+  };
+
+  const handleDeleteAccountAndData = async () => {
+    setErrorMessage(null);
+    setIsDeletingAccount(true);
+    const res = await authService.deleteCloudAccountDataAndSignOut();
+    setIsDeletingAccount(false);
+    setConfirmDeleteAccount(false);
+    setSyncResult(null);
+    setProfile(null);
+    refreshLocalStats();
+    if (res.ok) {
+      setGdprFeedbackMessage(
+        'Облачният акаунт и всички локални данни бяха окончателно изтрити съгласно чл. 17 от GDPR („Право да бъдеш забравен“).'
+      );
     }
   };
 
@@ -664,7 +702,99 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
             </div>
           </div>
 
-          {/* Bottom Actions & Admin Setup Info */}
+          {/* ================================================================= */}
+          {/* EUROPEAN ACCOUNT PROTECTION & GDPR RIGHTS CENTER                  */}
+          {/* ================================================================= */}
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-3">
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <div className="flex items-start gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-blue-100 border border-blue-200 flex items-center justify-center shrink-0 mt-0.5">
+                  <Lock className="w-4 h-4 text-blue-700" aria-hidden="true" />
+                </div>
+                <div>
+                  <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-900">
+                    Европейска защита на акаунта (GDPR • Регламент (ЕС) 2016/679 • ЗЗЛД)
+                  </h3>
+                  <p className="text-[11px] text-slate-600 leading-relaxed mt-0.5">
+                    Входът с Google използва криптиран протокол <strong>OAuth 2.0 (PKCE)</strong> и{' '}
+                    <strong>TLS 1.3</strong> — StudyBG никога няма достъп до твоята парола. Облачният
+                    профил е защитен с <strong>Row-Level Security (RLS)</strong> изолация в базата
+                    данни и не се използва за рекламно профилиране.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {gdprFeedbackMessage && (
+              <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-medium flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" />
+                <span>{gdprFeedbackMessage}</span>
+              </div>
+            )}
+
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <button
+                type="button"
+                onClick={handleExportAccountData}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-[11px] font-bold transition-colors cursor-pointer shadow-2xs"
+              >
+                <Download className="w-3.5 h-3.5 text-blue-600" aria-hidden="true" />
+                <span>Изтегли данните от акаунта (JSON • Чл. 20 GDPR)</span>
+              </button>
+
+              {!confirmDeleteAccount ? (
+                <button
+                  type="button"
+                  onClick={() => setConfirmDeleteAccount(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[11px] font-bold transition-colors cursor-pointer"
+                >
+                  <Trash2 className="w-3.5 h-3.5 text-rose-600" aria-hidden="true" />
+                  <span>
+                    {isGoogleSignedIn
+                      ? 'Изтрий облачния акаунт и данните (Чл. 17 GDPR)'
+                      : 'Изчисти локалните данни (Чл. 17 GDPR)'}
+                  </span>
+                </button>
+              ) : (
+                <div className="flex flex-wrap items-center gap-2 bg-rose-50 border border-rose-300 px-3 py-1.5 rounded-xl">
+                  <span className="text-[11px] font-bold text-rose-900">
+                    Потвърждаваш ли окончателно изтриване по чл. 17 от GDPR?
+                  </span>
+                  <button
+                    type="button"
+                    disabled={isDeletingAccount}
+                    onClick={handleDeleteAccountAndData}
+                    className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white text-[11px] font-bold cursor-pointer"
+                  >
+                    {isDeletingAccount ? 'Изтриване...' : 'Да, изтрий всичко'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDeleteAccount(false)}
+                    className="px-2 py-1 rounded-lg bg-white text-slate-700 border border-slate-200 text-[11px] font-semibold cursor-pointer"
+                  >
+                    Отказ
+                  </button>
+                </div>
+              )}
+
+              {onOpenPolicyModal && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenPolicyModal('privacy');
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 text-[11px] font-bold transition-colors cursor-pointer"
+                >
+                  <Scale className="w-3.5 h-3.5 text-blue-600" aria-hidden="true" />
+                  <span>Европейски политики & GDPR център</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Bottom Actions */}
           <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-200">
             <div className="flex flex-wrap items-center gap-2">
               {onNavigateTab && (
@@ -707,34 +837,6 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
               </button>
             )}
           </div>
-
-          {!isGoogleSignedIn && (
-            <details className="rounded-xl bg-slate-50 border border-slate-200 px-4 py-2.5 text-xs text-slate-600">
-              <summary className="font-semibold text-slate-700 cursor-pointer select-none">
-                Техническа информация за администратора (Supabase Google OAuth)
-              </summary>
-              <div className="mt-2.5 pt-2.5 border-t border-slate-200 space-y-1.5 text-[11px] leading-relaxed">
-                <p>
-                  1. В <strong>Supabase Dashboard → Authentication → Providers → Google</strong>{' '}
-                  включете <em>Enable Sign in with Google</em> и въведете <em>Client ID</em> и{' '}
-                  <em>Client Secret</em> от Google Cloud Console.
-                </p>
-                <p>
-                  2. В <strong>Google Cloud Console → Authorized redirect URIs</strong> добавете:{' '}
-                  <code className="px-1.5 py-0.5 rounded bg-slate-200/80 text-slate-900 font-mono break-all">
-                    {SUPABASE_URL}/auth/v1/callback
-                  </code>
-                </p>
-                <p>
-                  3. Изпълнете миграцията{' '}
-                  <code className="px-1.5 py-0.5 rounded bg-slate-200/80 text-slate-900 font-mono">
-                    supabase/migrations/20261020_google_auth_user_profiles.sql
-                  </code>{' '}
-                  в SQL Editor за таблицата <code className="font-mono">user_profiles</code>.
-                </p>
-              </div>
-            </details>
-          )}
         </div>
       </div>
     </NativeDialog>

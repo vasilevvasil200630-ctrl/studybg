@@ -18,7 +18,7 @@ import {
   Keyboard,
   Eye
 } from 'lucide-react';
-import { mailingService } from '../services/mailingService';
+import { authService, getCachedGoogleProfile } from '../services/authService';
 import { NativeDialog } from './NativeDialog';
 
 export type LegalPolicyTab = 'privacy' | 'cookies' | 'terms' | 'ai_act' | 'accessibility';
@@ -29,16 +29,6 @@ interface LegalPoliciesModalProps {
   initialTab?: LegalPolicyTab;
 }
 
-const ALL_STUDYBG_STORAGE_KEYS = [
-  'studybg_study_progress_v1',
-  'studybg_exam_history',
-  'studybg_error_bank',
-  'studybg_newsletter_subscribers',
-  'studybg_last_used_email',
-  'studybg_gemini_api_key',
-  'studybg_cookie_consent'
-];
-
 export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
   isOpen,
   onClose,
@@ -46,6 +36,7 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<LegalPolicyTab>(initialTab);
   const [confirmWipe, setConfirmWipe] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [gdprActionNotice, setGdprActionNotice] = useState<{ type: 'success' | 'info'; text: string } | null>(null);
 
   useEffect(() => {
@@ -56,78 +47,45 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
 
   if (!isOpen) return null;
 
+  const activeGoogleProfile = getCachedGoogleProfile();
+
   /**
-   * Art. 20 GDPR — Right to Data Portability (Export all local user data as JSON)
+   * Art. 15 & Art. 20 GDPR — Right of Access & Data Portability (Export all account & local user data as JSON)
    */
   const handleExportUserData = () => {
-    try {
-      const exportPayload: Record<string, unknown> = {
-        platform: 'StudyBG Educational Academy',
-        exportedAt: new Date().toISOString(),
-        regulation: 'Art. 20 GDPR (Регламент (ЕС) 2016/679 — Право на преносимост на данните)',
-        data: {} as Record<string, unknown>
-      };
-
-      const dataObj = exportPayload.data as Record<string, unknown>;
-      for (const key of ALL_STUDYBG_STORAGE_KEYS) {
-        const raw = localStorage.getItem(key);
-        if (raw) {
-          try {
-            dataObj[key] = JSON.parse(raw);
-          } catch {
-            dataObj[key] = key === 'studybg_gemini_api_key' ? '[ЗАЩИТЕН API КЛЮЧ]' : raw;
-          }
-        }
-      }
-
-      const blob = new Blob([JSON.stringify(exportPayload, null, 2)], {
-        type: 'application/json;charset=utf-8'
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `studybg-gdpr-data-export-${new Date().toISOString().slice(0, 10)}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
+    const res = authService.exportCompleteUserDataJson();
+    if (res.ok) {
       setGdprActionNotice({
         type: 'success',
-        text: 'Вашите учебни данни бяха експортирани успешно във формат JSON съгласно чл. 20 от GDPR.'
+        text: 'Вашите учебни и акаунт данни бяха експортирани успешно във формат JSON съгласно чл. 15 и чл. 20 от GDPR.'
       });
-    } catch {
+    } else {
       setGdprActionNotice({
         type: 'info',
-        text: 'Няма налични локални данни за експортиране.'
+        text: res.error || 'Няма налични данни за експортиране.'
       });
     }
   };
 
   /**
-   * Art. 17 GDPR — Right to Erasure ("Право да бъдеш забравен")
+   * Art. 17 GDPR — Right to Erasure ("Право да бъдеш забравен" — Cloud Account + Local Storage)
    */
   const handleEraseAllUserData = async () => {
+    setIsDeleting(true);
     try {
-      const subInfo = mailingService.isSubscribed();
-      if (subInfo.subscribed && subInfo.subscription?.email) {
-        await mailingService.unsubscribe(subInfo.subscription.email);
-      }
-
-      for (const key of ALL_STUDYBG_STORAGE_KEYS) {
-        localStorage.removeItem(key);
-      }
-
+      await authService.deleteCloudAccountDataAndSignOut();
       setConfirmWipe(false);
       setGdprActionNotice({
         type: 'success',
-        text: 'Всички ваши локални и абонаментни данни бяха окончателно изтрити съгласно чл. 17 от GDPR („Право да бъдеш забравен“).'
+        text: 'Всички ваши облачни (Google профил в Supabase), абонаментни и локални данни бяха окончателно изтрити съгласно чл. 17 от GDPR („Право да бъдеш забравен“).'
       });
     } catch {
       setGdprActionNotice({
         type: 'info',
-        text: 'Локалните данни бяха изчистени.'
+        text: 'Локалните и сесийните данни бяха изчистени.'
       });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -244,22 +202,24 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
               <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-xs">
                 <div className="flex items-center gap-2 font-bold text-sm mb-1">
                   <Lock className="w-4 h-4 text-blue-600" />
-                  <span>Защита на личните данни на етапа на проектирането (Privacy by Design — чл. 25 от GDPR)</span>
+                  <span>Европейска защита на акаунта и личните данни (Privacy by Design — чл. 25 и чл. 32 от GDPR)</span>
                 </div>
                 <p>
-                  StudyBG е проектирана с минимализиране на данните за ученици и учители. Всички учебни конспекти, тестове, лаборатории и симулатори се използват <strong>без задължителна регистрация, без имена, ЕГН, телефон или геолокация</strong>.
+                  StudyBG е проектирана с минимализиране на данните за ученици и учители. Всички учебни конспекти, тестове, лаборатории и симулатори се използват <strong>без задължителна регистрация, без ЕГН, телефон или геолокация</strong>. Когато пожелаете да синхронизирате прогреса си между устройства чрез <strong>„Вход с Google“</strong>, вашият акаунт е защитен с криптиран протокол <strong>OAuth 2.0 (PKCE)</strong> и изолация <strong>Row-Level Security (RLS)</strong>.
                 </p>
               </div>
 
-              {/* Interactive GDPR Data Subject Rights Center (Art. 17 & Art. 20) */}
+              {/* Interactive GDPR Data Subject Rights Center (Art. 15, Art. 17 & Art. 20) */}
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div>
                     <h3 className="text-sm font-extrabold text-slate-900">
-                      Интерактивен GDPR Център за управление на вашите данни
+                      Интерактивен GDPR Център за управление на акаунта и данните
                     </h3>
                     <p className="text-xs text-slate-500">
-                      Упражнете незабавно правата си по чл. 20 (преносимост) и чл. 17 („право да бъдеш забравен“) от Регламент (ЕС) 2016/679:
+                      {activeGoogleProfile && !activeGoogleProfile.isAnonymous
+                        ? `Активен Google акаунт: ${activeGoogleProfile.fullName} (${activeGoogleProfile.email || 'Google OAuth'}) — упражнете незабавно правата си по чл. 15, чл. 20 и чл. 17 от GDPR:`
+                        : 'Упражнете незабавно правата си по чл. 20 (преносимост в JSON) и чл. 17 („право да бъдеш забравен“) от Регламент (ЕС) 2016/679:'}
                     </p>
                   </div>
                 </div>
@@ -268,35 +228,36 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                   <button
                     type="button"
                     onClick={handleExportUserData}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs font-bold transition-colors shadow-2xs"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs font-bold transition-colors shadow-2xs cursor-pointer"
                   >
                     <Download className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Изтегли моите данни (JSON • Чл. 20 GDPR)</span>
+                    <span>Изтегли моите данни (JSON • Чл. 15 и Чл. 20 GDPR)</span>
                   </button>
 
                   {!confirmWipe ? (
                     <button
                       type="button"
                       onClick={() => setConfirmWipe(true)}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5 text-rose-600" />
-                      <span>Изтрий всички мои данни (Чл. 17 GDPR)</span>
+                      <span>Изтрий облачния акаунт и всички данни (Чл. 17 GDPR)</span>
                     </button>
                   ) : (
-                    <div className="flex items-center gap-2 bg-rose-50 border border-rose-300 px-3 py-1.5 rounded-xl">
-                      <span className="text-xs font-bold text-rose-900">Потвърждавате ли пълно изтриване?</span>
+                    <div className="flex flex-wrap items-center gap-2 bg-rose-50 border border-rose-300 px-3 py-1.5 rounded-xl">
+                      <span className="text-xs font-bold text-rose-900">Потвърждавате ли пълно изтриване на облачния и локалния профил?</span>
                       <button
                         type="button"
+                        disabled={isDeleting}
                         onClick={handleEraseAllUserData}
-                        className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold"
+                        className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white text-xs font-bold cursor-pointer"
                       >
-                        Да, изтрий всичко
+                        {isDeleting ? 'Изтриване...' : 'Да, изтрий всичко'}
                       </button>
                       <button
                         type="button"
                         onClick={() => setConfirmWipe(false)}
-                        className="px-2 py-1 rounded-lg bg-white text-slate-600 border border-slate-200 text-xs font-semibold"
+                        className="px-2 py-1 rounded-lg bg-white text-slate-600 border border-slate-200 text-xs font-semibold cursor-pointer"
                       >
                         Отказ
                       </button>
@@ -315,21 +276,27 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
               <section className="space-y-2">
                 <h3 className="text-base font-bold text-slate-900">1. Нормативна уредба и правно основание</h3>
                 <p>
-                  Настоящата Политика за поверителност е изготвена в пълно съответствие с <strong>Регламент (ЕС) 2016/679 (Общ регламент относно защитата на данните — GDPR)</strong> и <strong>Закона за защита на личните данни (ЗЗЛД)</strong> на Република България.
+                  Настоящата Политика за поверителност и защита на потребителския акаунт е изготвена в пълно съответствие с <strong>Регламент (ЕС) 2016/679 (Общ регламент относно защитата на данните — GDPR)</strong> и <strong>Закона за защита на личните данни (ЗЗЛД)</strong> на Република България.
                 </p>
               </section>
 
               <section className="space-y-2">
-                <h3 className="text-base font-bold text-slate-900">2. Категории обработвани данни и цели (Чл. 13 и Чл. 6 от GDPR)</h3>
+                <h3 className="text-base font-bold text-slate-900">2. Защита на Google акаунта и облачната синхронизация (Чл. 6, Чл. 13 и Чл. 32 от GDPR)</h3>
                 <ul className="list-disc list-inside space-y-2 pl-1">
                   <li>
-                    <strong>Локални учебни данни (LocalStorage на вашето устройство):</strong> Напредъкът в „Моят План за 6.00“, хронологията на 100-точковите симулации, сгрешените въпроси в Банката с грешки и отбелязаните чеклисти се съхраняват локално във вашия браузър (чл. 6, ал. 1, б. „б“ от GDPR — изпълнение на функционалността на образователната услуга).
+                    <strong>Опционален вход с Google акаунт (OAuth 2.0 с PKCE):</strong> Когато доброволно натиснете бутона <em>„Вход с Google“</em>, автентикацията се извършва директно през официалните сървъри на Google чрез криптиран протокол OAuth 2.0 (OpenID Connect). <strong>StudyBG никога не получава, не вижда и не съхранява вашата парола в Google.</strong>
                   </li>
                   <li>
-                    <strong>Имейл адрес за Седмичен бюлетин и споделяне на конспекти (Чл. 6, ал. 1, б. „а“ от GDPR — изрично съгласие):</strong> Когато доброволно въведете имейл адрес във формата за седмичен изпитен бюлетин или за изпращане на учебен конспект/резултат по имейл, ние обработваме този имейл единствено за заявената цел. <strong>Споделянето на конспект или резултат не минава през наш сървър:</strong> StudyBG подготвя писмото и го отваря в <strong>вашия собствен имейл клиент</strong> (mailto:), откъдето го изпращате сами; можете и да копирате текста или да изтеглите локално копие (HTML). Имейлът за бюлетина се съхранява в Supabase. Можете да оттеглите съгласието си с <strong>1 клик („Отпиши се“)</strong> по всяко време.
+                    <strong>Минимален обхват на данните в профила:</strong> В таблицата <code className="text-xs font-mono">public.user_profiles</code> се записват единствено базовите идентификатори от Google профила ви (уникален потребителски идентификатор <code className="text-xs font-mono">user_id</code>, име, имейл и адрес на профилна снимка) заедно с учебния ви прогрес (усвоени уроци, XP точки, дневна серия Streak, Банка с грешки и история на изпитните симулации) с единствена цел синхронизация между вашите устройства (чл. 6, ал. 1, б. „б“ от GDPR).
                   </li>
                   <li>
-                    <strong>Анонимизирана облачна синхронизация на трудни въпроси:</strong> За подобряване на учебната база сгрешените въпроси могат да се синхронизират с облачната база данни без лични имена или профили.
+                    <strong>Криптирана изолация на ниво ред (Row-Level Security — Чл. 32 от GDPR):</strong> Базата данни в Supabase PostgreSQL прилага строги правила за достъп (<code className="text-xs font-mono">user_id = auth.uid()</code>), при които всеки потребител може да чете, обновява или изтрива единствено собствения си профил чрез криптографски подписан JWT токен по TLS 1.3.
+                  </li>
+                  <li>
+                    <strong>Локални учебни данни (LocalStorage на вашето устройство):</strong> Ако използвате платформата без вход в Google акаунт, напредъкът в „Моят План за 6.00“, хронологията на 100-точковите симулации и Банката с грешки се съхраняват локално във вашия браузър.
+                  </li>
+                  <li>
+                    <strong>Имейл адрес за Седмичен бюлетин и споделяне на конспекти (Чл. 6, ал. 1, б. „а“ от GDPR — изрично съгласие):</strong> Когато доброволно въведете имейл адрес във формата за седмичен изпитен бюлетин, ние обработваме този имейл единствено за заявената цел. Споделянето на конспект или резултат подготвя писмото във вашия собствен имейл клиент (<code className="text-xs font-mono">mailto:</code>). Можете да оттеглите съгласието си с <strong>1 клик („Отпиши се“)</strong> по всяко време.
                   </li>
                   <li>
                     <strong>Сканирани записки и есета (SmartScan & Симулатор):</strong> Снимките на тетрадки или текстовете на есета се предават криптирано (TLS 1.3) в реално време към Google Gemini API единствено за генериране на образователна обратна връзка и не се съхраняват на наши сървъри.
@@ -343,11 +310,11 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                   StudyBG не продава и не предоставя данни на рекламни мрежи. За техническото функциониране на облачните и ИИ функции използваме следните сертифицирани инфраструктурни партньори при спазване на Стандартните договорни клаузи на Европейската комисия (SCCs):
                 </p>
                 <ul className="list-disc list-inside space-y-1 pl-1">
-                  <li><strong>Supabase Inc.</strong> — база данни за абонатите на бюлетина и за облачно копие на историята на изпитните симулации, свързано с <strong>анонимен идентификатор</strong> (без име и имейл); изпълнява и AI сървъра (Edge Function), чрез който заявките към Google Gemini минават без ключ в браузъра и с дневен лимит на потребител. Пази се само броят AI заявки за деня, не текстовете. Анонимният профил, облачното копие и броячът се изтриват автоматично след 30 дни без активност;</li>
-                  <li><strong>Vercel Inc.</strong> — статичен хостинг и глобална доставка (CDN); сайтът няма сървърни функции и не изпраща имейли от свое име;</li>
-                  <li><strong>Google Ireland Limited (Google Gemini API)</strong> — обработка на текст и оптично разпознаване на ръкопис по заявка на потребителя;</li>
-                  <li><strong>Google Ireland Limited (Google Analytics 4)</strong> — статистика за посещенията, само след съгласие за аналитика;</li>
-                  <li><strong>Microsoft Ireland Operations Limited (Microsoft Clarity)</strong> — записи на сесии и топлинни карти, само след съгласие за аналитика.</li>
+                  <li><strong>Supabase Inc.</strong> — управлявана PostgreSQL база данни и OAuth 2.0 автентикация със строга Row-Level Security (RLS) защита за облачните потребителски профили (<code className="text-xs font-mono">user_profiles</code>), историята на изпитните симулации (<code className="text-xs font-mono">exam_attempts</code>) и абонатите на бюлетина, както и Edge Function сървър за защитени заявки към Google Gemini;</li>
+                  <li><strong>Vercel Inc.</strong> — статичен хостинг и глобална доставка (CDN) с принудително HTTPS/TLS 1.3 криптиране;</li>
+                  <li><strong>Google Ireland Limited (Google OAuth 2.0 & Google Gemini API)</strong> — сигурна идентификация при вход с Google акаунт и обработка на текст/ръкопис по заявка на потребителя;</li>
+                  <li><strong>Google Ireland Limited (Google Analytics 4)</strong> — статистика за посещенията, само след изрично съгласие за аналитика;</li>
+                  <li><strong>Microsoft Ireland Operations Limited (Microsoft Clarity)</strong> — записи на сесии и топлинни карти, само след изрично съгласие за аналитика.</li>
                 </ul>
               </section>
 
@@ -552,6 +519,12 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                         <td className="p-3">Функционален</td>
                         <td className="p-3">Запазва сгрешените тестови въпроси за персонализиран поправителен тест</td>
                         <td className="p-3">До изчистване</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3 font-mono text-blue-600">sb-*-auth-token / studybg_cached_google_profile_v1</td>
+                        <td className="p-3">Строго необходим (само при вход с Google)</td>
+                        <td className="p-3">Криптирана OAuth 2.0 сесия и кеш на потребителския профил за облачна синхронизация</td>
+                        <td className="p-3">До изход от профила</td>
                       </tr>
                       <tr>
                         <td className="p-3 font-mono text-blue-600">studybg_newsletter_subscribers</td>

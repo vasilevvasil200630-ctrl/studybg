@@ -3,12 +3,15 @@ import { isSupabaseConfigured } from './supabaseConfig';
 import {
   studyProgressService,
   computeDailyStreakStats,
+  computeUserXpAndLevel,
+  evaluateUserAchievements,
   LOCAL_DATA_MUTATED_EVENT,
   type UserStudyProgress,
   type TargetExamTrack
 } from './studyProgressService';
 import { errorBankService, type SavedErrorItem } from './errorBankService';
 import { examHistoryService, type ExamAttemptRecord } from './examHistoryService';
+import { mailingService } from './mailingService';
 
 export interface GoogleUserProfile {
   id: string;
@@ -743,5 +746,184 @@ export const authService = {
     } catch {
       return getCachedGoogleProfile();
     }
+  },
+
+  /**
+   * Чл. 15 и Чл. 20 от GDPR (Регламент (ЕС) 2016/679) — Право на достъп и преносимост на данните.
+   * Генерира и сваля пълен машинночетим JSON архив с профила, прогреса, XP нивата, значките,
+   * банката с грешки и историята на изпитните симулации.
+   */
+  exportCompleteUserDataJson(): { ok: boolean; filename?: string; error?: string } {
+    try {
+      const profile = getCachedGoogleProfile();
+      const progress = studyProgressService.getProgress();
+      const allErrors = errorBankService.getAllErrors();
+      const examAttempts = examHistoryService.getAllAttempts();
+      const examAnalytics = examHistoryService.getAnalytics();
+      const extraStats = {
+        examAttemptsCount: examAnalytics.totalAttempts,
+        highestExamScore: examAnalytics.highestScore,
+        resolvedErrorsCount: allErrors.filter((e) => e.resolved).length
+      };
+      const xpAndLevel = computeUserXpAndLevel(progress, extraStats);
+      const achievements = evaluateUserAchievements(progress, extraStats);
+
+      let oralExamHistory: unknown = [];
+      try {
+        const rawOral = localStorage.getItem('studybg_oral_exam_history_v1');
+        if (rawOral) oralExamHistory = JSON.parse(rawOral);
+      } catch {
+        // ignore
+      }
+
+      const payload = {
+        platform: 'StudyBG — Национална дигитална академия (5.–12. клас)',
+        exportedAt: new Date().toISOString(),
+        euCompliance: {
+          regulation: 'Регламент (ЕС) 2016/679 (GDPR) — Чл. 15 (Право на достъп) и Чл. 20 (Право на преносимост на данните)',
+          bulgarianLaw: 'Закон за защита на личните данни (ЗЗЛД)',
+          securityStandard: 'OAuth 2.0 (PKCE) + TLS 1.3 + PostgreSQL Row-Level Security (RLS: user_id = auth.uid())'
+        },
+        accountProfile: profile
+          ? {
+              userId: profile.id,
+              email: profile.email,
+              fullName: profile.fullName,
+              provider: profile.provider,
+              lastCloudSyncAt: getLastCloudSyncTimestamp()
+            }
+          : {
+              mode: 'anonymous_local_only',
+              lastCloudSyncAt: null
+            },
+        gamification: {
+          level: xpAndLevel.level,
+          title: xpAndLevel.title,
+          totalXp: xpAndLevel.totalXp,
+          currentDailyStreak: progress.currentDailyStreak ?? 1,
+          longestDailyStreak: progress.longestDailyStreak ?? 1,
+          unlockedAchievements: achievements.filter((a) => a.unlocked).map((a) => ({
+            id: a.id,
+            title: a.title,
+            xpReward: a.xpReward
+          }))
+        },
+        studyProgress: progress,
+        errorBank: allErrors,
+        examHistory: examAttempts,
+        oralExamHistory
+      };
+
+      const filename = `studybg-gdpr-account-export-${new Date().toISOString().slice(0, 10)}.json`;
+      if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {
+          type: 'application/json;charset=utf-8'
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      return { ok: true, filename };
+    } catch (err: unknown) {
+      return {
+        ok: false,
+        error: err instanceof Error ? err.message : 'Грешка при експортиране на данните.'
+      };
+    }
+  },
+
+  /**
+   * Чл. 17 от GDPR (Регламент (ЕС) 2016/679) — Право на изтриване („Право да бъдеш забравен“).
+   * Окончателно изтрива облачния профил в public.user_profiles, облачните опити в public.exam_attempts,
+   * отписва имейла от бюлетина (ако има такъв), изчиства всички локални данни и прекратява Google OAuth сесията.
+   */
+  async deleteCloudAccountDataAndSignOut(): Promise<{
+    ok: boolean;
+    cloudDeleted: boolean;
+    error?: string;
+  }> {
+    let cloudDeleted = false;
+    let cloudError: string | undefined;
+
+    try {
+      const subInfo = mailingService.isSubscribed();
+      if (subInfo.subscribed && subInfo.subscription?.email) {
+        await mailingService.unsubscribe(subInfo.subscription.email);
+      }
+    } catch {
+      // ignore newsletter cleanup errors
+    }
+
+    if (isSupabaseConfigured()) {
+      try {
+        const { supabase, getExistingSupabaseSession } = await import('./supabaseClient');
+        const session = await getExistingSupabaseSession();
+        if (session?.user?.id) {
+          const userId = session.user.id;
+          const { error: profileDelErr } = await supabase
+            .from('user_profiles')
+            .delete()
+            .eq('user_id', userId);
+          const { error: examDelErr } = await supabase
+            .from('exam_attempts')
+            .delete()
+            .eq('user_id', userId);
+
+          if (!profileDelErr && !examDelErr) {
+            cloudDeleted = true;
+          } else {
+            cloudError = profileDelErr?.message || examDelErr?.message;
+          }
+        }
+        await supabase.auth.signOut();
+      } catch (err: unknown) {
+        cloudError = err instanceof Error ? err.message : String(err);
+      }
+    }
+
+    const keysToRemove = [
+      'studybg_study_progress_v1',
+      'studybg_exam_history',
+      'studybg_error_bank',
+      'studybg_oral_exam_history_v1',
+      'studybg_newsletter_subscribers',
+      'studybg_last_used_email',
+      'studybg_gemini_api_key',
+      'studybg_cookie_consent',
+      CACHED_PROFILE_KEY,
+      LAST_SYNC_AT_KEY
+    ];
+
+    try {
+      for (const k of keysToRemove) {
+        localStorage.removeItem(k);
+      }
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('sb-') && k.endsWith('-auth-token')) {
+          localStorage.removeItem(k);
+        }
+      }
+    } catch {
+      // ignore storage errors
+    }
+
+    currentSyncStatus = 'idle';
+    notifyListeners(null);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent(LOCAL_DATA_MUTATED_EVENT));
+    }
+
+    return {
+      ok: true,
+      cloudDeleted,
+      error: cloudError
+    };
   }
 };

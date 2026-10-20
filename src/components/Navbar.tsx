@@ -483,117 +483,117 @@ export const Navbar: React.FC<NavbarProps> = ({
     interactiveLabsList.some((lab) => lab.tab === activeTab);
 
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/95 border-b border-slate-200/90 shadow-xs transition-all">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/95 border-b border-slate-200/90 shadow-xs transition-all">
+      <div className="max-w-7xl mx-auto px-3 sm:px-5 lg:px-6">
         
-        {/* Main Platform Command Row */}
-        <div className="flex items-center justify-between h-16 sm:h-18 gap-2 sm:gap-3">
+        {/* Main Platform Command Row — strictly constrained to viewport width (zero horizontal scroll) */}
+        <div className="flex items-center justify-between h-16 gap-1.5 sm:gap-2.5 min-w-0">
           
           {/* Left: Brand Identity + Segmented Portal Switcher */}
-          <div className="flex items-center gap-2.5 sm:gap-3.5 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <a
               href="/"
-              className="flex items-center gap-2.5 cursor-pointer group"
+              className="flex items-center gap-2 cursor-pointer group shrink-0"
               onClick={(e) => {
                 e.preventDefault();
                 handleStudyNavClick('home');
               }}
             >
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-600 text-white shadow-xs group-hover:from-blue-700 group-hover:to-blue-700 transition-all">
+              <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-xs group-hover:from-blue-700 group-hover:to-blue-800 transition-all shrink-0">
                 <GraduationCap className="w-5 h-5 text-white" />
               </div>
               
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">
+                  <span className="text-base sm:text-lg font-extrabold tracking-tight text-slate-900">
                     Study<span className="text-blue-600">BG</span>
                   </span>
-                  <span className="text-[10px] font-bold tracking-wide uppercase px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200">
-                    5.–12. клас
+                  <span className="text-[10px] font-bold tracking-wide uppercase px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200 whitespace-nowrap">
+                    5.–12. кл.
                   </span>
                 </div>
-                <span className="text-[10px] text-slate-500 font-medium hidden sm:inline">
+                <span className="text-[10px] text-slate-500 font-medium hidden 2xl:inline whitespace-nowrap">
                   Национална образователна платформа
                 </span>
               </div>
             </a>
 
             {/* Segmented Portal Mode Switcher (Study Academy vs Culture & Mysteries) */}
-            <div className="hidden xl:flex items-center p-1 rounded-xl bg-slate-100 border border-slate-200/80 ml-1">
+            <div className="hidden xl:flex items-center p-0.5 rounded-xl bg-slate-100 border border-slate-200/80">
               <button
                 onClick={() => handleStudyNavClick(activeTab === 'home' ? 'summary' : activeTab)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                   portalMode === 'study'
                     ? 'bg-white text-blue-700 shadow-2xs border border-slate-200/60'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
                 title="Учебна академия по МОН (5.–12. клас)"
               >
-                <GraduationCap className="w-3.5 h-3.5 text-blue-600" />
-                <span>Академия ({totalLessonsCount})</span>
+                <GraduationCap className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                <span>Академия</span>
               </button>
               <button
                 onClick={() => handleCultureNavClick('mysteries')}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                   portalMode === 'culture'
                     ? 'bg-amber-700 text-white shadow-2xs'
                     : 'text-slate-600 hover:text-amber-800'
                 }`}
                 title="Обща култура, конспиративни досиета и мистични зони"
               >
-                <Compass className={`w-3.5 h-3.5 ${portalMode === 'culture' ? 'text-white' : 'text-amber-600'}`} />
-                <span>Мистерии (41)</span>
+                <Compass className={`w-3.5 h-3.5 shrink-0 ${portalMode === 'culture' ? 'text-white' : 'text-amber-600'}`} />
+                <span>Мистерии</span>
               </button>
             </div>
           </div>
 
           {/* Center: Always-Available Interactive Platform Navigation */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 min-w-0">
             <button
               onClick={() => handleStudyNavClick('home')}
-              className={`flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                 portalMode === 'study' && activeTab === 'home'
                   ? 'bg-slate-100 text-slate-900 font-bold'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <Home className="w-3.5 h-3.5 text-blue-600" />
+              <Home className="w-3.5 h-3.5 text-blue-600 shrink-0" />
               <span>Начало</span>
             </button>
 
             <button
               onClick={() => handleStudyNavClick('catalog')}
-              className={`flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                 portalMode === 'study' && activeTab === 'catalog'
                   ? 'bg-blue-50 text-blue-900 font-bold border border-blue-200'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <BookMarked className="w-3.5 h-3.5 text-blue-600" />
+              <BookMarked className="w-3.5 h-3.5 text-blue-600 shrink-0" />
               <span>Уроци ({totalLessonsCount})</span>
             </button>
 
             <button
               onClick={() => handleStudyNavClick('simulator')}
-              className={`flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                 portalMode === 'study' && activeTab === 'simulator'
                   ? 'bg-amber-50 text-amber-900 font-bold border border-amber-200'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <Clock className="w-3.5 h-3.5 text-amber-600" />
+              <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
               <span>100т. Симулатор</span>
             </button>
 
             <button
               onClick={() => handleStudyNavClick('oralexam')}
-              className={`flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              className={`hidden xl:flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                 portalMode === 'study' && activeTab === 'oralexam'
                   ? 'bg-blue-50 text-blue-900 font-bold border border-blue-200'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <Mic className="w-3.5 h-3.5 text-blue-600" />
+              <Mic className="w-3.5 h-3.5 text-blue-600 shrink-0" />
               <span>Устен изпит</span>
             </button>
 
@@ -601,20 +601,20 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="relative" ref={labsDropdownRef}>
               <button
                 onClick={() => setIsLabsDropdownOpen(!isLabsDropdownOpen)}
-                className={`flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                   isLabActive || isLabsDropdownOpen
                     ? 'bg-blue-50 text-blue-900 font-bold border border-blue-200'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
               >
-                <Layers className="w-3.5 h-3.5 text-blue-600" />
+                <Layers className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                 <span>Лаборатории (12)</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isLabsDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform shrink-0 ${isLabsDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {isLabsDropdownOpen && (
-                <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-[min(620px,calc(100vw-2rem))] p-4 rounded-2xl bg-white border border-slate-200 shadow-2xl z-50">
-                  <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-[min(640px,calc(100vw-2rem))] p-4 rounded-2xl bg-white border border-slate-200 shadow-2xl z-50">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-100">
                     <div>
                       <span className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">
                         🧪 Специализирани интерактивни лаборатории (МОН 5.–12. клас)
@@ -623,12 +623,32 @@ export const Navbar: React.FC<NavbarProps> = ({
                         Избери тренажор за директно упражнение, решаване на задачи или устно изпитване
                       </p>
                     </div>
-                    <button
-                      onClick={() => handleStudyNavClick('planner')}
-                      className="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-[11px] font-bold transition-colors shrink-0"
-                    >
-                      📅 План за 6.00 →
-                    </button>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        onClick={() => {
+                          setIsLabsDropdownOpen(false);
+                          onOpenFormulaModal();
+                        }}
+                        className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 text-[11px] font-bold transition-colors cursor-pointer"
+                      >
+                        📐 Формули МОН
+                      </button>
+                      <button
+                        onClick={() => handleStudyNavClick('planner')}
+                        className="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-[11px] font-bold transition-colors cursor-pointer"
+                      >
+                        📅 План за 6.00 →
+                      </button>
+                      <a
+                        href="https://maturaplus.eu"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold transition-colors inline-flex items-center gap-1"
+                      >
+                        <span>7. клас? Matura+</span>
+                        <ArrowUpRight className="w-3 h-3" />
+                      </a>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 max-h-[65vh] overflow-y-auto pr-1">
@@ -670,43 +690,39 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => handleCultureNavClick('mysteries')}
-              className={` xl:hidden flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              className={`xl:hidden flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                 portalMode === 'culture'
                   ? 'bg-amber-50 text-amber-900 font-bold border border-amber-200'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <Compass className="w-3.5 h-3.5 text-amber-600" />
-              <span>Мистерии (41)</span>
+              <Compass className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              <span>Мистерии</span>
             </button>
           </nav>
 
-          {/* Right Action Bar: Always functional across the entire platform */}
+          {/* Right Action Bar: Compact Tools + Prominent Google Account Button */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* Global Quick Search Button */}
             {onOpenQuickSearch && (
               <button
                 onClick={onOpenQuickSearch}
-                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 border border-slate-200/90 text-xs font-semibold transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 border border-slate-200/90 text-xs font-semibold transition-all cursor-pointer whitespace-nowrap"
                 title="Бързо търсене на урок или тема (Ctrl+K)"
               >
-                <Search className="w-3.5 h-3.5 text-blue-600" />
-                <span className="hidden md:inline">Търси урок</span>
-                <kbd className="hidden xl:inline-block text-[10px] font-mono bg-white px-1.5 py-0.5 rounded border border-slate-200 text-slate-500">
-                  {totalLessonsCount}
-                </kbd>
+                <Search className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                <span className="hidden md:inline">Търси</span>
               </button>
             )}
 
             {/* Official MON Formula Sheets Button */}
             <button
               onClick={onOpenFormulaModal}
-              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold border border-slate-300 transition-colors shadow-2xs cursor-pointer"
+              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold border border-slate-300 transition-colors shadow-2xs cursor-pointer whitespace-nowrap"
               title="Официални свитъци и формули на МОН"
             >
-              <FileText className="w-3.5 h-3.5 text-blue-600" />
-              <span className="hidden 2xl:inline">Справочник МОН</span>
-              <span className="2xl:hidden">Формули</span>
+              <FileText className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+              <span>Формули</span>
             </button>
 
             {/* SmartScan OCR Button */}
@@ -715,26 +731,11 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all whitespace-nowrap cursor-pointer shadow-2xs"
               title="Сканирай своя тетрадка с камера или качи PDF"
             >
-              <Camera className="w-3.5 h-3.5 text-white" />
-              <span className="hidden xl:inline">Сканирай OCR</span>
-              <span className="xl:hidden">OCR</span>
+              <Camera className="w-3.5 h-3.5 text-white shrink-0" />
+              <span>OCR</span>
             </button>
 
-            {/* Direct Matura+ Synergy Pill -> https://maturaplus.eu */}
-            <a
-              href="https://maturaplus.eu"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 font-semibold text-xs transition-colors shadow-2xs"
-              title="Специализирана платформа за НВО след 7. клас — maturaplus.eu"
-            >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-bold">7. клас?</span>
-              <span className="text-emerald-800 hidden lg:inline">Към Matura+</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-emerald-700" />
-            </a>
-
-            {/* Google Account / Cloud Profile Button */}
+            {/* PROMINENT Google Account / Cloud Profile Button */}
             {onOpenAuthModal && (
               <button
                 type="button"
@@ -742,33 +743,35 @@ export const Navbar: React.FC<NavbarProps> = ({
                 aria-label={isGoogleUser ? `Профил на ${userProfile?.fullName}` : 'Вход с Google акаунт'}
                 title={
                   isGoogleUser
-                    ? `${userProfile?.fullName} • Облачната синхронизация е активна`
-                    : 'Вход с Google акаунт за облачна синхронизация на прогреса'
+                    ? `${userProfile?.fullName} • Облачната синхронизация е активна (GDPR защитен профил)`
+                    : 'Вход с Google акаунт за автоматична облачна синхронизация, XP нива и значки'
                 }
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer shadow-2xs ${
+                className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-xs ${
                   isGoogleUser
-                    ? 'bg-blue-50/90 hover:bg-blue-100 text-blue-900 border-blue-200'
-                    : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300'
+                    ? 'bg-gradient-to-r from-blue-50 via-white to-indigo-50 hover:from-blue-100 hover:to-indigo-100 text-blue-950 border-2 border-blue-400'
+                    : 'bg-white hover:bg-blue-50/70 text-slate-900 border-2 border-blue-600/85 hover:border-blue-700 ring-2 ring-blue-500/10'
                 }`}
               >
                 {isGoogleUser && userProfile?.avatarUrl && !avatarLoadError ? (
                   <img
                     src={userProfile.avatarUrl}
                     alt=""
-                    width={20}
-                    height={20}
+                    width={22}
+                    height={22}
                     referrerPolicy="no-referrer"
                     onError={() => setAvatarLoadError(true)}
-                    className="w-5 h-5 rounded-full object-cover border border-blue-300 shrink-0"
+                    className="w-5.5 h-5.5 rounded-full object-cover border border-blue-400 shrink-0"
                   />
                 ) : (
-                  <NavbarGoogleIcon className="w-3.5 h-3.5 shrink-0" />
+                  <span className="w-5 h-5 rounded-full bg-white border border-slate-200 flex items-center justify-center shrink-0 shadow-2xs">
+                    <NavbarGoogleIcon className="w-3.5 h-3.5" />
+                  </span>
                 )}
-                <span className="hidden sm:inline max-w-[96px] truncate">
-                  {isGoogleUser ? userFirstName : 'Вход'}
+                <span className="max-w-[115px] truncate">
+                  {isGoogleUser ? userFirstName : 'Вход с Google'}
                 </span>
-                <span className="hidden xl:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 font-mono text-[10px] font-bold border border-amber-300">
-                  <Flame className="w-3 h-3 text-amber-600" aria-hidden="true" />
+                <span className="hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-900 font-mono text-[10px] font-extrabold border border-amber-300">
+                  <Flame className="w-3 h-3 text-amber-600 shrink-0" aria-hidden="true" />
                   {navDailyStreak}д • Н.{navLevelInfo.level}
                 </span>
                 {isGoogleUser && (
@@ -787,7 +790,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Mobile Navigation Drawer Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-colors"
+              className="lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-colors shrink-0"
               aria-label="Отвори навигационното меню"
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

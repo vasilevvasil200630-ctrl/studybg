@@ -549,6 +549,7 @@ export function App() {
           <AuthProfileModal
             onClose={() => setIsAuthModalOpen(false)}
             onNavigateTab={handleNavigateStudyTab}
+            onOpenPolicyModal={handleOpenPolicy}
           />
         )}
 
@@ -568,6 +569,7 @@ export function App() {
             onNavigateTab={handleNavigateStudyTab}
             onOpenScan={() => setIsScanModalOpen(true)}
             onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
+            onOpenAuthModal={() => setIsAuthModalOpen(true)}
             onNavigateCultureTab={handleNavigateCultureTab}
             onRequestFullCurriculum={requestFullCurriculum}
           />

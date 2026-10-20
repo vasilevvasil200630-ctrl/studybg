@@ -4,6 +4,7 @@ import {
   mapSupabaseUserToProfile,
   mergeStudyProgress,
   mergeErrorBankItems,
+  mergeExamHistoryRecords,
   formatGoogleAuthError
 } from './authService';
 import {
@@ -180,5 +181,53 @@ describe('authService — Google OAuth, Real-Time Sync, Streaks, XP & Achievemen
     const msg = formatGoogleAuthError('Unsupported provider: provider is not enabled');
     expect(msg).toContain('Supabase Dashboard');
     expect(msg).toContain('Google');
+  });
+
+  it('mergeExamHistoryRecords deduplicates exam attempts by id and sorts newest first', () => {
+    const merged = mergeExamHistoryRecords(
+      [
+        {
+          id: 'exam-1',
+          timestamp: '2026-10-18T10:00:00.000Z',
+          formattedDate: '18.10.2026',
+          lessonId: 'l1',
+          lessonTitle: 'Урок 1',
+          subject: 'БЕЛ',
+          grade: '12. клас',
+          examPreset: 'dzi12-bel',
+          durationMinutes: 240,
+          timeSpentSeconds: 3600,
+          module1Points: 28,
+          module2Points: 25,
+          module3Points: 27,
+          totalPoints: 80,
+          gradeEquivalent: 'Отличен 5.50',
+          gradeNumeric: 5.5,
+          passed: true
+        }
+      ],
+      [
+        {
+          id: 'exam-2',
+          timestamp: '2026-10-20T12:00:00.000Z',
+          formattedDate: '20.10.2026',
+          lessonId: 'l2',
+          lessonTitle: 'Урок 2',
+          subject: 'Математика',
+          grade: '12. клас',
+          examPreset: 'dzi12-math',
+          durationMinutes: 240,
+          timeSpentSeconds: 4200,
+          module1Points: 30,
+          module2Points: 30,
+          module3Points: 32,
+          totalPoints: 92,
+          gradeEquivalent: 'Отличен 5.90',
+          gradeNumeric: 5.9,
+          passed: true
+        }
+      ]
+    );
+    expect(merged.map((a) => a.id)).toEqual(['exam-2', 'exam-1']);
   });
 });

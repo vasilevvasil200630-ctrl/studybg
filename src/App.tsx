@@ -44,6 +44,7 @@ const OralExamSimulatorLab = lazy(() => import('./components/OralExamSimulatorLa
 const SchoolsSpecialtiesHub = lazy(() => import('./components/SchoolsSpecialtiesHub').then(m => ({ default: m.SchoolsSpecialtiesHub })));
 const AuthProfileModal = lazy(() => import('./components/AuthProfileModal').then(m => ({ default: m.AuthProfileModal })));
 import { errorBankService } from './services/errorBankService';
+import { hasOAuthCallbackErrorInUrl } from './services/authService';
 
 import {
   CURRICULUM_LESSONS,
@@ -158,7 +159,7 @@ export function App() {
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
   const [isFormulaModalOpen, setIsFormulaModalOpen] = useState(false);
   const [isQuickLessonModalOpen, setIsQuickLessonModalOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(() => hasOAuthCallbackErrorInUrl());
   const [practiceQuestions, setPracticeQuestions] = useState<QuizQuestion[] | null>(null);
 
   const curriculumHydratedRef = useRef(false);

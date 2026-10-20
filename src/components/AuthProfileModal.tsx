@@ -24,6 +24,7 @@ import {
   getCachedGoogleProfile,
   getLastCloudSyncTimestamp,
   getCloudSyncLiveStatus,
+  consumeOAuthUrlError,
   AUTH_SYNC_EVENT,
   type GoogleUserProfile,
   type CloudProfileSyncResult,
@@ -103,7 +104,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
   );
   const [isSigningOut, setIsSigningOut] = useState<boolean>(false);
   const [avatarFailed, setAvatarFailed] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(() => consumeOAuthUrlError());
   const [syncResult, setSyncResult] = useState<CloudProfileSyncResult | null>(null);
   const [lastSyncIso, setLastSyncIso] = useState<string | null>(() => getLastCloudSyncTimestamp());
   const [badgeFilter, setBadgeFilter] = useState<'all' | 'unlocked' | 'locked'>('all');

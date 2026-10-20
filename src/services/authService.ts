@@ -8,7 +8,7 @@ import {
   type TargetExamTrack
 } from './studyProgressService';
 import { errorBankService, type SavedErrorItem } from './errorBankService';
-import { examHistoryService } from './examHistoryService';
+import { examHistoryService, type ExamAttemptRecord } from './examHistoryService';
 
 export interface GoogleUserProfile {
   id: string;
@@ -115,6 +115,66 @@ function setLastCloudSyncTimestamp(iso: string): void {
     localStorage.setItem(LAST_SYNC_AT_KEY, iso);
   } catch {
     // ignore storage errors
+  }
+}
+
+/**
+ * Проверява дали в URL адреса има върната грешка от OAuth редирект (?error_description=... или #error_description=...).
+ */
+export function hasOAuthCallbackErrorInUrl(): boolean {
+  if (typeof window === 'undefined') return false;
+  const search = window.location.search || '';
+  const hash = window.location.hash || '';
+  return (
+    search.includes('error_description=') ||
+    search.includes('error_code=') ||
+    hash.includes('error_description=') ||
+    hash.includes('error_code=')
+  );
+}
+
+/**
+ * Извлича и изчиства от адресната лента евентуална OAuth грешка при връщане от Google / Supabase.
+ */
+export function consumeOAuthUrlError(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const searchParams = new URLSearchParams(window.location.search);
+    const hashRaw = window.location.hash.startsWith('#')
+      ? window.location.hash.slice(1)
+      : window.location.hash;
+    const hashParams = new URLSearchParams(hashRaw);
+
+    const rawDesc =
+      searchParams.get('error_description') ||
+      hashParams.get('error_description') ||
+      searchParams.get('error') ||
+      hashParams.get('error');
+
+    if (!rawDesc) return null;
+
+    const cleanPath = window.location.pathname || '/';
+    window.history.replaceState(null, '', cleanPath);
+    return formatGoogleAuthError(rawDesc.replace(/\+/g, ' '));
+  } catch {
+    return null;
+  }
+}
+
+function cleanOAuthSuccessParamsFromUrl(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const search = window.location.search || '';
+    const hash = window.location.hash || '';
+    if (
+      search.includes('code=') ||
+      hash.includes('access_token=') ||
+      hash.includes('refresh_token=')
+    ) {
+      window.history.replaceState(null, '', window.location.pathname || '/');
+    }
+  } catch {
+    // ignore
   }
 }
 
@@ -342,6 +402,34 @@ export function mergeErrorBankItems(
   return Array.from(byId.values()).slice(0, 200);
 }
 
+/**
+ * Слива локалните и облачните опити от 100-точковия Изпитен симулатор по id.
+ */
+export function mergeExamHistoryRecords(
+  local: ExamAttemptRecord[],
+  cloud: ExamAttemptRecord[] | null | undefined
+): ExamAttemptRecord[] {
+  if (!Array.isArray(cloud) || cloud.length === 0) {
+    return local;
+  }
+
+  const byId = new Map<string, ExamAttemptRecord>();
+  for (const item of cloud) {
+    if (item && typeof item.id === 'string' && item.id.trim()) {
+      byId.set(item.id, item);
+    }
+  }
+  for (const localItem of local) {
+    if (localItem && typeof localItem.id === 'string' && localItem.id.trim()) {
+      byId.set(localItem.id, localItem);
+    }
+  }
+
+  return Array.from(byId.values())
+    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+    .slice(0, 200);
+}
+
 export function formatGoogleAuthError(rawMessage: string): string {
   const lower = rawMessage.toLowerCase();
   if (lower.includes('provider is not enabled') || lower.includes('unsupported provider')) {
@@ -349,6 +437,9 @@ export function formatGoogleAuthError(rawMessage: string): string {
   }
   if (lower.includes('redirect_uri') || lower.includes('redirect url')) {
     return 'Адресът за пренасочване (Redirect URL) не е добавен в настройките на Supabase Auth / Google Cloud Console.';
+  }
+  if (lower.includes('invalid_client') || lower.includes('unauthorized_client')) {
+    return 'Невалиден Google Client ID или Client Secret в Supabase Dashboard → Authentication → Providers → Google.';
   }
   return `Грешка при вход с Google: ${rawMessage}`;
 }
@@ -371,13 +462,13 @@ export const authService = {
   },
 
   /**
-   * Стартира OAuth вход с Google акаунт.
-   * Ако ученикът вече има анонимна сесия, първо опитва да свърже Google профила към нея (linkIdentity),
-   * за да запази същото user_id, а при нужда преминава към стандартен signInWithOAuth.
+   * Стартира OAuth 2.0 вход с Google акаунт.
+   * При завръщане на потребителя syncUserProfileAndProgressWithCloud() автоматично слива
+   * целия му досегашен локален прогрес, Банка с грешки и решени матури към Google профила.
    */
   async signInWithGoogle(redirectPath?: string): Promise<{
     ok: boolean;
-    mode?: 'linked' | 'oauth';
+    mode?: 'oauth';
     url?: string | null;
     error?: string;
   }> {
@@ -389,36 +480,11 @@ export const authService = {
     }
 
     try {
-      const { supabase, getExistingSupabaseSession } = await import('./supabaseClient');
+      const { supabase } = await import('./supabaseClient');
       const redirectTo =
         typeof window !== 'undefined'
           ? `${window.location.origin}${redirectPath ?? window.location.pathname}`
           : undefined;
-
-      const existingSession = await getExistingSupabaseSession();
-      if (
-        existingSession?.user?.is_anonymous === true &&
-        typeof supabase.auth.linkIdentity === 'function'
-      ) {
-        const linkRes = await supabase.auth.linkIdentity({
-          provider: 'google',
-          options: {
-            redirectTo,
-            queryParams: {
-              access_type: 'offline',
-              prompt: 'select_account'
-            }
-          }
-        });
-
-        if (!linkRes.error) {
-          return {
-            ok: true,
-            mode: 'linked',
-            url: linkRes.data?.url ?? null
-          };
-        }
-      }
 
       const oauthRes = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -480,12 +546,13 @@ export const authService = {
    * Двупосочна синхронизация на:
    * 1) Учебен прогрес (План за 6.00 — усвоени теми, автори, седмичен график, граматика, Дневен Streak и XP)
    * 2) Интерактивна банка с грешки
-   * 3) История от 100-точковия Изпитен симулатор
+   * 3) История от 100-точковия Изпитен симулатор (както в user_profiles.exam_history, така и в exam_attempts)
    */
   async syncUserProfileAndProgressWithCloud(): Promise<CloudProfileSyncResult> {
     const nowIso = new Date().toISOString();
     const localProgress = studyProgressService.getProgress();
     const localErrors = errorBankService.getAllErrors();
+    const localExams = examHistoryService.getAllAttempts();
 
     if (!isSupabaseConfigured()) {
       return {
@@ -529,12 +596,13 @@ export const authService = {
 
       let mergedProgress = localProgress;
       let mergedErrors = localErrors;
+      let mergedExams = localExams;
       let profileSynced = false;
       let profileSyncWarning: string | undefined;
 
       const { data: cloudRow, error: selectError } = await supabase
         .from('user_profiles')
-        .select('study_progress, error_bank, updated_at')
+        .select('study_progress, error_bank, exam_history, updated_at')
         .eq('user_id', session.user.id)
         .maybeSingle();
 
@@ -547,8 +615,15 @@ export const authService = {
           localErrors,
           cloudRow.error_bank as SavedErrorItem[] | null
         );
+        mergedExams = mergeExamHistoryRecords(
+          localExams,
+          cloudRow.exam_history as ExamAttemptRecord[] | null
+        );
         studyProgressService.saveProgress(mergedProgress, { silentCloudTrigger: true });
         errorBankService.saveErrors(mergedErrors, { silentCloudTrigger: true });
+        if (mergedExams.length !== localExams.length) {
+          examHistoryService.saveAttempts(mergedExams, { silentCloudTrigger: true });
+        }
       } else if (selectError && selectError.code !== '42P01') {
         profileSyncWarning = selectError.message;
       }
@@ -562,6 +637,7 @@ export const authService = {
           auth_provider: profile.provider,
           study_progress: mergedProgress,
           error_bank: mergedErrors.slice(0, 200),
+          exam_history: mergedExams.slice(0, 200),
           updated_at: nowIso
         },
         { onConflict: 'user_id' }
@@ -584,7 +660,8 @@ export const authService = {
         masteredLessonsCount: mergedProgress.masteredLessonIds.length,
         masteredAuthorsCount: mergedProgress.masteredAuthorIds.length,
         errorBankCount: mergedErrors.length,
-        examDownloadedCount: examSync.downloaded,
+        examDownloadedCount:
+          examSync.downloaded + Math.max(0, mergedExams.length - localExams.length),
         examUploadedCount: examSync.uploaded,
         syncedAt: nowIso,
         error: profileSyncWarning ?? examSync.error
@@ -644,6 +721,7 @@ export const authService = {
             profile &&
             !profile.isAnonymous
           ) {
+            cleanOAuthSuccessParamsFromUrl();
             void this.syncUserProfileAndProgressWithCloud();
           }
         });
@@ -654,8 +732,11 @@ export const authService = {
       setCachedGoogleProfile(profile);
       notifyListeners(profile);
 
-      if (profile && !profile.isAnonymous && !getLastCloudSyncTimestamp()) {
-        void this.syncUserProfileAndProgressWithCloud();
+      if (profile && !profile.isAnonymous) {
+        cleanOAuthSuccessParamsFromUrl();
+        if (!getLastCloudSyncTimestamp()) {
+          void this.syncUserProfileAndProgressWithCloud();
+        }
       }
 
       return profile;

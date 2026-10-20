@@ -1,5 +1,6 @@
--- StudyBG: потребителски профили с Google OAuth и облачна синхронизация на прогреса (План за 6.00 + Банка с грешки).
--- Идемпотентна миграция: може да се изпълни многократно.
+-- StudyBG: потребителски профили с Google OAuth и облачна синхронизация на прогреса
+-- (План за 6.00 + Дневен Streak & XP + Банка с грешки + История на изпитите).
+-- Идемпотентна миграция: може да се изпълни многократно в Supabase SQL Editor.
 -- Изисква: Authentication → Sign In / Providers → Google = Enabled в Supabase Dashboard.
 
 create table if not exists public.user_profiles (
@@ -10,9 +11,13 @@ create table if not exists public.user_profiles (
   auth_provider text not null default 'google',
   study_progress jsonb not null default '{}'::jsonb,
   error_bank jsonb not null default '[]'::jsonb,
+  exam_history jsonb not null default '[]'::jsonb,
   updated_at timestamptz not null default now(),
   created_at timestamptz not null default now()
 );
+
+alter table public.user_profiles
+  add column if not exists exam_history jsonb not null default '[]'::jsonb;
 
 create index if not exists user_profiles_updated_at_idx
   on public.user_profiles (updated_at desc);

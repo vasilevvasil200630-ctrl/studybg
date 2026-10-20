@@ -54,6 +54,20 @@ export const examHistoryService = {
     }
   },
 
+  saveAttempts(records: ExamAttemptRecord[], options?: { silentCloudTrigger?: boolean }): ExamAttemptRecord[] {
+    try {
+      saveAll(records);
+      if (!options?.silentCloudTrigger && typeof window !== 'undefined') {
+        window.dispatchEvent(
+          new CustomEvent('studybg:local-data-mutated', { detail: { source: 'exam_history' } })
+        );
+      }
+      return records;
+    } catch {
+      return [];
+    }
+  },
+
   /**
    * Save an exam attempt locally and sync to Supabase if configured
    */
@@ -83,6 +97,11 @@ export const examHistoryService = {
       const existing = this.getAllAttempts();
       const updated = [newRecord, ...existing];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(
+          new CustomEvent('studybg:local-data-mutated', { detail: { source: 'exam_history' } })
+        );
+      }
     } catch (err) {
       console.warn('LocalStorage save failed:', err);
     }

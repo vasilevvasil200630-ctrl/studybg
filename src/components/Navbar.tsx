@@ -33,6 +33,28 @@ import {
   Layers
 } from 'lucide-react';
 import { errorBankService } from '../services/errorBankService';
+import { authService, getCachedGoogleProfile, type GoogleUserProfile } from '../services/authService';
+
+const NavbarGoogleIcon: React.FC<{ className?: string }> = ({ className = 'w-3.5 h-3.5' }) => (
+  <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+    <path
+      fill="#4285F4"
+      d="M23.49 12.275c0-.85-.075-1.665-.215-2.45H12v4.635h6.445c-.28 1.495-1.125 2.765-2.395 3.615v3.005h3.875c2.265-2.085 3.565-5.16 3.565-8.805z"
+    />
+    <path
+      fill="#34A853"
+      d="M12 24c3.24 0 5.955-1.075 7.94-2.91l-3.875-3.005c-1.075.72-2.45 1.145-4.065 1.145-3.125 0-5.775-2.11-6.72-4.945H1.275v3.1C3.25 21.305 7.31 24 12 24z"
+    />
+    <path
+      fill="#FBBC05"
+      d="M5.28 14.285c-.24-.72-.375-1.49-.375-2.285s.135-1.565.375-2.285v-3.1H1.275C.465 8.23 0 10.065 0 12s.465 3.77 1.275 5.385l4.005-3.1z"
+    />
+    <path
+      fill="#EA4335"
+      d="M12 4.77c1.76 0 3.34.605 4.585 1.795l3.44-3.44C17.95 1.19 15.235 0 12 0 7.31 0 3.25 2.695 1.275 6.615l4.005 3.1C6.225 6.88 8.875 4.77 12 4.77z"
+    />
+  </svg>
+);
 import type { CultureSubTab } from './CultureHero';
 
 export type AppNavTab =
@@ -74,6 +96,7 @@ interface NavbarProps {
   onScrollToCatalog: () => void;
   onOpenFormulaModal: () => void;
   onOpenQuickSearch?: () => void;
+  onOpenAuthModal?: () => void;
   totalLessonsCount?: number;
 }
 
@@ -88,10 +111,24 @@ export const Navbar: React.FC<NavbarProps> = ({
   onScrollToCatalog,
   onOpenFormulaModal,
   onOpenQuickSearch,
+  onOpenAuthModal,
   totalLessonsCount = 108
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLabsDropdownOpen, setIsLabsDropdownOpen] = useState(false);
+  const [userProfile, setUserProfile] = useState<GoogleUserProfile | null>(() => getCachedGoogleProfile());
+  const [avatarLoadError, setAvatarLoadError] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = authService.subscribeToAuthChanges((profile) => {
+      setUserProfile(profile);
+      setAvatarLoadError(false);
+    });
+    return unsubscribe;
+  }, []);
+
+  const isGoogleUser = Boolean(userProfile && !userProfile.isAnonymous);
+  const userFirstName = userProfile?.fullName?.split(/\s+/)[0] || 'Профил';
   const labsDropdownRef = useRef<HTMLDivElement>(null);
   const unresolvedErrorCount = errorBankService.getUnresolvedCount();
 
@@ -679,6 +716,48 @@ export const Navbar: React.FC<NavbarProps> = ({
               <ArrowUpRight className="w-3.5 h-3.5 text-emerald-700" />
             </a>
 
+            {/* Google Account / Cloud Profile Button */}
+            {onOpenAuthModal && (
+              <button
+                type="button"
+                onClick={onOpenAuthModal}
+                aria-label={isGoogleUser ? `Профил на ${userProfile?.fullName}` : 'Вход с Google акаунт'}
+                title={
+                  isGoogleUser
+                    ? `${userProfile?.fullName} • Облачната синхронизация е активна`
+                    : 'Вход с Google акаунт за облачна синхронизация на прогреса'
+                }
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer shadow-2xs ${
+                  isGoogleUser
+                    ? 'bg-blue-50/90 hover:bg-blue-100 text-blue-900 border-blue-200'
+                    : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300'
+                }`}
+              >
+                {isGoogleUser && userProfile?.avatarUrl && !avatarLoadError ? (
+                  <img
+                    src={userProfile.avatarUrl}
+                    alt=""
+                    width={20}
+                    height={20}
+                    referrerPolicy="no-referrer"
+                    onError={() => setAvatarLoadError(true)}
+                    className="w-5 h-5 rounded-full object-cover border border-blue-300 shrink-0"
+                  />
+                ) : (
+                  <NavbarGoogleIcon className="w-3.5 h-3.5 shrink-0" />
+                )}
+                <span className="hidden sm:inline max-w-[96px] truncate">
+                  {isGoogleUser ? userFirstName : 'Вход'}
+                </span>
+                {isGoogleUser && (
+                  <span
+                    aria-hidden="true"
+                    className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"
+                  />
+                )}
+              </button>
+            )}
+
             {/* Mobile Navigation Drawer Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -695,6 +774,51 @@ export const Navbar: React.FC<NavbarProps> = ({
         {isMobileMenuOpen && (
           <div className="lg:hidden py-4 border-t border-slate-200 space-y-4 bg-white px-2 rounded-b-2xl shadow-xl max-h-[82vh] overflow-y-auto">
             
+            {/* Google Account Banner in Mobile Drawer */}
+            {onOpenAuthModal && (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  onOpenAuthModal();
+                }}
+                className="w-full flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-blue-50 via-white to-indigo-50 border border-blue-200 text-xs text-slate-900 shadow-2xs font-semibold text-left"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  {isGoogleUser && userProfile?.avatarUrl && !avatarLoadError ? (
+                    <img
+                      src={userProfile.avatarUrl}
+                      alt=""
+                      width={28}
+                      height={28}
+                      referrerPolicy="no-referrer"
+                      onError={() => setAvatarLoadError(true)}
+                      className="w-7 h-7 rounded-full object-cover border border-blue-300 shrink-0"
+                    />
+                  ) : (
+                    <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                      <NavbarGoogleIcon className="w-4 h-4" />
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <div className="font-bold text-slate-900 truncate">
+                      {isGoogleUser
+                        ? `${userProfile?.fullName} (Google Профил)`
+                        : 'Вход с Google Акаунт'}
+                    </div>
+                    <div className="text-[11px] text-slate-500 truncate">
+                      {isGoogleUser
+                        ? userProfile?.email || 'Синхронизиран облачен профил'
+                        : 'Синхронизирай Плана за 6.00 и матурите в облака'}
+                    </div>
+                  </div>
+                </div>
+                <span className="px-2 py-1 rounded-lg bg-blue-600 text-white text-[11px] font-bold shrink-0">
+                  {isGoogleUser ? 'Профил' : 'Влез'}
+                </span>
+              </button>
+            )}
+
             {/* Matura+ Referral Bar in Mobile Drawer -> https://maturaplus.eu */}
             <a
               href="https://maturaplus.eu"

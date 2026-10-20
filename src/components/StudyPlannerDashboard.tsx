@@ -23,6 +23,7 @@ import {
   type UserStudyProgress
 } from '../services/studyProgressService';
 import { errorBankService } from '../services/errorBankService';
+import { AUTH_SYNC_EVENT, getCachedGoogleProfile, type GoogleUserProfile } from '../services/authService';
 import { LITERATURE_CANON } from '../data/literatureDatabase';
 import { GRAMMAR_QUESTIONS } from '../data/grammarDatabase';
 import type { LessonData } from '../types';
@@ -33,6 +34,7 @@ interface StudyPlannerDashboardProps {
   lessons: LessonData[];
   onNavigateTab: (tab: AppNavTab) => void;
   onSelectLesson: (lesson: LessonData, preferredTab?: AppNavTab) => void;
+  onOpenAuthModal?: () => void;
 }
 
 interface WeeklyPlanDay {
@@ -49,7 +51,8 @@ interface WeeklyPlanDay {
 export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
   lessons,
   onNavigateTab,
-  onSelectLesson
+  onSelectLesson,
+  onOpenAuthModal
 }) => {
   const [progress, setProgress] = useState<UserStudyProgress>(() =>
     studyProgressService.getProgress()
@@ -57,6 +60,16 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
   const [now, setNow] = useState<Date>(() => new Date());
   const [checklistTab, setChecklistTab] = useState<'authors' | 'lessons'>('authors');
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
+  const [googleProfile, setGoogleProfile] = useState<GoogleUserProfile | null>(() => getCachedGoogleProfile());
+
+  useEffect(() => {
+    const handleAuthOrProgressSync = () => {
+      setProgress(studyProgressService.getProgress());
+      setGoogleProfile(getCachedGoogleProfile());
+    };
+    window.addEventListener(AUTH_SYNC_EVENT, handleAuthOrProgressSync);
+    return () => window.removeEventListener(AUTH_SYNC_EVENT, handleAuthOrProgressSync);
+  }, []);
 
   // Tick every second for the live official exam countdown
   useEffect(() => {
@@ -526,6 +539,18 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                 >
                   <Award className="w-4 h-4" />
                   <span>Генерирай Грамота / Сертификат за 6.00 (PDF / A4)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onOpenAuthModal?.()}
+                  className={`${onOpenAuthModal ? 'flex' : 'hidden'} mt-2 w-full py-2 px-3 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs border border-white/20 items-center justify-center gap-1.5 transition-all cursor-pointer`}
+                >
+                  <ShieldCheck className="w-4 h-4 text-emerald-300" aria-hidden="true" />
+                  <span>
+                    {googleProfile && !googleProfile.isAnonymous
+                      ? `Google Облачен Профил (${googleProfile.fullName})`
+                      : 'Свържи с Google Акаунт (Облачен архив на плана)'}
+                  </span>
                 </button>
               </div>
             </div>

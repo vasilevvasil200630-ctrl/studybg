@@ -42,6 +42,7 @@ const SpeedBlitzLab = lazy(() => import('./components/SpeedBlitzLab').then(m => 
 const ScienceDziLab = lazy(() => import('./components/ScienceDziLab').then(m => ({ default: m.ScienceDziLab })));
 const OralExamSimulatorLab = lazy(() => import('./components/OralExamSimulatorLab').then(m => ({ default: m.OralExamSimulatorLab })));
 const SchoolsSpecialtiesHub = lazy(() => import('./components/SchoolsSpecialtiesHub').then(m => ({ default: m.SchoolsSpecialtiesHub })));
+const AuthProfileModal = lazy(() => import('./components/AuthProfileModal').then(m => ({ default: m.AuthProfileModal })));
 import { errorBankService } from './services/errorBankService';
 
 import {
@@ -157,6 +158,7 @@ export function App() {
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
   const [isFormulaModalOpen, setIsFormulaModalOpen] = useState(false);
   const [isQuickLessonModalOpen, setIsQuickLessonModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [practiceQuestions, setPracticeQuestions] = useState<QuizQuestion[] | null>(null);
 
   const curriculumHydratedRef = useRef(false);
@@ -489,6 +491,7 @@ export function App() {
         onScrollToCatalog={scrollToCatalog}
         onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
         onOpenQuickSearch={() => setIsQuickLessonModalOpen(true)}
+        onOpenAuthModal={() => setIsAuthModalOpen(true)}
         totalLessonsCount={totalLessonsDisplayCount}
       />
 
@@ -537,6 +540,14 @@ export function App() {
                   (['quiz', 'flashcards', 'oralexam', 'audit'].includes(activeTab) ? activeTab : 'summary')
               )
             }
+          />
+        )}
+
+        {/* Google Account & Cloud Sync Modal */}
+        {isAuthModalOpen && (
+          <AuthProfileModal
+            onClose={() => setIsAuthModalOpen(false)}
+            onNavigateTab={handleNavigateStudyTab}
           />
         )}
 
@@ -970,6 +981,7 @@ export function App() {
                         lessons={lessons}
                         onNavigateTab={handleNavigateStudyTab}
                         onSelectLesson={handleLessonSelected}
+                        onOpenAuthModal={() => setIsAuthModalOpen(true)}
                       />
                     )}
                   </Suspense>

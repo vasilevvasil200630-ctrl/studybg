@@ -5,6 +5,9 @@ import type { AppNavTab } from './Navbar';
 import { GRADES_LIST, SUBJECTS_LIST } from '../data/curriculumDatabase';
 import { MaturaPlusBridgeBanner } from './MaturaPlusBridgeBanner';
 import { studyProgressService } from '../services/studyProgressService';
+import { BULGARIAN_CURRICULUM_TREE } from '../data/bulgarianCurriculumTree';
+import { SUBDOMAIN_LESSON_MAP } from '../services/curriculumClassifier';
+import { buildTailoredSubDomainLesson } from '../services/infiniteQuizGenerator';
 
 interface SubjectCatalogProps {
   lessons: LessonData[];
@@ -300,6 +303,129 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
           <MaturaPlusBridgeBanner compact={false} source="catalog-junior-filter" />
         </div>
       )}
+
+      {/* Official MON Curriculum Tree (56 SubDomains with Study Material & Infinite Quiz) */}
+      <div className="mb-8 p-4 sm:p-5 rounded-2xl bg-indigo-50/40 border border-indigo-200/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-indigo-200/60">
+          <div>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-100 text-indigo-900 border border-indigo-200 mb-1">
+              <Layers className="w-3 h-3 text-indigo-700" />
+              <span>Официално дърво на учебната програма на МОН (56 тематични раздела • 5.–12. клас)</span>
+            </span>
+            <h4 className="text-base sm:text-lg font-extrabold text-slate-900">
+              Раздели, задължителни изисквания за Отличен (6.00), учебен материал и тестове по всяка подтема
+            </h4>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[520px] overflow-y-auto pr-1">
+          {BULGARIAN_CURRICULUM_TREE.filter(
+            (tree) => selectedSubject === 'Всички предмети' || tree.subject === selectedSubject
+          ).flatMap((tree) =>
+            tree.grades
+              .filter((g) => matchesGradeFilter(g.grade, selectedGrade))
+              .flatMap((g) =>
+                g.domains.flatMap((dom) =>
+                  dom.subDomains
+                    .filter((sub) => {
+                      const q = searchQuery.toLowerCase().trim();
+                      if (!q) return true;
+                      return (
+                        sub.name.toLowerCase().includes(q) ||
+                        dom.name.toLowerCase().includes(q) ||
+                        sub.keywords.some((kw) => kw.toLowerCase().includes(q)) ||
+                        sub.gradeRequirement6.some((req) => req.toLowerCase().includes(q))
+                      );
+                    })
+                    .map((sub) => {
+                      const mappedId = SUBDOMAIN_LESSON_MAP[sub.id];
+                      const baseLesson =
+                        lessons.find((l) => l.id === mappedId) ||
+                        lessons.find((l) => l.subject === tree.subject) ||
+                        lessons[0];
+
+                      return (
+                        <div
+                          key={sub.id}
+                          className="p-3.5 rounded-xl bg-white border border-indigo-100 hover:border-indigo-300 shadow-2xs flex flex-col justify-between gap-2.5 transition-all"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between gap-1.5 text-[10px]">
+                              <span className="font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 truncate">
+                                {tree.subject}
+                              </span>
+                              <span className="font-mono font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">
+                                {g.grade}
+                              </span>
+                            </div>
+                            <div className="text-[11px] font-semibold text-slate-500 line-clamp-1">
+                              {dom.name}
+                            </div>
+                            <h5 className="text-xs sm:text-sm font-extrabold text-slate-900 leading-snug">
+                              {sub.name}
+                            </h5>
+                            <ul className="space-y-1 pt-1">
+                              {sub.gradeRequirement6.slice(0, 2).map((req, rIdx) => (
+                                <li key={rIdx} className="text-[11px] text-slate-700 flex items-start gap-1.5 leading-snug">
+                                  <span className="text-emerald-600 font-bold">✓</span>
+                                  <span>{req}</span>
+                                </li>
+                              ))}
+                            </ul>
+                            <div className="text-[11px] text-amber-900 bg-amber-50/70 border border-amber-200/70 rounded-lg px-2 py-1 leading-snug">
+                              <span className="font-bold">Съвет по МОН: </span>
+                              {sub.advice}
+                            </div>
+                          </div>
+
+                          <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (!baseLesson) return;
+                                const tailored = buildTailoredSubDomainLesson(
+                                  tree.subject,
+                                  g.grade,
+                                  dom.name,
+                                  sub,
+                                  baseLesson,
+                                  lessons
+                                );
+                                onSelectLesson(tailored, 'summary');
+                              }}
+                              className="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200 text-[11px] font-bold transition-colors cursor-pointer"
+                            >
+                              <BookOpen className="w-3 h-3 text-indigo-700" />
+                              <span>Материал по МОН</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (!baseLesson) return;
+                                const tailored = buildTailoredSubDomainLesson(
+                                  tree.subject,
+                                  g.grade,
+                                  dom.name,
+                                  sub,
+                                  baseLesson,
+                                  lessons
+                                );
+                                onSelectLesson(tailored, 'quiz');
+                              }}
+                              className="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold transition-colors cursor-pointer shadow-2xs"
+                            >
+                              <CheckSquare className="w-3 h-3" />
+                              <span>Тест по темата (∞)</span>
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })
+                )
+              )
+          )}
+        </div>
+      </div>
 
       {/* Lessons Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">

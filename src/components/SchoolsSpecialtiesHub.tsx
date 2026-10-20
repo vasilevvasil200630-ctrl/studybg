@@ -30,6 +30,12 @@ import {
   HeartHandshake
 } from 'lucide-react';
 import type { LessonData } from '../types';
+import type { AppNavTab } from './Navbar';
+import {
+  buildTailoredSpecialtyLesson,
+  buildTailoredMatrixSubjectLesson,
+  generateInfiniteLessonQuiz
+} from '../services/infiniteQuizGenerator';
 import {
   SCHOOL_SPECIALTIES_SECTIONS,
   GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX,
@@ -38,7 +44,7 @@ import {
 
 interface SchoolsSpecialtiesHubProps {
   allLessons: LessonData[];
-  onSelectLesson: (lesson: LessonData) => void;
+  onSelectLesson: (lesson: LessonData, targetTab?: AppNavTab) => void;
   initialSchoolId?: string;
 }
 
@@ -453,6 +459,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
   const [activeSectionFilter, setActiveSectionFilter] = useState<string>('Всички раздели');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({});
+  const [trainerVariant, setTrainerVariant] = useState<number>(0);
   // Интерактивен калкулатор за Диплома & ДИППК (Трета СПК)
   const [calcSchoolMode, setCalcSchoolMode] = useState<'vocational' | 'profiled'>('vocational');
   const [oopAverage, setOopAverage] = useState<number>(5.65);
@@ -486,12 +493,12 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
     return map;
   }, [allLessons]);
 
-  const handleOpenLessonById = (lessonId: string) => {
+  const handleOpenLessonById = (lessonId: string, targetTab: AppNavTab = 'summary') => {
     const found = lessonByIdMap.get(lessonId);
     if (found) {
-      onSelectLesson(found);
+      onSelectLesson(found, targetTab);
     } else if (allLessons.length > 0) {
-      onSelectLesson(allLessons[0]);
+      onSelectLesson(allLessons[0], targetTab);
     }
   };
 
@@ -705,7 +712,22 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                         Урок: <strong className="text-slate-200">{targetLesson?.title || 'Специализиран модул'}</strong>
                       </span>
                       <button
-                        onClick={() => handleOpenLessonById(spec.linkedLessonId)}
+                        onClick={() => {
+                          const base = targetLesson || allLessons[0];
+                          if (!base) return;
+                          onSelectLesson(buildTailoredSpecialtyLesson(selectedSchool, spec, base, allLessons), 'quiz');
+                        }}
+                        className="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors cursor-pointer"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Тест (∞)</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          const base = targetLesson || allLessons[0];
+                          if (!base) return;
+                          onSelectLesson(buildTailoredSpecialtyLesson(selectedSchool, spec, base, allLessons), 'summary');
+                        }}
                         className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors"
                       >
                         <BookOpen className="w-3.5 h-3.5" />
@@ -808,10 +830,40 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
             <div className="space-y-3">
               <h4 className="text-base font-bold text-white flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                Интерактивен изпитен тренажор ({selectedSchool.shortName})
+                <span>Интерактивен изпитен тренажор ({selectedSchool.shortName}{trainerVariant > 0 ? ` • Вариант #${trainerVariant}` : ''})</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTrainerVariant((v) => v + 1);
+                    setQuizAnswers({});
+                  }}
+                  className="ml-auto inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Нов вариант (∞)</span>
+                </button>
               </h4>
               <div className="space-y-4">
-                {selectedSchool.specialtyQuiz.map((q) => {
+                {(trainerVariant === 0
+                  ? selectedSchool.specialtyQuiz
+                  : (() => {
+                      const firstSpec = selectedSchool.specialties[0];
+                      const base =
+                        (firstSpec && lessonByIdMap.get(firstSpec.linkedLessonId)) ||
+                        linkedLessonsForSelectedSchool[0] ||
+                        allLessons[0];
+                      if (!base || !firstSpec) return selectedSchool.specialtyQuiz;
+                      const tailored = buildTailoredSpecialtyLesson(selectedSchool, firstSpec, base, allLessons);
+                      return generateInfiniteLessonQuiz(tailored, allLessons, trainerVariant, 4).map((gq, idx) => ({
+                        id: `${selectedSchool.id}-v${trainerVariant}-${idx + 1}`,
+                        question: gq.question,
+                        options: gq.options,
+                        correctAnswer: gq.correctIndex,
+                        explanation: gq.explanation,
+                        specialtyTag: `${selectedSchool.shortName} • Вариант #${trainerVariant}`
+                      }));
+                    })()
+                ).map((q) => {
                   const chosen = quizAnswers[q.id];
                   const isAnswered = chosen !== undefined;
                   const isCorrect = chosen === q.correctAnswer;
@@ -1064,7 +1116,22 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
 
                       <div className="shrink-0 flex items-center gap-2">
                         <button
-                          onClick={() => handleOpenLessonById(subj.linkedLessonId)}
+                          onClick={() => {
+                            const base = lessonByIdMap.get(subj.linkedLessonId) || allLessons[0];
+                            if (!base) return;
+                            onSelectLesson(buildTailoredMatrixSubjectLesson(gradeBlock, subj, base, allLessons), 'quiz');
+                          }}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600/90 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
+                        >
+                          <Sparkles className="w-4 h-4" />
+                          <span>Тест (∞)</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            const base = lessonByIdMap.get(subj.linkedLessonId) || allLessons[0];
+                            if (!base) return;
+                            onSelectLesson(buildTailoredMatrixSubjectLesson(gradeBlock, subj, base, allLessons), 'summary');
+                          }}
                           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600/90 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-sm"
                         >
                           <BookOpen className="w-4 h-4" />
@@ -1414,7 +1481,14 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
 
                 <div className="pt-2">
                   <button
-                    onClick={() => handleOpenLessonById(activeDefense.linkedLessonId)}
+                    onClick={() => handleOpenLessonById(activeDefense.linkedLessonId, 'quiz')}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors mr-2 cursor-pointer"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    Тест по тази дипломна защита (∞)
+                  </button>
+                  <button
+                    onClick={() => handleOpenLessonById(activeDefense.linkedLessonId, 'summary')}
                     className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-500 text-white text-xs font-bold transition-colors"
                   >
                     <BookOpen className="w-4 h-4" />

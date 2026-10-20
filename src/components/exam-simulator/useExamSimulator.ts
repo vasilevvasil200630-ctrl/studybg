@@ -220,16 +220,16 @@ export function useExamSimulator({
       const l = pool.find(x => x.id === 'cs-cybersecurity-cryptography-ai-machine-learning-11-12');
       if (l) onSelectLesson(l);
     } else if (preset === 'dippk-finance-ntbg') {
-      const l = pool.find(x => x.id === 'econ-accounting-banking-fintech-customs-11-12');
+      const l = pool.find(x => x.id === 'econ-micro-macro-accounting-finance-8-12');
       if (l) onSelectLesson(l);
     } else if (preset === 'dippk-arch-sgsag') {
-      const l = pool.find(x => x.id === 'voc-architecture-bim-geodesy-civil-eng-11-12');
+      const l = pool.find(x => x.id === 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones');
       if (l) onSelectLesson(l);
     } else if (preset === 'dippk-aviation-maritime') {
-      const l = pool.find(x => x.id === 'voc-aviation-aerodynamics-maritime-navigation-11-12');
+      const l = pool.find(x => x.id === 'phys-newton-laws-mechanics');
       if (l) onSelectLesson(l);
     } else if (preset === 'dippk-nuclear-optics') {
-      const l = pool.find(x => x.id === 'voc-nuclear-power-laser-optics-11-12');
+      const l = pool.find(x => x.id === 'phys-quantum-nuclear-astrophysics');
       if (l) onSelectLesson(l);
     } else if (preset === 'nvo10-history' || preset === 'nvo10-history-simeon') {
       const l = pool.find(x => x.id === 'history-simeon-golden-age');

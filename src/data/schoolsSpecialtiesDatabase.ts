@@ -83,7 +83,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Профил „Математически“ (Математика + Информатика / Физика)',
         qualification: 'Профилирана подготовка (Модули 1–4 в 11.–12. клас)',
         coreSubjects: ['Алгебра и Анализ', 'Евклидова и Аналитична геометрия', 'Комбинаторика и Вероятности', 'Алгоритми и Структури от данни'],
-        linkedLessonId: 'math-combinatorics-probability-stats-10-12'
+        linkedLessonId: 'math-quadratic-vieta-progressions'
       },
       {
         code: 'ПРОФИЛ-СХН',
@@ -104,7 +104,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Профил „Природни науки“ (Физика, Астрономия и Инженерна математика)',
         qualification: 'Профилирана подготовка по Физика и Математика',
         coreSubjects: ['Класическа механика и Термодинамика', 'Електродинамика и Магнитно поле', 'Трептения, Вълни и Оптика', 'Квантова и ядрена физика, Астрофизика'],
-        linkedLessonId: 'physics-quantum-nuclear-astrophysics-12'
+        linkedLessonId: 'phys-quantum-nuclear-astrophysics'
       }
     ],
     gradeProgression: [
@@ -167,12 +167,12 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'math-derivatives-calculus-11-12',
-      'math-combinatorics-probability-stats-10-12',
+      'math-derivatives-extremums-dzi',
+      'math-quadratic-vieta-progressions',
       'cs-algorithms-oop-databases-8-12',
       'bio-medicine-anatomy-biotech-pharmacy-8-12',
-      'chem-thermochemistry-electrochemistry-11-12',
-      'physics-quantum-nuclear-astrophysics-12'
+      'chem-11-12-electrochemistry-galvanic-electrolysis-corrosion',
+      'phys-quantum-nuclear-astrophysics'
     ],
     specialtyQuiz: [
       {
@@ -220,7 +220,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Профил „Чужди езици“ — Първи чужд език Английски (Ниво B2/C1) + Втори чужд език',
         qualification: 'Профилирана подготовка по Чужд език + Cambridge C1 Advanced / IELTS',
         coreSubjects: ['Академично писане и четене с разбиране (Reading & Use of English)', 'Синтаксис: Inversions, Cleft Sentences, Mixed Conditionals', 'Англоезична литература и културология', 'Втори чужд език (Немски / Испански / Френски)'],
-        linkedLessonId: 'english-conditionals-passive-reported-10-12'
+        linkedLessonId: 'eng-conditionals-passive-reported'
       },
       {
         code: 'ПРОФИЛ-ЧЕ-НЕМ-ФР-ИСП',
@@ -298,11 +298,11 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
     ],
     linkedLessonIds: [
       'lang-german-french-spanish-b1-b2-8-12',
-      'english-conditionals-passive-reported-10-12',
-      'english-dzi-reading-transformations-essay-12',
+      'eng-conditionals-passive-reported',
+      'english-present-perfect-vs-past',
       'phil-psychology-logic-ethics-law-8-10',
-      'bel-dzi-complete-literary-matrix-11-12',
-      'history-medieval-golden-age-samuil-asen-10-12'
+      'bel-12-grade-modern-authors-dzi-complete',
+      'history-simeon-golden-age'
     ],
     specialtyQuiz: [
       {
@@ -442,7 +442,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       'cs-algorithms-oop-databases-8-12',
       'cs-web-cybersecurity-ai-10-12',
       'phys-electromagnetic-induction-faraday-maxwell-dzi',
-      'math-combinatorics-probability-stats-10-12'
+      'math-quadratic-vieta-progressions'
     ],
     specialtyQuiz: [
       {
@@ -575,8 +575,8 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
     linkedLessonIds: [
       'econ-micro-macro-accounting-finance-8-12',
       'econ-marketing-management-ecommerce-10-12',
-      'math-financial-stereometry-11-12',
-      'geo-bulgaria-population-settlements-economy-10'
+      'math-10-12-solid-geometry-prisms-pyramids-spheres-cones',
+      'geo-bulgaria-population-settlements-tertiary-dzi'
     ],
     specialtyQuiz: [
       {
@@ -707,9 +707,9 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
     ],
     linkedLessonIds: [
       'math-10-12-solid-geometry-prisms-pyramids-spheres-cones',
-      'math-financial-stereometry-11-12',
-      'math-trigonometry-stereometry-10',
-      'physics-mechanics-10'
+      'math-10-12-solid-geometry-prisms-pyramids-spheres-cones',
+      'math-trigonometry-sine-cosine-nvo10',
+      'phys-newton-laws-mechanics'
     ],
     specialtyQuiz: [
       {
@@ -830,8 +830,8 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
     ],
     linkedLessonIds: [
       'phys-electromagnetic-induction-faraday-maxwell-dzi',
-      'physics-electricity-magnetism-9-10',
-      'physics-oscillations-waves-optics-11',
+      'phys-electricity-ohm-joule',
+      'phys-8-10-mechanics-thermodynamics-electricity-complete',
       'cs-algorithms-oop-databases-8-12'
     ],
     specialtyQuiz: [
@@ -880,7 +880,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Екология и опазване на околната среда (Професия „Еколог“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Мониторинг на води, въздух и почви (БПК₅, ХПК, pH, тежки метали)', 'Екосистеми, биогеохимични цикли и биоразнообразие (Натура 2000)', 'Пречиствателни станции за отпадъчни води и управление на отпадъци', 'Екологично законодателство и оценка на въздействието (ОВОС)'],
-        linkedLessonId: 'bio-ecology-10'
+        linkedLessonId: 'bio-evolution-hardy-weinberg-ecology-dzi'
       },
       {
         code: '5210501',
@@ -953,10 +953,10 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
     ],
     linkedLessonIds: [
       'bio-medicine-anatomy-biotech-pharmacy-8-12',
-      'bio-molecular-central-dogma-11-12',
-      'bio-genetics-evolution-10-12',
-      'chem-solutions-ph-kinetics-equilibrium-10-12',
-      'chem-organic-functional-groups-proteins-9-12'
+      'bio-dna-replication-protein',
+      'bio-genetics-mendel-laws',
+      'chem-solutions-ph-electrolytes',
+      'chem-organic-hydrocarbons-alcohols'
     ],
     specialtyQuiz: [
       {
@@ -1078,7 +1078,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
     linkedLessonIds: [
       'econ-marketing-management-ecommerce-10-12',
       'econ-marketing-management-ecommerce-10-12',
-      'geo-bulgaria-population-settlements-economy-10',
+      'geo-bulgaria-population-settlements-tertiary-dzi',
       'lang-german-french-spanish-b1-b2-8-12'
     ],
     specialtyQuiz: [
@@ -1207,7 +1207,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       'phys-newton-laws-mechanics',
       'phys-8-10-mechanics-thermodynamics-electricity-complete',
       'phys-electromagnetic-induction-faraday-maxwell-dzi',
-      'physics-mechanics-10'
+      'phys-newton-laws-mechanics'
     ],
     specialtyQuiz: [
       {
@@ -1334,7 +1334,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
     linkedLessonIds: [
       'chem-organic-hydrocarbons-alcohols',
       'econ-marketing-management-ecommerce-10-12',
-      'chem-organic-functional-groups-proteins-9-12',
+      'chem-organic-hydrocarbons-alcohols',
       'bio-medicine-anatomy-biotech-pharmacy-8-12'
     ],
     specialtyQuiz: [
@@ -1445,7 +1445,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
     linkedLessonIds: [
       'bio-medicine-anatomy-biotech-pharmacy-8-12',
       'bio-medicine-anatomy-biotech-pharmacy-8-12',
-      'physics-mechanics-10',
+      'phys-newton-laws-mechanics',
       'phil-psychology-logic-ethics-law-8-10'
     ],
     specialtyQuiz: [
@@ -1566,7 +1566,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
     linkedLessonIds: [
       'lang-russian-italian-latin-classical-8-12',
       'lang-german-french-spanish-b1-b2-8-12',
-      'bel-old-bulgarian-renaissance-enlightenment-8-9',
+      'bel-world-literature-9-enlightenment-romanticism-realism',
       'phil-psychology-logic-ethics-law-8-10'
     ],
     specialtyQuiz: [
@@ -1700,7 +1700,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       'phys-quantum-nuclear-astrophysics',
       'phys-8-10-mechanics-thermodynamics-electricity-complete',
       'chem-8-10-inorganic-organic-periodic-table-complete',
-      'physics-quantum-nuclear-astrophysics-12'
+      'phys-quantum-nuclear-astrophysics'
     ],
     specialtyQuiz: [
       {
@@ -1830,9 +1830,9 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
     ],
     linkedLessonIds: [
       'phil-ethics-law-democracy-economy',
-      'civics-constitution-democracy-eu-11-12',
+      'civic-powers-separation',
       'phil-psychology-logic-ethics-law-8-10',
-      'history-bulgaria-wars-20th-century-10-12'
+      'history-balkan-wars-ww1-catastrophes'
     ],
     specialtyQuiz: [
       {
@@ -1960,7 +1960,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       'bel-dzi-syntax-editing-essay-mastery',
       'chem-organic-hydrocarbons-alcohols',
       'econ-marketing-management-ecommerce-10-12',
-      'physics-oscillations-waves-optics-11'
+      'phys-8-10-mechanics-thermodynamics-electricity-complete'
     ],
     specialtyQuiz: [
       {
@@ -2087,7 +2087,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       'bio-medicine-anatomy-biotech-pharmacy-8-12',
       'bio-medicine-anatomy-biotech-pharmacy-8-12',
       'phil-psychology-logic-ethics-law-8-10',
-      'chem-solutions-ph-kinetics-equilibrium-10-12'
+      'chem-solutions-ph-electrolytes'
     ],
     specialtyQuiz: [
       {
@@ -2133,7 +2133,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'Всички гимназии и техникуми',
         keyTopics: 'Старобългарска и възрожденска книжнина, Античност („Илиада“, „Антигона“), Библия, Средновековие („Пространно житие на Кирил“, „Азбучна молитва“, „За буквите“), Ренесанс („Декамерон“, „Дон Кихот“, „Хамлет“)',
         weeklyHoursNote: '4–5 ч./седм.',
-        linkedLessonId: 'bel-old-bulgarian-renaissance-enlightenment-8-9'
+        linkedLessonId: 'bel-world-literature-9-enlightenment-romanticism-realism'
       },
       {
         subjectName: 'Български език — Пълен граматичен, морфологичен и синтактичен практикум (8.–10. клас)',
@@ -2229,7 +2229,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'Всички гимназии и професионални училища',
         keyTopics: 'Българско възраждане (Паисий Хилендарски, Софроний Врачански, П. Р. Славейков, Христо Ботев), Следосвобожденска литература: Иван Вазов и Алеко Константинов („Бай Ганьо“)',
         weeklyHoursNote: '4 ч./седм.',
-        linkedLessonId: 'bel-botev-poetry-9-12'
+        linkedLessonId: 'literature-botev-dzi'
       },
       {
         subjectName: 'Световна литература (9. клас — Просвещение, Романтизъм, Реализъм и Символизъм)',
@@ -2245,7 +2245,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'Всички гимназии и професионални училища',
         keyTopics: 'Системи уравнения от втора степен, Квадратна функция и парабола, Теорема на Талес, Подобни триъгълници, Метрични зависимости в правоъгълен триъгълник и Питагорова теорема, Тригонометрия на остър ъгъл',
         weeklyHoursNote: '3–6 ч./седм.',
-        linkedLessonId: 'math-functions-graphs-9-12'
+        linkedLessonId: 'math-8-10-algebra-radicals-quadratics-systems-nvo10'
       },
       {
         subjectName: 'Биология и здравно образование (8.–10. клас — Анатомия, Клетка, Генетика и Еволюция)',
@@ -2325,7 +2325,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'Всички училища',
         keyTopics: 'Книжовни норми за НВО + Българска литература: Вазов („Епопея на забравените“, „Под игото“), Ал. Константинов, Пенчо Славейков, Яворов, Дебелянов, Елин Пелин („Гераците“), Вапцаров',
         weeklyHoursNote: '4 ч./седм.',
-        linkedLessonId: 'bel-grammar-10'
+        linkedLessonId: 'bel-8-10-bulgarian-grammar-syntax-punctuation-nvo10'
       },
       {
         subjectName: 'Българска литература (10. клас — Смирненски, Гео Милев „Септември“, Атанас Далчев и Йордан Йовков)',
@@ -2341,7 +2341,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'Всички училища',
         keyTopics: 'Ирационални уравнения, Аритметична и Геометрична прогресия, Синусова и Косинусова теорема, Решаване на произволен триъгълник и четириъгълник, Статистика и вероятности',
         weeklyHoursNote: '3–6 ч./седм.',
-        linkedLessonId: 'math-trigonometry-stereometry-10'
+        linkedLessonId: 'math-trigonometry-sine-cosine-nvo10'
       },
       {
         subjectName: 'Математика — Пълен курс по Стереометрия (10.–12. клас: Призма, Пирамида, Цилиндър, Конус и Кълбо)',
@@ -2357,7 +2357,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'Всички училища',
         keyTopics: 'Пълен курс по История на България: Древна Тракия, Първо и Второ българско царство, Османско владичество и Българско възраждане, Трета българска държава (1878–1944 г.), Тоталитарен период и преход към демокрация и членство в НАТО и ЕС',
         weeklyHoursNote: '3–4 ч./седм.',
-        linkedLessonId: 'history-bulgaria-wars-20th-century-10-12'
+        linkedLessonId: 'history-balkan-wars-ww1-catastrophes'
       },
       {
         subjectName: 'География и икономика (10. клас — География на България)',
@@ -2365,7 +2365,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'Всички училища',
         keyTopics: 'Географско положение, Релеф и полезни изкопаеми, Климат и води, Почви, растителност и защитени територии, Население и селища, Първичен, Вторичен и Третичен сектор на стопанството, Шестте района за планиране (NUTS 2)',
         weeklyHoursNote: '2–3 ч./седм.',
-        linkedLessonId: 'geo-bulgaria-regions-economy-10-12'
+        linkedLessonId: 'geo-bulgaria-relief-climate-waters'
       },
       {
         subjectName: 'Биология (10. кл. — Генетика и Еволюция), Химия (10. кл. — Кинетика и pH) и Физика (10. кл.)',
@@ -2373,7 +2373,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'Всички училища',
         keyTopics: 'Биология: Многоклетъчен организъм, Закони на Мендел, Скачени гени, Еволюция и Екология; Химия: Разтвори, pH, Химична кинетика, Равновесие (Льо Шателие-Браун), Метали и Неметали; Физика: Магнитно поле, Оптика, Атомна и ядрена физика, Астрономия',
         weeklyHoursNote: '6 ч./седм. общо',
-        linkedLessonId: 'bio-genetics-evolution-10-12'
+        linkedLessonId: 'bio-genetics-mendel-laws'
       },
       {
         subjectName: 'Философия (10. клас — Онтология, Гносеология и Политическа философия)',
@@ -2413,7 +2413,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'Всички училища',
         keyTopics: 'Тематични блокове за ДЗИ: „Родното и чуждото“ („Железният светилник“, „Бай Ганьо“), „Миналото и паметта“ („Паисий“, „История“, „Ноев ковчег“), „Обществото и властта“ („Борба“, „Андрешко“, „Приказка за стълбата“), „Животът и смъртта“ („До моето първо либе“, „Новото гробище над Сливница“, „Крадецът на праскови“), „Природата“ („При Рилския манастир“, „Градушка“, „Спи езерото“)',
         weeklyHoursNote: '4–7 ч./седм.',
-        linkedLessonId: 'bel-talev-dimov-vaptsarov-11-12'
+        linkedLessonId: 'bel-talev-dimov-romani-dzi'
       },
       {
         subjectName: 'Математика (11. клас — Показателни, Логаритмични и Ирационални уравнения и неравенства)',
@@ -2437,7 +2437,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'Всички училища',
         keyTopics: 'Демокрация и гражданско участие, Конституция на Република България (разделение на властите: Народно събрание, Министерски съвет, Президент, Съдебна власт, Конституционен съд), Човешки права и институции на Европейския съюз',
         weeklyHoursNote: '2 ч./седм.',
-        linkedLessonId: 'civics-constitution-democracy-eu-11-12'
+        linkedLessonId: 'civic-powers-separation'
       },
       {
         subjectName: 'Информатика — Структури от данни, Графи (BFS/DFS/Дейкстра) и Сложност на алгоритми (11.–12. клас)',
@@ -2469,7 +2469,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'ПМГ, ЕГ, НГДЕК, СУ с профилирани паралелки',
         keyTopics: 'Биология: Репликация, Транскрипция, Транслация и Биоенергетика; Химия: Хибридизация и Термохимия (Закон на Хес); Физика: Трептения, Вълни и Вълнова оптика',
         weeklyHoursNote: '8–12 ч./седм.',
-        linkedLessonId: 'bio-molecular-central-dogma-11-12'
+        linkedLessonId: 'bio-dna-replication-protein'
       },
       {
         subjectName: 'Финансови пазари, Фондова борса, FOREX, Международна търговия и Осигурителни системи (11.–12. клас)',
@@ -2509,7 +2509,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'Всички училища + Профил Математика за ДЗИ и ВУЗ',
         keyTopics: 'ООП: Комбинаторика (Пермутации, Вариации, Комбинации), Класическа и условна вероятност, Описателна статистика, Проста и сложна лихва, Анюитети, Многостени и ротационни тела; ПП: Определен интеграл (Нютон-Лайбниц) и параметрични екстремални задачи',
         weeklyHoursNote: '2–8 ч./седм.',
-        linkedLessonId: 'math-combinatorics-probability-stats-10-12'
+        linkedLessonId: 'math-quadratic-vieta-progressions'
       },
       {
         subjectName: 'Гражданско образование (12. клас — Икономика, Труд и Глобален свят)',
@@ -2517,7 +2517,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'Всички училища',
         keyTopics: 'Социална държава, Трудови правоотношения (трудов договор, осигуровки, защита на потребителите), Семеен бюджет и финансова грамотност, Устойчиво развитие и глобални предизвикателства',
         weeklyHoursNote: '2 ч./седм.',
-        linkedLessonId: 'civics-constitution-democracy-eu-11-12'
+        linkedLessonId: 'civic-powers-separation'
       },
       {
         subjectName: 'Биология и биомедицина за ДЗИ и МУ (12. клас — Имунология, Вирусология, Невробиология и Ендокринология)',

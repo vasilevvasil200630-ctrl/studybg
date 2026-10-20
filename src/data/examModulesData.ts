@@ -795,7 +795,7 @@ export const SPECIFIC_EXAM_MODULES: Record<string, Partial<FullExamData>> = {
     }
   },
 
-  'econ-accounting-banking-fintech-customs-11-12': {
+  'econ-micro-macro-accounting-finance-8-12': {
     module2: {
       sourceTitle: 'Финансово-счетоводен казус за ДИППК (НТБГ / НФСГ — Трета СПК): ДДС, Амортизация, Ликвидност и NPV на инвестиция',
       sourceOrigin: 'Национален изпитен казус по Икономика, Счетоводство и Банково дело (Професия „Икономист / Финансист / Данъчен и митнически посредник“)',
@@ -839,7 +839,7 @@ export const SPECIFIC_EXAM_MODULES: Record<string, Partial<FullExamData>> = {
     }
   },
 
-  'voc-architecture-bim-geodesy-civil-eng-11-12': {
+  'math-10-12-solid-geometry-prisms-pyramids-spheres-cones': {
     module2: {
       sourceTitle: 'Инженерно-конструктивен казус за ДИППК (СГСАГ — Трета СПК): Статика на греда, Земетръсна устойчивост (Еврокод 8) и Геодезия',
       sourceOrigin: 'Държавен квалификационен изпит по Строителство, Архитектура и Геодезия (Професия „Строителен техник“ / „Геодезист“)',
@@ -883,7 +883,7 @@ export const SPECIFIC_EXAM_MODULES: Record<string, Partial<FullExamData>> = {
     }
   },
 
-  'voc-aviation-aerodynamics-maritime-navigation-11-12': {
+  'phys-newton-laws-mechanics': {
     module2: {
       sourceTitle: 'Навигационно-аеродинамичен казус за ДИППК: Подемна сила на самолетно крило и корекция на морски компасен курс',
       sourceOrigin: 'Държавен квалификационен изпит по Авиационна техника и Морско корабоводене (Трета СПК / ИКАО & ИМО STCW)',
@@ -927,7 +927,7 @@ export const SPECIFIC_EXAM_MODULES: Record<string, Partial<FullExamData>> = {
     }
   },
 
-  'voc-nuclear-power-laser-optics-11-12': {
+  'phys-quantum-nuclear-astrophysics': {
     module2: {
       sourceTitle: 'Енергийно-оптичен казус за ДИППК: Топлинен баланс на реактор ВВЕР-1000 и числена апертура на оптично влакно',
       sourceOrigin: 'Държавен квалификационен изпит по Ядрена енергетика и Лазерна и оптична техника (Трета СПК)',

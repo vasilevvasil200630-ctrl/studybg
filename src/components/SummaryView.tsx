@@ -266,6 +266,73 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
           )}
         </div>
 
+        {/* Full Structured MON Development & Syllabus Breakdown */}
+        <div className="my-6 p-4 sm:p-6 rounded-xl bg-indigo-50/40 border border-indigo-200/90 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-indigo-200/70">
+            <div>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-100 text-indigo-900 border border-indigo-200 mb-1">
+                <BookOpen className="w-3 h-3 text-indigo-700" />
+                <span>Пълна разработка по учебната програма на МОН</span>
+              </span>
+              <h4 className="text-sm sm:text-base font-extrabold text-slate-900">
+                Структуриран учебен материал, теоретични раздели и критерии за Отличен (6.00)
+              </h4>
+            </div>
+            {onNavigateTab && (
+              <button
+                type="button"
+                onClick={() => onNavigateTab('quiz')}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-colors shadow-2xs cursor-pointer"
+              >
+                <GraduationCap className="w-3.5 h-3.5" />
+                <span>Решавай Тест върху материала (∞)</span>
+              </button>
+            )}
+          </div>
+
+          {lesson.originalNoteExcerpt && (
+            <div className="p-3.5 rounded-xl bg-white border border-indigo-100 shadow-2xs">
+              <div className="text-[11px] font-extrabold uppercase tracking-wider text-indigo-700 mb-1">
+                Логическа схема и конспектна рамка на урока по МОН:
+              </div>
+              <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">
+                {lesson.originalNoteExcerpt}
+              </p>
+            </div>
+          )}
+
+          {lesson.notebookChecklist && lesson.notebookChecklist.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {lesson.notebookChecklist.map((item, idx) => (
+                <div
+                  key={item.id || idx}
+                  className="p-3.5 rounded-xl bg-white border border-indigo-100 shadow-2xs flex flex-col justify-between space-y-2"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-xs font-extrabold text-slate-900">
+                        Раздел {idx + 1}: {item.requirement}
+                      </span>
+                      {item.isEssentialForSix && (
+                        <span className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                          За 6.00
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-slate-600 leading-relaxed">
+                      {item.whyNeeded}
+                    </p>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 text-xs text-slate-900 font-medium leading-relaxed">
+                    <span className="font-bold text-indigo-800">Съдържание за усвояване: </span>
+                    {item.suggestedNotes}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Key Definitions Dictionary Section */}
         {lesson.flashcards && lesson.flashcards.length > 0 && (
           <div className="my-6 p-4 sm:p-5 rounded-xl bg-blue-50/50 border border-blue-200/80">

@@ -322,7 +322,7 @@ export function App() {
     // Конспектът има собствен адрес /lesson/<id>; останалите изгледи — /<таб>
     pushRoute(
       preferredTab === 'summary'
-        ? { portal: 'study', tab: 'summary', lessonId: lesson.id }
+        ? { portal: 'study', tab: 'summary', lessonId: lesson.id.split('--')[0] }
         : { portal: 'study', tab: preferredTab }
     );
     const el = document.getElementById('workspace');
@@ -822,7 +822,7 @@ export function App() {
                     {activeTab === 'specialties' && (
                       <SchoolsSpecialtiesHub
                         allLessons={lessons}
-                        onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+                        onSelectLesson={(l, targetTab: AppNavTab = 'summary') => handleLessonSelected(l, targetTab)}
                       />
                     )}
 
@@ -887,7 +887,7 @@ export function App() {
                       <ErrorBankView
                         onStartCustomQuiz={handleStartCustomQuizFromErrors}
                         allLessons={lessons}
-                        onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+                        onSelectLesson={(l, targetTab: AppNavTab = 'summary') => handleLessonSelected(l, targetTab)}
                       />
                     )}
 
@@ -895,7 +895,7 @@ export function App() {
                       <ExamTestPaperGenerator
                         currentLesson={currentLesson}
                         allLessons={lessons}
-                        onSelectLesson={(l) => handleLessonSelected(l, 'summary')}
+                        onSelectLesson={(l, targetTab: AppNavTab = 'summary') => handleLessonSelected(l, targetTab)}
                         onNavigateTab={handleNavigateStudyTab}
                       />
                     )}
@@ -905,7 +905,7 @@ export function App() {
                         <SubjectCatalog
                           lessons={lessons}
                           currentLessonId={currentLesson.id}
-                          onSelectLesson={(l, targetTab = 'summary') => handleLessonSelected(l, targetTab)}
+                          onSelectLesson={(l, targetTab: AppNavTab = 'summary') => handleLessonSelected(l, targetTab)}
                           onStartFilteredQuiz={handleStartCustomQuizFromErrors}
                           onAddNewScan={() => setIsScanModalOpen(true)}
                         />

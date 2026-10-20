@@ -127,7 +127,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                     lessonIds: [
                       'econ-international-trade-forex-stock-market-insurance-11-12',
                       'geo-11-12-globalization-international-organizations-climate-demography',
-                      'math-combinatorics-probability-stats-10-12'
+                      'econ-micro-macro-accounting-finance-8-12'
                     ]
                   },
                   'uacg-arch': {

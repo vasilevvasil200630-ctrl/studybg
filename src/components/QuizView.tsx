@@ -4,6 +4,7 @@ import type { LessonData, QuizQuestion } from '../types';
 import type { AppNavTab } from './Navbar';
 import { EmailShareModal } from './EmailShareModal';
 import { studyProgressService } from '../services/studyProgressService';
+import { generateInfiniteLessonQuiz } from '../services/infiniteQuizGenerator';
 
 const POSITIONAL_OPTION_RE = /^(всички изброени|и двете|никое от|горните|точки а и б)/i;
 const OPTION_LETTERS = ['А', 'Б', 'В', 'Г'] as const;
@@ -53,73 +54,10 @@ export function shuffleQuizSet(questions: QuizQuestion[]): QuizQuestion[] {
 export function buildTopicVariantQuiz(
   baseLesson: LessonData,
   allLessons: LessonData[],
-  targetCount = 10
+  targetCount = 10,
+  variantSeed = 1
 ): QuizQuestion[] {
-  const sameSubject = allLessons.filter((l) => l.subject === baseLesson.subject && l.id !== baseLesson.id);
-  const titleWords = baseLesson.title
-    .toLowerCase()
-    .split(/[\s,.;:!?()[\]"'„“–—/-]+/)
-    .filter((w) => w.length >= 4);
-  const gradeNum = (g: string) => Number((g.match(/(\d+)/) || [])[1] || 0);
-  const baseGradeNum = gradeNum(baseLesson.grade);
-
-  const rankedNeighbors = sameSubject
-    .map((l) => {
-      const hay = `${l.title} ${l.summary.overview}`.toLowerCase();
-      let score = 0;
-      for (const w of titleWords) {
-        if (hay.includes(w)) score += 4;
-      }
-      if (l.grade === baseLesson.grade) score += 6;
-      else if (baseGradeNum && gradeNum(l.grade)) {
-        score -= Math.abs(gradeNum(l.grade) - baseGradeNum);
-      }
-      if (l.examType && l.examType === baseLesson.examType) score += 3;
-      return { lesson: l, score };
-    })
-    .sort((a, b) => b.score - a.score);
-
-  const baseShuffled = shuffleQuizSet(baseLesson.quiz);
-  const neighborPool: QuizQuestion[] = [];
-  for (const { lesson } of rankedNeighbors.slice(0, 5)) {
-    neighborPool.push(...lesson.quiz);
-  }
-  const neighborShuffled = shuffleQuizSet(neighborPool);
-
-  const combined: QuizQuestion[] = [];
-  const seenStems = new Set<string>();
-
-  // Вземаме разбъркано 4–5 въпроса от основния урок + допълнителни от най-близките теми
-  const baseQuota = Math.min(baseShuffled.length, Math.max(4, Math.ceil(targetCount * 0.5)));
-  for (const q of baseShuffled) {
-    if (combined.length >= baseQuota) break;
-    const key = q.question.trim().toLowerCase();
-    if (!seenStems.has(key)) {
-      seenStems.add(key);
-      combined.push(q);
-    }
-  }
-
-  for (const q of neighborShuffled) {
-    if (combined.length >= targetCount) break;
-    const key = q.question.trim().toLowerCase();
-    if (!seenStems.has(key)) {
-      seenStems.add(key);
-      combined.push(q);
-    }
-  }
-
-  // Ако още има свободно място, допълваме с останалите от основния урок
-  for (const q of baseShuffled) {
-    if (combined.length >= targetCount) break;
-    const key = q.question.trim().toLowerCase();
-    if (!seenStems.has(key)) {
-      seenStems.add(key);
-      combined.push(q);
-    }
-  }
-
-  return shuffleQuizSet(combined);
+  return generateInfiniteLessonQuiz(baseLesson, allLessons, variantSeed, targetCount);
 }
 
 export interface DualGroupWorksheet {
@@ -367,16 +305,44 @@ export const QuizView: React.FC<QuizViewProps> = ({
   };
 
   const handleGenerateTopicVariant = () => {
-    if (currentLesson && allLessons && allLessons.length > 0) {
-      const nextVariant = buildTopicVariantQuiz(currentLesson, allLessons, 10);
+    const nextNum = variantNumber + 1;
+    if (currentLesson) {
+      const nextVariant = buildTopicVariantQuiz(
+        currentLesson,
+        allLessons && allLessons.length > 0 ? allLessons : [currentLesson],
+        10,
+        nextNum
+      );
       setActiveQuestions(nextVariant);
-      setVariantNumber((n) => n + 1);
+      setVariantNumber(nextNum);
     } else {
       setActiveQuestions((prev) => shuffleQuizSet(prev));
-      setVariantNumber((n) => n + 1);
+      setVariantNumber(nextNum);
     }
     setSelectedAnswers({});
     setIsSubmitted(false);
+  };
+
+  const handleAppendMoreQuestions = () => {
+    const nextNum = variantNumber + 1;
+    if (currentLesson) {
+      const generatedPool = generateInfiniteLessonQuiz(
+        currentLesson,
+        allLessons && allLessons.length > 0 ? allLessons : [currentLesson],
+        nextNum + 10,
+        12
+      );
+      setActiveQuestions((prev) => {
+        const existingStems = new Set(prev.map((q) => q.question.trim().toLowerCase()));
+        const additions = generatedPool
+          .filter((q) => !existingStems.has(q.question.trim().toLowerCase()))
+          .slice(0, 5);
+        const fallbackAdditions = additions.length > 0 ? additions : generatedPool.slice(0, 5);
+        return [...prev, ...fallbackAdditions].map((q, idx) => ({ ...q, id: idx + 1 }));
+      });
+      setVariantNumber(nextNum);
+      setIsSubmitted(false);
+    }
   };
 
   const handleRestoreBaseQuiz = () => {
@@ -478,11 +444,22 @@ export const QuizView: React.FC<QuizViewProps> = ({
             type="button"
             onClick={handleGenerateTopicVariant}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition-colors shadow-2xs cursor-pointer"
-            title="Генерирай нов 10-въпросен вариант с допълнителни задачи по същия предмет и клас"
+            title="Генерирай нов 10-въпросен вариант с нови задачи и казуси по материала на темата (безкраен генератор)"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Нов вариант по темата</span>
+            <span>Нов вариант по темата (∞)</span>
           </button>
+
+          {currentLesson && (
+            <button
+              type="button"
+              onClick={handleAppendMoreQuestions}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 transition-colors shadow-2xs cursor-pointer"
+              title="Добави още 5 нови въпроса върху материала към текущия тест"
+            >
+              <span>+5 въпроса по материала</span>
+            </button>
+          )}
 
           <button
             type="button"

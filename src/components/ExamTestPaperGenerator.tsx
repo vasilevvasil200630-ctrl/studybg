@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Printer, FileText, ShieldCheck, Eye, EyeOff, GraduationCap, BookOpen, CheckSquare, Award } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
+import { generateInfiniteLessonQuiz } from '../services/infiniteQuizGenerator';
 
 interface ExamTestPaperGeneratorProps {
   currentLesson: LessonData;
@@ -194,6 +195,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
   const [showAnswerKey, setShowAnswerKey] = useState<boolean>(false);
   const [includeAnswerSheet, setIncludeAnswerSheet] = useState<boolean>(true);
   const [includeModule3, setIncludeModule3] = useState<boolean>(true);
+  const [paperVariantNumber, setPaperVariantNumber] = useState<number>(0);
 
   const activeDippkTicket =
     DIPPK_OFFICIAL_WRITTEN_TICKETS.find((t) => t.id === selectedDippkTicketId) ||
@@ -204,8 +206,15 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
   };
 
   // Group A uses original questions; Group B reverses question order AND rotates option order
-  const questionsA = currentLesson.quiz;
-  const questionsB = [...currentLesson.quiz].reverse().map((q, idx) => {
+  const questionsA =
+    paperVariantNumber > 0
+      ? generateInfiniteLessonQuiz(currentLesson, allLessons, paperVariantNumber * 2 - 1, 10)
+      : currentLesson.quiz;
+  const baseForB =
+    paperVariantNumber > 0
+      ? generateInfiniteLessonQuiz(currentLesson, allLessons, paperVariantNumber * 2, 10)
+      : currentLesson.quiz;
+  const questionsB = [...baseForB].reverse().map((q, idx) => {
     const len = q.options.length;
     if (len < 2) return q;
     const shift = (idx % (len - 1)) + 1;
@@ -290,6 +299,16 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
                 ))}
               </select>
             )}
+
+          {paperMode === 'lesson' && (
+            <button
+              onClick={() => setPaperVariantNumber((v) => v + 1)}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-colors shadow-2xs cursor-pointer"
+              title="Генерирай нов 10-въпросен вариант за Група А и Група Б с нови задачи по материала"
+            >
+              <span>Нов вариант по темата (∞){paperVariantNumber > 0 ? ` #${paperVariantNumber}` : ''}</span>
+            </button>
+          )}
 
           {/* Toggle Answer Key */}
           <button

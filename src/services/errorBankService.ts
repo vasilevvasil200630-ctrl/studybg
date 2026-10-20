@@ -28,9 +28,14 @@ export const errorBankService = {
     }
   },
 
-  saveErrors(items: SavedErrorItem[]): void {
+  saveErrors(items: SavedErrorItem[], options?: { silentCloudTrigger?: boolean }): void {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      if (!options?.silentCloudTrigger && typeof window !== 'undefined') {
+        window.dispatchEvent(
+          new CustomEvent('studybg:local-data-mutated', { detail: { source: 'error_bank' } })
+        );
+      }
     } catch {
       // storage unavailable or full
     }

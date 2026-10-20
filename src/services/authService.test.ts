@@ -6,10 +6,15 @@ import {
   mergeErrorBankItems,
   formatGoogleAuthError
 } from './authService';
-import type { UserStudyProgress } from './studyProgressService';
+import {
+  computeDailyStreakStats,
+  computeUserXpAndLevel,
+  evaluateUserAchievements,
+  type UserStudyProgress
+} from './studyProgressService';
 import type { SavedErrorItem } from './errorBankService';
 
-describe('authService — Google OAuth & Cloud Profile Sync helpers', () => {
+describe('authService — Google OAuth, Real-Time Sync, Streaks, XP & Achievements', () => {
   it('mapSupabaseUserToProfile extracts Google OAuth metadata (full_name, avatar_url, email)', () => {
     const mockGoogleUser = {
       id: 'user-google-123',
@@ -51,7 +56,7 @@ describe('authService — Google OAuth & Cloud Profile Sync helpers', () => {
     expect(mapSupabaseUserToProfile(null)).toBeNull();
   });
 
-  it('mergeStudyProgress merges local and cloud mastered lessons, authors, and grammar stats without data loss', () => {
+  it('mergeStudyProgress merges mastered lessons, authors, grammar stats, and activeDaysHistory across devices', () => {
     const localProgress: UserStudyProgress = {
       targetExam: 'dzi_bel',
       dailyGoalMinutes: 45,
@@ -60,7 +65,8 @@ describe('authService — Google OAuth & Cloud Profile Sync helpers', () => {
       masteredAuthorIds: ['botev', 'vazov'],
       grammarQuestionsSolved: 14,
       grammarBestStreak: 7,
-      completedWeeklyDays: ['mon', 'tue']
+      completedWeeklyDays: ['mon', 'tue'],
+      activeDaysHistory: ['2026-10-18', '2026-10-19']
     };
 
     const cloudProgress: Partial<UserStudyProgress> = {
@@ -71,7 +77,8 @@ describe('authService — Google OAuth & Cloud Profile Sync helpers', () => {
       masteredAuthorIds: ['vazov', 'yovkov'],
       grammarQuestionsSolved: 28,
       grammarBestStreak: 5,
-      completedWeeklyDays: ['tue', 'wed']
+      completedWeeklyDays: ['tue', 'wed'],
+      activeDaysHistory: ['2026-10-19', '2026-10-20']
     };
 
     const merged = mergeStudyProgress(localProgress, cloudProgress);
@@ -84,6 +91,58 @@ describe('authService — Google OAuth & Cloud Profile Sync helpers', () => {
     expect(merged.completedWeeklyDays).toEqual(['mon', 'tue', 'wed']);
     expect(merged.grammarQuestionsSolved).toBe(28);
     expect(merged.grammarBestStreak).toBe(7);
+    expect(merged.activeDaysHistory).toEqual(['2026-10-18', '2026-10-19', '2026-10-20']);
+    expect(merged.longestDailyStreak).toBeGreaterThanOrEqual(3);
+  });
+
+  it('computeDailyStreakStats calculates current and longest consecutive study streaks accurately', () => {
+    const stats = computeDailyStreakStats(
+      ['2026-10-10', '2026-10-11', '2026-10-12', '2026-10-13', '2026-10-19', '2026-10-20'],
+      '2026-10-20'
+    );
+    expect(stats.currentDailyStreak).toBe(2);
+    expect(stats.longestDailyStreak).toBe(4);
+  });
+
+  it('computeUserXpAndLevel and evaluateUserAchievements calculate XP, academic levels, and 12 badges', () => {
+    const progress: UserStudyProgress = {
+      targetExam: 'dzi_bel',
+      dailyGoalMinutes: 60,
+      targetGrade: 6.0,
+      masteredLessonIds: Array.from({ length: 20 }, (_, i) => `lesson-${i}`),
+      masteredAuthorIds: ['botev', 'vazov', 'aleko', 'elin-pelin', 'yovkov'],
+      grammarQuestionsSolved: 60,
+      grammarBestStreak: 12,
+      completedWeeklyDays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'],
+      activeDaysHistory: ['2026-10-18', '2026-10-19', '2026-10-20'],
+      currentDailyStreak: 3,
+      longestDailyStreak: 3
+    };
+
+    const badges = evaluateUserAchievements(progress, {
+      examAttemptsCount: 2,
+      highestExamScore: 92,
+      resolvedErrorsCount: 5
+    });
+    expect(badges.length).toBe(12);
+    const unlockedIds = badges.filter((b) => b.unlocked).map((b) => b.id);
+    expect(unlockedIds).toContain('first-steps');
+    expect(unlockedIds).toContain('curriculum-explorer');
+    expect(unlockedIds).toContain('canon-initiate');
+    expect(unlockedIds).toContain('grammar-sniper');
+    expect(unlockedIds).toContain('grammar-norm-guardian');
+    expect(unlockedIds).toContain('streak-3');
+    expect(unlockedIds).toContain('weekly-planner-pro');
+    expect(unlockedIds).toContain('exam-gladiator');
+    expect(unlockedIds).toContain('exam-excellence-6');
+
+    const levelInfo = computeUserXpAndLevel(progress, {
+      examAttemptsCount: 2,
+      highestExamScore: 92,
+      resolvedErrorsCount: 5
+    });
+    expect(levelInfo.totalXp).toBeGreaterThan(3800);
+    expect(levelInfo.level).toBeGreaterThanOrEqual(7);
   });
 
   it('mergeErrorBankItems combines items by id and preserves resolved=true across devices', () => {

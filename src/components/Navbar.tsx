@@ -30,10 +30,12 @@ import {
   Mic,
   Search,
   ChevronDown,
-  Layers
+  Layers,
+  Flame
 } from 'lucide-react';
 import { errorBankService } from '../services/errorBankService';
-import { authService, getCachedGoogleProfile, type GoogleUserProfile } from '../services/authService';
+import { authService, getCachedGoogleProfile, getCloudSyncLiveStatus, AUTH_SYNC_EVENT, type GoogleUserProfile } from '../services/authService';
+import { studyProgressService, computeUserXpAndLevel, LOCAL_DATA_MUTATED_EVENT } from '../services/studyProgressService';
 
 const NavbarGoogleIcon: React.FC<{ className?: string }> = ({ className = 'w-3.5 h-3.5' }) => (
   <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
@@ -118,17 +120,33 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [isLabsDropdownOpen, setIsLabsDropdownOpen] = useState(false);
   const [userProfile, setUserProfile] = useState<GoogleUserProfile | null>(() => getCachedGoogleProfile());
   const [avatarLoadError, setAvatarLoadError] = useState(false);
+  const [navProgress, setNavProgress] = useState(() => studyProgressService.getProgress());
+  const [syncLiveStatus, setSyncLiveStatus] = useState(() => getCloudSyncLiveStatus());
 
   useEffect(() => {
     const unsubscribe = authService.subscribeToAuthChanges((profile) => {
       setUserProfile(profile);
       setAvatarLoadError(false);
+      setNavProgress(studyProgressService.getProgress());
+      setSyncLiveStatus(getCloudSyncLiveStatus());
     });
-    return unsubscribe;
+    const onLocalOrAuthChange = () => {
+      setNavProgress(studyProgressService.getProgress());
+      setSyncLiveStatus(getCloudSyncLiveStatus());
+    };
+    window.addEventListener(LOCAL_DATA_MUTATED_EVENT, onLocalOrAuthChange);
+    window.addEventListener(AUTH_SYNC_EVENT, onLocalOrAuthChange);
+    return () => {
+      unsubscribe();
+      window.removeEventListener(LOCAL_DATA_MUTATED_EVENT, onLocalOrAuthChange);
+      window.removeEventListener(AUTH_SYNC_EVENT, onLocalOrAuthChange);
+    };
   }, []);
 
   const isGoogleUser = Boolean(userProfile && !userProfile.isAnonymous);
   const userFirstName = userProfile?.fullName?.split(/\s+/)[0] || 'Профил';
+  const navLevelInfo = computeUserXpAndLevel(navProgress);
+  const navDailyStreak = navProgress.currentDailyStreak ?? 1;
   const labsDropdownRef = useRef<HTMLDivElement>(null);
   const unresolvedErrorCount = errorBankService.getUnresolvedCount();
 
@@ -749,10 +767,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span className="hidden sm:inline max-w-[96px] truncate">
                   {isGoogleUser ? userFirstName : 'Вход'}
                 </span>
+                <span className="hidden xl:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 font-mono text-[10px] font-bold border border-amber-300">
+                  <Flame className="w-3 h-3 text-amber-600" aria-hidden="true" />
+                  {navDailyStreak}д • Н.{navLevelInfo.level}
+                </span>
                 {isGoogleUser && (
                   <span
                     aria-hidden="true"
-                    className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"
+                    className={`w-2 h-2 rounded-full shrink-0 ${
+                      syncLiveStatus === 'syncing'
+                        ? 'bg-amber-500 animate-ping'
+                        : 'bg-emerald-500'
+                    }`}
                   />
                 )}
               </button>
@@ -808,8 +834,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </div>
                     <div className="text-[11px] text-slate-500 truncate">
                       {isGoogleUser
-                        ? userProfile?.email || 'Синхронизиран облачен профил'
-                        : 'Синхронизирай Плана за 6.00 и матурите в облака'}
+                        ? `${userProfile?.email || 'Облачен профил'} • Ниво ${navLevelInfo.level} (${navLevelInfo.totalXp} XP) • 🔥 ${navDailyStreak}д`
+                        : `Ниво ${navLevelInfo.level} (${navLevelInfo.totalXp} XP) • 🔥 ${navDailyStreak}д Streak — запази в облака`}
                     </div>
                   </div>
                 </div>

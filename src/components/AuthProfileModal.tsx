@@ -12,17 +12,30 @@ import {
   Clock,
   Sparkles,
   Laptop,
-  Calendar
+  Calendar,
+  Flame,
+  Trophy,
+  Target,
+  Feather
 } from 'lucide-react';
 import { NativeDialog } from './NativeDialog';
 import {
   authService,
   getCachedGoogleProfile,
   getLastCloudSyncTimestamp,
+  getCloudSyncLiveStatus,
+  AUTH_SYNC_EVENT,
   type GoogleUserProfile,
-  type CloudProfileSyncResult
+  type CloudProfileSyncResult,
+  type CloudSyncLiveStatus
 } from '../services/authService';
-import { studyProgressService } from '../services/studyProgressService';
+import {
+  studyProgressService,
+  computeUserXpAndLevel,
+  evaluateUserAchievements,
+  LOCAL_DATA_MUTATED_EVENT,
+  type StudyAchievementBadge
+} from '../services/studyProgressService';
 import { errorBankService } from '../services/errorBankService';
 import { examHistoryService } from '../services/examHistoryService';
 import { SUPABASE_URL } from '../services/supabaseConfig';
@@ -54,6 +67,29 @@ export const GoogleLogoSvg: React.FC<{ className?: string }> = ({ className = 'w
   </svg>
 );
 
+function renderBadgeIcon(iconName: StudyAchievementBadge['iconName'], unlocked: boolean) {
+  const cls = `w-4 h-4 shrink-0 ${unlocked ? 'text-amber-600' : 'text-slate-400'}`;
+  switch (iconName) {
+    case 'flame':
+      return <Flame className={cls} aria-hidden="true" />;
+    case 'trophy':
+      return <Trophy className={cls} aria-hidden="true" />;
+    case 'feather':
+      return <Feather className={cls} aria-hidden="true" />;
+    case 'shield':
+      return <ShieldCheck className={cls} aria-hidden="true" />;
+    case 'sparkles':
+      return <Sparkles className={cls} aria-hidden="true" />;
+    case 'target':
+      return <Target className={cls} aria-hidden="true" />;
+    case 'award':
+      return <Award className={cls} aria-hidden="true" />;
+    case 'book':
+    default:
+      return <BookOpen className={cls} aria-hidden="true" />;
+  }
+}
+
 export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
   onClose,
   onNavigateTab
@@ -62,21 +98,26 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
   const [isLoadingSession, setIsLoadingSession] = useState<boolean>(true);
   const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
+  const [liveSyncStatus, setLiveSyncStatus] = useState<CloudSyncLiveStatus>(() =>
+    getCloudSyncLiveStatus()
+  );
   const [isSigningOut, setIsSigningOut] = useState<boolean>(false);
   const [avatarFailed, setAvatarFailed] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [syncResult, setSyncResult] = useState<CloudProfileSyncResult | null>(null);
   const [lastSyncIso, setLastSyncIso] = useState<string | null>(() => getLastCloudSyncTimestamp());
+  const [badgeFilter, setBadgeFilter] = useState<'all' | 'unlocked' | 'locked'>('all');
 
   const [progress, setProgress] = useState(() => studyProgressService.getProgress());
-  const [errorCount, setErrorCount] = useState(() => errorBankService.getAllErrors().length);
-  const [examCount, setExamCount] = useState(() => examHistoryService.getAllAttempts().length);
+  const [allErrors, setAllErrors] = useState(() => errorBankService.getAllErrors());
+  const [examAnalytics, setExamAnalytics] = useState(() => examHistoryService.getAnalytics());
 
-  const refreshLocalCounts = () => {
+  const refreshLocalStats = () => {
     setProgress(studyProgressService.getProgress());
-    setErrorCount(errorBankService.getAllErrors().length);
-    setExamCount(examHistoryService.getAllAttempts().length);
+    setAllErrors(errorBankService.getAllErrors());
+    setExamAnalytics(examHistoryService.getAnalytics());
     setLastSyncIso(getLastCloudSyncTimestamp());
+    setLiveSyncStatus(getCloudSyncLiveStatus());
   };
 
   useEffect(() => {
@@ -86,17 +127,23 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
         if (!mounted) return;
         setProfile(updatedProfile);
         setAvatarFailed(false);
-        refreshLocalCounts();
+        refreshLocalStats();
       },
       { forceInit: true }
     );
+
+    const onDataMutated = () => {
+      if (mounted) refreshLocalStats();
+    };
+    window.addEventListener(LOCAL_DATA_MUTATED_EVENT, onDataMutated);
+    window.addEventListener(AUTH_SYNC_EVENT, onDataMutated);
 
     authService
       .ensureAuthListenerInitialized()
       .then((currentProfile) => {
         if (!mounted) return;
         setProfile(currentProfile);
-        refreshLocalCounts();
+        refreshLocalStats();
       })
       .finally(() => {
         if (mounted) setIsLoadingSession(false);
@@ -105,10 +152,30 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
     return () => {
       mounted = false;
       unsubscribe();
+      window.removeEventListener(LOCAL_DATA_MUTATED_EVENT, onDataMutated);
+      window.removeEventListener(AUTH_SYNC_EVENT, onDataMutated);
     };
   }, []);
 
   const isGoogleSignedIn = Boolean(profile && !profile.isAnonymous);
+  const resolvedErrorsCount = allErrors.filter((e) => e.resolved).length;
+  const extraStats = {
+    examAttemptsCount: examAnalytics.totalAttempts,
+    highestExamScore: examAnalytics.highestScore,
+    resolvedErrorsCount
+  };
+
+  const levelInfo = computeUserXpAndLevel(progress, extraStats);
+  const achievements = evaluateUserAchievements(progress, extraStats);
+  const unlockedBadgesCount = achievements.filter((b) => b.unlocked).length;
+  const filteredBadges = achievements.filter((b) => {
+    if (badgeFilter === 'unlocked') return b.unlocked;
+    if (badgeFilter === 'locked') return !b.unlocked;
+    return true;
+  });
+
+  const currentStreak = progress.currentDailyStreak ?? 1;
+  const longestStreak = progress.longestDailyStreak ?? 1;
 
   const handleGoogleSignIn = async () => {
     setErrorMessage(null);
@@ -126,7 +193,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
     const res = await authService.syncUserProfileAndProgressWithCloud();
     setIsSyncing(false);
     setSyncResult(res);
-    refreshLocalCounts();
+    refreshLocalStats();
     if (!res.success && res.error) {
       setErrorMessage(res.error);
     }
@@ -166,7 +233,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
     <NativeDialog
       onClose={onClose}
       labelledBy="auth-profile-modal-title"
-      widthClassName="max-w-xl"
+      widthClassName="max-w-2xl"
     >
       <div className="rounded-2xl bg-white border border-slate-200 shadow-2xl overflow-hidden text-slate-900">
         {/* Top Header */}
@@ -176,21 +243,28 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
               <GoogleLogoSvg className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/30">
                   StudyBG Cloud ID
+                </span>
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                  <Flame className="w-3 h-3 text-amber-400" aria-hidden="true" />
+                  Streak: {currentStreak} {currentStreak === 1 ? 'ден' : 'дни'}
                 </span>
                 {isGoogleSignedIn && (
                   <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-300">
                     <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" />
-                    Свързан Google акаунт
+                    Авто-синхронизация в реално време
                   </span>
                 )}
               </div>
-              <h2 id="auth-profile-modal-title" className="text-base sm:text-lg font-bold truncate mt-0.5">
+              <h2
+                id="auth-profile-modal-title"
+                className="text-base sm:text-lg font-bold truncate mt-0.5"
+              >
                 {isGoogleSignedIn
-                  ? 'Моят Google Профил и Облачна Синхронизация'
-                  : 'Вход с Google Акаунт в StudyBG'}
+                  ? 'Google Профил, Дневен Streak, XP Нива и Значки'
+                  : 'Вход с Google Акаунт • Запази XP Нивата и Прогреса'}
               </h2>
             </div>
           </div>
@@ -218,6 +292,65 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
               </div>
             </div>
           )}
+
+          {/* ================================================================= */}
+          {/* XP LEVEL & DAILY STREAK BANNER (VISIBLE FOR BOTH STATES)          */}
+          {/* ================================================================= */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white border border-slate-800 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex flex-col items-center justify-center shrink-0">
+                  <span className="text-[10px] font-bold uppercase text-amber-300 leading-none">
+                    Ниво
+                  </span>
+                  <span className="text-xl font-black text-amber-300 leading-tight font-mono">
+                    {levelInfo.level}
+                  </span>
+                </div>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-sm sm:text-base font-extrabold text-white">
+                      {levelInfo.title}
+                    </span>
+                    <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-blue-500/25 text-blue-200 border border-blue-400/30">
+                      {levelInfo.totalXp} XP
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-300 mt-0.5">
+                    Отключени значки: <strong>{unlockedBadgesCount} / {achievements.length}</strong> •
+                    Следващо ниво на <strong>{levelInfo.nextLevelXp} XP</strong>
+                  </p>
+                </div>
+              </div>
+
+              {/* Daily Streak Pill */}
+              <div className="flex items-center gap-3 px-3.5 py-2 rounded-xl bg-white/10 border border-white/15 shrink-0">
+                <Flame className="w-5 h-5 text-amber-400 shrink-0" aria-hidden="true" />
+                <div>
+                  <div className="text-xs font-extrabold text-amber-300">
+                    {currentStreak} {currentStreak === 1 ? 'пореден ден' : 'поредни дни'}
+                  </div>
+                  <div className="text-[11px] text-slate-300">
+                    Рекорд: {longestStreak} {longestStreak === 1 ? 'ден' : 'дни'}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* XP Progress Bar */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-[11px] text-slate-300 font-medium">
+                <span>Напредък към Ниво {Math.min(levelInfo.maxLevel, levelInfo.level + 1)}</span>
+                <span className="font-mono font-bold text-amber-300">{levelInfo.progressPercent}%</span>
+              </div>
+              <div className="w-full h-2.5 rounded-full bg-slate-800 overflow-hidden p-0.5 border border-white/10">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-blue-400 via-emerald-400 to-amber-400 transition-all duration-500"
+                  style={{ width: `${Math.max(4, levelInfo.progressPercent)}%` }}
+                />
+              </div>
+            </div>
+          </div>
 
           {isGoogleSignedIn && profile ? (
             /* =============================================================== */
@@ -263,9 +396,11 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
                     )}
                     <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-1.5">
                       <Cloud className="w-3.5 h-3.5 text-blue-600" aria-hidden="true" />
-                      {formattedLastSync
-                        ? `Последна синхронизация: ${formattedLastSync}`
-                        : 'Облачният профил е активен на това устройство'}
+                      {liveSyncStatus === 'syncing'
+                        ? 'Автоматично синхронизиране с облака в момента...'
+                        : formattedLastSync
+                        ? `Последна облачна синхронизация: ${formattedLastSync}`
+                        : 'Автоматичната синхронизация в реално време е активна'}
                     </p>
                   </div>
                 </div>
@@ -273,27 +408,36 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
                 <button
                   type="button"
                   onClick={handleManualSync}
-                  disabled={isSyncing}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-xs font-semibold shadow-xs transition-all shrink-0"
+                  disabled={isSyncing || liveSyncStatus === 'syncing'}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-xs font-semibold shadow-xs transition-all shrink-0 cursor-pointer"
                 >
                   <RefreshCw
-                    className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`}
+                    className={`w-4 h-4 ${
+                      isSyncing || liveSyncStatus === 'syncing' ? 'animate-spin' : ''
+                    }`}
                     aria-hidden="true"
                   />
-                  <span>{isSyncing ? 'Синхронизиране...' : 'Синхронизирай сега'}</span>
+                  <span>
+                    {isSyncing || liveSyncStatus === 'syncing'
+                      ? 'Синхронизиране...'
+                      : 'Синхронизирай сега'}
+                  </span>
                 </button>
               </div>
 
               {/* Sync Feedback Banner */}
               {syncResult && syncResult.success && (
                 <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
+                  <CheckCircle2
+                    className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"
+                    aria-hidden="true"
+                  />
                   <div>
                     <p className="font-bold">
-                      Прогресът е синхронизиран успешно с вашия Google акаунт!
+                      Прогресът, XP точките и Дневният Streak са синхронизирани в облака!
                     </p>
                     <p className="text-emerald-800 mt-0.5">
-                      Усвоени теми: <strong>{syncResult.masteredLessonsCount}</strong> • Усвоени автори:{' '}
+                      Усвоени теми: <strong>{syncResult.masteredLessonsCount}</strong> • Автори:{' '}
                       <strong>{syncResult.masteredAuthorsCount}</strong> • Банка с грешки:{' '}
                       <strong>{syncResult.errorBankCount}</strong> • Синхронизирани изпити:{' '}
                       <strong>+{syncResult.examDownloadedCount + syncResult.examUploadedCount}</strong>
@@ -303,109 +447,64 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
               )}
 
               {/* Synced Metrics Grid */}
-              <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2.5">
-                  Данни в твоя облачен профил
-                </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                  <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200/80">
-                    <div className="flex items-center gap-1.5 text-blue-700 text-xs font-semibold">
-                      <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
-                      <span>Усвоени теми</span>
-                    </div>
-                    <p className="text-xl font-extrabold text-slate-900 mt-1">
-                      {progress.masteredLessonIds.length}
-                    </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200/80">
+                  <div className="flex items-center gap-1.5 text-blue-700 text-xs font-semibold">
+                    <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>Усвоени теми</span>
                   </div>
-
-                  <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80">
-                    <div className="flex items-center gap-1.5 text-emerald-700 text-xs font-semibold">
-                      <Award className="w-3.5 h-3.5" aria-hidden="true" />
-                      <span>Автори ДЗИ</span>
-                    </div>
-                    <p className="text-xl font-extrabold text-slate-900 mt-1">
-                      {progress.masteredAuthorIds.length} / 15
-                    </p>
-                  </div>
-
-                  <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200/80">
-                    <div className="flex items-center gap-1.5 text-amber-800 text-xs font-semibold">
-                      <Clock className="w-3.5 h-3.5" aria-hidden="true" />
-                      <span>Симулации</span>
-                    </div>
-                    <p className="text-xl font-extrabold text-slate-900 mt-1">{examCount}</p>
-                  </div>
-
-                  <div className="p-3 rounded-xl bg-rose-50/70 border border-rose-200/80">
-                    <div className="flex items-center gap-1.5 text-rose-700 text-xs font-semibold">
-                      <AlertCircle className="w-3.5 h-3.5" aria-hidden="true" />
-                      <span>Банка грешки</span>
-                    </div>
-                    <p className="text-xl font-extrabold text-slate-900 mt-1">{errorCount}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick Actions */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-200">
-                <div className="flex flex-wrap items-center gap-2">
-                  {onNavigateTab && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          onClose();
-                          onNavigateTab('planner');
-                        }}
-                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold transition-colors"
-                      >
-                        <Calendar className="w-3.5 h-3.5 text-emerald-600" aria-hidden="true" />
-                        <span>Моят План за 6.00</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          onClose();
-                          onNavigateTab('simulator');
-                        }}
-                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold transition-colors"
-                      >
-                        <Clock className="w-3.5 h-3.5 text-blue-600" aria-hidden="true" />
-                        <span>Изпитен симулатор</span>
-                      </button>
-                    </>
-                  )}
+                  <p className="text-xl font-extrabold text-slate-900 mt-1">
+                    {progress.masteredLessonIds.length}
+                  </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={handleSignOut}
-                  disabled={isSigningOut}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold transition-colors"
-                >
-                  <LogOut className="w-3.5 h-3.5" aria-hidden="true" />
-                  <span>{isSigningOut ? 'Излизане...' : 'Изход от профила'}</span>
-                </button>
+                <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80">
+                  <div className="flex items-center gap-1.5 text-emerald-700 text-xs font-semibold">
+                    <Award className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>Автори ДЗИ</span>
+                  </div>
+                  <p className="text-xl font-extrabold text-slate-900 mt-1">
+                    {progress.masteredAuthorIds.length} / 15
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200/80">
+                  <div className="flex items-center gap-1.5 text-amber-800 text-xs font-semibold">
+                    <Clock className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>Симулации</span>
+                  </div>
+                  <p className="text-xl font-extrabold text-slate-900 mt-1">
+                    {examAnalytics.totalAttempts}
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-xl bg-rose-50/70 border border-rose-200/80">
+                  <div className="flex items-center gap-1.5 text-rose-700 text-xs font-semibold">
+                    <AlertCircle className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>Банка грешки</span>
+                  </div>
+                  <p className="text-xl font-extrabold text-slate-900 mt-1">{allErrors.length}</p>
+                </div>
               </div>
             </div>
           ) : (
             /* =============================================================== */
             /* SIGNED OUT / ANONYMOUS VIEW                                     */
             /* =============================================================== */
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 border border-blue-200/80 space-y-4">
                 <div className="space-y-1.5">
                   <span className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-700">
                     <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
-                    Един акаунт за всички твои устройства
+                    Един Google акаунт за всички твои устройства
                   </span>
                   <h3 className="text-base sm:text-lg font-bold text-slate-900">
-                    Запази подготовката си за НВО, ДЗИ и Трета СПК в облака
+                    Свържи Google профила си за автоматичен облачен синхрон в реално време
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    Влез с 1 клик чрез своя Google акаунт, за да синхронизираш автоматично усвоените
-                    уроци, седмичния план за 6.00, банката с грешки и решените матури между телефон и
-                    компютър.
+                    Влез с 1 клик чрез Google, за да запазиш своите <strong>{levelInfo.totalXp} XP</strong>,{' '}
+                    <strong>{currentStreak}-дневен Streak</strong>, отключени значки, усвоени уроци и
+                    решени матури между телефон и лаптоп.
                   </p>
                 </div>
 
@@ -423,73 +522,217 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
                       : 'Продължи с Google акаунт'}
                   </span>
                 </button>
-
-                <p className="text-[11px] text-slate-500 text-center">
-                  Досегашният ти прогрес на това устройство ({progress.masteredLessonIds.length}{' '}
-                  усвоени теми и {examCount} симулации) ще се слее автоматично с Google профила ти.
-                </p>
               </div>
 
               {/* Benefits List */}
-              <ul className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                <li className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+              <ul className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                <li className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
                   <div className="flex items-center gap-1.5 font-bold text-slate-900">
                     <Laptop className="w-4 h-4 text-blue-600 shrink-0" aria-hidden="true" />
-                    <span>Телефон + Лаптоп</span>
+                    <span>Синхрон в реално време</span>
                   </div>
                   <p className="text-slate-600 leading-relaxed">
-                    Започни тест или конспект на телефона и продължи веднага на компютъра.
+                    Всяка отметната тема или решен въпрос се качва автоматично в облака.
                   </p>
                 </li>
 
-                <li className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                <li className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
                   <div className="flex items-center gap-1.5 font-bold text-slate-900">
-                    <Cloud className="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" />
-                    <span>План за 6.00 & Канон</span>
+                    <Flame className="w-4 h-4 text-amber-600 shrink-0" aria-hidden="true" />
+                    <span>Дневен Streak & XP</span>
                   </div>
                   <p className="text-slate-600 leading-relaxed">
-                    Отметнатите уроци, 15-те автори за ДЗИ и седмичният график се пазят в облака.
+                    Трупай поредни дни подготовка и качвай нива от Гимназист до Лауреат 6.00.
                   </p>
                 </li>
 
-                <li className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                <li className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
                   <div className="flex items-center gap-1.5 font-bold text-slate-900">
-                    <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0" aria-hidden="true" />
-                    <span>Защитени данни (RLS)</span>
+                    <Trophy className="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" />
+                    <span>12 Значки за Успех</span>
                   </div>
                   <p className="text-slate-600 leading-relaxed">
-                    Вход чрез официален Google OAuth 2.0 без пароли и с криптиран достъп.
+                    Отключвай академични постижения за канона, граматиката и симулатора.
                   </p>
                 </li>
               </ul>
-
-              {/* Technical Setup Disclosure for Admin */}
-              <details className="rounded-xl bg-slate-50 border border-slate-200 px-4 py-2.5 text-xs text-slate-600">
-                <summary className="font-semibold text-slate-700 cursor-pointer select-none">
-                  Техническа информация за администратора (Supabase Google OAuth)
-                </summary>
-                <div className="mt-2.5 pt-2.5 border-t border-slate-200 space-y-1.5 text-[11px] leading-relaxed">
-                  <p>
-                    1. В <strong>Supabase Dashboard → Authentication → Providers → Google</strong>{' '}
-                    включете <em>Enable Sign in with Google</em> и въведете <em>Client ID</em> и{' '}
-                    <em>Client Secret</em> от Google Cloud Console.
-                  </p>
-                  <p>
-                    2. В <strong>Google Cloud Console → Authorized redirect URIs</strong> добавете:{' '}
-                    <code className="px-1.5 py-0.5 rounded bg-slate-200/80 text-slate-900 font-mono break-all">
-                      {SUPABASE_URL}/auth/v1/callback
-                    </code>
-                  </p>
-                  <p>
-                    3. Изпълнете миграцията{' '}
-                    <code className="px-1.5 py-0.5 rounded bg-slate-200/80 text-slate-900 font-mono">
-                      supabase/migrations/20261020_google_auth_user_profiles.sql
-                    </code>{' '}
-                    в SQL Editor за таблицата <code className="font-mono">user_profiles</code>.
-                  </p>
-                </div>
-              </details>
             </div>
+          )}
+
+          {/* ================================================================= */}
+          {/* ACHIEVEMENT BADGES SHOWCASE (12 BADGES)                           */}
+          {/* ================================================================= */}
+          <div className="space-y-3 pt-2 border-t border-slate-200">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                  <Trophy className="w-4 h-4 text-amber-600" aria-hidden="true" />
+                  <span>Академични Значки за Постижения ({unlockedBadgesCount}/{achievements.length})</span>
+                </h3>
+              </div>
+
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                {(
+                  [
+                    { id: 'all', label: `Всички (${achievements.length})` },
+                    { id: 'unlocked', label: `Отключени (${unlockedBadgesCount})` },
+                    {
+                      id: 'locked',
+                      label: `В прогрес (${achievements.length - unlockedBadgesCount})`
+                    }
+                  ] as const
+                ).map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setBadgeFilter(tab.id)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer ${
+                      badgeFilter === tab.id
+                        ? 'bg-white text-blue-700 shadow-2xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[250px] overflow-y-auto pr-1">
+              {filteredBadges.map((badge) => (
+                <div
+                  key={badge.id}
+                  className={`p-3 rounded-xl border transition-all flex flex-col justify-between gap-2 ${
+                    badge.unlocked
+                      ? 'bg-amber-50/70 border-amber-300 shadow-2xs'
+                      : 'bg-slate-50/70 border-slate-200 opacity-85'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-start gap-2.5 min-w-0">
+                      <div
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${
+                          badge.unlocked
+                            ? 'bg-amber-100 border-amber-300'
+                            : 'bg-white border-slate-200'
+                        }`}
+                      >
+                        {renderBadgeIcon(badge.iconName, badge.unlocked)}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-xs font-bold text-slate-900 truncate">
+                          {badge.title}
+                        </div>
+                        <p className="text-[11px] text-slate-600 leading-snug mt-0.5">
+                          {badge.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    <span
+                      className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded shrink-0 border ${
+                        badge.unlocked
+                          ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                          : 'bg-slate-200/70 text-slate-700 border-slate-300'
+                      }`}
+                    >
+                      +{badge.xpReward} XP
+                    </span>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-[10px] font-semibold text-slate-500">
+                      <span>
+                        {badge.unlocked ? '✓ Отключена значка' : 'Напредък'}
+                      </span>
+                      <span className="font-mono">
+                        {Math.min(badge.currentValue, badge.targetValue)} / {badge.targetValue}
+                      </span>
+                    </div>
+                    <div className="w-full h-1.5 rounded-full bg-slate-200 overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-300 ${
+                          badge.unlocked ? 'bg-emerald-500' : 'bg-blue-500'
+                        }`}
+                        style={{ width: `${badge.progressPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom Actions & Admin Setup Info */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-200">
+            <div className="flex flex-wrap items-center gap-2">
+              {onNavigateTab && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      onNavigateTab('planner');
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold transition-colors cursor-pointer"
+                  >
+                    <Calendar className="w-3.5 h-3.5 text-emerald-600" aria-hidden="true" />
+                    <span>Моят План за 6.00</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      onNavigateTab('simulator');
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold transition-colors cursor-pointer"
+                  >
+                    <Clock className="w-3.5 h-3.5 text-blue-600" aria-hidden="true" />
+                    <span>Изпитен симулатор</span>
+                  </button>
+                </>
+              )}
+            </div>
+
+            {isGoogleSignedIn && (
+              <button
+                type="button"
+                onClick={handleSignOut}
+                disabled={isSigningOut}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold transition-colors cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" aria-hidden="true" />
+                <span>{isSigningOut ? 'Излизане...' : 'Изход от профила'}</span>
+              </button>
+            )}
+          </div>
+
+          {!isGoogleSignedIn && (
+            <details className="rounded-xl bg-slate-50 border border-slate-200 px-4 py-2.5 text-xs text-slate-600">
+              <summary className="font-semibold text-slate-700 cursor-pointer select-none">
+                Техническа информация за администратора (Supabase Google OAuth)
+              </summary>
+              <div className="mt-2.5 pt-2.5 border-t border-slate-200 space-y-1.5 text-[11px] leading-relaxed">
+                <p>
+                  1. В <strong>Supabase Dashboard → Authentication → Providers → Google</strong>{' '}
+                  включете <em>Enable Sign in with Google</em> и въведете <em>Client ID</em> и{' '}
+                  <em>Client Secret</em> от Google Cloud Console.
+                </p>
+                <p>
+                  2. В <strong>Google Cloud Console → Authorized redirect URIs</strong> добавете:{' '}
+                  <code className="px-1.5 py-0.5 rounded bg-slate-200/80 text-slate-900 font-mono break-all">
+                    {SUPABASE_URL}/auth/v1/callback
+                  </code>
+                </p>
+                <p>
+                  3. Изпълнете миграцията{' '}
+                  <code className="px-1.5 py-0.5 rounded bg-slate-200/80 text-slate-900 font-mono">
+                    supabase/migrations/20261020_google_auth_user_profiles.sql
+                  </code>{' '}
+                  в SQL Editor за таблицата <code className="font-mono">user_profiles</code>.
+                </p>
+              </div>
+            </details>
           )}
         </div>
       </div>

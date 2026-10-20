@@ -1,6 +1,12 @@
 import type { User } from '@supabase/supabase-js';
 import { isSupabaseConfigured } from './supabaseConfig';
-import { studyProgressService, type UserStudyProgress, type TargetExamTrack } from './studyProgressService';
+import {
+  studyProgressService,
+  computeDailyStreakStats,
+  LOCAL_DATA_MUTATED_EVENT,
+  type UserStudyProgress,
+  type TargetExamTrack
+} from './studyProgressService';
 import { errorBankService, type SavedErrorItem } from './errorBankService';
 import { examHistoryService } from './examHistoryService';
 
@@ -12,6 +18,8 @@ export interface GoogleUserProfile {
   isAnonymous: boolean;
   provider: 'google' | 'anonymous' | 'other';
 }
+
+export type CloudSyncLiveStatus = 'idle' | 'syncing' | 'synced' | 'error';
 
 export interface CloudProfileSyncResult {
   success: boolean;
@@ -32,6 +40,9 @@ export const AUTH_SYNC_EVENT = 'studybg:auth-or-progress-updated';
 type AuthProfileListener = (profile: GoogleUserProfile | null) => void;
 const listeners = new Set<AuthProfileListener>();
 let authSubscriptionInitialized = false;
+let autoSyncListenerAttached = false;
+let autoSyncTimer: ReturnType<typeof setTimeout> | null = null;
+let currentSyncStatus: CloudSyncLiveStatus = 'idle';
 
 function notifyListeners(profile: GoogleUserProfile | null): void {
   for (const listener of listeners) {
@@ -42,8 +53,16 @@ function notifyListeners(profile: GoogleUserProfile | null): void {
     }
   }
   if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent(AUTH_SYNC_EVENT, { detail: { profile } }));
+    window.dispatchEvent(
+      new CustomEvent(AUTH_SYNC_EVENT, {
+        detail: { profile, syncStatus: currentSyncStatus }
+      })
+    );
   }
+}
+
+export function getCloudSyncLiveStatus(): CloudSyncLiveStatus {
+  return currentSyncStatus;
 }
 
 export function getCachedGoogleProfile(): GoogleUserProfile | null {
@@ -55,10 +74,16 @@ export function getCachedGoogleProfile(): GoogleUserProfile | null {
     return {
       id: parsed.id,
       email: typeof parsed.email === 'string' ? parsed.email : null,
-      fullName: typeof parsed.fullName === 'string' && parsed.fullName.trim() ? parsed.fullName : 'Ученик в StudyBG',
+      fullName:
+        typeof parsed.fullName === 'string' && parsed.fullName.trim()
+          ? parsed.fullName
+          : 'Ученик в StudyBG',
       avatarUrl: typeof parsed.avatarUrl === 'string' ? parsed.avatarUrl : null,
       isAnonymous: Boolean(parsed.isAnonymous),
-      provider: parsed.provider === 'google' || parsed.provider === 'anonymous' ? parsed.provider : 'other'
+      provider:
+        parsed.provider === 'google' || parsed.provider === 'anonymous'
+          ? parsed.provider
+          : 'other'
     };
   } catch {
     return null;
@@ -91,6 +116,24 @@ function setLastCloudSyncTimestamp(iso: string): void {
   } catch {
     // ignore storage errors
   }
+}
+
+function ensureAutoSyncWindowListener(): void {
+  if (autoSyncListenerAttached || typeof window === 'undefined') return;
+  autoSyncListenerAttached = true;
+
+  window.addEventListener(LOCAL_DATA_MUTATED_EVENT, () => {
+    const cached = getCachedGoogleProfile();
+    if (!cached || cached.isAnonymous) return;
+
+    if (autoSyncTimer) {
+      clearTimeout(autoSyncTimer);
+    }
+    autoSyncTimer = setTimeout(() => {
+      autoSyncTimer = null;
+      void authService.syncUserProfileAndProgressWithCloud();
+    }, 1200);
+  });
 }
 
 /**
@@ -180,7 +223,12 @@ export function mapSupabaseUserToProfile(user: User | null | undefined): GoogleU
   };
 }
 
-const VALID_TRACKS: ReadonlySet<TargetExamTrack> = new Set(['dzi_bel', 'dzi_history', 'nvo_10', 'dzi_stem']);
+const VALID_TRACKS: ReadonlySet<TargetExamTrack> = new Set([
+  'dzi_bel',
+  'dzi_history',
+  'nvo_10',
+  'dzi_stem'
+]);
 const VALID_GOALS: ReadonlySet<30 | 45 | 60 | 90> = new Set([30, 45, 60, 90]);
 const VALID_GRADES: ReadonlySet<5.0 | 5.5 | 6.0> = new Set([5.0, 5.5, 6.0]);
 
@@ -200,7 +248,7 @@ function uniqueStrings(a: unknown, b: unknown): string[] {
 }
 
 /**
- * Слива локалния и облачния учебен прогрес без загуба на усвоени теми, автори или решени задачи.
+ * Слива локалния и облачния учебен прогрес без загуба на усвоени теми, автори, решени задачи или дневен Streak.
  */
 export function mergeStudyProgress(
   local: UserStudyProgress,
@@ -216,7 +264,8 @@ export function mergeStudyProgress(
       : local.targetExam;
 
   const dailyGoalMinutes =
-    typeof cloud.dailyGoalMinutes === 'number' && VALID_GOALS.has(cloud.dailyGoalMinutes as 30 | 45 | 60 | 90)
+    typeof cloud.dailyGoalMinutes === 'number' &&
+    VALID_GOALS.has(cloud.dailyGoalMinutes as 30 | 45 | 60 | 90)
       ? (cloud.dailyGoalMinutes as 30 | 45 | 60 | 90)
       : local.dailyGoalMinutes;
 
@@ -224,6 +273,9 @@ export function mergeStudyProgress(
     typeof cloud.targetGrade === 'number' && VALID_GRADES.has(cloud.targetGrade as 5.0 | 5.5 | 6.0)
       ? (cloud.targetGrade as 5.0 | 5.5 | 6.0)
       : local.targetGrade;
+
+  const mergedActiveDays = uniqueStrings(local.activeDaysHistory, cloud.activeDaysHistory);
+  const streakStats = computeDailyStreakStats(mergedActiveDays);
 
   return {
     targetExam: local.targetExam || targetExam,
@@ -239,7 +291,19 @@ export function mergeStudyProgress(
     grammarBestStreak: Math.max(
       Number(local.grammarBestStreak) || 0,
       Number(cloud.grammarBestStreak) || 0
-    )
+    ),
+    activeDaysHistory: streakStats.activeDaysHistory,
+    currentDailyStreak: Math.max(
+      streakStats.currentDailyStreak,
+      Number(local.currentDailyStreak) || 1,
+      Number(cloud.currentDailyStreak) || 1
+    ),
+    longestDailyStreak: Math.max(
+      streakStats.longestDailyStreak,
+      Number(local.longestDailyStreak) || 1,
+      Number(cloud.longestDailyStreak) || 1
+    ),
+    bonusXp: Math.max(Number(local.bonusXp) || 0, Number(cloud.bonusXp) || 0)
   };
 }
 
@@ -392,6 +456,7 @@ export const authService = {
    */
   async signOut(): Promise<{ ok: boolean; error?: string }> {
     setCachedGoogleProfile(null);
+    currentSyncStatus = 'idle';
     if (!isSupabaseConfigured()) {
       notifyListeners(null);
       return { ok: true };
@@ -413,7 +478,7 @@ export const authService = {
 
   /**
    * Двупосочна синхронизация на:
-   * 1) Учебен прогрес (План за 6.00 — усвоени теми, автори, седмичен график, граматика)
+   * 1) Учебен прогрес (План за 6.00 — усвоени теми, автори, седмичен график, граматика, Дневен Streak и XP)
    * 2) Интерактивна банка с грешки
    * 3) История от 100-точковия Изпитен симулатор
    */
@@ -437,11 +502,16 @@ export const authService = {
     }
 
     try {
+      currentSyncStatus = 'syncing';
+      notifyListeners(getCachedGoogleProfile());
+
       const { supabase, getExistingSupabaseSession } = await import('./supabaseClient');
       const session = await getExistingSupabaseSession();
       const profile = mapSupabaseUserToProfile(session?.user);
 
       if (!session || !profile) {
+        currentSyncStatus = 'idle';
+        notifyListeners(null);
         return {
           success: false,
           profileSynced: false,
@@ -477,8 +547,8 @@ export const authService = {
           localErrors,
           cloudRow.error_bank as SavedErrorItem[] | null
         );
-        studyProgressService.saveProgress(mergedProgress);
-        errorBankService.saveErrors(mergedErrors);
+        studyProgressService.saveProgress(mergedProgress, { silentCloudTrigger: true });
+        errorBankService.saveErrors(mergedErrors, { silentCloudTrigger: true });
       } else if (selectError && selectError.code !== '42P01') {
         profileSyncWarning = selectError.message;
       }
@@ -505,6 +575,7 @@ export const authService = {
 
       const examSync = await examHistoryService.syncWithCloud();
       setLastCloudSyncTimestamp(nowIso);
+      currentSyncStatus = profileSyncWarning ? 'error' : 'synced';
       notifyListeners(profile);
 
       return {
@@ -519,6 +590,8 @@ export const authService = {
         error: profileSyncWarning ?? examSync.error
       };
     } catch (err: unknown) {
+      currentSyncStatus = 'error';
+      notifyListeners(getCachedGoogleProfile());
       return {
         success: false,
         profileSynced: false,
@@ -534,14 +607,14 @@ export const authService = {
   },
 
   /**
-   * Абонира компонент за промени в Google профила.
-   * Зарежда @supabase/supabase-js само ако има запазена сесия или OAuth редирект, или ако forceInit = true.
+   * Абонира компонент за промени в Google профила и активира автоматичния слушател за облачна синхронизация.
    */
   subscribeToAuthChanges(
     listener: AuthProfileListener,
     options?: { forceInit?: boolean }
   ): () => void {
     listeners.add(listener);
+    ensureAutoSyncWindowListener();
 
     if (options?.forceInit || hasPotentialAuthSession()) {
       void this.ensureAuthListenerInitialized();
@@ -554,6 +627,7 @@ export const authService = {
 
   async ensureAuthListenerInitialized(): Promise<GoogleUserProfile | null> {
     if (!isSupabaseConfigured()) return null;
+    ensureAutoSyncWindowListener();
 
     try {
       const { supabase, getExistingSupabaseSession } = await import('./supabaseClient');

@@ -19,6 +19,8 @@ import {
 import {
   studyProgressService,
   MON_OFFICIAL_EXAMS,
+  computeUserXpAndLevel,
+  evaluateUserAchievements,
   type TargetExamTrack,
   type UserStudyProgress
 } from '../services/studyProgressService';
@@ -116,6 +118,16 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
       lessonsPercent * 0.3 +
       grammarPercent * 0.25 +
       errorCleanPercent * 0.15
+  );
+
+  const plannerLevelInfo = computeUserXpAndLevel(progress, {
+    resolvedErrorsCount: allErrors.length - unresolvedErrorsCount
+  });
+  const plannerAchievements = evaluateUserAchievements(progress, {
+    resolvedErrorsCount: allErrors.length - unresolvedErrorsCount
+  });
+  const unlockedBadgesCount = Number(
+    plannerAchievements.filter(b => b.unlocked).length
   );
 
   const handleSelectExamTrack = (track: TargetExamTrack) => {
@@ -561,6 +573,63 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
       </div>
 
       {/* ========================================================================= */}
+      {/* ========================================================================= */}
+      {/* 1.5. XP LEVEL, DAILY STREAK & ACHIEVEMENTS BAR                            */}
+      {/* ========================================================================= */}
+      <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex flex-col items-center justify-center shrink-0">
+            <span className="text-[10px] font-bold uppercase text-amber-800 leading-none">Ниво</span>
+            <span className="text-xl font-black text-amber-900 font-mono leading-tight">
+              {plannerLevelInfo.level}
+            </span>
+          </div>
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-sm sm:text-base font-extrabold text-slate-900">
+                {plannerLevelInfo.title}
+              </span>
+              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200">
+                {plannerLevelInfo.totalXp} XP
+              </span>
+              <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200">
+                <Flame className="w-3.5 h-3.5 text-amber-600" aria-hidden="true" />
+                {progress.currentDailyStreak ?? 1} д. Streak (Рекорд: {progress.longestDailyStreak ?? 1} д.)
+              </span>
+            </div>
+            <p className="text-xs text-slate-500">
+              Отключени значки за постижения: <strong>{unlockedBadgesCount} от {plannerAchievements.length}</strong> • Следващо ниво при <strong>{plannerLevelInfo.nextLevelXp} XP</strong> ({plannerLevelInfo.progressPercent}%)
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          {plannerAchievements.slice(0, 4).map((b) => (
+            <span
+              key={b.id}
+              title={`${b.title}: ${b.description}`}
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold border ${
+                b.unlocked
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                  : 'bg-slate-50 text-slate-500 border-slate-200'
+              }`}
+            >
+              <Sparkles className={`w-3.5 h-3.5 ${b.unlocked ? 'text-emerald-600' : 'text-slate-400'}`} aria-hidden="true" />
+              <span>{b.title}</span>
+            </span>
+          ))}
+          {onOpenAuthModal && (
+            <button
+              type="button"
+              onClick={onOpenAuthModal}
+              className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors cursor-pointer"
+            >
+              Всички {plannerAchievements.length} значки & Облак →
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* 2. FOUR PILLARS OF READINESS BREAKDOWN CARDS */}
       {/* ========================================================================= */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

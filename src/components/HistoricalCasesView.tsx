@@ -21,6 +21,8 @@ import {
   Bookmark,
   BookMarked,
   Library,
+  RefreshCw,
+  XCircle,
   Sparkles,
   Loader2
 } from 'lucide-react';
@@ -30,6 +32,7 @@ import {
   evaluateEssayWithGemini,
   type EssayEvaluationResult
 } from '../services/geminiService';
+import { generateHistoricalCaseQuiz } from '../services/infiniteLabGenerators';
 
 interface HistoricalCasesViewProps {
   onSelectLessonByEra?: (era: string) => void;
@@ -57,9 +60,12 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
 
   // Audio Speech Synthesis state
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [caseQuizVariant, setCaseQuizVariant] = useState<number>(1);
+  const [caseQuizAnswers, setCaseQuizAnswers] = useState<Record<string, number>>({});
 
   // Active Case Study
   const activeCase = HISTORICAL_CASES_DATA.find((c) => c.id === selectedCaseId) || HISTORICAL_CASES_DATA[0];
+  const caseQuizQuestions = generateHistoricalCaseQuiz(activeCase, HISTORICAL_CASES_DATA, caseQuizVariant);
 
   // Load saved draft and checklist from localStorage when activeCase changes
   useEffect(() => {
@@ -736,6 +742,80 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
                 </div>
               </div>
             )}
+
+            {/* Infinite Case Study Quiz Section */}
+            <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700">
+                    Тест върху казуса по МОН • Вариант #{caseQuizVariant}
+                  </span>
+                  <h4 className="text-sm sm:text-base font-bold text-slate-900">
+                    Проверка върху изворите, понятията и тезите ({caseQuizQuestions.length} въпроса)
+                  </h4>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCaseQuizVariant((prev) => prev + 1);
+                    setCaseQuizAnswers({});
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold cursor-pointer"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Нов вариант върху казуса (∞)</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                {caseQuizQuestions.map((q, qIdx) => {
+                  const chosen = caseQuizAnswers[q.id];
+                  const isAnswered = chosen !== undefined;
+                  return (
+                    <div key={q.id} className="p-4 rounded-xl bg-white border border-slate-200 space-y-3 flex flex-col justify-between">
+                      <div className="space-y-2.5">
+                        <div className="text-[11px] font-bold text-slate-500">
+                          Въпрос #{qIdx + 1} • {activeCase.periodYears}
+                        </div>
+                        <p className="text-xs sm:text-sm font-bold text-slate-900 leading-relaxed">
+                          {q.question}
+                        </p>
+                        <div className="space-y-1.5">
+                          {q.options.map((opt, optIdx) => {
+                            let btnStyle = 'bg-slate-50 border-slate-200 text-slate-800 hover:bg-slate-100';
+                            if (isAnswered) {
+                              if (optIdx === q.correctIndex) {
+                                btnStyle = 'bg-emerald-50 border-emerald-400 text-emerald-950 font-bold';
+                              } else if (optIdx === chosen) {
+                                btnStyle = 'bg-rose-50 border-rose-400 text-rose-900';
+                              }
+                            }
+                            return (
+                              <button
+                                key={optIdx}
+                                type="button"
+                                disabled={isAnswered}
+                                onClick={() => setCaseQuizAnswers((prev) => ({ ...prev, [q.id]: optIdx }))}
+                                className={`w-full p-2.5 rounded-lg border text-left text-xs transition-all flex items-center justify-between gap-2 cursor-pointer ${btnStyle}`}
+                              >
+                                <span><strong>{['А)', 'Б)', 'В)', 'Г)'][optIdx]}</strong> {opt}</span>
+                                {isAnswered && optIdx === q.correctIndex && <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />}
+                                {isAnswered && optIdx === chosen && optIdx !== q.correctIndex && <XCircle className="w-4 h-4 text-rose-600 shrink-0" />}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      {isAnswered && (
+                        <div className="p-2.5 rounded-lg bg-blue-50/70 border border-blue-200 text-[11px] text-blue-950 leading-relaxed">
+                          <strong>Обяснение по МОН:</strong> {q.explanation}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
 
             {/* Self-Checklist */}
             <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">

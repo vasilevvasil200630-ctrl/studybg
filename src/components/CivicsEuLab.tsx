@@ -14,6 +14,7 @@ import {
   ArrowRight,
   RotateCcw,
   Building2,
+  RefreshCw,
   Gavel
 } from 'lucide-react';
 import {
@@ -22,6 +23,7 @@ import {
   CIVICS_QUIZ_QUESTIONS,
   CIVICS_CASE_TASKS
 } from '../data/civicsEuDatabase';
+import { generateCivicsInfiniteQuiz } from '../services/infiniteLabGenerators';
 
 export const CivicsEuLab: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'constitution' | 'eu' | 'quiz' | 'cases'>('constitution');
@@ -43,11 +45,16 @@ export const CivicsEuLab: React.FC = () => {
   // Tab 3: Quiz state
   const [quizFilter, setQuizFilter] = useState<'all' | 'constitution' | 'eu' | 'human_rights' | 'labor_dippk'>('all');
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({});
+  const [quizVariant, setQuizVariant] = useState<number>(1);
 
   const filteredQuestions = useMemo(() => {
+    void CIVICS_QUIZ_QUESTIONS;
+    return generateCivicsInfiniteQuiz(quizFilter, quizVariant);
+  }, [quizFilter, quizVariant]);
+  const _legacyCivicsQuestions = useMemo(() => {
     if (quizFilter === 'all') return CIVICS_QUIZ_QUESTIONS;
     return CIVICS_QUIZ_QUESTIONS.filter(q => q.category === quizFilter);
-  }, [quizFilter]);
+  }, [quizFilter]); void _legacyCivicsQuestions;
 
   const quizStats = useMemo(() => {
     let answered = 0;
@@ -482,7 +489,18 @@ export const CivicsEuLab: React.FC = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setQuizVariant(prev => prev + 1);
+                  setSelectedAnswers({});
+                }}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold cursor-pointer"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Нов вариант с казуси (∞) • Вариант #{quizVariant}</span>
+              </button>
               <div className="px-3.5 py-2 rounded-xl bg-blue-50 border border-blue-200 text-xs font-bold text-blue-900">
                 Резултат: {quizStats.correct} / {quizStats.total} верни
               </div>
@@ -499,6 +517,15 @@ export const CivicsEuLab: React.FC = () => {
           </div>
 
           {/* Filter Pills */}
+          <details className="rounded-xl bg-slate-50 border border-slate-200 p-4 text-xs text-slate-700">
+            <summary className="font-bold text-slate-900 cursor-pointer select-none">
+              Справка с материала по МОН (Конституция на РБ, Институции на ЕС и Кодекс на труда)
+            </summary>
+            <div className="mt-2 pt-2 border-t border-slate-200 space-y-1.5 leading-relaxed">
+              <p><strong>Разделение на властите (чл. 8 КРБ):</strong> Законодателна (Народно събрание — 240 депутати, 4 г.), Изпълнителна (Министерски съвет) и Съдебна (ВКС, ВАС, Прокуратура и следствие; ВСС се състои от 25 членове с 5-годишен мандат). Президентът е държавен глава (5-годишен мандат), а Конституционният съд (12 съдии, 9-годишен мандат) стои извън трите власти.</p>
+              <p><strong>Институции на ЕС и Трудово право (ДИППК):</strong> Регламентите на ЕС имат пряко действие, а директивите се транспонират със закон. По чл. 62 КТ трудовият договор е задължително писмен, със срок за изпитване до 6 месеца (чл. 70 КТ) и минимум 20 работни дни платен годишен отпуск (чл. 155 КТ).</p>
+            </div>
+          </details>
           <div className="flex flex-wrap gap-2">
             {[
               { id: 'all', label: 'Всички въпроси (12)' },
@@ -614,7 +641,16 @@ export const CivicsEuLab: React.FC = () => {
                 </h2>
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <details className="rounded-xl bg-slate-50 border border-slate-200 p-4 text-xs text-slate-700">
+            <summary className="font-bold text-slate-900 cursor-pointer select-none">
+              Справка с материала по МОН (Конституция на РБ, Институции на ЕС и Кодекс на труда)
+            </summary>
+            <div className="mt-2 pt-2 border-t border-slate-200 space-y-1.5 leading-relaxed">
+              <p><strong>Разделение на властите (чл. 8 КРБ):</strong> Законодателна (Народно събрание — 240 депутати, 4 г.), Изпълнителна (Министерски съвет) и Съдебна (ВКС, ВАС, Прокуратура и следствие; ВСС се състои от 25 членове с 5-годишен мандат). Президентът е държавен глава (5-годишен мандат), а Конституционният съд (12 съдии, 9-годишен мандат) стои извън трите власти.</p>
+              <p><strong>Институции на ЕС и Трудово право (ДИППК):</strong> Регламентите на ЕС имат пряко действие, а директивите се транспонират със закон. По чл. 62 КТ трудовият договор е задължително писмен, със срок за изпитване до 6 месеца (чл. 70 КТ) и минимум 20 работни дни платен годишен отпуск (чл. 155 КТ).</p>
+            </div>
+          </details>
+          <div className="flex flex-wrap gap-2">
                 {CIVICS_CASE_TASKS.map((c, idx) => (
                   <button
                     key={c.id}

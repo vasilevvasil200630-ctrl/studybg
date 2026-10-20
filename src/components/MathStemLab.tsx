@@ -14,6 +14,7 @@ import {
   TrendingUp,
   ChevronRight,
   HelpCircle,
+  RefreshCw,
 } from 'lucide-react';
 import {
   MATH_CATEGORIES,
@@ -22,6 +23,9 @@ import {
   type MathCategory,
   type MathStepByStepProblem,
 } from '../data/mathStemDatabase';
+import { generateMathLabInfiniteQuiz } from '../services/infiniteLabGenerators';
+// mathStemDatabase imports above
+// mathStemDatabase imports above
 
 interface MathStemLabProps {
   onOpenFormulaModal?: () => void;
@@ -64,11 +68,12 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
 
   // Quiz state
   const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({});
+  const [quizVariant, setQuizVariant] = useState<number>(1);
 
   const filteredProblems = useMemo(() => {
     if (selectedCategory === 'all') return MATH_STEP_BY_STEP_PROBLEMS;
     return MATH_STEP_BY_STEP_PROBLEMS.filter((p) => p.category === selectedCategory);
-  }, [selectedCategory]);
+  }, [selectedCategory, quizVariant]);
 
   const currentProblem: MathStepByStepProblem = useMemo(() => {
     const found = filteredProblems.find((p) => p.id === activeProblemId);
@@ -280,21 +285,25 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
 
   // Filtered Quiz Questions
   const filteredQuiz = useMemo(() => {
-    if (selectedCategory === 'all') return MATH_QUIZ_QUESTIONS;
+    const staticPool = selectedCategory === 'all' ? MATH_QUIZ_QUESTIONS : MATH_QUIZ_QUESTIONS.filter((q) => q.category === selectedCategory);
+    const dynamicPool = generateMathLabInfiniteQuiz(selectedCategory, quizVariant);
+    if (quizVariant >= 1) {
+      return quizVariant === 1 ? [...staticPool, ...dynamicPool] : [...dynamicPool, ...staticPool];
+    }
     return MATH_QUIZ_QUESTIONS.filter((q) => q.category === selectedCategory);
-  }, [selectedCategory]);
+  }, [selectedCategory, quizVariant]);
 
   const quizStats = useMemo(() => {
     const answeredIds = Object.keys(quizAnswers);
     const correctCount = answeredIds.filter((id) => {
-      const q = MATH_QUIZ_QUESTIONS.find((item) => item.id === id);
+      const q = filteredQuiz.find((item) => item.id === id);
       return q && quizAnswers[id] === q.correctIndex;
     }).length;
     return {
       totalAnswered: answeredIds.length,
       correctCount,
     };
-  }, [quizAnswers]);
+  }, [quizAnswers, filteredQuiz]);
 
   // Render clean SVG Schematic for current problem
   const renderGeometricSchematic = (type: MathStepByStepProblem['diagramType']) => {
@@ -1283,6 +1292,19 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
               <span>
                 Бърз изпитен тренажор по Математика ({filteredQuiz.length} въпроса в избрания раздел)
               </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setQuizVariant((prev) => prev + 1);
+                  setQuizAnswers({});
+                }}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs cursor-pointer"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+              <span>Нов вариант с нови числа (∞) • Вариант #{quizVariant}</span>
+              </button>
             </div>
             {quizStats.totalAnswered > 0 && (
               <button

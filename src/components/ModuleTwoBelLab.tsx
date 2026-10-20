@@ -15,7 +15,8 @@ import {
   AlertTriangle,
   FileText,
   Feather,
-  Loader2
+  Loader2,
+  RefreshCw,
 } from 'lucide-react';
 import {
   FIGURES_AND_TROPES,
@@ -30,6 +31,7 @@ import {
 } from '../data/moduleTwoBelDatabase';
 import { studyProgressService } from '../services/studyProgressService';
 import { evaluateBelModuleTwoWithGemini, type BelModuleTwoAiEvaluation, AI_EXAMINER_LABEL } from '../services/geminiService';
+import { generateModuleTwoInfiniteQuestions } from '../services/infiniteLabGenerators';
 
 export const ModuleTwoBelLab: React.FC = () => {
   const [activeSubTab, setActiveSubTab] = useState<'figures' | 'lexicology' | 'synthesis' | 'task41' | 'quiz'>('figures');
@@ -42,6 +44,7 @@ export const ModuleTwoBelLab: React.FC = () => {
 
   // Quiz state
   const [quizFilter, setQuizFilter] = useState<'all' | 'figures' | 'lexicology' | 'reading'>('all');
+  const [quizVariant, setQuizVariant] = useState<number>(1);
   const [questionIdx, setQuestionIdx] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -65,10 +68,16 @@ export const ModuleTwoBelLab: React.FC = () => {
   const activeTask41: Task41Blueprint =
     TASK_41_BLUEPRINTS.find(b => b.id === selectedTask41Id) || TASK_41_BLUEPRINTS[0];
 
-  const filteredQuestions =
+  const _legacyFilteredQuestions =
+    quizFilter === 'all'
+      ? MODULE_TWO_QUESTIONS : MODULE_TWO_QUESTIONS; void _legacyFilteredQuestions;
+  const staticQuestions =
     quizFilter === 'all'
       ? MODULE_TWO_QUESTIONS
       : MODULE_TWO_QUESTIONS.filter(q => q.subcategory === quizFilter);
+  const dynamicQuestions = generateModuleTwoInfiniteQuestions(quizFilter, quizVariant);
+  const filteredQuestions =
+    quizVariant === 1 ? [...staticQuestions, ...dynamicQuestions] : [...dynamicQuestions, ...staticQuestions];
 
   const currentQ: ModuleTwoQuestion | undefined = filteredQuestions[questionIdx];
 
@@ -99,6 +108,7 @@ export const ModuleTwoBelLab: React.FC = () => {
     if (questionIdx < filteredQuestions.length - 1) {
       setQuestionIdx(prev => prev + 1);
     } else {
+      setQuizVariant(prev => prev + 1);
       setQuestionIdx(0);
     }
   };
@@ -306,7 +316,8 @@ export const ModuleTwoBelLab: React.FC = () => {
                 onClick={() => {
                   setActiveSubTab('quiz');
                   setQuizFilter('figures');
-                  setQuestionIdx(0);
+                  setQuizVariant(prev => prev + 1);
+      setQuestionIdx(0);
                 }}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-600 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm shadow-xs transition-all cursor-pointer"
               >
@@ -851,7 +862,8 @@ export const ModuleTwoBelLab: React.FC = () => {
                   key={cat.id}
                   onClick={() => {
                     setQuizFilter(cat.id as typeof quizFilter);
-                    setQuestionIdx(0);
+                    setQuizVariant(prev => prev + 1);
+      setQuestionIdx(0);
                     setSelectedOption(null);
                     setIsSubmitted(false);
                   }}
@@ -867,7 +879,22 @@ export const ModuleTwoBelLab: React.FC = () => {
             </div>
 
             <span className="text-xs font-bold text-slate-500">
-              Задача {questionIdx + 1} от {filteredQuestions.length}
+            <span className="text-xs font-bold text-slate-500 flex items-center gap-2">
+              <span>Задача {questionIdx + 1} от {filteredQuestions.length} (Вариант #{quizVariant})</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setQuizVariant(prev => prev + 1);
+                  setQuestionIdx(0);
+                  setSelectedOption(null);
+                  setIsSubmitted(false);
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Нов вариант Модул 2 (∞)</span>
+              </button>
+            </span>
             </span>
           </div>
 
@@ -933,6 +960,20 @@ export const ModuleTwoBelLab: React.FC = () => {
                 </p>
               </div>
             )}
+
+            <details className="rounded-2xl bg-slate-50 border border-slate-200 p-4 text-xs text-slate-700">
+              <summary className="font-bold text-slate-900 cursor-pointer select-none">
+                Справка с теорията по МОН за Модул 2 ({currentQ.subcategoryLabel})
+              </summary>
+              <div className="mt-3 pt-3 border-t border-slate-200 space-y-2 leading-relaxed">
+                <p>
+                  <strong>Тропи срещу фигури:</strong> Тропите променят значението на думата в преносен смисъл (метафора, метонимия, синекдоха, олицетворение, хипербола, оксиморон), а синтактичните фигури организират словореда и повторенията (анафора, градация, антитеза, инверсия, реторичен въпрос).
+                </p>
+                <p>
+                  <strong>Резюме и Задача 39/40:</strong> Предава се само основната информация на изходния текст в 3–4 изречения на неутрален книжовен език, без цитати, без пряка реч и без личен коментар.
+                </p>
+              </div>
+            </details>
 
             <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
               <button

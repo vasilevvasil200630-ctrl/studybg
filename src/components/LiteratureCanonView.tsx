@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Sparkles,
   Quote,
@@ -8,20 +8,32 @@ import {
   BookMarked,
   Lightbulb,
   FileText,
-  Loader2
+  Loader2,
+  RefreshCw,
+  BookOpen,
+  CheckCircle2,
+  XCircle,
 } from 'lucide-react';
 import {
   LITERATURE_CANON,
   LITERATURE_THEMATIC_CYCLES,
-  type LiteratureAuthor
+  type LiteratureAuthor,
 } from '../data/literatureDatabase';
 import {
   generateCustomLiteratureThesisWithGemini,
   type LiteratureCustomAiThesis,
-  AI_PROVIDER_LABEL
+  AI_PROVIDER_LABEL,
 } from '../services/geminiService';
+import {
+  AUTHOR_LINKED_LESSON_MAP,
+  generateAuthorInfiniteQuiz,
+} from '../services/infiniteLabGenerators';
 
-export const LiteratureCanonView: React.FC = () => {
+export interface LiteratureCanonViewProps {
+  onOpenLessonId?: (lessonId: string) => void;
+}
+
+export const LiteratureCanonView: React.FC<LiteratureCanonViewProps> = ({ onOpenLessonId }) => {
   const [selectedCycle, setSelectedCycle] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedAuthorId, setSelectedAuthorId] = useState<string>(LITERATURE_CANON[0].id);
@@ -33,11 +45,15 @@ export const LiteratureCanonView: React.FC = () => {
   const [isAiLitLoading, setIsAiLitLoading] = useState<boolean>(false);
   const [aiLitError, setAiLitError] = useState<string | null>(null);
 
+  const [authorQuizVariant, setAuthorQuizVariant] = useState<number>(1);
+  const [authorQuizAnswers, setAuthorQuizAnswers] = useState<Record<string, number>>({});
+  const [authorQuizRevealed, setAuthorQuizRevealed] = useState<Record<string, boolean>>({});
+
   // Filter authors by search or thematic cycle
-  const filteredAuthors = LITERATURE_CANON.filter(author => {
+  const filteredAuthors = LITERATURE_CANON.filter((author) => {
     const matchesSearch =
       author.name.toLowerCase().includes(searchQuery.toLowerCase().trim()) ||
-      author.works.some(w => w.title.toLowerCase().includes(searchQuery.toLowerCase().trim()));
+      author.works.some((w) => w.title.toLowerCase().includes(searchQuery.toLowerCase().trim()));
 
     if (!matchesSearch) return false;
 
@@ -64,7 +80,12 @@ export const LiteratureCanonView: React.FC = () => {
   });
 
   const activeAuthor: LiteratureAuthor =
-    LITERATURE_CANON.find(a => a.id === selectedAuthorId) || filteredAuthors[0] || LITERATURE_CANON[0];
+    LITERATURE_CANON.find((a) => a.id === selectedAuthorId) || filteredAuthors[0] || LITERATURE_CANON[0];
+
+  const authorInfiniteQuestions = useMemo(
+    () => generateAuthorInfiniteQuiz(activeAuthor, LITERATURE_CANON, authorQuizVariant),
+    [activeAuthor, authorQuizVariant]
+  );
 
   const handleCopyQuote = (quoteText: string) => {
     navigator.clipboard.writeText(quoteText);
@@ -81,9 +102,10 @@ export const LiteratureCanonView: React.FC = () => {
     setTimeout(() => setCopiedThesis(false), 2000);
   };
 
+  const linkedLessonId = AUTHOR_LINKED_LESSON_MAP[activeAuthor.id];
+
   return (
     <div className="space-y-8 animate-fadeIn">
-      
       {/* Header Banner */}
       <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10 space-y-2 max-w-3xl">
@@ -95,19 +117,19 @@ export const LiteratureCanonView: React.FC = () => {
             Литературен Канон & Тези за ДЗИ (11.–12. клас)
           </h1>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            Всички задължителни автори и произведения по програмата на МОН. Готови структурирани тези за есе и литературноинтерпретативно съчинение, ключови цитати и анализ на родовите конфликти.
+            Всички задължителни автори и произведения по програмата на МОН. Готови структурирани тези за есе и литературноинтерпретативно съчинение, ключови цитати, анализ на родовите конфликти и безкраен генератор на тестови варианти върху всеки автор.
           </p>
         </div>
       </div>
 
       {/* Thematic Filter & Search Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
-        
+      <search className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         {/* Thematic Cycles Switcher */}
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs">
-          {LITERATURE_THEMATIC_CYCLES.map(cycle => (
+          {LITERATURE_THEMATIC_CYCLES.map((cycle) => (
             <button
               key={cycle.id}
+              type="button"
               onClick={() => setSelectedCycle(cycle.id)}
               className={`px-3 py-1.5 rounded-xl whitespace-nowrap transition-colors cursor-pointer font-medium ${
                 selectedCycle === cycle.id
@@ -131,19 +153,22 @@ export const LiteratureCanonView: React.FC = () => {
             className="w-full pl-9 pr-3 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-600"
           />
         </div>
-
-      </div>
+      </search>
 
       {/* Author Selector Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
-        {filteredAuthors.map(author => {
+        {filteredAuthors.map((author) => {
           const isSelected = author.id === activeAuthor.id;
           return (
             <button
               key={author.id}
+              type="button"
               onClick={() => {
                 setSelectedAuthorId(author.id);
                 setSelectedEssayThemeIndex(0);
+                setAuthorQuizVariant(1);
+                setAuthorQuizAnswers({});
+                setAuthorQuizRevealed({});
               }}
               className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                 isSelected
@@ -165,13 +190,10 @@ export const LiteratureCanonView: React.FC = () => {
 
       {/* Main Author & Works Workspace */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
         {/* Left Column: Author Details & Required Works */}
         <div className="lg:col-span-7 space-y-6">
-          
           <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-sm space-y-5">
-            
-            <div className="flex items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100">
               <div className="space-y-1">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600">
                   {activeAuthor.period}
@@ -180,8 +202,20 @@ export const LiteratureCanonView: React.FC = () => {
                   {activeAuthor.name}
                 </h2>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-900 font-black text-sm flex items-center justify-center border border-slate-200">
-                {activeAuthor.avatarText}
+              <div className="flex items-center gap-2">
+                {onOpenLessonId && linkedLessonId && (
+                  <button
+                    type="button"
+                    onClick={() => onOpenLessonId(linkedLessonId)}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    <BookOpen className="w-3.5 h-3.5" />
+                    <span>Отвори пълен урок по МОН</span>
+                  </button>
+                )}
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-900 font-black text-sm flex items-center justify-center border border-slate-200">
+                  {activeAuthor.avatarText}
+                </div>
               </div>
             </div>
 
@@ -219,18 +253,16 @@ export const LiteratureCanonView: React.FC = () => {
                     className="p-4 rounded-2xl bg-slate-50/70 border border-slate-200 space-y-2.5"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <h3 className="text-sm font-bold text-slate-900">
-                        {work.title}
-                      </h3>
+                      <h3 className="text-sm font-bold text-slate-900">{work.title}</h3>
                       <div className="flex items-center gap-1.5 text-[11px] font-mono text-slate-500">
-                        <span className="px-2 py-0.5 rounded bg-white border border-slate-200 font-semibold">{work.genre}</span>
+                        <span className="px-2 py-0.5 rounded bg-white border border-slate-200 font-semibold">
+                          {work.genre}
+                        </span>
                         <span>{work.year} г.</span>
                       </div>
                     </div>
 
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {work.coreIdea}
-                    </p>
+                    <p className="text-xs text-slate-600 leading-relaxed">{work.coreIdea}</p>
 
                     <div className="p-3 rounded-xl bg-white border border-slate-200 flex items-start justify-between gap-3 text-xs">
                       <div className="space-y-1">
@@ -238,12 +270,11 @@ export const LiteratureCanonView: React.FC = () => {
                           <Quote className="w-3 h-3" />
                           <span>Ключов цитат за аргументация:</span>
                         </div>
-                        <div className="italic text-slate-700 font-medium">
-                          {work.famousQuote}
-                        </div>
+                        <div className="italic text-slate-700 font-medium">{work.famousQuote}</div>
                       </div>
 
                       <button
+                        type="button"
                         onClick={() => handleCopyQuote(work.famousQuote)}
                         className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors shrink-0"
                         title="Копирай цитата"
@@ -264,15 +295,31 @@ export const LiteratureCanonView: React.FC = () => {
               </div>
             </div>
 
+            {/* Native Accordion for MON Study Reference */}
+            <details className="rounded-2xl bg-slate-50 border border-slate-200 p-4 text-xs text-slate-700">
+              <summary className="font-bold text-slate-900 cursor-pointer select-none">
+                Пълен методически конспект по МОН за {activeAuthor.name} (Жанрове, Периодизация и Критерии за ДЗИ)
+              </summary>
+              <div className="mt-3 pt-3 border-t border-slate-200 space-y-2 leading-relaxed">
+                <p>
+                  <strong>Литературноисторически период:</strong> {activeAuthor.period} •{' '}
+                  <strong>Естетическа роля:</strong> {activeAuthor.aestheticRole}.
+                </p>
+                <p>
+                  <strong>Задължителни жанрови форми за разпознаване в Модул 1 и Модул 2 на ДЗИ:</strong>{' '}
+                  {activeAuthor.works.map((w) => `„${w.title}“ (${w.genre}, ${w.year} г.)`).join('; ')}.
+                </p>
+                <p>
+                  <strong>Методически указания за Задача 41 (30 т.):</strong> При интерпретативно съчинение (ЛИС) анализирайте художествените образи, композицията и тропите в текста. При есе формулирайте лична философско-гражданска позиция по проблема, подкрепена с примери от българската класика и личен житейски опит.
+                </p>
+              </div>
+            </details>
           </div>
-
         </div>
 
         {/* Right Column: DZI Essay & LIS Thesis Builder (Task 41) */}
         <div className="lg:col-span-5 space-y-6">
-          
           <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-white to-slate-50/40 border border-slate-200 shadow-sm space-y-6">
-            
             <div className="space-y-1 pb-4 border-b border-slate-100">
               <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-700">
                 <Sparkles className="w-3.5 h-3.5" />
@@ -291,6 +338,7 @@ export const LiteratureCanonView: React.FC = () => {
               {activeAuthor.essayThemes.map((th, i) => (
                 <button
                   key={i}
+                  type="button"
                   onClick={() => setSelectedEssayThemeIndex(i)}
                   className={`w-full p-3 rounded-2xl border text-left text-xs transition-all cursor-pointer ${
                     selectedEssayThemeIndex === i
@@ -333,6 +381,7 @@ export const LiteratureCanonView: React.FC = () => {
 
               <div className="pt-2">
                 <button
+                  type="button"
                   onClick={handleCopyThesis}
                   className="w-full py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
                 >
@@ -387,7 +436,7 @@ export const LiteratureCanonView: React.FC = () => {
                       const res = await generateCustomLiteratureThesisWithGemini({
                         authorName: activeAuthor.name,
                         worksList: activeAuthor.works.map((w) => w.title).join(', '),
-                        customTopic: topic
+                        customTopic: topic,
                       });
                       setCustomAiResult(res);
                     } catch (err) {
@@ -419,12 +468,15 @@ export const LiteratureCanonView: React.FC = () => {
                   <div className="space-y-1">
                     <strong className="text-emerald-300 block">📌 3 Аргументативни микротези:</strong>
                     {customAiResult.arguments.map((arg, idx) => (
-                      <div key={idx} className="text-blue-100 leading-relaxed">• {arg}</div>
+                      <div key={idx} className="text-blue-100 leading-relaxed">
+                        • {arg}
+                      </div>
                     ))}
                   </div>
                   {customAiResult.keyQuotesToUse.length > 0 && (
                     <div className="text-[11px] text-slate-200">
-                      <strong className="text-white">Цитати за опора:</strong> {customAiResult.keyQuotesToUse.join(' | ')}
+                      <strong className="text-white">Цитати за опора:</strong>{' '}
+                      {customAiResult.keyQuotesToUse.join(' | ')}
                     </div>
                   )}
                   <div className="pt-1 border-t border-white/10 text-blue-100">
@@ -433,13 +485,106 @@ export const LiteratureCanonView: React.FC = () => {
                 </div>
               )}
             </div>
-
           </div>
-
         </div>
-
       </div>
 
+      {/* Infinite Author & Works Quiz Generator Section */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold uppercase tracking-wider mb-1">
+              Безкраен генератор на тестове по МОН • Вариант #{authorQuizVariant}
+            </span>
+            <h3 className="text-lg sm:text-xl font-black text-slate-900">
+              Интерактивен тест върху {activeAuthor.name} ({authorInfiniteQuestions.length} въпроса)
+            </h3>
+            <p className="text-xs text-slate-600">
+              Всеки вариант проверява жанровете, годините, ключовите цитати, конфликтите и тезите върху {activeAuthor.name} с динамично разбъркване.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                setAuthorQuizVariant((prev) => prev + 1);
+                setAuthorQuizAnswers({});
+                setAuthorQuizRevealed({});
+              }}
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors cursor-pointer"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Нов вариант върху автора (∞)</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {authorInfiniteQuestions.map((q, qIdx) => {
+            const selectedIdx = authorQuizAnswers[q.id];
+            const isRevealed = Boolean(authorQuizRevealed[q.id]);
+            return (
+              <div
+                key={q.id}
+                className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200 space-y-3 flex flex-col justify-between"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
+                    <span>Въпрос #{qIdx + 1}</span>
+                    <span>ДЗИ БЕЛ • {activeAuthor.name}</span>
+                  </div>
+                  <p className="text-xs sm:text-sm font-bold text-slate-900 leading-relaxed">
+                    {q.question}
+                  </p>
+                  <div className="space-y-2">
+                    {q.options.map((opt, optIdx) => {
+                      const isPicked = selectedIdx === optIdx;
+                      const isCorrect = optIdx === q.correctIndex;
+                      let btnStyle = 'bg-white border-slate-200 text-slate-800 hover:bg-slate-100';
+                      if (isRevealed) {
+                        if (isCorrect) {
+                          btnStyle = 'bg-emerald-50 border-emerald-400 text-emerald-950 font-bold';
+                        } else if (isPicked) {
+                          btnStyle = 'bg-rose-50 border-rose-400 text-rose-900';
+                        }
+                      } else if (isPicked) {
+                        btnStyle = 'bg-slate-900 border-slate-900 text-white font-bold';
+                      }
+                      return (
+                        <button
+                          key={optIdx}
+                          type="button"
+                          onClick={() => {
+                            setAuthorQuizAnswers((prev) => ({ ...prev, [q.id]: optIdx }));
+                            setAuthorQuizRevealed((prev) => ({ ...prev, [q.id]: true }));
+                          }}
+                          className={`w-full p-3 rounded-xl border text-left text-xs transition-all cursor-pointer flex items-start justify-between gap-2 ${btnStyle}`}
+                        >
+                          <span>
+                            <strong>{['А', 'Б', 'В', 'Г'][optIdx]})</strong> {opt}
+                          </span>
+                          {isRevealed && isCorrect && (
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                          )}
+                          {isRevealed && isPicked && !isCorrect && (
+                            <XCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {isRevealed && (
+                  <div className="p-3 rounded-xl bg-white border border-slate-200 text-xs text-slate-700 leading-relaxed">
+                    <strong className="text-slate-900">Обяснение по МОН:</strong> {q.explanation}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };

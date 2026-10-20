@@ -4,14 +4,28 @@ import { BULGARIAN_CURRICULUM_TREE } from '../../data/bulgarianCurriculumTree';
 import { SUBDOMAIN_LESSON_MAP } from '../curriculumClassifier';
 import {
   SCHOOL_SPECIALTIES_SECTIONS,
-  GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX
+  GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX,
 } from '../../data/schoolsSpecialtiesDatabase';
 import {
   generateInfiniteLessonQuiz,
   buildTailoredSubDomainLesson,
   buildTailoredSpecialtyLesson,
-  buildTailoredMatrixSubjectLesson
+  buildTailoredMatrixSubjectLesson,
 } from '../infiniteQuizGenerator';
+import {
+  AUTHOR_LINKED_LESSON_MAP,
+  generateAuthorInfiniteQuiz,
+  generateGrammarInfiniteQuestions,
+  generateModuleTwoInfiniteQuestions,
+  generateMathLabInfiniteQuiz,
+  generateScienceLabInfiniteQuiz,
+  generateEnglishTransformationsVariant,
+  generateCivicsInfiniteQuiz,
+  generateHistoryGeoInfiniteQuiz,
+  generateHistoricalCaseQuiz,
+} from '../infiniteLabGenerators';
+import { LITERATURE_CANON } from '../../data/literatureDatabase';
+import { HISTORICAL_CASES_DATA } from '../../data/historicalCasesData';
 
 describe('MON Curriculum Coverage & Infinite Quiz Generator', () => {
   it('verifies all 108 core lessons, 56 MON tree subDomains, 58 school specialties, and 51 grade matrix subjects resolve to valid lessons', async () => {
@@ -50,6 +64,13 @@ describe('MON Curriculum Coverage & Infinite Quiz Generator', () => {
       for (const subj of gm.subjects) {
         expect(idSet.has(subj.linkedLessonId), `Matrix ${gm.grade} ${subj.subjectName} -> ${subj.linkedLessonId} must exist`).toBe(true);
       }
+    }
+
+    // 4. All 15 authors in LITERATURE_CANON map to valid curriculum lessons
+    for (const author of LITERATURE_CANON) {
+      const lid = AUTHOR_LINKED_LESSON_MAP[author.id];
+      expect(lid, `Author ${author.id} should be mapped`).toBeTruthy();
+      expect(idSet.has(lid), `Author ${author.id} -> ${lid} must exist`).toBe(true);
     }
   });
 
@@ -98,5 +119,46 @@ describe('MON Curriculum Coverage & Infinite Quiz Generator', () => {
     const tailoredMatrix = buildTailoredMatrixSubjectLesson(gm, matrixSubj, mathLesson, lessons);
     expect(tailoredMatrix.title).toContain(gm.grade);
     expect(tailoredMatrix.quiz.length).toBe(10);
+  });
+
+  it('generates valid infinite variants across all 9 specialized laboratories', () => {
+    const litV1 = generateAuthorInfiniteQuiz(LITERATURE_CANON[0], LITERATURE_CANON, 1);
+    const litV2 = generateAuthorInfiniteQuiz(LITERATURE_CANON[0], LITERATURE_CANON, 2);
+    expect(litV1.length).toBeGreaterThanOrEqual(5);
+    expect(litV1[0].question).not.toBe(litV2[0].question);
+
+    const gramV1 = generateGrammarInfiniteQuestions('all', 1);
+    const gramV2 = generateGrammarInfiniteQuestions('all', 2);
+    expect(gramV1.length).toBe(5);
+    expect(gramV1[0].options[gramV1[0].correctIndex]).not.toBe(gramV2[0].options[gramV2[0].correctIndex]);
+
+    const m2V1 = generateModuleTwoInfiniteQuestions('all', 1);
+    expect(m2V1.length).toBe(6);
+
+    const mathV1 = generateMathLabInfiniteQuiz('all', 1);
+    const mathV2 = generateMathLabInfiniteQuiz('all', 2);
+    expect(mathV1.length).toBe(6);
+    expect(mathV1[0].question).not.toBe(mathV2[0].question);
+
+    const sciV1 = generateScienceLabInfiniteQuiz(1);
+    const sciV2 = generateScienceLabInfiniteQuiz(2);
+    expect(sciV1.length).toBe(6);
+    expect(sciV1[0].question).not.toBe(sciV2[0].question);
+
+    const engV1 = generateEnglishTransformationsVariant('ALL', 1);
+    const engV2 = generateEnglishTransformationsVariant('ALL', 2);
+    expect(engV1.length).toBeGreaterThan(10);
+    expect(engV1[0].originalSentence).not.toBe(engV2[0].originalSentence);
+
+    const civV1 = generateCivicsInfiniteQuiz('all', 1);
+    const civV2 = generateCivicsInfiniteQuiz('all', 2);
+    expect(civV1.length).toBeGreaterThan(10);
+    expect(civV1[0].scenario).not.toBe(civV2[0].scenario);
+
+    const hgV1 = generateHistoryGeoInfiniteQuiz('all', 1);
+    expect(hgV1.length).toBeGreaterThan(10);
+
+    const caseV1 = generateHistoricalCaseQuiz(HISTORICAL_CASES_DATA[0], HISTORICAL_CASES_DATA, 1);
+    expect(caseV1.length).toBeGreaterThanOrEqual(3);
   });
 });

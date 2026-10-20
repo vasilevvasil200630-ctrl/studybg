@@ -925,7 +925,12 @@ export function App() {
                     )}
 
                     {activeTab === 'literature' && (
-                      <LiteratureCanonView />
+                      <LiteratureCanonView
+                        onOpenLessonId={(lid) => {
+                          const found = lessons.find((l) => l.id === lid);
+                          if (found) handleLessonSelected(found, 'summary');
+                        }}
+                      />
                     )}
 
                     {activeTab === 'mathlab' && (

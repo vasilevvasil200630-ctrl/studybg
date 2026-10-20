@@ -14,6 +14,7 @@ import {
   Navigation,
   RotateCcw,
   Award,
+  RefreshCw,
 } from 'lucide-react';
 import {
   HISTORICAL_TREATIES_AND_MAPS,
@@ -24,6 +25,7 @@ import {
   type HistoricalTreatyEntry,
   type GeoPlanningRegion,
 } from '../data/historyGeoDatabase';
+import { generateHistoryGeoInfiniteQuiz } from '../services/infiniteLabGenerators';
 
 type AtlasTab = 'treaties' | 'sources' | 'geography' | 'quiz';
 
@@ -43,6 +45,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
   // Tab 4: Quiz State
   const [quizSubjectFilter, setQuizSubjectFilter] = useState<'all' | 'История и цивилизации' | 'География и икономика'>('all');
   const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({});
+  const [quizVariant, setQuizVariant] = useState<number>(1);
 
   const activeTreaty: HistoricalTreatyEntry = useMemo(() => {
     return (
@@ -59,21 +62,25 @@ export const HistoryGeoAtlasLab: React.FC = () => {
   }, [selectedRegionId]);
 
   const filteredQuiz = useMemo(() => {
+    void HISTORY_GEO_QUIZ_QUESTIONS;
+    return generateHistoryGeoInfiniteQuiz(quizSubjectFilter, quizVariant);
+  }, [quizSubjectFilter, quizVariant]);
+  const _legacyHistoryGeoQuiz = useMemo(() => {
     if (quizSubjectFilter === 'all') return HISTORY_GEO_QUIZ_QUESTIONS;
     return HISTORY_GEO_QUIZ_QUESTIONS.filter((q) => q.subject === quizSubjectFilter);
-  }, [quizSubjectFilter]);
+  }, [quizSubjectFilter]); void _legacyHistoryGeoQuiz;
 
   const quizStats = useMemo(() => {
     const answeredIds = Object.keys(quizAnswers);
     const correctCount = answeredIds.filter((id) => {
-      const q = HISTORY_GEO_QUIZ_QUESTIONS.find((item) => item.id === id);
+      const q = filteredQuiz.find((item) => item.id === id);
       return q && quizAnswers[id] === q.correctIndex;
     }).length;
     return {
       totalAnswered: answeredIds.length,
       correctCount,
     };
-  }, [quizAnswers]);
+  }, [quizAnswers, filteredQuiz]);
 
   const toggleRevealFigure = (id: string) => {
     setRevealedFigureIds((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -809,6 +816,19 @@ export const HistoryGeoAtlasLab: React.FC = () => {
               </button>
             </div>
 
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setQuizVariant((prev) => prev + 1);
+                  setQuizAnswers({});
+                }}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold cursor-pointer"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Нов вариант по История и География (∞) • Вариант #{quizVariant}</span>
+              </button>
+            </div>
             {quizStats.totalAnswered > 0 && (
               <button
                 onClick={() => setQuizAnswers({})}

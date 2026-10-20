@@ -13,6 +13,7 @@ import {
   Check,
   PlusCircle,
   ShieldCheck,
+  RefreshCw,
   Loader2
 } from 'lucide-react';
 import {
@@ -23,6 +24,7 @@ import {
 } from '../data/englishDziDatabase';
 import { studyProgressService } from '../services/studyProgressService';
 import { evaluateEnglishWritingWithGemini, type EnglishWritingAiEvaluation, AI_EXAMINER_LABEL } from '../services/geminiService';
+import { generateEnglishTransformationsVariant } from '../services/infiniteLabGenerators';
 
 type EnglishLabTab = 'transformations' | 'phrasal' | 'writing';
 
@@ -60,6 +62,7 @@ export const EnglishDziLab: React.FC = () => {
   // Tab 1: Sentence Transformations state
   const [selectedCefr, setSelectedCefr] = useState<'ALL' | 'B1.1' | 'B2' | 'C1 / ESP'>('ALL');
   const [trAnswers, setTrAnswers] = useState<Record<string, number>>({});
+  const [trVariant, setTrVariant] = useState<number>(1);
 
   // Tab 2: Phrasal Verbs state
   const [pvAnswers, setPvAnswers] = useState<Record<string, number>>({});
@@ -74,15 +77,19 @@ export const EnglishDziLab: React.FC = () => {
   const [aiEngError, setAiEngError] = useState<string | null>(null);
 
   const filteredTransformations = useMemo(() => {
+    void ENGLISH_TRANSFORMATIONS;
+    return generateEnglishTransformationsVariant(selectedCefr, trVariant);
+  }, [selectedCefr, trVariant]);
+  const _legacyFilteredTransformations = useMemo(() => {
     if (selectedCefr === 'ALL') return ENGLISH_TRANSFORMATIONS;
     return ENGLISH_TRANSFORMATIONS.filter((item) => item.cefrLevel === selectedCefr);
-  }, [selectedCefr]);
+  }, [selectedCefr]); void _legacyFilteredTransformations;
 
   const handleSelectTransformation = (itemId: string, optionIdx: number) => {
     if (trAnswers[itemId] !== undefined) return;
     setTrAnswers((prev) => ({ ...prev, [itemId]: optionIdx }));
 
-    const item = ENGLISH_TRANSFORMATIONS.find((t) => t.id === itemId);
+    const item = filteredTransformations.find((t) => t.id === itemId);
     if (!item) return;
 
     const isCorrect = optionIdx === item.correctIndex;
@@ -156,14 +163,14 @@ export const EnglishDziLab: React.FC = () => {
   const trScore = useMemo(() => {
     let correct = 0;
     let totalAnswered = 0;
-    for (const item of ENGLISH_TRANSFORMATIONS) {
+    for (const item of filteredTransformations) {
       if (trAnswers[item.id] !== undefined) {
         totalAnswered++;
         if (trAnswers[item.id] === item.correctIndex) correct++;
       }
     }
     return { correct, totalAnswered };
-  }, [trAnswers]);
+  }, [trAnswers, filteredTransformations]);
 
   return (
     <div className="space-y-6">
@@ -247,6 +254,31 @@ export const EnglishDziLab: React.FC = () => {
         <div className="space-y-5">
           {/* Filter Bar */}
           <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200">
+            <div className="w-full flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
+              <span className="text-xs font-bold text-blue-900">
+                Активен вариант: #{trVariant} ({filteredTransformations.length} задачи по МОН)
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setTrVariant((prev) => prev + 1);
+                  setTrAnswers({});
+                }}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors cursor-pointer"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Нов вариант Sentence Transformations (∞)</span>
+              </button>
+            </div>
+            <details className="w-full rounded-xl bg-slate-50 border border-slate-200 p-3 text-xs text-slate-700">
+              <summary className="font-bold text-slate-900 cursor-pointer select-none">
+                Справка с граматичния конспект на МОН (CEFR B1.1 / B2 / C1 Use of English)
+              </summary>
+              <div className="mt-2 pt-2 border-t border-slate-200 space-y-1 leading-relaxed">
+                <p><strong>Conditionals &amp; Wishes:</strong> Type 2 (If + Past Simple, would + V1), Type 3 (If + Past Perfect, would have + V3), I wish + Past Perfect (съжаление за миналото), C1: But for + noun phrase.</p>
+                <p><strong>Inversion (B2/C1):</strong> След Never / Rarely / Seldom / Scarcely / Hardly / No sooner в началото на изречението се прилага въпросителен словоред (Scarcely had + Subject + V3 ... when).</p>
+              </div>
+            </details>
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider mr-1">
                 Ниво по CEFR:

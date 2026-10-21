@@ -1,7 +1,5 @@
 import React from 'react';
 import {
-  Cookie,
-  GraduationCap,
   ShieldCheck,
   BookOpen,
   CheckSquare,
@@ -72,16 +70,71 @@ export const Footer: React.FC<FooterProps> = ({
           
           {/* Col 1: Brand Info & High-School Focus */}
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-brand-sapphire text-white shadow-sm">
-                <GraduationCap className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold tracking-tight"><span className="text-brand-sapphire">Study</span><span className="text-emerald-700">BG</span></span>
-                  <span className="text-[10px] font-semibold text-slate-600 px-1.5 py-0.5 rounded-md border border-slate-200">
-                    5.–12. клас
-                  </span>
+            <div className="inline-flex items-center gap-2.5">
+              <svg
+                className="w-9 h-9 shrink-0"
+                viewBox="0 0 64 64"
+                fill="none"
+                aria-hidden="true"
+              >
+                <defs>
+                  <linearGradient id="footer-book-grad" x1="6" y1="22" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#075985" />
+                    <stop offset="50%" stopColor="#0284c7" />
+                    <stop offset="100%" stopColor="#2563eb" />
+                  </linearGradient>
+                  <linearGradient id="footer-star-grad" x1="18" y1="24" x2="46" y2="54" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#fbbf24" />
+                    <stop offset="100%" stopColor="#d97706" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M7 29V53C16.5 53 25 55.2 32 60C39 55.2 47.5 53 57 53V29"
+                  stroke="url(#footer-book-grad)"
+                  strokeWidth="3.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M26 27C21.5 24.2 16.5 23 12 23V48C19.5 48 26.2 50.2 32 55C37.8 50.2 44.5 48 52 48V23C47.5 23 42.5 24.2 38 27"
+                  stroke="url(#footer-book-grad)"
+                  strokeWidth="3.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M25 31.5L22 28.5M39 31.5L42 28.5M25 44.5L22 47.5M39 44.5L42 47.5"
+                  stroke="#f59e0b"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M32 23L35 35L46.5 38L35 41L32 52.5L29 41L17.5 38L29 35L32 23Z"
+                  fill="url(#footer-star-grad)"
+                />
+                <circle cx="32" cy="38" r="2.3" fill="#ffffff" />
+                <path d="M32 4.5L54.5 12.8L32 20.2L9.5 12.8L32 4.5Z" fill="#0f172a" />
+                <path d="M19 18V24.5C24 21.2 40 21.2 45 24.5V18L32 22.2L19 18Z" fill="#0f172a" />
+                <circle cx="32" cy="12.4" r="1.7" fill="#38bdf8" />
+                <path
+                  d="M32 12.4L48 15.5V22.5"
+                  stroke="#2563eb"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path d="M46 28L47 22.5H49L50 28H46Z" fill="#2563eb" />
+              </svg>
+
+              <div className="flex flex-col">
+                <div className="text-[19px] font-extrabold tracking-tight leading-none flex items-baseline">
+                  <span className="text-[#0f172a]">Study</span>
+                  <span className="text-[#1d4ed8]">BG</span>
+                </div>
+                <div className="mt-1 flex w-full h-[2.5px] rounded-full overflow-hidden" aria-hidden="true">
+                  <span className="w-1/3 h-full bg-white border border-slate-300/90" />
+                  <span className="w-1/3 h-full bg-[#00966E]" />
+                  <span className="w-1/3 h-full bg-[#D62612]" />
                 </div>
               </div>
             </div>
@@ -136,7 +189,7 @@ export const Footer: React.FC<FooterProps> = ({
                   onClick={() => handleOpenStudyTab('simulator')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
-                  <Clock className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
+                  <Clock className="w-3.5 h-3.5 text-amber-600" />
                   <span>100т. Симулатор МОН (НВО 10 & ДЗИ)</span>
                 </button>
               </li>
@@ -172,7 +225,7 @@ export const Footer: React.FC<FooterProps> = ({
                   onClick={() => handleOpenStudyTab('literature')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
-                  <BookOpen className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
+                  <BookOpen className="w-3.5 h-3.5 text-rose-600" />
                   <span>Литературен канон & Тези (Задача 41)</span>
                 </button>
               </li>
@@ -199,7 +252,7 @@ export const Footer: React.FC<FooterProps> = ({
                   onClick={() => handleOpenStudyTab('atlas')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
-                  <MapPin className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
+                  <MapPin className="w-3.5 h-3.5 text-amber-600" />
                   <span>Атлас История & География (NUTS 2)</span>
                 </button>
               </li>
@@ -226,7 +279,7 @@ export const Footer: React.FC<FooterProps> = ({
                   onClick={() => handleOpenStudyTab('blitz')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
-                  <Zap className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
+                  <Zap className="w-3.5 h-3.5 text-amber-600" />
                   <span>Блиц за 60 сек. (Speed Blitz 6.00)</span>
                 </button>
               </li>
@@ -317,17 +370,17 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Col 4: Исторически контекст & Първични извори */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3.5 flex items-center gap-1.5">
-              <Compass className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
+            <h4 className="text-xs font-bold uppercase tracking-wider text-amber-800 mb-3.5 flex items-center gap-1.5">
+              <Compass className="w-3.5 h-3.5 text-amber-700" />
               <span>Обща култура, Конспирации & Извори</span>
             </h4>
             <ul className="space-y-2 text-xs text-slate-600">
               <li>
                 <button
                   onClick={() => handleOpenCultureTab('mysteries')}
-                  className="hover:text-brand-sapphire transition-colors flex items-center gap-2 font-semibold text-slate-800"
+                  className="hover:text-amber-800 transition-colors flex items-center gap-2 font-semibold text-amber-900"
                 >
-                  <Compass className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
+                  <Compass className="w-3.5 h-3.5 text-amber-700" />
                   <span>41 Конспиративни досиета & Загадки</span>
                 </button>
               </li>
@@ -352,9 +405,9 @@ export const Footer: React.FC<FooterProps> = ({
               <li>
                 <button
                   onClick={() => handleOpenCultureTab('heritage')}
-                  className="hover:text-brand-sapphire transition-colors flex items-center gap-2"
+                  className="hover:text-orange-700 transition-colors flex items-center gap-2"
                 >
-                  <ShieldCheck className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-orange-600" />
                   <span>Български принос & ЮНЕСКО (16)</span>
                 </button>
               </li>
@@ -414,8 +467,7 @@ export const Footer: React.FC<FooterProps> = ({
               onClick={() => onOpenCookieSettings?.()}
               className="text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1"
             >
-              <Cookie className="w-3.5 h-3.5" aria-hidden="true" />
-              Настройки на бисквитките
+              🍪 Настройки на бисквитките
             </button>
           </div>
 

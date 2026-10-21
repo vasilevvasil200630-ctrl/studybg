@@ -39,10 +39,10 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
 
   const examTypesList = [
     { id: 'Всички изпити', label: 'Всички изпитни формати' },
-    { id: 'ДЗИ / Матура', label: 'ДЗИ / Матура (12. кл.)' },
-    { id: 'ДИППК / Професионален изпит', label: 'ДИППК / Професионален изпит (III СПК)' },
-    { id: 'НВО (10. клас)', label: 'НВО (10. клас)' },
-    { id: 'НВО (7. клас)', label: 'НВО (7. клас)' }
+    { id: 'ДЗИ / Матура', label: '🎓 ДЗИ / Матура (12. кл.)' },
+    { id: 'ДИППК / Професионален изпит', label: '🛠️ ДИППК / Професионален изпит (III СПК)' },
+    { id: 'НВО (10. клас)', label: '📘 НВО (10. клас)' },
+    { id: 'НВО (7. клас)', label: '🌱 НВО (7. клас)' }
   ];
 
   const isJuniorHigh =
@@ -312,7 +312,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
               <Layers className="w-3 h-3 text-indigo-700" />
               <span>Официално дърво на учебната програма на МОН (56 тематични раздела • 5.–12. клас)</span>
             </span>
-            <h4 className="text-base sm:text-lg font-bold text-slate-900">
+            <h4 className="text-base sm:text-lg font-extrabold text-slate-900">
               Раздели, задължителни изисквания за Отличен (6.00), учебен материал и тестове по всяка подтема
             </h4>
           </div>
@@ -361,7 +361,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                             <div className="text-[11px] font-semibold text-slate-500 line-clamp-1">
                               {dom.name}
                             </div>
-                            <h5 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
+                            <h5 className="text-xs sm:text-sm font-extrabold text-slate-900 leading-snug">
                               {sub.name}
                             </h5>
                             <ul className="space-y-1 pt-1">

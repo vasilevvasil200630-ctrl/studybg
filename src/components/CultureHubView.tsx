@@ -37,7 +37,7 @@ const CultureMysticMapView = lazy(() => import('./CultureMysticMapView').then(m 
 const SubViewLoadingSkeleton = () => (
   <div className="p-8 rounded-2xl bg-white border border-slate-200 animate-pulse flex items-center justify-center min-h-[300px] shadow-xs">
     <div className="flex items-center gap-3 text-slate-500 text-xs sm:text-sm font-medium">
-      <div className="w-5 h-5 border border-amber-600 border-t-transparent rounded-full animate-spin" />
+      <div className="w-5 h-5 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
       <span>Зареждане на съдържанието...</span>
     </div>
   </div>
@@ -107,7 +107,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
 
   const mysteryCategories = [
     { id: 'all', label: `Всички досиета (${UNSOLVED_MYSTERIES_DATA.length})` },
-    { id: 'conspiracy', label: 'Конспирации & Секретни досиета' },
+    { id: 'conspiracy', label: '🕵️ Конспирации & Секретни досиета' },
     { id: 'history', label: 'Исторически случки' },
     { id: 'ancient', label: 'Древни цивилизации' },
     { id: 'geography', label: 'Географски бездни' }
@@ -233,7 +233,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
 
   const mythCategories = [
     { id: 'all', label: `Всички митове (${FACT_OR_MYTH_DATA.length})` },
-    { id: 'conspiracy', label: 'Конспирации & Тайни' },
+    { id: 'conspiracy', label: '🕵️ Конспирации & Тайни' },
     { id: 'history', label: 'История' },
     { id: 'ancient', label: 'Древност' },
     { id: 'geography', label: 'География' }
@@ -405,7 +405,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
                                   onNavigateTab?.('simulator');
                                 }
                               }}
-                              className="mt-2 flex items-center justify-between p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200/80 text-[11px] text-amber-950 transition-colors shadow-2xs group/pill cursor-pointer"
+                              className="mt-2 flex items-center justify-between p-2.5 rounded-xl bg-gradient-to-r from-amber-50 to-blue-50 hover:from-amber-100 hover:to-blue-100 border border-amber-200/80 text-[11px] text-slate-800 transition-colors shadow-2xs group/pill cursor-pointer"
                             >
                               <span className="flex items-center gap-1.5 font-bold text-amber-900">
                                 <Sparkles className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
@@ -684,7 +684,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
               <div className="flex flex-wrap gap-2 mt-4">
                 {[
                   { id: 'all', label: 'Всички категории' },
-                  { id: 'conspiracy', label: 'Конспирации & Тайни' },
+                  { id: 'conspiracy', label: '🕵️ Конспирации & Тайни' },
                   { id: 'history', label: 'История на България' },
                   { id: 'ancient', label: 'Древност & Археология' },
                   { id: 'geography', label: 'География & Природа' },
@@ -837,12 +837,12 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
               <div className="space-y-2">
                 <span className="text-xs font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
                   {triviaScore >= activeTriviaQuestions.length * 0.8
-                    ? 'Титла: Магистър по обща култура'
+                    ? '🏆 Титла: Магистър по обща култура'
                     : triviaScore >= activeTriviaQuestions.length * 0.6
-                    ? 'Титла: Ерудит на България'
-                    : 'Титла: Млад изследовател'}
+                    ? '🥈 Титла: Ерудит на България'
+                    : '🥉 Титла: Млад изследовател'}
                 </span>
-                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 font-mono">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">
                   {triviaScore} от {activeTriviaQuestions.length} верни отговора ({Math.round((triviaScore / activeTriviaQuestions.length) * 100)}%)
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
@@ -989,7 +989,7 @@ export const CultureHubView: React.FC<CultureHubViewProps> = ({
                         <span className={`text-xs font-bold px-2 py-0.5 rounded ${
                           isGuessCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
                         }`}>
-                          {isGuessCorrect ? 'Познахте!' : 'Не познахте този път'}
+                          {isGuessCorrect ? '🎉 Познахте!' : '❌ Не познахте този път'}
                         </span>
                       </div>
 

@@ -25,7 +25,7 @@ export const ExamStartScreen: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) 
               <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto border border-blue-200 shadow-2xs">
                 <ShieldAlert className="w-6 h-6" />
               </div>
-              <h4 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+              <h4 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
                 Модел на изпита в симулатора (100 точки)
               </h4>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
@@ -117,7 +117,7 @@ export const ExamStartScreen: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) 
             </div>
 
             {/* Duration Selector & Launch Call-to-action */}
-            <div className="p-6 rounded-2xl bg-blue-50/40 border border-blue-200 text-center space-y-4 max-w-xl mx-auto">
+            <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-50/50 via-white to-blue-50/50 border border-blue-200 text-center space-y-4 max-w-xl mx-auto">
               <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                 Изберете времеви регламент за изпита:
               </span>

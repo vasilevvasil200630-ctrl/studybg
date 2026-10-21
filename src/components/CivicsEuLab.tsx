@@ -125,7 +125,7 @@ export const CivicsEuLab: React.FC = () => {
               <Scale className="w-3.5 h-3.5 text-blue-600" />
               <span>Гражданско образование, Конституция & ЕС • 10.–12. клас (ДЗИ)</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight font-serif">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-serif">
               Лаборатория по Конституционализъм, Власти и Европейски съюз
             </h1>
             <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
@@ -136,15 +136,15 @@ export const CivicsEuLab: React.FC = () => {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 shrink-0">
             <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-center">
-              <div className="text-lg font-bold text-blue-700">5 органа</div>
+              <div className="text-lg font-extrabold text-blue-700">5 органа</div>
               <div className="text-[11px] font-medium text-slate-500">Конституция на РБ</div>
             </div>
             <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-center">
-              <div className="text-lg font-bold text-blue-700">6 институции</div>
+              <div className="text-lg font-extrabold text-blue-700">6 институции</div>
               <div className="text-[11px] font-medium text-slate-500">Архитектура на ЕС</div>
             </div>
             <div className="col-span-2 sm:col-span-1 bg-amber-50/70 border border-amber-200/80 rounded-xl p-3 text-center">
-              <div className="text-lg font-bold text-amber-800">ДЗИ & Олимпиада</div>
+              <div className="text-lg font-extrabold text-amber-800">ДЗИ & Олимпиада</div>
               <div className="text-[11px] font-medium text-amber-700">Казуси и тест за 6.00</div>
             </div>
           </div>
@@ -270,7 +270,7 @@ export const CivicsEuLab: React.FC = () => {
                       • {selectedBgInst.constitutionalArticles}
                     </span>
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 font-serif">{selectedBgInst.name}</h3>
+                  <h3 className="text-xl font-extrabold text-slate-900 font-serif">{selectedBgInst.name}</h3>
                 </div>
 
                 <div className="flex flex-wrap gap-2 text-xs">
@@ -379,7 +379,7 @@ export const CivicsEuLab: React.FC = () => {
                   <span className="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-blue-100 text-blue-800 mb-1.5">
                     {selectedEuInst.roleBadge}
                   </span>
-                  <h3 className="text-xl font-bold text-slate-900 font-serif">{selectedEuInst.name}</h3>
+                  <h3 className="text-xl font-extrabold text-slate-900 font-serif">{selectedEuInst.name}</h3>
                   <p className="text-xs text-slate-500 mt-0.5">Седалище: {selectedEuInst.seat}</p>
                 </div>
 
@@ -532,7 +532,7 @@ export const CivicsEuLab: React.FC = () => {
               { id: 'constitution', label: 'Конституция на РБ' },
               { id: 'eu', label: 'Европейски съюз' },
               { id: 'human_rights', label: 'Философия & Права на човека' },
-              { id: 'labor_dippk', label: 'Трудово право, ЗБУТ & ТЗ (Трета СПК)' }
+              { id: 'labor_dippk', label: '🛠️ Трудово право, ЗБУТ & ТЗ (Трета СПК)' }
             ].map(f => (
               <button
                 key={f.id}
@@ -752,7 +752,7 @@ export const CivicsEuLab: React.FC = () => {
                     Терминологичен одитор за 6.00
                   </h4>
                   <div className="mt-2 flex items-baseline justify-between">
-                    <span className="text-2xl font-bold text-blue-700">
+                    <span className="text-2xl font-extrabold text-blue-700">
                       {draftAudit.matchedConcepts.length} / {activeCase.requiredConcepts.length}
                     </span>
                     <span className="text-xs font-bold text-slate-500">

@@ -107,17 +107,17 @@ export const LiteratureCanonView: React.FC<LiteratureCanonViewProps> = ({ onOpen
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* Header Banner */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-[#083861] via-[#0a4b82] to-[#145a96] text-white shadow-md relative overflow-hidden">
+      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10 space-y-2 max-w-3xl">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-slate-500/20 text-slate-300 border border-slate-400/30">
+            <BookMarked className="w-3.5 h-3.5" />
+            <span>41. задача на ДЗИ • ЕСЕ & ЛИС • 30 точки</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
             Литературен Канон & Тези за ДЗИ (11.–12. клас)
           </h1>
-          <p className="text-xs sm:text-sm text-blue-100 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
             Всички задължителни автори и произведения по програмата на МОН. Готови структурирани тези за есе и литературноинтерпретативно съчинение, ключови цитати, анализ на родовите конфликти и безкраен генератор на тестови варианти върху всеки автор.
-          </p>
-          <p className="flex items-center gap-1.5 text-xs font-semibold text-blue-100">
-            <BookMarked className="w-3.5 h-3.5 text-emerald-300 shrink-0" aria-hidden="true" />
-            <span>41. задача на ДЗИ • ЕСЕ & ЛИС • 30 точки</span>
           </p>
         </div>
       </div>
@@ -192,13 +192,13 @@ export const LiteratureCanonView: React.FC<LiteratureCanonViewProps> = ({ onOpen
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Author Details & Required Works */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200/90 shadow-sm space-y-5">
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-sm space-y-5">
             <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100">
               <div className="space-y-1">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600">
                   {activeAuthor.period}
                 </span>
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                   {activeAuthor.name}
                 </h2>
               </div>
@@ -213,7 +213,7 @@ export const LiteratureCanonView: React.FC<LiteratureCanonViewProps> = ({ onOpen
                     <span>Отвори пълен урок по МОН</span>
                   </button>
                 )}
-                <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-900 font-bold text-sm flex items-center justify-center border border-slate-200">
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-900 font-black text-sm flex items-center justify-center border border-slate-200">
                   {activeAuthor.avatarText}
                 </div>
               </div>
@@ -319,13 +319,13 @@ export const LiteratureCanonView: React.FC<LiteratureCanonViewProps> = ({ onOpen
 
         {/* Right Column: DZI Essay & LIS Thesis Builder (Task 41) */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-6">
+          <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-white to-slate-50/40 border border-slate-200 shadow-sm space-y-6">
             <div className="space-y-1 pb-4 border-b border-slate-100">
               <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-700">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Генератор на тези за 41. задача</span>
               </div>
-              <h3 className="text-lg font-bold text-slate-900 tracking-tight">
+              <h3 className="text-lg font-extrabold text-slate-900 tracking-tight">
                 Примерни тези за есе и ЛИС
               </h3>
               <p className="text-xs text-slate-600">
@@ -410,9 +410,9 @@ export const LiteratureCanonView: React.FC<LiteratureCanonViewProps> = ({ onOpen
 
             {/* AI Custom Thesis & Argument Generator */}
             <div className="p-5 rounded-2xl bg-blue-950 text-white border border-blue-700 space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-300">
+              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-slate-300">
                 <Sparkles className="w-4 h-4 text-amber-400" />
-                <span>Генерирай AI теза по твоя тема ({AI_PROVIDER_LABEL})</span>
+                <span>🤖 Генерирай AI теза по твоя тема ({AI_PROVIDER_LABEL})</span>
               </div>
               <p className="text-[11px] text-blue-200">
                 Въведи произволно заглавие за есе или ЛИС върху <strong>{activeAuthor.name}</strong> и получи готова 30-точкова разработка:
@@ -446,7 +446,7 @@ export const LiteratureCanonView: React.FC<LiteratureCanonViewProps> = ({ onOpen
                     }
                   }}
                   disabled={isAiLitLoading}
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 text-xs font-bold shrink-0 cursor-pointer disabled:opacity-50"
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 text-xs font-black shrink-0 cursor-pointer disabled:opacity-50"
                 >
                   {isAiLitLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
                   <span>{isAiLitLoading ? 'Генерира се...' : 'Състави теза (30 т.)'}</span>
@@ -462,11 +462,11 @@ export const LiteratureCanonView: React.FC<LiteratureCanonViewProps> = ({ onOpen
               {customAiResult && (
                 <div className="p-4 rounded-xl bg-white/10 border border-white/15 space-y-2.5 text-xs">
                   <div>
-                    <strong className="text-amber-300 block mb-0.5">Основна теза (7/7 т.):</strong>
+                    <strong className="text-amber-300 block mb-0.5">🎯 Основна теза (7/7 т.):</strong>
                     <p className="text-white leading-relaxed">{customAiResult.thesis}</p>
                   </div>
                   <div className="space-y-1">
-                    <strong className="text-emerald-300 block">3 Аргументативни микротези:</strong>
+                    <strong className="text-emerald-300 block">📌 3 Аргументативни микротези:</strong>
                     {customAiResult.arguments.map((arg, idx) => (
                       <div key={idx} className="text-blue-100 leading-relaxed">
                         • {arg}
@@ -480,7 +480,7 @@ export const LiteratureCanonView: React.FC<LiteratureCanonViewProps> = ({ onOpen
                     </div>
                   )}
                   <div className="pt-1 border-t border-white/10 text-blue-100">
-                    <strong className="text-amber-300">Заключение:</strong> {customAiResult.conclusion}
+                    <strong className="text-amber-300">🏁 Заключение:</strong> {customAiResult.conclusion}
                   </div>
                 </div>
               )}
@@ -490,13 +490,13 @@ export const LiteratureCanonView: React.FC<LiteratureCanonViewProps> = ({ onOpen
       </div>
 
       {/* Infinite Author & Works Quiz Generator Section */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
           <div>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold uppercase tracking-wider mb-1">
               Безкраен генератор на тестове по МОН • Вариант #{authorQuizVariant}
             </span>
-            <h3 className="text-lg sm:text-xl font-bold text-slate-900">
+            <h3 className="text-lg sm:text-xl font-black text-slate-900">
               Интерактивен тест върху {activeAuthor.name} ({authorInfiniteQuestions.length} въпроса)
             </h3>
             <p className="text-xs text-slate-600">
@@ -511,7 +511,7 @@ export const LiteratureCanonView: React.FC<LiteratureCanonViewProps> = ({ onOpen
                 setAuthorQuizAnswers({});
                 setAuthorQuizRevealed({});
               }}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-brand-sapphire hover:bg-brand-sapphire-light text-white text-xs font-bold transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors cursor-pointer"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Нов вариант върху автора (∞)</span>

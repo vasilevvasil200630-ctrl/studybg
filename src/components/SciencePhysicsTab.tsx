@@ -51,7 +51,7 @@ export const SciencePhysicsTab: React.FC = () => {
               <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700">
                 Електричество и Магнетизъм • 9. и 10. клас
               </span>
-              <h3 className="text-base sm:text-lg font-bold text-slate-900">
+              <h3 className="text-base sm:text-lg font-extrabold text-slate-900">
                 Жив Калкулатор за Последователно и Успоредно Свързване на Резистори
               </h3>
             </div>
@@ -126,19 +126,19 @@ export const SciencePhysicsTab: React.FC = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-center">
               <div className="text-[11px] text-blue-700">Еквивалентно R</div>
-              <div className="text-lg font-bold text-blue-950 font-mono">{rEq.toFixed(2)} Ω</div>
+              <div className="text-lg font-black text-blue-950 font-mono">{rEq.toFixed(2)} Ω</div>
             </div>
             <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
               <div className="text-[11px] text-emerald-700">Общ ток I = U / R</div>
-              <div className="text-lg font-bold text-emerald-950 font-mono">{totalCurrent.toFixed(2)} A</div>
+              <div className="text-lg font-black text-emerald-950 font-mono">{totalCurrent.toFixed(2)} A</div>
             </div>
             <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-center">
               <div className="text-[11px] text-amber-800">Мощност P = U · I</div>
-              <div className="text-lg font-bold text-amber-950 font-mono">{totalPower.toFixed(1)} W</div>
+              <div className="text-lg font-black text-amber-950 font-mono">{totalPower.toFixed(1)} W</div>
             </div>
             <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
               <div className="text-[11px] text-slate-800">Топлина за 10 s (Q = P·t)</div>
-              <div className="text-lg font-bold text-slate-950 font-mono">{(totalPower * 10).toFixed(0)} J</div>
+              <div className="text-lg font-black text-slate-950 font-mono">{(totalPower * 10).toFixed(0)} J</div>
             </div>
           </div>
         </div>
@@ -149,7 +149,7 @@ export const SciencePhysicsTab: React.FC = () => {
             <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700">
               Квантова Физика • НВО 10 & ДЗИ 12
             </span>
-            <h3 className="text-base sm:text-lg font-bold text-slate-900">
+            <h3 className="text-base sm:text-lg font-extrabold text-slate-900">
               Симулатор на Фотоефекта на Айнщайн (hν = A + Ek,max)
             </h3>
           </div>
@@ -206,7 +206,7 @@ export const SciencePhysicsTab: React.FC = () => {
             }`}
           >
             <div className="space-y-1">
-              <div className="text-sm font-bold flex items-center gap-2">
+              <div className="text-sm font-extrabold flex items-center gap-2">
                 {isPhotoeffectActive ? (
                   <>
                     <CheckCircle2 className="w-5 h-5 text-emerald-600" />
@@ -226,7 +226,7 @@ export const SciencePhysicsTab: React.FC = () => {
 
             <div className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-center shrink-0">
               <div className="text-[10px] uppercase font-bold text-slate-500">Макс. кинетична енергия Ek,max</div>
-              <div className="text-lg font-bold font-mono text-slate-900">{maxKineticEv} eV</div>
+              <div className="text-lg font-black font-mono text-slate-900">{maxKineticEv} eV</div>
             </div>
           </div>
         </div>
@@ -234,20 +234,20 @@ export const SciencePhysicsTab: React.FC = () => {
         {/* Module 3C: Carnot Heat Engine & Three-Phase Power Simulator (DIPPK 522010) */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Carnot Heat Engine */}
-          <div className="p-5 rounded-2xl bg-gradient-to-br from-[#083861] via-[#0a4b82] to-[#145a96] text-white space-y-4">
+          <div className="p-5 rounded-2xl bg-slate-900 text-white border border-slate-800 space-y-4">
             <div>
               <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400">
                 Термодинамика и Топлотехника • ДЗИ Физика & Енергетика
               </span>
-              <h3 className="text-base font-bold text-white mt-0.5">
+              <h3 className="text-base font-extrabold text-white mt-0.5">
                 Топлинна Машина на Карно: η_max = (T₁ - T₂) / T₁
               </h3>
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-3 rounded-xl bg-white/10 border border-white/15 space-y-1.5">
+              <div className="p-3 rounded-xl bg-slate-800 border border-slate-700 space-y-1.5">
                 <div className="flex justify-between">
-                  <span className="text-blue-100">Нагревател t₁:</span>
+                  <span className="text-slate-300">Нагревател t₁:</span>
                   <strong className="font-mono text-amber-300">{carnotHotC} °C ({t1Kelvin} K)</strong>
                 </div>
                 <input
@@ -260,9 +260,9 @@ export const SciencePhysicsTab: React.FC = () => {
                   className="w-full accent-amber-400"
                 />
               </div>
-              <div className="p-3 rounded-xl bg-white/10 border border-white/15 space-y-1.5">
+              <div className="p-3 rounded-xl bg-slate-800 border border-slate-700 space-y-1.5">
                 <div className="flex justify-between">
-                  <span className="text-blue-100">Охладител t₂:</span>
+                  <span className="text-slate-300">Охладител t₂:</span>
                   <strong className="font-mono text-sky-300">{carnotColdC} °C ({t2Kelvin} K)</strong>
                 </div>
                 <input
@@ -280,31 +280,31 @@ export const SciencePhysicsTab: React.FC = () => {
             <div className="p-3.5 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-between">
               <div className="text-xs">
                 <span className="font-bold text-amber-300 block">Максимален термичен КПД η_max:</span>
-                <span className="font-mono text-blue-100">
+                <span className="font-mono text-slate-300">
                   ({t1Kelvin} K - {t2Kelvin} K) / {t1Kelvin} K
                 </span>
               </div>
-              <div className="text-2xl font-bold font-mono text-amber-300">
+              <div className="text-2xl font-black font-mono text-amber-300">
                 {carnotEfficiencyPct}%
               </div>
             </div>
           </div>
 
           {/* Three-Phase Power Triangle Simulator */}
-          <div className="p-5 rounded-2xl bg-gradient-to-br from-[#083861] via-[#0a4b82] to-[#145a96] text-white space-y-4">
+          <div className="p-5 rounded-2xl bg-slate-900 text-white border border-slate-800 space-y-4">
             <div>
               <span className="text-[11px] font-bold uppercase tracking-wider text-sky-400">
                 Трифазна Електротехника (U_L = 400 V) • Трета СПК Електротехник (522010)
               </span>
-              <h3 className="text-base font-bold text-white mt-0.5">
+              <h3 className="text-base font-extrabold text-white mt-0.5">
                 Триъгълник на Мощностите (P, Q, S) & Корекция на cos φ
               </h3>
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-3 rounded-xl bg-white/10 border border-white/15 space-y-1.5">
+              <div className="p-3 rounded-xl bg-slate-800 border border-slate-700 space-y-1.5">
                 <div className="flex justify-between">
-                  <span className="text-blue-100">Линеен ток I_L:</span>
+                  <span className="text-slate-300">Линеен ток I_L:</span>
                   <strong className="font-mono text-sky-300">{threePhaseLineCurrentA} A</strong>
                 </div>
                 <input
@@ -317,9 +317,9 @@ export const SciencePhysicsTab: React.FC = () => {
                   className="w-full accent-sky-400"
                 />
               </div>
-              <div className="p-3 rounded-xl bg-white/10 border border-white/15 space-y-1.5">
+              <div className="p-3 rounded-xl bg-slate-800 border border-slate-700 space-y-1.5">
                 <div className="flex justify-between">
-                  <span className="text-blue-100">Фактор cos φ:</span>
+                  <span className="text-slate-300">Фактор cos φ:</span>
                   <strong className="font-mono text-emerald-300">{threePhaseCosPhi.toFixed(2)}</strong>
                 </div>
                 <input

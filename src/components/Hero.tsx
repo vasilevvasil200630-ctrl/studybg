@@ -60,7 +60,7 @@ export const Hero: React.FC<HeroProps> = ({
         </div>
 
         {/* Main Headline */}
-        <h1 className="text-3xl sm:text-5xl lg:text-5xl font-bold tracking-tight text-slate-900 max-w-4xl mx-auto leading-[1.2]">
+        <h1 className="text-3xl sm:text-5xl lg:text-5xl font-extrabold tracking-tight text-slate-900 max-w-4xl mx-auto leading-[1.2]">
           Гимназията — без хаос.{' '}
           <span className="text-blue-600">
             Подготовка за НВО 10 и ДЗИ 12
@@ -77,7 +77,7 @@ export const Hero: React.FC<HeroProps> = ({
         <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
           <button
             onClick={handleStartDzi}
-            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-sm sm:text-base shadow-sm transition-all"
+            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-sm sm:text-base shadow-sm transition-all hover:scale-[1.01]"
           >
             <GraduationCap className="w-5 h-5 text-white" />
             <span>Подготвям се за ДЗИ (12. клас)</span>
@@ -85,7 +85,7 @@ export const Hero: React.FC<HeroProps> = ({
 
           <button
             onClick={handleStartNvo10}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-brand-sapphire hover:bg-brand-sapphire-light text-white font-semibold text-sm sm:text-base shadow-sm transition-all"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white font-semibold text-sm sm:text-base shadow-sm transition-all"
           >
             <Clock className="w-5 h-5 text-amber-400" />
             <span>Подготвям се за НВО (10. клас)</span>
@@ -161,7 +161,7 @@ export const Hero: React.FC<HeroProps> = ({
         </div>
 
         {/* Context Engine Bridge: Primary Sources & Timeline for DZI Module 2/3 */}
-        <div className="mt-6 max-w-4xl mx-auto p-4 sm:p-5 rounded-2xl bg-amber-50/50 border border-amber-200/90 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4 text-left">
+        <div className="mt-6 max-w-4xl mx-auto p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-amber-50/50 to-orange-500/10 border border-amber-200/90 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4 text-left">
           <div className="flex items-start gap-3.5">
             <div className="w-10 h-10 rounded-xl bg-amber-700 text-white flex items-center justify-center shrink-0 shadow-2xs mt-0.5">
               <Compass className="w-5 h-5" />

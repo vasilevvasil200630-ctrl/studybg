@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, ArrowRight, BookMarked, Mic } from 'lucide-react';
+import { BookOpen, ArrowRight, BookMarked } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 
@@ -71,11 +71,15 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
         {/* 4. CURATED EXAM PATHWAYS: ALL 125 MON LESSONS WITH MULTI-ACTION LAUNCH */}
         {/* ========================================================================= */}
         <section id="curriculum" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
-          <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200 shadow-sm">
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border-2 border-blue-100/90 shadow-sm">
             
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                <div className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-blue-600 mb-1">
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>Пълна учебна база по предмети (5.–12. клас)</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                   Учебни конспекти, устно изпитване и тестове ({totalLessonsCount} урока)
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-600 mt-1">
@@ -84,16 +88,15 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
               </div>
 
               {/* Curriculum Track Switcher */}
-              <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg bg-slate-100 border border-slate-200/80 text-xs font-semibold">
+              <div className="flex flex-wrap items-center gap-1 p-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold">
                 <button
                   onClick={() => {
                     setSelectedCurriculumTrack('dzi');
                     setShowAllInTrack(false);
                   }}
-                  aria-pressed={selectedCurriculumTrack === 'dzi'}
-                  className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     selectedCurriculumTrack === 'dzi'
-                      ? 'bg-white text-brand-sapphire shadow-xs'
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs font-extrabold'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -104,10 +107,9 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
                     setSelectedCurriculumTrack('nvo');
                     setShowAllInTrack(false);
                   }}
-                  aria-pressed={selectedCurriculumTrack === 'nvo'}
-                  className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     selectedCurriculumTrack === 'nvo'
-                      ? 'bg-white text-brand-sapphire shadow-xs'
+                      ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-xs font-extrabold'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -118,10 +120,9 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
                     setSelectedCurriculumTrack('nvo7');
                     setShowAllInTrack(false);
                   }}
-                  aria-pressed={selectedCurriculumTrack === 'nvo7'}
-                  className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     selectedCurriculumTrack === 'nvo7'
-                      ? 'bg-white text-brand-sapphire shadow-xs'
+                      ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-xs font-extrabold'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -132,10 +133,9 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
                     setSelectedCurriculumTrack('stem');
                     setShowAllInTrack(false);
                   }}
-                  aria-pressed={selectedCurriculumTrack === 'stem'}
-                  className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     selectedCurriculumTrack === 'stem'
-                      ? 'bg-white text-brand-sapphire shadow-xs'
+                      ? 'bg-gradient-to-r from-cyan-600 to-emerald-600 text-white shadow-xs font-extrabold'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -146,10 +146,9 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
                     setSelectedCurriculumTrack('dippk');
                     setShowAllInTrack(false);
                   }}
-                  aria-pressed={selectedCurriculumTrack === 'dippk'}
-                  className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     selectedCurriculumTrack === 'dippk'
-                      ? 'bg-white text-brand-sapphire shadow-xs'
+                      ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-xs font-extrabold'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -160,10 +159,9 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
                     setSelectedCurriculumTrack('all');
                     setShowAllInTrack(true);
                   }}
-                  aria-pressed={selectedCurriculumTrack === 'all'}
-                  className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     selectedCurriculumTrack === 'all'
-                      ? 'bg-white text-brand-sapphire shadow-xs'
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-xs font-extrabold'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -175,23 +173,69 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
             {/* Lessons Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {displayedCurriculum.map((lesson) => {
+                const subj = lesson.subject;
+                const isHistory = subj.includes('История');
+                const isGeo = subj.includes('География');
+                const isBel = subj.includes('Български') || subj.includes('Литература');
+                const isMath = subj.includes('Математика');
+                const isBioChem = subj.includes('Биология') || subj.includes('Химия');
+                const isPhys = subj.includes('Физика');
+                const isLang = subj.includes('Английски') || subj.includes('Чужди');
+                const isVoc = subj.includes('Информатика') || subj.includes('Икономика') || subj.includes('Професионални');
+
+                const accentColor = isHistory
+                  ? 'text-amber-900 bg-amber-100 border-amber-300'
+                  : isGeo
+                  ? 'text-teal-900 bg-teal-100 border-teal-300'
+                  : isBel
+                  ? 'text-blue-900 bg-blue-100 border-blue-300'
+                  : isMath
+                  ? 'text-cyan-900 bg-cyan-100 border-cyan-300'
+                  : isBioChem
+                  ? 'text-emerald-900 bg-emerald-100 border-emerald-300'
+                  : isPhys
+                  ? 'text-violet-900 bg-violet-100 border-violet-300'
+                  : isLang
+                  ? 'text-sky-900 bg-sky-100 border-sky-300'
+                  : isVoc
+                  ? 'text-fuchsia-900 bg-fuchsia-100 border-fuchsia-300'
+                  : 'text-indigo-900 bg-indigo-100 border-indigo-300';
+
+                const cardBottomBorder = isHistory
+                  ? 'border-b-amber-400 hover:border-amber-400'
+                  : isGeo
+                  ? 'border-b-teal-400 hover:border-teal-400'
+                  : isBel
+                  ? 'border-b-blue-400 hover:border-blue-400'
+                  : isMath
+                  ? 'border-b-cyan-400 hover:border-cyan-400'
+                  : isBioChem
+                  ? 'border-b-emerald-400 hover:border-emerald-400'
+                  : isPhys
+                  ? 'border-b-violet-400 hover:border-violet-400'
+                  : isLang
+                  ? 'border-b-sky-400 hover:border-sky-400'
+                  : isVoc
+                  ? 'border-b-fuchsia-400 hover:border-fuchsia-400'
+                  : 'border-b-indigo-400 hover:border-indigo-400';
+
                 return (
                   <div
                     key={lesson.id}
                     onClick={() => onSelectLesson?.(lesson, 'summary')}
-                    className={`p-4 rounded-2xl bg-white border border-slate-200/90 hover:border-slate-300 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer`}
+                    className={`p-4 rounded-2xl bg-white border border-slate-200/90 border-b-4 ${cardBottomBorder} shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between group cursor-pointer`}
                   >
                     <div className="space-y-2">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-blue-50 text-brand-sapphire">
+                        <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md border uppercase tracking-wider ${accentColor}`}>
                           {lesson.subject.split(' ')[0]}
                         </span>
-                        <span className="text-[11px] text-slate-600 font-semibold tabular-nums px-1.5 py-0.5 rounded bg-slate-100">
+                        <span className="text-[10px] text-slate-600 font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100">
                           {lesson.grade.split(' ')[0]} кл.
                         </span>
                       </div>
 
-                      <h3 className="text-sm font-bold text-slate-900 group-hover:text-brand-sapphire line-clamp-2 transition-colors">
+                      <h3 className="text-sm font-extrabold text-slate-900 group-hover:text-blue-600 line-clamp-2 transition-colors">
                         {lesson.title}
                       </h3>
 
@@ -207,7 +251,7 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
                           e.stopPropagation();
                           onSelectLesson?.(lesson, 'summary');
                         }}
-                        className="flex items-center gap-1 text-brand-sapphire hover:text-brand-sapphire-dark cursor-pointer"
+                        className="flex items-center gap-1 text-blue-700 hover:text-blue-900 cursor-pointer"
                       >
                         <BookOpen className="w-3.5 h-3.5" />
                         <span>Конспект</span>
@@ -219,11 +263,10 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
                           e.stopPropagation();
                           onSelectLesson?.(lesson, 'oralexam');
                         }}
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition-colors cursor-pointer"
+                        className="px-2 py-0.5 rounded-md bg-violet-50 hover:bg-violet-100 text-violet-800 border border-violet-200 transition-colors cursor-pointer"
                         title="Устно изпитване по тази тема"
                       >
-                        <Mic className="w-3 h-3 text-slate-500" aria-hidden="true" />
-                        Устен
+                        🎙️ Устен
                       </button>
 
                       <button
@@ -232,7 +275,7 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
                           e.stopPropagation();
                           onSelectLesson?.(lesson, 'quiz');
                         }}
-                        className="px-2 py-0.5 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold tabular-nums transition-colors cursor-pointer"
+                        className="font-mono text-[10px] px-2 py-0.5 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-extrabold transition-colors cursor-pointer"
                       >
                         Тест ({lesson.quiz.length})
                       </button>
@@ -248,7 +291,7 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
                 <button
                   type="button"
                   onClick={() => setShowAllInTrack(!showAllInTrack)}
-                  className="min-h-11 inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-800 text-xs font-extrabold transition-colors cursor-pointer"
                 >
                   <span>
                     {showAllInTrack
@@ -260,10 +303,10 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
               <button
                 type="button"
                 onClick={() => onNavigateTab('catalog')}
-                className="min-h-11 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-brand-sapphire hover:bg-brand-sapphire-light text-white text-sm font-bold shadow-sm transition cursor-pointer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-b-2 border-indigo-900 text-xs font-extrabold shadow-xs transition-all cursor-pointer"
               >
                 <BookMarked className="w-4 h-4 text-white" />
-                <span>Пълен каталог — всички {totalLessonsCount} теми</span>
+                <span>Отвори пълния каталог с всички {totalLessonsCount} теми по програмите на МОН за 5.–12. клас</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>

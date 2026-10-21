@@ -121,7 +121,7 @@ function prefetchStudyTabChunk(tab: AppNavTab): void {
 const ViewLoadingSkeleton = () => (
   <div className="p-8 rounded-2xl bg-white border border-slate-200 animate-pulse flex items-center justify-center min-h-[300px] shadow-xs">
     <div className="flex items-center gap-3 text-slate-500 text-xs sm:text-sm font-medium">
-      <div className="w-5 h-5 border border-blue-600 border-t-transparent rounded-full animate-spin" />
+      <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
       <span>Зареждане на модула...</span>
     </div>
   </div>
@@ -475,7 +475,7 @@ export function App() {
   ];
 
   return (
-    <div className="min-h-screen text-slate-900 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
       
       {/* Offline Status & PWA Install Banner */}
       <OfflineStatusBanner />
@@ -562,7 +562,7 @@ export function App() {
 
       {/* Main Content Area: Spacious Full-Width Homepage vs Focused Workspace */}
       {portalMode === 'study' && activeTab === 'home' ? (
-        <main className="flex-1 w-full">
+        <main className="flex-1 w-full bg-slate-50">
           <HomeLandingView
             lessons={lessons}
             onSelectLesson={handleLessonSelected}
@@ -1020,22 +1020,22 @@ export function App() {
                 <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                 <span className="text-slate-800 font-medium">
                   {cultureSubTab === 'heritage'
-                    ? 'Български принос & ЮНЕСКО (16)'
+                    ? '🏆 Български принос & ЮНЕСКО (16)'
                     : cultureSubTab === 'mysteries'
-                    ? 'Конспирации, секретни досиета & загадки (41)'
+                    ? '🕵️ Конспирации, секретни досиета & загадки (41)'
                     : cultureSubTab === 'mysticmap'
-                    ? 'Карта на мистичните и секретни зони (12 координати)'
+                    ? '🛸 Карта на мистичните и секретни зони (12 координати)'
                     : cultureSubTab === 'timeline'
-                    ? 'Интерактивна хронология (681–1908 г.)'
+                    ? '⏳ Интерактивна хронология (681–1908 г.)'
                     : cultureSubTab === 'cases'
-                    ? 'Отворени исторически казуси & Есета (12)'
+                    ? '⚖️ Отворени исторически казуси & Есета (12)'
                     : cultureSubTab === 'wonders'
-                    ? 'Природни чудеса & мистични зони (18)'
+                    ? '🗺️ Природни чудеса & мистични зони (18)'
                     : cultureSubTab === 'trivia'
-                    ? 'Куиз за ерудити (38 въпроса)'
+                    ? '🧠 Куиз за ерудити (38 въпроса)'
                     : cultureSubTab === 'myths'
-                    ? 'Факт, Мит или Конспирация? (24)'
-                    : 'Златен фонд & Мъдрост на епохите (16)'}
+                    ? '⚖️ Факт, Мит или Конспирация? (24)'
+                    : '🏛️ Златен фонд & Мъдрост на епохите (16)'}
                 </span>
               </nav>
             </div>
@@ -1043,8 +1043,8 @@ export function App() {
             {/* Mobile / Tablet Horizontal Quick Tab Strip for Culture (visible only on small viewports) */}
             <div className="lg:hidden mb-6 p-1.5 rounded-xl bg-white border border-slate-200 shadow-xs overflow-x-auto no-scrollbar flex items-center gap-1.5">
               {[
-                { tab: 'mysteries', label: 'Конспирации & Загадки (41)' },
-                { tab: 'mysticmap', label: 'Карта на мистичните зони (12)' },
+                { tab: 'mysteries', label: '🕵️ Конспирации & Загадки (41)' },
+                { tab: 'mysticmap', label: '🛸 Карта на мистичните зони (12)' },
                 { tab: 'heritage', label: 'Принос & ЮНЕСКО (16)' },
                 { tab: 'wonders', label: 'Природни чудеса (18)' },
                 { tab: 'trivia', label: 'Куиз за ерудити (38)' },

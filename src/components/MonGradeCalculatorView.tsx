@@ -129,17 +129,17 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
     <div className="space-y-8 animate-fade-in max-w-5xl mx-auto">
       
       {/* Title & Header Banner */}
-      <div className="p-6 rounded-2xl bg-gradient-to-br from-[#083861] via-[#0a4b82] to-[#145a96] text-white shadow-sm space-y-3">
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-600 to-blue-700 text-white shadow-sm space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center">
               <Calculator className="w-5 h-5 text-white" />
             </div>
             <div>
-              <span className="text-xs uppercase font-bold tracking-wider text-blue-200">
+              <span className="text-xs uppercase font-extrabold tracking-wider text-blue-200">
                 Официален държавен стандарт
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight">
                 МОН Калкулатор: Точки, Оценка, Бал и ДИППК (Трета СПК)
               </h2>
             </div>
@@ -202,7 +202,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
           }`}
         >
           <Award className="w-4 h-4 text-amber-600" />
-          <span>ДИППК Калкулатор (Трета СПК)</span>
+          <span>🛠️ ДИППК Калкулатор (Трета СПК)</span>
         </button>
       </div>
 
@@ -311,7 +311,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
             {/* Large Grade Display */}
             <div className="text-center py-4 bg-slate-50/70 rounded-2xl border border-slate-200 space-y-1">
               <span className="text-xs text-slate-500 font-medium">Крайна оценка за дипломата:</span>
-              <div className="text-4xl sm:text-5xl font-bold font-mono tracking-tight text-blue-900">
+              <div className="text-4xl sm:text-5xl font-black font-mono tracking-tight text-blue-900">
                 {currentResult.numeric.toFixed(2)}
               </div>
               <div className={`text-base font-bold ${currentResult.color}`}>
@@ -442,7 +442,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
 
             <div className="text-center py-4 bg-blue-50/60 rounded-2xl border border-blue-200 space-y-1">
               <span className="text-xs text-blue-900 font-medium">Необходими точки за оценка {targetGrade.toFixed(2)}:</span>
-              <div className="text-4xl sm:text-5xl font-bold font-mono text-blue-900">
+              <div className="text-4xl sm:text-5xl font-black font-mono text-blue-900">
                 {reqPoints}
               </div>
               <span className="text-xs text-slate-500 font-mono">от 100 точки</span>
@@ -596,7 +596,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
 
             <div className="text-center py-4 bg-emerald-50/60 rounded-2xl border border-emerald-200 space-y-1">
               <span className="text-xs text-emerald-900 font-medium">Изчислен състезателен бал:</span>
-              <div className="text-4xl sm:text-5xl font-bold font-mono text-emerald-900">
+              <div className="text-4xl sm:text-5xl font-black font-mono text-emerald-900">
                 {universityBal.bal.toFixed(2)}
               </div>
               <span className="text-xs text-slate-500 font-mono">от максимален {universityBal.maxBal.toFixed(2)}</span>
@@ -731,7 +731,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               <span className="text-xs text-blue-900 font-medium">
                 Окончателна оценка в Свидетелството за СПК (EUROPASS):
               </span>
-              <div className="text-4xl sm:text-5xl font-bold font-mono text-blue-950">
+              <div className="text-4xl sm:text-5xl font-black font-mono text-blue-950">
                 {dippkResult.certificateFinalGrade.toFixed(2)}
               </div>
               <div className="text-sm font-bold text-blue-800">
@@ -757,10 +757,10 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
             <button
               type="button"
               onClick={() => setShowSpkCertificateModal(true)}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-xs transition-all cursor-pointer"
             >
               <Award className="w-4 h-4" />
-              <span>Издай Свидетелство за Трета СПК + EUROPASS (A4 PDF)</span>
+              <span>📜 Издай Свидетелство за Трета СПК + EUROPASS (A4 PDF)</span>
             </button>
 
             {onNavigateTab && (

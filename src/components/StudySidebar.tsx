@@ -69,9 +69,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Училища & Специалности 8–12 кл.',
           sublabel: '',
           icon: GraduationCap,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-blue-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-blue-100 text-blue-800 font-bold border border-blue-200">
               8.–12. кл.
             </span>
           )
@@ -81,9 +81,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Моят План за 6.00',
           sublabel: '',
           icon: Calendar,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-emerald-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
               Таймер
             </span>
           )
@@ -93,16 +93,16 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Конспект',
           sublabel: '',
           icon: BookOpen,
-          accentColor: 'text-slate-500'
+          accentColor: 'text-blue-600'
         },
         {
           tab: 'oralexam',
           label: 'Устно изпитване пред дъската',
           sublabel: '',
           icon: Mic,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-violet-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-violet-100 text-violet-800 font-bold border border-violet-200">
               Глас & 6.00
             </span>
           )
@@ -112,9 +112,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Казуси за ДЗИ',
           sublabel: '',
           icon: Scale,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-rose-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-rose-100 text-rose-800 font-bold border border-rose-200">
               11–12 кл
             </span>
           )
@@ -124,9 +124,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Исторически контекст',
           sublabel: '',
           icon: Compass,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-amber-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
               Извори
             </span>
           ),
@@ -137,7 +137,7 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Одит на тетрадката',
           sublabel: '',
           icon: CheckSquare,
-          accentColor: 'text-slate-500'
+          accentColor: 'text-emerald-600'
         }
       ]
     },
@@ -149,9 +149,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Тренажор БЕЛ (Модул 1)',
           sublabel: '',
           icon: PenTool,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-blue-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-blue-100 text-blue-700 font-bold border border-blue-200">
               БАН
             </span>
           )
@@ -161,9 +161,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Тропи, Пароними & Резюме',
           sublabel: '',
           icon: Feather,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-indigo-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
               Модул 2
             </span>
           )
@@ -173,9 +173,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Литературен Канон & Тези',
           sublabel: '',
           icon: BookMarked,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-fuchsia-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-fuchsia-100 text-fuchsia-800 font-bold border border-fuchsia-200">
               41. в-с
             </span>
           )
@@ -185,9 +185,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Математика & STEM Лаб',
           sublabel: '',
           icon: Compass,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-cyan-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-cyan-100 text-cyan-800 font-bold border border-cyan-200">
               НВО & ДЗИ
             </span>
           )
@@ -197,9 +197,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Лаб Природни науки',
           sublabel: '',
           icon: FlaskConical,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-emerald-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
               ДНК, Йони & Ом
             </span>
           )
@@ -209,9 +209,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Атлас История & География',
           sublabel: '',
           icon: MapPin,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-amber-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
               Карти & NUTS 2
             </span>
           )
@@ -221,9 +221,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Английски език (ДЗИ)',
           sublabel: '',
           icon: Globe,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-sky-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-sky-100 text-sky-800 font-bold border border-sky-200">
               B1.1 & B2
             </span>
           )
@@ -233,9 +233,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Конституция & ЕС (ГО)',
           sublabel: '',
           icon: Scale,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-indigo-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">
               Власти & ЕС
             </span>
           )
@@ -250,9 +250,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Блиц за 60 сек. (Speed Blitz)',
           sublabel: '',
           icon: Zap,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-orange-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-orange-100 text-orange-800 font-bold border border-orange-200">
               Combo x5
             </span>
           )
@@ -262,23 +262,23 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Флаш карти',
           sublabel: '',
           icon: Zap,
-          accentColor: 'text-slate-500'
+          accentColor: 'text-emerald-600'
         },
         {
           tab: 'quiz',
           label: 'Бърз тест (10 в.)',
           sublabel: '',
           icon: GraduationCap,
-          accentColor: 'text-slate-500'
+          accentColor: 'text-blue-600'
         },
         {
           tab: 'simulator',
           label: '100т. Симулатор',
           sublabel: '',
           icon: Clock,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-amber-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">
               МОН
             </span>
           )
@@ -293,9 +293,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Банка с грешки',
           sublabel: '',
           icon: AlertCircle,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-rose-600',
           badge: unresolvedErrorCount > 0 ? (
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-bold border border-rose-200">
+            <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-rose-100 text-rose-700 font-bold border border-rose-200">
               {unresolvedErrorCount}
             </span>
           ) : null
@@ -305,16 +305,16 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'Контролни за печат',
           sublabel: '',
           icon: Printer,
-          accentColor: 'text-slate-500'
+          accentColor: 'text-violet-600'
         },
         {
           tab: 'catalog',
           label: 'Учебна програма',
           sublabel: '',
           icon: BookMarked,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-emerald-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold tabular-nums">
+            <span className="text-[10px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded font-mono font-bold">
               {totalLessonsCount}
             </span>
           )
@@ -324,9 +324,9 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           label: 'МОН Калкулатор оценка',
           sublabel: '',
           icon: Calculator,
-          accentColor: 'text-slate-500',
+          accentColor: 'text-teal-600',
           badge: (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
+            <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-teal-100 text-teal-800 font-bold border border-teal-200">
               0–100т.
             </span>
           )
@@ -348,16 +348,16 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
           className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-white hover:bg-sky-50/70 text-slate-700 hover:text-blue-700 border border-blue-200/80 shadow-2xs text-xs font-bold transition-all group cursor-pointer"
         >
           <div className="flex items-center gap-2">
-            <Home className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
+            <Home className="w-3.5 h-3.5 text-sky-600 group-hover:scale-110 transition-transform" />
             <span>Към начална страница</span>
           </div>
-          <span className="text-[10px] text-slate-500 font-semibold">StudyBG</span>
+          <span className="text-[10px] text-blue-600 font-mono font-extrabold">StudyBG</span>
         </button>
 
         {/* Compact Current Lesson Indicator */}
-        <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-xs">
+        <div className="p-3 rounded-xl bg-white border-2 border-blue-100/90 border-b-4 border-b-blue-500 shadow-2xs">
           <div className="flex items-center justify-between gap-1 mb-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600">
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600">
               Текуща тема
             </span>
             <span className="text-[10px] px-1.5 py-0.2 rounded bg-blue-50 text-blue-800 border border-blue-200 font-bold truncate max-w-[120px]">
@@ -365,7 +365,7 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
             </span>
           </div>
 
-          <h3 className="text-xs font-bold text-slate-900 line-clamp-2 leading-snug">
+          <h3 className="text-xs font-extrabold text-slate-900 line-clamp-2 leading-snug">
             {currentLesson.title}
           </h3>
 
@@ -396,7 +396,7 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
         <div className="p-2.5 rounded-xl bg-white border border-blue-100/90 shadow-2xs space-y-3">
           {sections.map((section, sIdx) => (
             <div key={sIdx} className="space-y-0.5">
-              <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              <div className="px-2 py-1 text-[10px] font-extrabold uppercase tracking-wider text-indigo-600/80">
                 {section.title}
               </div>
 
@@ -417,12 +417,12 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
                       }}
                       className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-left transition-all cursor-pointer ${
                         isActive
-                          ? 'bg-blue-50 text-brand-sapphire font-bold border border-blue-200'
+                          ? 'bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-950 font-extrabold border border-blue-300 shadow-2xs'
                           : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 border border-transparent font-semibold'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-brand-sapphire' : item.accentColor}`} aria-hidden="true" />
+                        <Icon className={`w-4 h-4 shrink-0 ${item.accentColor}`} />
                         <span className="text-xs truncate">
                           {item.label}
                         </span>
@@ -431,7 +431,7 @@ export const StudySidebar: React.FC<StudySidebarProps> = ({
                       <div className="flex items-center gap-1.5 shrink-0">
                         {item.badge}
                         {isActive && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-brand-sapphire" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
                         )}
                       </div>
                     </button>

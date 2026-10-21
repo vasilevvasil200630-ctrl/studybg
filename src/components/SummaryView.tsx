@@ -88,7 +88,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
         const aiReply = await askGeminiMentor(lesson, mentorHistory, q);
         setMentorHistory([...nextHistory, { sender: 'assistant', text: aiReply }]);
       } else {
-        const fallbackReply = `Синтез по МОН за „${lesson.title}“:\n• Основен акцент: ${lesson.summary.overview}\n• Златно правило за Отличен 6.00: ${lesson.summary.examGoldenRule}\n• Ключов капан на изпит: ${lesson.summary.commonTraps?.[0] || 'Внимавайте за точното използване на терминологията.'}`;
+        const fallbackReply = `📌 Синтез по МОН за „${lesson.title}“:\n• Основен акцент: ${lesson.summary.overview}\n• Златно правило за Отличен 6.00: ${lesson.summary.examGoldenRule}\n• Ключов капан на изпит: ${lesson.summary.commonTraps?.[0] || 'Внимавайте за точното използване на терминологията.'}`;
         setMentorHistory([...nextHistory, { sender: 'assistant', text: fallbackReply }]);
       }
     } catch (err: unknown) {
@@ -115,7 +115,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
   };
 
   const handleInsertTemplate = () => {
-    const template = `План за преговор по „${lesson.title}“:\n1. Ключова теза / формула: \n2. Важни дати и имена: \n3. Въпрос за доуточняване в час: `;
+    const template = `📌 План за преговор по „${lesson.title}“:\n1. Ключова теза / формула: \n2. Важни дати и имена: \n3. Въпрос за доуточняване в час: `;
     const nextValue = personalNote ? `${personalNote}\n\n${template}` : template;
     handleNoteChange(nextValue);
   };
@@ -274,7 +274,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                 <BookOpen className="w-3 h-3 text-indigo-700" />
                 <span>Пълна разработка по учебната програма на МОН</span>
               </span>
-              <h4 className="text-sm sm:text-base font-bold text-slate-900">
+              <h4 className="text-sm sm:text-base font-extrabold text-slate-900">
                 Структуриран учебен материал, теоретични раздели и критерии за Отличен (6.00)
               </h4>
             </div>
@@ -292,7 +292,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
 
           {lesson.originalNoteExcerpt && (
             <div className="p-3.5 rounded-xl bg-white border border-indigo-100 shadow-2xs">
-              <div className="text-[11px] font-bold uppercase tracking-wider text-indigo-700 mb-1">
+              <div className="text-[11px] font-extrabold uppercase tracking-wider text-indigo-700 mb-1">
                 Логическа схема и конспектна рамка на урока по МОН:
               </div>
               <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">
@@ -310,7 +310,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                 >
                   <div className="space-y-1">
                     <div className="flex items-start justify-between gap-2">
-                      <span className="text-xs font-bold text-slate-900">
+                      <span className="text-xs font-extrabold text-slate-900">
                         Раздел {idx + 1}: {item.requirement}
                       </span>
                       {item.isEssentialForSix && (
@@ -346,7 +346,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                   key={card.id}
                   className="p-3 rounded-xl bg-white border border-blue-100 shadow-2xs space-y-1"
                 >
-                  <div className="text-xs font-bold text-blue-900">{card.front}</div>
+                  <div className="text-xs font-extrabold text-blue-900">{card.front}</div>
                   <p className="text-xs text-slate-700 leading-relaxed">{card.back}</p>
                 </div>
               ))}
@@ -385,7 +385,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                 <ul className="space-y-1">
                   {summary.commonTraps.map((trap, idx) => (
                     <li key={idx} className="text-xs text-rose-950 flex items-start gap-2">
-                      <AlertTriangle className="w-3.5 h-3.5 mt-0.5 text-rose-600 shrink-0" aria-hidden="true" />
+                      <span className="text-rose-600 font-bold">⚠️</span>
                       <span>{trap}</span>
                     </li>
                   ))}
@@ -400,8 +400,8 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-blue-600" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-blue-950">
-                Попитай AI Ментора за този урок ({AI_PROVIDER_LABEL})
+              <h4 className="text-xs font-extrabold uppercase tracking-wider text-blue-950">
+                🤖 Попитай AI Ментора за този урок ({AI_PROVIDER_LABEL})
               </h4>
             </div>
             <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-200">
@@ -413,19 +413,19 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
           <div className="flex flex-wrap gap-1.5">
             {[
               {
-                label: 'Какво най-често се пада на изпит?',
+                label: '🎯 Какво най-често се пада на изпит?',
                 prompt: `Кои са най-важните акценти, формули или въпроси от урока „${lesson.title}“, които най-често се падат на матура (ДЗИ) или контролно по МОН, и как да гарантирам Отличен 6.00?`
               },
               {
-                label: 'Обясни ми най-трудните понятия лесно',
+                label: '🧠 Обясни ми най-трудните понятия лесно',
                 prompt: `Обясни ми по най-ясен и запомнящ се начин (с конкретен пример) най-трудните понятия от урока „${lesson.title}“.`
               },
               {
-                label: 'Формулирай ми силна теза за 6.00',
+                label: '✍️ Формулирай ми силна теза за 6.00',
                 prompt: `Формулирай ми кратка, академично издържана теза (или структурен план за писмен отговор за 6.00) по темата „${lesson.title}“.`
               },
               {
-                label: 'Изпитай ме с 1 отворен въпрос',
+                label: '❓ Изпитай ме с 1 отворен въпрос',
                 prompt: `Задай ми 1 отворен изпитен въпрос за Отличен 6.00 върху урока „${lesson.title}“ и посочи 3-те ключови критерия, които трябва да съдържа моят отговор.`
               }
             ].map((chip) => (
@@ -459,7 +459,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                       <button
                         type="button"
                         onClick={() => {
-                          const nextVal = personalNote ? `${personalNote}\n\nAI Ментор:\n${msg.text}` : `AI Ментор:\n${msg.text}`;
+                          const nextVal = personalNote ? `${personalNote}\n\n🤖 AI Ментор:\n${msg.text}` : `🤖 AI Ментор:\n${msg.text}`;
                           handleNoteChange(nextVal);
                         }}
                         className="text-[11px] font-bold text-blue-700 hover:text-blue-900 cursor-pointer"
@@ -516,7 +516,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <PenTool className="w-4 h-4 text-amber-700" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-amber-950">
+              <h4 className="text-xs font-extrabold uppercase tracking-wider text-amber-950">
                 Моят личен бележник към урока (Автоматичен запис)
               </h4>
               {noteSavedToast && (

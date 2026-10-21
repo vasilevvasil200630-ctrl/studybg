@@ -61,7 +61,7 @@ export const ScienceQuizTab: React.FC = () => {
           <button
             type="button"
             onClick={handleNewVariant}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-sapphire hover:bg-brand-sapphire-light text-white text-xs font-bold cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold cursor-pointer"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Нов вариант с нови задачи (∞)</span>

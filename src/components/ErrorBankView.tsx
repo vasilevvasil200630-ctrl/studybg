@@ -121,7 +121,7 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold shadow-xs transition-colors whitespace-nowrap cursor-pointer"
             >
               {isAiDiagnosing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-              <span>{isAiDiagnosing ? 'Анализирам пропуските...' : `AI диагностика на грешките (${AI_EXAMINER_LABEL})`}</span>
+              <span>{isAiDiagnosing ? 'Анализирам пропуските...' : `🤖 AI диагностика на грешките (${AI_EXAMINER_LABEL})`}</span>
             </button>
           )}
 
@@ -146,7 +146,7 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
       {aiDiagnosis && (
         <div className="p-5 sm:p-6 rounded-2xl bg-blue-950 text-white border border-blue-700 space-y-4 shadow-md">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-blue-300 flex items-center gap-1.5">
+            <span className="text-xs font-black uppercase tracking-wider text-blue-300 flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <span>Персонална AI диагностика & 3-дневен план за наваксване ({AI_EXAMINER_LABEL}):</span>
             </span>
@@ -154,20 +154,20 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
           <p className="text-xs sm:text-sm text-blue-100 leading-relaxed">{aiDiagnosis.summary}</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="p-3.5 rounded-xl bg-white/10 border border-white/10 space-y-1">
-              <div className="text-[11px] font-bold text-rose-300 uppercase">Основни слаби места:</div>
+              <div className="text-[11px] font-bold text-rose-300 uppercase">🎯 Основни слаби места:</div>
               {aiDiagnosis.weakSpots.map((ws, i) => (
                 <div key={i} className="text-xs text-slate-200">• {ws}</div>
               ))}
             </div>
             <div className="p-3.5 rounded-xl bg-white/10 border border-white/10 space-y-1">
-              <div className="text-[11px] font-bold text-emerald-300 uppercase">3-дневен план за Отличен 6.00:</div>
+              <div className="text-[11px] font-bold text-emerald-300 uppercase">📅 3-дневен план за Отличен 6.00:</div>
               {aiDiagnosis.threeDayActionPlan.map((step, i) => (
                 <div key={i} className="text-xs text-slate-200">• {step}</div>
               ))}
             </div>
           </div>
           <div className="p-3 rounded-xl bg-amber-500/20 border border-amber-400/40 text-xs text-amber-200 font-semibold">
-            Златно правило: {aiDiagnosis.goldenRuleReminder}
+            💡 Златно правило: {aiDiagnosis.goldenRuleReminder}
           </div>
         </div>
       )}

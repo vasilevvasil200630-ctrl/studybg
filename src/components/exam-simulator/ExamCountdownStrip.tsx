@@ -15,10 +15,10 @@ export const ExamCountdownStrip: React.FC<{ sim: ExamSimulatorState }> = ({ sim 
         </div>
         <div className="flex flex-wrap items-center gap-2 text-[11px]">
           <span className="px-2.5 py-1 rounded-lg bg-white border border-amber-200 text-amber-900 font-semibold shadow-2xs">
-            ДЗИ 12. кл: <strong className="font-mono text-xs">{examCountdowns.diffDzi}</strong> дни ({examCountdowns.dziYear} г.)
+            🎓 ДЗИ 12. кл: <strong className="font-mono text-xs">{examCountdowns.diffDzi}</strong> дни ({examCountdowns.dziYear} г.)
           </span>
           <span className="px-2.5 py-1 rounded-lg bg-white border border-teal-200 text-teal-900 font-semibold shadow-2xs">
-            НВО 10. кл: <strong className="font-mono text-xs">{examCountdowns.diffNvo10}</strong> дни ({examCountdowns.nvo10Year} г.)
+            ⏱️ НВО 10. кл: <strong className="font-mono text-xs">{examCountdowns.diffNvo10}</strong> дни ({examCountdowns.nvo10Year} г.)
           </span>
           <a
             href="https://matura-plus.bg"

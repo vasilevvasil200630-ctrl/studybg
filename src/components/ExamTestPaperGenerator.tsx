@@ -365,7 +365,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
                 : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
-            Класна Контролна Работа / ДЗИ & НВО Тест (по урок)
+            📄 Класна Контролна Работа / ДЗИ & НВО Тест (по урок)
           </button>
           <button
             onClick={() => setPaperMode('dippk_ticket')}
@@ -375,7 +375,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
                 : 'bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100'
             }`}
           >
-            Официален Писмен ДИППК Изпитен Билет по Теория на Професията (Чл. 38 ЗПОО • Трета СПК)
+            🏛️ Официален Писмен ДИППК Изпитен Билет по Теория на Професията (Чл. 38 ЗПОО • Трета СПК)
           </button>
         </div>
       </div>
@@ -445,18 +445,18 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
       <div className="p-8 sm:p-10 rounded-2xl bg-white text-black shadow-lg border border-slate-200 space-y-6 print:shadow-none print:border-none print:p-0">
         
         {/* Official МОН Barcode & Anonymity Strip */}
-        <div className="border border-black p-3.5 space-y-2.5 bg-slate-50/50 print:bg-white text-xs">
+        <div className="border-2 border-black p-3.5 space-y-2.5 bg-slate-50/50 print:bg-white text-xs">
           <div className="flex items-start justify-between">
             <div className="space-y-0.5">
               <span className="font-mono text-[10px] tracking-widest block text-slate-600 font-bold uppercase">
                 РЕПУБЛИКА БЪЛГАРИЯ • МИНИСТЕРСТВО НА ОБРАЗОВАНИЕТО И НАУКАТА
               </span>
-              <h2 className="font-bold uppercase text-sm tracking-tight text-slate-900">
+              <h2 className="font-black uppercase text-sm tracking-tight text-slate-900">
                 ДЪРЖАВЕН ЗРЕЛОСТЕН ИЗПИТ (ДЗИ) / НАЦИОНАЛНО ВЪНШНО ОЦЕНЯВАНЕ (НВО)
               </h2>
             </div>
             <div className="text-right">
-              <div className="font-mono text-sm tracking-widest font-bold leading-none">
+              <div className="font-mono text-sm tracking-widest font-black leading-none">
                 ||| | |||| | ||| || ||||| |||
               </div>
               <span className="font-mono text-[9px] text-slate-600 block mt-1">
@@ -483,13 +483,13 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
             <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
               Официален изпитен формат съгласно ДОС на МОН
             </span>
-            <span className="text-sm font-bold uppercase px-2.5 py-0.5 border border-black bg-slate-100 print:bg-transparent">
+            <span className="text-sm font-black uppercase px-2.5 py-0.5 border-2 border-black bg-slate-100 print:bg-transparent">
               Вариант {activeGroup}
             </span>
           </div>
 
           <div className="text-center py-1">
-            <h1 className="text-xl sm:text-2xl font-bold uppercase">
+            <h1 className="text-xl sm:text-2xl font-black uppercase">
               Изпитна работа по {currentLesson.subject}
             </h1>
             <p className="text-sm font-bold mt-1 text-slate-800">
@@ -508,10 +508,10 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
 
         {/* Official МОН Answer Matrix Sheet (Бланка за отговори) */}
         {includeAnswerSheet && (
-          <div className="border border-black p-4 space-y-3 bg-white print:break-before-page">
+          <div className="border-2 border-black p-4 space-y-3 bg-white print:break-before-page">
             <div className="flex items-center justify-between border-b-2 border-black pb-2">
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider">
+                <h3 className="text-xs font-black uppercase tracking-wider">
                   ЛИСТ ЗА ОТГОВОРИ • МИНИСТЕРСТВО НА ОБРАЗОВАНИЕТО И НАУКАТА
                 </h3>
                 <p className="text-[10px] text-slate-600 mt-0.5">
@@ -519,7 +519,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
                 </p>
               </div>
               <div className="text-right">
-                <span className="text-xs font-bold uppercase px-2 py-0.5 border border-black">
+                <span className="text-xs font-black uppercase px-2 py-0.5 border border-black">
                   ВАРИАНТ {activeGroup}
                 </span>
               </div>
@@ -630,7 +630,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
           <div className="space-y-3 pt-4 border-t-2 border-black">
             <div className="flex items-center justify-between border-b border-black/40 pb-1">
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider">
+                <h3 className="text-xs font-black uppercase tracking-wider">
                   {isVocationalDippk
                     ? 'III. МОДУЛ 3: ДИППК Практическо и инженерно задание (Трета СПК по Наредба № 1) — 30 т.'
                     : currentLesson.subject.includes('литература') || currentLesson.subject.includes('БЕЛ')
@@ -742,18 +742,18 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
       ) : (
         /* Official DIPPK Written State Exam Ticket (Част по Теория на професията — 100 т.) */
         <div className="p-8 sm:p-10 rounded-2xl bg-white text-black shadow-lg border border-slate-200 space-y-6 print:shadow-none print:border-none print:p-0">
-          <div className="border border-black p-4 space-y-2.5 bg-slate-50/50 print:bg-white text-xs">
+          <div className="border-2 border-black p-4 space-y-2.5 bg-slate-50/50 print:bg-white text-xs">
             <div className="flex items-start justify-between">
               <div className="space-y-0.5">
                 <span className="font-mono text-[10px] tracking-widest block text-slate-600 font-bold uppercase">
                   РЕПУБЛИКА БЪЛГАРИЯ • МИНИСТЕРСТВО НА ОБРАЗОВАНИЕТО И НАУКАТА
                 </span>
-                <h2 className="font-bold uppercase text-sm tracking-tight text-slate-900">
+                <h2 className="font-black uppercase text-sm tracking-tight text-slate-900">
                   ДЪРЖАВЕН ИЗПИТ ЗА ПРИДОБИВАНЕ НА ТРЕТА СТЕПЕН НА ПРОФЕСИОНАЛНА КВАЛИФИКАЦИЯ (ДИППК • ЧЛ. 38 ОТ ЗПОО)
                 </h2>
               </div>
               <div className="text-right">
-                <span className="font-mono text-xs font-bold px-2.5 py-1 border border-black uppercase">
+                <span className="font-mono text-xs font-black px-2.5 py-1 border-2 border-black uppercase">
                   БИЛЕТ № {activeGroup === 'A' ? '1 (ВАРИАНТ А)' : '2 (ВАРИАНТ Б)'}
                 </span>
               </div>
@@ -776,7 +776,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
             <div className="text-xs font-bold uppercase tracking-wider text-slate-600">
               ЧАСТ ПО ТЕОРИЯ НА ПРОФЕСИЯТА — ПИСМЕН ИЗПИТЕН БИЛЕТ (100 ТОЧКИ)
             </div>
-            <h1 className="text-lg sm:text-xl font-bold uppercase text-slate-900">
+            <h1 className="text-lg sm:text-xl font-black uppercase text-slate-900">
               Тема: {activeGroup === 'A' ? activeDippkTicket.ticketTopicA : activeDippkTicket.ticketTopicB}
             </h1>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-xs font-medium border-t border-black/30 text-left">
@@ -790,7 +790,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
           {/* Section I: Theoretical Questions (50 pts) */}
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b border-black pb-1">
-              <h3 className="text-xs font-bold uppercase">
+              <h3 className="text-xs font-black uppercase">
                 РАЗДЕЛ I. ТЕОРЕТИЧНО ИЗЛОЖЕНИЕ ПО СПЕЦИАЛНОСТТА (2 × 25 т. = 50 точки)
               </h3>
               <span className="text-xs font-bold">50 точки</span>
@@ -813,7 +813,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
           {/* Section II: Engineering / Economic / Algorithmic Calculation Task (30 pts) */}
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between border-b border-black pb-1">
-              <h3 className="text-xs font-bold uppercase">
+              <h3 className="text-xs font-black uppercase">
                 РАЗДЕЛ II. ПРАКТИКО-ПРИЛОЖНА И ИЗЧИСЛИТЕЛНА ЗАДАЧА (30 точки)
               </h3>
               <span className="text-xs font-bold">30 точки</span>
@@ -841,7 +841,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
           {/* Section III: ZBUT, BDS/ISO Standards & Normative Regulation (20 pts) */}
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between border-b border-black pb-1">
-              <h3 className="text-xs font-bold uppercase">
+              <h3 className="text-xs font-black uppercase">
                 РАЗДЕЛ III. ЗБУТ, СТАНДАРТИЗАЦИЯ (БДС / ISO) И НОРМАТИВНА УРЕДБА (20 точки)
               </h3>
               <span className="text-xs font-bold">20 точки</span>
@@ -860,8 +860,8 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
           </div>
 
           {/* Official MON Ordinance No. 1 Grading Scale Box */}
-          <div className="p-3 border border-black bg-slate-50 print:bg-white text-[11px] space-y-1">
-            <div className="font-bold uppercase">
+          <div className="p-3 border-2 border-black bg-slate-50 print:bg-white text-[11px] space-y-1">
+            <div className="font-black uppercase">
               Официална скала за превръщане на точките в оценка за ДИППК по Наредба № 1 на МОН:
             </div>
             <div>
@@ -873,7 +873,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
           {/* Commission Evaluation Answer Key */}
           {showAnswerKey && (
             <div className="mt-6 pt-4 border-t-2 border-dashed border-black bg-amber-50 p-4 text-xs print:bg-white space-y-2.5">
-              <div className="font-bold text-amber-950 print:text-black uppercase flex items-center gap-2">
+              <div className="font-black text-amber-950 print:text-black uppercase flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4" />
                 <span>Методически ключ и точкови критерии за Държавната изпитна комисия (Вариант {activeGroup}):</span>
               </div>

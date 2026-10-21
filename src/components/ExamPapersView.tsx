@@ -240,18 +240,18 @@ export const ExamPapersView: React.FC = () => {
       </div>
 
       {result && (
-        <div role="status" className="p-4 rounded-2xl bg-gradient-to-br from-[#083861] via-[#0a4b82] to-[#145a96] text-white space-y-2">
+        <div role="status" className="p-4 rounded-2xl bg-slate-900 text-white space-y-2">
           <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-            <span className="text-2xl font-bold font-mono">
+            <span className="text-2xl font-black font-mono">
               {result.totalPoints} / {result.maxPoints} т.
             </span>
             {result.grade ? (
               <span className="text-sm font-semibold text-amber-300">{formatGrade(result.grade)}</span>
             ) : (
-              <span className="text-xs text-blue-100">НВО 10: резултатът се отчита в точки</span>
+              <span className="text-xs text-slate-300">НВО 10: резултатът се отчита в точки</span>
             )}
           </div>
-          <p className="text-xs text-blue-100">
+          <p className="text-xs text-slate-300">
             По ключа: {result.autoPoints} т. • Самооценка (свободен отговор): {result.selfAssessedPoints} т.
             {result.selfAssessedPoints === 0 && ' — въведете самооценка за задачите със свободен отговор по-долу.'}
           </p>

@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import {
   GraduationCap,
+  Building2,
   BookOpen,
   Award,
   CheckCircle2,
@@ -48,21 +49,21 @@ interface SchoolsSpecialtiesHubProps {
 }
 
 const SECTION_ICON_MAP: Record<string, React.ReactNode> = {
-  'pmg-smg-npmg': <Atom className="w-5 h-5 text-brand-sapphire" />,
-  'language-humanities-eg': <Languages className="w-5 h-5 text-slate-500" />,
-  'tech-it-tues-pgknma': <Code2 className="w-5 h-5 text-emerald-700" />,
-  'economics-banking-ntbg-nfsg': <TrendingUp className="w-5 h-5 text-amber-700" />,
+  'pmg-smg-npmg': <Atom className="w-5 h-5 text-blue-400" />,
+  'language-humanities-eg': <Languages className="w-5 h-5 text-slate-400" />,
+  'tech-it-tues-pgknma': <Code2 className="w-5 h-5 text-emerald-400" />,
+  'economics-banking-ntbg-nfsg': <TrendingUp className="w-5 h-5 text-amber-400" />,
   'architecture-construction-sgsag': <Compass className="w-5 h-5 text-cyan-400" />,
-  'engineering-mechatronics-energy': <Cpu className="w-5 h-5 text-brand-sapphire" />,
-  'medicine-biotech-ecology-agro': <Stethoscope className="w-5 h-5 text-rose-700" />,
+  'engineering-mechatronics-energy': <Cpu className="w-5 h-5 text-blue-400" />,
+  'medicine-biotech-ecology-agro': <Stethoscope className="w-5 h-5 text-rose-400" />,
   'arts-design-tourism-culinary': <Palette className="w-5 h-5 text-fuchsia-400" />,
   'aviation-maritime-logistics-rail': <Plane className="w-5 h-5 text-sky-400" />,
   'food-polygraphy-forestry-textile': <Utensils className="w-5 h-5 text-orange-400" />,
   'sports-schools-performing-arts': <Trophy className="w-5 h-5 text-yellow-400" />,
-  'classical-languages-russian-italian-oriental': <Globe2 className="w-5 h-5 text-emerald-700" />,
+  'classical-languages-russian-italian-oriental': <Globe2 className="w-5 h-5 text-teal-400" />,
   'mining-metallurgy-chemical-geology': <Flame className="w-5 h-5 text-cyan-400" />,
-  'security-interior-criminalistics-law': <ShieldCheck className="w-5 h-5 text-amber-700" />,
-  'applied-arts-stone-woodcarving-ceramics-cinema': <Film className="w-5 h-5 text-slate-500" />,
+  'security-interior-criminalistics-law': <ShieldCheck className="w-5 h-5 text-amber-400" />,
+  'applied-arts-stone-woodcarving-ceramics-cinema': <Film className="w-5 h-5 text-slate-400" />,
   'pedagogy-social-work-beauty-wellness-spa': <HeartHandshake className="w-5 h-5 text-pink-400" />
 };
 
@@ -534,33 +535,37 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
   return (
     <div className="space-y-8 animate-fadeIn pb-12">
       {/* Главна заглавна секция */}
-      <div className="relative overflow-hidden rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 shadow-xs">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-blue-950/90 to-slate-900 border border-blue-500/30 p-6 sm:p-8 shadow-2xl">
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="space-y-3 max-w-3xl">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight text-balance">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-semibold tracking-wide uppercase">
+              <Building2 className="w-4 h-4" />
+              Национален академичен и професионален справочник • 8. – 12. клас
+            </div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
               Специални секции по училища, специалности и класове (8.–12. клас)
-            </h2>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+            </h1>
+            <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
               Пълно покритие на учебните програми за <strong>всеки един предмет от 8., 9., 10., 11. и 12. клас</strong> във всички видове гимназии и техникуми в България — <strong>Общообразователна подготовка (Раздел А)</strong>, <strong>Профилирана подготовка за ДЗИ (Раздел Б)</strong> и <strong>Специална професионална подготовка за ДИППК / Трета СПК (Раздел В)</strong>.
             </p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-3 shrink-0">
-            <div className="rounded-2xl bg-slate-50 border border-slate-200 p-3.5 text-center">
-              <div className="text-2xl font-bold tabular-nums text-brand-sapphire">16</div>
-              <div className="text-[11px] text-slate-600 font-medium">Вида гимназии & техникуми</div>
+            <div className="rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3.5 text-center">
+              <div className="text-2xl font-black text-blue-300">16</div>
+              <div className="text-[11px] text-slate-300 font-medium">Вида гимназии & техникуми</div>
             </div>
-            <div className="rounded-2xl bg-slate-50 border border-slate-200 p-3.5 text-center">
-              <div className="text-2xl font-bold tabular-nums text-brand-sapphire">64+</div>
-              <div className="text-[11px] text-slate-600 font-medium">Профила и специалности (СПК)</div>
+            <div className="rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3.5 text-center">
+              <div className="text-2xl font-black text-emerald-400">64+</div>
+              <div className="text-[11px] text-slate-300 font-medium">Профила и специалности (СПК)</div>
             </div>
-            <div className="rounded-2xl bg-slate-50 border border-slate-200 p-3.5 text-center">
-              <div className="text-2xl font-bold tabular-nums text-brand-sapphire">8.–12.</div>
-              <div className="text-[11px] text-slate-600 font-medium">Всички класове по години</div>
+            <div className="rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3.5 text-center">
+              <div className="text-2xl font-black text-amber-400">8.–12.</div>
+              <div className="text-[11px] text-slate-300 font-medium">Всички класове по години</div>
             </div>
-            <div className="rounded-2xl bg-slate-50 border border-slate-200 p-3.5 text-center">
-              <div className="text-2xl font-bold tabular-nums text-brand-sapphire">{allLessons.length}</div>
-              <div className="text-[11px] text-slate-600 font-medium">Пълни уроци и тестове</div>
+            <div className="rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3.5 text-center">
+              <div className="text-2xl font-black text-rose-400">{allLessons.length}</div>
+              <div className="text-[11px] text-slate-300 font-medium">Пълни уроци и тестове</div>
             </div>
           </div>
         </div>
@@ -570,11 +575,11 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2.5">
-              <GraduationCap className="w-6 h-6 text-brand-sapphire" />
+            <h2 className="text-xl font-bold text-white flex items-center gap-2.5">
+              <GraduationCap className="w-6 h-6 text-blue-400" />
               1. Изберете специална секция по вид гимназия и професионално направление (16 направления)
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500">
+            <p className="text-xs sm:text-sm text-slate-400">
               Разгледайте официалните специалности, предметите от 8. до 12. клас, формулите и решавайте изпитни въпроси за ДЗИ и ДИППК.
             </p>
           </div>
@@ -590,31 +595,31 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 onClick={() => setSelectedSchoolId(school.id)}
                 className={`text-left p-4 rounded-2xl border transition-all duration-200 flex flex-col justify-between gap-3 ${
                   isSelected
-                    ? 'bg-blue-50 border-blue-300 shadow-lg shadow-blue-950/50 ring-1 ring-blue-200'
-                    : 'bg-slate-50 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                    ? 'bg-blue-600/20 border-blue-400 shadow-lg shadow-blue-950/50 ring-1 ring-blue-400/50'
+                    : 'bg-slate-900/75 border-slate-800 hover:border-slate-700 hover:bg-slate-900'
                 }`}
               >
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="p-2 rounded-xl bg-slate-100 border border-slate-300">
+                    <div className="p-2 rounded-xl bg-slate-800/90 border border-slate-700/70">
                       {SECTION_ICON_MAP[school.id]}
                     </div>
-                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-300">
+                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
                       {school.badgeText}
                     </span>
                   </div>
-                  <div className="font-bold text-slate-900 text-sm sm:text-base leading-snug">
+                  <div className="font-bold text-white text-sm sm:text-base leading-snug">
                     {school.shortName}
                   </div>
-                  <p className="text-xs text-slate-500 line-clamp-2">
+                  <p className="text-xs text-slate-400 line-clamp-2">
                     {school.subtitle}
                   </p>
                 </div>
-                <div className="flex items-center justify-between pt-2 border-t border-slate-200 text-xs">
-                  <span className="text-brand-sapphire font-medium">
+                <div className="flex items-center justify-between pt-2 border-t border-slate-800/80 text-xs">
+                  <span className="text-blue-300 font-medium">
                     {school.specialties.length} специалности
                   </span>
-                  <span className="inline-flex items-center gap-1 text-slate-600 font-semibold">
+                  <span className="inline-flex items-center gap-1 text-slate-300 font-semibold">
                     Отвори <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
@@ -624,34 +629,34 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
         </div>
 
         {/* Детайлен панел за избраната специална секция */}
-        <div className="rounded-2xl bg-slate-50 border border-slate-200 p-6 sm:p-8 space-y-8 shadow-xl">
+        <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 space-y-8 shadow-xl">
           {/* Заглавие и примерни училища */}
-          <div className="flex flex-col lg:flex-row justify-between gap-6 border-b border-slate-200 pb-6">
+          <div className="flex flex-col lg:flex-row justify-between gap-6 border-b border-slate-800 pb-6">
             <div className="space-y-3 max-w-3xl">
-              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-sapphire">
+              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-400">
                 {SECTION_ICON_MAP[selectedSchool.id]}
                 <span>Специална секция • {selectedSchool.badgeText}</span>
               </div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-slate-900">
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
                 {selectedSchool.title}
               </h3>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-300">
                 {selectedSchool.subtitle}
               </p>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 text-xs">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs">
                 <Award className="w-4 h-4 shrink-0" />
                 <span><strong>Изпитен формат за дипломиране:</strong> {selectedSchool.examFormat}</span>
               </div>
             </div>
 
-            <div className="lg:w-80 shrink-0 rounded-2xl bg-white border border-slate-200 p-4 space-y-2">
-              <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <div className="lg:w-80 shrink-0 rounded-2xl bg-slate-950/70 border border-slate-800/90 p-4 space-y-2">
+              <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
                 Водещи гимназии в България:
               </div>
-              <ul className="space-y-1.5 text-xs text-slate-600">
+              <ul className="space-y-1.5 text-xs text-slate-300">
                 {selectedSchool.exampleSchools.map((ex, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="text-brand-sapphire font-bold">•</span>
+                    <span className="text-blue-400 font-bold">•</span>
                     <span>{ex}</span>
                   </li>
                 ))}
@@ -661,8 +666,8 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
 
           {/* Подсекция А: Специалности и Профили с кодове по МОН */}
           <div className="space-y-4">
-            <h4 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <Layers className="w-5 h-5 text-emerald-700" />
+            <h4 className="text-lg font-bold text-white flex items-center gap-2">
+              <Layers className="w-5 h-5 text-emerald-400" />
               Специалности, профили и специални предмети ({selectedSchool.shortName})
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -671,29 +676,29 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 return (
                   <div
                     key={spec.code}
-                    className="rounded-2xl bg-white border border-slate-200 p-5 flex flex-col justify-between gap-4 hover:border-blue-300 transition-colors"
+                    className="rounded-2xl bg-slate-950/70 border border-slate-800 p-5 flex flex-col justify-between gap-4 hover:border-blue-500/40 transition-colors"
                   >
                     <div className="space-y-3">
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200 text-brand-sapphire text-xs font-mono font-bold">
+                        <span className="px-2.5 py-1 rounded-lg bg-blue-500/15 border border-blue-500/30 text-blue-300 text-xs font-mono font-bold">
                           Код МОН: {spec.code}
                         </span>
-                        <span className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                        <span className="text-[11px] text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
                           {spec.qualification}
                         </span>
                       </div>
-                      <h5 className="text-base font-bold text-slate-900">
+                      <h5 className="text-base font-bold text-white">
                         {spec.name}
                       </h5>
                       <div className="space-y-1.5">
-                        <div className="text-xs font-semibold text-slate-500">
+                        <div className="text-xs font-semibold text-slate-400">
                           Ключови специални и профилиращи предмети:
                         </div>
                         <div className="flex flex-wrap gap-1.5">
                           {spec.coreSubjects.map((subj, i) => (
                             <span
                               key={i}
-                              className="text-xs px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-300 text-slate-800"
+                              className="text-xs px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700/80 text-slate-200"
                             >
                               {subj}
                             </span>
@@ -702,9 +707,9 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                       </div>
                     </div>
 
-                    <div className="pt-3 border-t border-slate-200 flex items-center justify-between gap-2">
-                      <span className="text-xs text-slate-500 truncate">
-                        Урок: <strong className="text-slate-800">{targetLesson?.title || 'Специализиран модул'}</strong>
+                    <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                      <span className="text-xs text-slate-400 truncate">
+                        Урок: <strong className="text-slate-200">{targetLesson?.title || 'Специализиран модул'}</strong>
                       </span>
                       <button
                         onClick={() => {
@@ -737,31 +742,31 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
 
           {/* Подсекция Б: Пълна учебна прогресия по класове (8. -> 9. -> 10. -> 11. -> 12. клас) */}
           <div className="space-y-4">
-            <h4 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <GraduationCap className="w-5 h-5 text-amber-700" />
+            <h4 className="text-lg font-bold text-white flex items-center gap-2">
+              <GraduationCap className="w-5 h-5 text-amber-400" />
               Учебен план по класове от 8. до 12. клас за {selectedSchool.shortName}
             </h4>
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
               {selectedSchool.gradeProgression.map((gp) => (
                 <div
                   key={gp.grade}
-                  className="rounded-2xl bg-white border border-slate-200 p-4 flex flex-col justify-between gap-4"
+                  className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 flex flex-col justify-between gap-4"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="px-3 py-1 rounded-xl bg-blue-50 border border-blue-200 text-brand-sapphire font-bold text-sm">
+                      <span className="px-3 py-1 rounded-xl bg-blue-500/20 border border-blue-400/30 text-blue-300 font-extrabold text-sm">
                         {gp.grade}
                       </span>
                     </div>
-                    <div className="text-xs font-bold text-slate-900 leading-snug">
+                    <div className="text-xs font-bold text-white leading-snug">
                       {gp.focusTitle}
                     </div>
 
                     <div className="space-y-1.5">
-                      <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                         Общообразователни (ООП):
                       </div>
-                      <ul className="space-y-1 text-xs text-slate-600">
+                      <ul className="space-y-1 text-xs text-slate-300">
                         {gp.generalSubjects.map((s, idx) => (
                           <li key={idx} className="flex items-start gap-1.5">
                             <span className="text-slate-500">•</span>
@@ -771,14 +776,14 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                       </ul>
                     </div>
 
-                    <div className="space-y-1.5 pt-2 border-t border-slate-200">
-                      <div className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
+                    <div className="space-y-1.5 pt-2 border-t border-slate-800/80">
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
                         Специални / Профилирани:
                       </div>
-                      <ul className="space-y-1 text-xs text-emerald-700">
+                      <ul className="space-y-1 text-xs text-emerald-200/90">
                         {gp.specializedSubjects.map((s, idx) => (
                           <li key={idx} className="flex items-start gap-1.5">
-                            <span className="text-emerald-700 font-bold">+</span>
+                            <span className="text-emerald-400 font-bold">+</span>
                             <span>{s}</span>
                           </li>
                         ))}
@@ -786,7 +791,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                     </div>
                   </div>
 
-                  <div className="pt-2.5 border-t border-slate-200 text-[11px] text-amber-700">
+                  <div className="pt-2.5 border-t border-slate-800 text-[11px] text-amber-300/90">
                     <strong>Етап / Изпит:</strong> {gp.examMilestone}
                   </div>
                 </div>
@@ -797,23 +802,23 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
           {/* Подсекция В: Ключови формули, закони и синтез за специалността + Директни уроци */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-brand-sapphire" />
+              <h4 className="text-base font-bold text-white flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-blue-400" />
                 Златни формули, закони и правила за специалността
               </h4>
               <div className="space-y-2.5">
                 {selectedSchool.keySynthesisRules.map((rule, idx) => (
                   <div
                     key={idx}
-                    className="rounded-2xl bg-white border border-slate-200 p-4 space-y-1.5"
+                    className="rounded-2xl bg-slate-950/90 border border-slate-800 p-4 space-y-1.5"
                   >
-                    <div className="text-xs font-bold text-brand-sapphire">
+                    <div className="text-xs font-bold text-blue-300">
                       {rule.title}
                     </div>
-                    <div className="px-3 py-2 rounded-xl bg-slate-50 border border-blue-200 font-mono text-xs sm:text-sm text-slate-900 font-semibold">
+                    <div className="px-3 py-2 rounded-xl bg-slate-900 border border-blue-500/30 font-mono text-xs sm:text-sm text-white font-semibold">
                       {rule.formulaOrRule}
                     </div>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-400">
                       {rule.context}
                     </p>
                   </div>
@@ -823,8 +828,8 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
 
             {/* Интерактивен мини-тренажор за избраната специалност */}
             <div className="space-y-3">
-              <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-emerald-700" />
+              <h4 className="text-base font-bold text-white flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                 <span>Интерактивен изпитен тренажор ({selectedSchool.shortName}{trainerVariant > 0 ? ` • Вариант #${trainerVariant}` : ''})</span>
                 <button
                   type="button"
@@ -866,16 +871,16 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                   return (
                     <div
                       key={q.id}
-                      className="rounded-2xl bg-white border border-slate-200 p-4 space-y-3"
+                      className="rounded-2xl bg-slate-950/90 border border-slate-800 p-4 space-y-3"
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-brand-sapphire border border-blue-200">
+                        <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/30">
                           {q.specialtyTag}
                         </span>
                         {isAnswered && (
                           <span
                             className={`text-xs font-bold inline-flex items-center gap-1 ${
-                              isCorrect ? 'text-emerald-700' : 'text-rose-700'
+                              isCorrect ? 'text-emerald-400' : 'text-rose-400'
                             }`}
                           >
                             {isCorrect ? (
@@ -891,23 +896,23 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                         )}
                       </div>
 
-                      <p className="text-xs sm:text-sm font-semibold text-slate-900 leading-relaxed">
+                      <p className="text-xs sm:text-sm font-semibold text-white leading-relaxed">
                         {q.question}
                       </p>
 
                       <div className="grid grid-cols-1 gap-2">
                         {q.options.map((opt, optIdx) => {
                           let btnStyle =
-                            'bg-slate-50 border-slate-200 text-slate-800 hover:border-blue-300';
+                            'bg-slate-900 border-slate-800 text-slate-200 hover:border-blue-500/50';
                           if (isAnswered) {
                             if (optIdx === q.correctAnswer) {
                               btnStyle =
-                                'bg-emerald-50 border-emerald-200 text-emerald-700 font-semibold';
+                                'bg-emerald-500/20 border-emerald-500/60 text-emerald-200 font-semibold';
                             } else if (optIdx === chosen) {
                               btnStyle =
-                                'bg-rose-50 border-rose-200 text-rose-700';
+                                'bg-rose-500/20 border-rose-500/60 text-rose-200';
                             } else {
-                              btnStyle = 'bg-slate-50 border-slate-200 text-slate-500';
+                              btnStyle = 'bg-slate-900/50 border-slate-800/60 text-slate-500';
                             }
                           }
                           return (
@@ -928,8 +933,8 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                       </div>
 
                       {isAnswered && (
-                        <div className="p-3 rounded-xl bg-slate-50 border border-slate-300 text-xs text-slate-600 leading-relaxed">
-                          <strong className="text-brand-sapphire">Обяснение: </strong>
+                        <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-700/80 text-xs text-slate-300 leading-relaxed">
+                          <strong className="text-blue-300">Обяснение: </strong>
                           {q.explanation}
                         </div>
                       )}
@@ -941,8 +946,8 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
           </div>
 
           {/* Свързани пълни уроци за тази гимназия/специалност */}
-          <div className="pt-4 border-t border-slate-200 space-y-3">
-            <div className="text-sm font-bold text-slate-900">
+          <div className="pt-4 border-t border-slate-800 space-y-3">
+            <div className="text-sm font-bold text-white">
               Пълни интерактивни уроци, конспекти и тестове за {selectedSchool.shortName}:
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -950,17 +955,17 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 <button
                   key={lesson.id}
                   onClick={() => onSelectLesson(lesson)}
-                  className="text-left p-3.5 rounded-2xl bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-300 transition-all flex items-center justify-between gap-3 group"
+                  className="text-left p-3.5 rounded-2xl bg-slate-950 hover:bg-blue-950/40 border border-slate-800 hover:border-blue-500/50 transition-all flex items-center justify-between gap-3 group"
                 >
                   <div className="min-w-0">
-                    <div className="text-[11px] font-semibold text-brand-sapphire truncate">
+                    <div className="text-[11px] font-semibold text-blue-400 truncate">
                       {lesson.subject} • {lesson.grade}
                     </div>
-                    <div className="text-xs sm:text-sm font-bold text-slate-900 truncate group-hover:text-brand-sapphire">
+                    <div className="text-xs sm:text-sm font-bold text-white truncate group-hover:text-blue-200">
                       {lesson.title}
                     </div>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-brand-sapphire shrink-0" />
+                  <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-blue-300 shrink-0" />
                 </button>
               ))}
             </div>
@@ -969,27 +974,27 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
       </div>
 
       {/* СЕКЦИЯ 2: Пълна матрица на ВСИЧКИ предмети по класове (8., 9., 10., 11. и 12. клас) */}
-      <div className="rounded-2xl bg-slate-50 border border-slate-200 p-6 sm:p-8 space-y-6 shadow-xl cv-auto">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 space-y-6 shadow-xl cv-auto">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
           <div className="space-y-1">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-              <BookOpen className="w-6 h-6 text-emerald-700" />
+            <h2 className="text-xl sm:text-2xl font-extrabold text-white flex items-center gap-2.5">
+              <BookOpen className="w-6 h-6 text-emerald-400" />
               2. Пълна матрица по класове: Всеки предмет от 8., 9., 10., 11. и 12. клас
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500">
+            <p className="text-xs sm:text-sm text-slate-400">
               Раздел А (Задължителни общообразователни предмети ООП) + Раздел Б (Профилирани модули за матура ДЗИ) + Раздел В (Специални професионални предмети за ДИППК).
             </p>
           </div>
 
           {/* Търсачка */}
           <div className="relative w-full lg:w-80">
-            <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Търси предмет, специалност, тема..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-300 text-xs sm:text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
             />
           </div>
         </div>
@@ -1011,7 +1016,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
                   activeGradeFilter === gradeTab
                     ? 'bg-blue-600 text-white shadow-md shadow-blue-950/60'
-                    : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+                    : 'bg-slate-950 text-slate-300 border border-slate-800 hover:border-slate-700'
                 }`}
               >
                 {gradeTab}
@@ -1020,7 +1025,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Filter className="w-4 h-4 text-slate-500 hidden sm:block" />
+            <Filter className="w-4 h-4 text-slate-400 hidden sm:block" />
             {[
               'Всички раздели',
               'Раздел А',
@@ -1033,7 +1038,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                   activeSectionFilter === secTab
                     ? 'bg-emerald-700 text-white'
-                    : 'bg-white text-slate-500 border border-slate-200 hover:text-brand-sapphire'
+                    : 'bg-slate-950 text-slate-400 border border-slate-800 hover:text-white'
                 }`}
               >
                 {secTab === 'Раздел А'
@@ -1053,58 +1058,58 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
           {filteredGradeMatrix.map((gradeBlock) => (
             <div
               key={gradeBlock.grade}
-              className="rounded-2xl bg-white border border-slate-200 overflow-hidden"
+              className="rounded-2xl bg-slate-950/80 border border-slate-800/90 overflow-hidden"
             >
-              <div className="p-4 sm:p-5 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-950/60 via-slate-900 to-slate-900 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <div className="flex items-center gap-2.5">
-                    <span className="px-3 py-1 rounded-lg bg-blue-500 text-white font-bold text-xs sm:text-sm">
+                    <span className="px-3 py-1 rounded-lg bg-blue-500 text-white font-black text-xs sm:text-sm">
                       {gradeBlock.grade}
                     </span>
-                    <span className="text-sm sm:text-base font-bold text-slate-900">
+                    <span className="text-sm sm:text-base font-bold text-white">
                       {gradeBlock.headline}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">
-                    {gradeBlock.stageName} • <strong className="text-amber-700">{gradeBlock.nationalExamInfo}</strong>
+                  <p className="text-xs text-slate-400 mt-1">
+                    {gradeBlock.stageName} • <strong className="text-amber-300">{gradeBlock.nationalExamInfo}</strong>
                   </p>
                 </div>
               </div>
 
-              <div className="divide-y divide-slate-200">
+              <div className="divide-y divide-slate-800/70">
                 {gradeBlock.subjects.map((subj, idx) => {
                   const isSectionC = subj.category.includes('Раздел В');
                   const isSectionB = subj.category.includes('Раздел Б');
                   return (
                     <div
                       key={idx}
-                      className="p-4 sm:p-5 hover:bg-slate-50 transition-colors flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+                      className="p-4 sm:p-5 hover:bg-slate-900/50 transition-colors flex flex-col lg:flex-row lg:items-center justify-between gap-4"
                     >
                       <div className="space-y-2 max-w-4xl">
                         <div className="flex flex-wrap items-center gap-2">
                           <span
                             className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${
                               isSectionC
-                                ? 'bg-amber-50 text-amber-700 border-amber-200'
+                                ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
                                 : isSectionB
-                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                : 'bg-blue-50 text-brand-sapphire border-blue-200'
+                                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                                : 'bg-blue-500/15 text-blue-300 border-blue-500/30'
                             }`}
                           >
                             {subj.category}
                           </span>
-                          <span className="text-xs text-slate-500 font-medium">
-                            {subj.schoolTypes}
+                          <span className="text-xs text-slate-400 font-medium">
+                            🏫 {subj.schoolTypes}
                           </span>
-                          <span className="text-[11px] px-2 py-0.5 rounded bg-slate-50 text-slate-600 border border-slate-200">
-                            {subj.weeklyHoursNote}
+                          <span className="text-[11px] px-2 py-0.5 rounded bg-slate-900 text-slate-300 border border-slate-800">
+                            ⏱ {subj.weeklyHoursNote}
                           </span>
                         </div>
-                        <h4 className="text-sm sm:text-base font-bold text-slate-900">
+                        <h4 className="text-sm sm:text-base font-bold text-white">
                           {subj.subjectName}
                         </h4>
-                        <p className="text-xs text-slate-600 leading-relaxed">
-                          <strong className="text-slate-500">Изучавани теми и модули: </strong>
+                        <p className="text-xs text-slate-300 leading-relaxed">
+                          <strong className="text-slate-400">Изучавани теми и модули: </strong>
                           {subj.keyTopics}
                         </p>
                       </div>
@@ -1143,25 +1148,25 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
       </div>
 
       {/* СЕКЦИЯ 3: Интерактивен калкулатор за Диплома за средно образование (8.–12. клас) и ДИППК (Трета СПК) */}
-      <div className="rounded-2xl bg-slate-50 border border-slate-200 p-6 sm:p-8 space-y-6 shadow-xl cv-auto">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 space-y-6 shadow-xl cv-auto">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
           <div className="space-y-1">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-              <Calculator className="w-6 h-6 text-amber-700" />
+            <h2 className="text-xl sm:text-2xl font-extrabold text-white flex items-center gap-2.5">
+              <Calculator className="w-6 h-6 text-amber-400" />
               3. Калкулатор за Диплома (8.–12. клас) & ДИППК (Трета степен на професионална квалификация)
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500">
+            <p className="text-xs sm:text-sm text-slate-400">
               Изчислете своя общ дипломен успех от гимназията (Раздел А + Раздел Б/В + ДЗИ) и оценката в Свидетелството за професионална квалификация (СПК).
             </p>
           </div>
 
-          <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-slate-200 self-start">
+          <div className="flex items-center gap-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800 self-start">
             <button
               onClick={() => setCalcSchoolMode('vocational')}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                 calcSchoolMode === 'vocational'
                   ? 'bg-amber-500 text-amber-950 shadow-sm'
-                  : 'text-slate-600 hover:text-brand-sapphire'
+                  : 'text-slate-300 hover:text-white'
               }`}
             >
               Професионална гимназия (ДИППК / Трета СПК)
@@ -1171,7 +1176,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                 calcSchoolMode === 'profiled'
                   ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-brand-sapphire'
+                  : 'text-slate-300 hover:text-white'
               }`}
             >
               Профилирана гимназия (2 матури ДЗИ)
@@ -1182,12 +1187,12 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Плъзгачи за оценките */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="rounded-2xl bg-white border border-slate-200 p-4 space-y-2">
+            <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 space-y-2">
               <div className="flex items-center justify-between text-xs sm:text-sm">
-                <span className="font-bold text-slate-800">
+                <span className="font-bold text-slate-200">
                   1. Среден успех от Раздел А — Задължителни предмети ООП (8.–12. клас)
                 </span>
-                <span className="font-mono font-bold text-brand-sapphire text-base">
+                <span className="font-mono font-black text-blue-400 text-base">
                   {oopAverage.toFixed(2)}
                 </span>
               </div>
@@ -1200,17 +1205,17 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 onChange={(e) => setOopAverage(parseFloat(e.target.value))}
                 className="w-full accent-blue-500 cursor-pointer"
               />
-              <div className="text-[11px] text-slate-500">
+              <div className="text-[11px] text-slate-400">
                 Включва годишните оценки от 8. до 12. клас по БЕЛ, Математика, Чужди езици, История, География, Биология, Химия, Физика, Философия и Гражданско образование.
               </div>
             </div>
 
-            <div className="rounded-2xl bg-white border border-slate-200 p-4 space-y-2">
+            <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 space-y-2">
               <div className="flex items-center justify-between text-xs sm:text-sm">
-                <span className="font-bold text-slate-800">
+                <span className="font-bold text-slate-200">
                   2. Среден успех от {calcSchoolMode === 'vocational' ? 'Раздел Б/В — Специални професионални предмети' : 'Раздел Б — Профилиращи модули (11.–12. клас)'}
                 </span>
-                <span className="font-mono font-bold text-emerald-700 text-base">
+                <span className="font-mono font-black text-emerald-400 text-base">
                   {specAverage.toFixed(2)}
                 </span>
               </div>
@@ -1223,19 +1228,19 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 onChange={(e) => setSpecAverage(parseFloat(e.target.value))}
                 className="w-full accent-emerald-500 cursor-pointer"
               />
-              <div className="text-[11px] text-slate-500">
+              <div className="text-[11px] text-slate-400">
                 {calcSchoolMode === 'vocational'
                   ? 'Среден успех от общата, отрасловата и специфичната професионална подготовка (учебна и производствена практика) от 8. до 12. клас.'
                   : 'Среден успех от задължителните профилиращи модули в 11. и 12. клас.'}
               </div>
             </div>
 
-            <div className="rounded-2xl bg-white border border-slate-200 p-4 space-y-2">
+            <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 space-y-2">
               <div className="flex items-center justify-between text-xs sm:text-sm">
-                <span className="font-bold text-slate-800">
+                <span className="font-bold text-slate-200">
                   3. Първа задължителна матура — ДЗИ по Български език и литература (12. клас)
                 </span>
-                <span className="font-mono font-bold text-amber-700 text-base">
+                <span className="font-mono font-black text-amber-400 text-base">
                   {dziBelGrade.toFixed(2)}
                 </span>
               </div>
@@ -1250,14 +1255,14 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               />
             </div>
 
-            <div className="rounded-2xl bg-white border border-slate-200 p-4 space-y-2">
+            <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 space-y-2">
               <div className="flex items-center justify-between text-xs sm:text-sm">
-                <span className="font-bold text-slate-800">
+                <span className="font-bold text-slate-200">
                   {calcSchoolMode === 'vocational'
                     ? '4А. ДИППК — Част по ТЕОРИЯ на професията (Писмен тест / Дипломна тема)'
                     : '4. Втора задължителна матура — 2-ро ДЗИ по профилиращ предмет'}
                 </span>
-                <span className="font-mono font-bold text-cyan-400 text-base">
+                <span className="font-mono font-black text-cyan-400 text-base">
                   {secondExamTheoryGrade.toFixed(2)}
                 </span>
               </div>
@@ -1273,12 +1278,12 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
             </div>
 
             {calcSchoolMode === 'vocational' && (
-              <div className="rounded-2xl bg-white border border-slate-200 p-4 space-y-2">
+              <div className="rounded-2xl bg-slate-950/80 border border-slate-800 p-4 space-y-2">
                 <div className="flex items-center justify-between text-xs sm:text-sm">
-                  <span className="font-bold text-slate-800">
+                  <span className="font-bold text-slate-200">
                     4Б. ДИППК — Част по ПРАКТИКА на професията (Дипломен проект / Практическо задание)
                   </span>
-                  <span className="font-mono font-bold text-rose-700 text-base">
+                  <span className="font-mono font-black text-rose-400 text-base">
                     {dippkPracticeGrade.toFixed(2)}
                   </span>
                 </div>
@@ -1296,7 +1301,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
           </div>
 
           {/* Табло с изчислени резултати */}
-          <div className="lg:col-span-5 rounded-2xl bg-blue-50/40 border border-blue-200 p-6 space-y-5">
+          <div className="lg:col-span-5 rounded-3xl bg-gradient-to-br from-blue-950 via-slate-950 to-slate-900 border border-blue-500/40 p-6 space-y-5">
             {(() => {
               const dippkCombined =
                 calcSchoolMode === 'vocational'
@@ -1309,11 +1314,11 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
 
               return (
                 <>
-                  <div className="space-y-1 border-b border-slate-200 pb-4">
-                    <div className="text-xs font-bold uppercase tracking-wider text-brand-sapphire">
+                  <div className="space-y-1 border-b border-slate-800 pb-4">
+                    <div className="text-xs font-bold uppercase tracking-wider text-blue-300">
                       Официална симулация на дипломиране (12. клас)
                     </div>
-                    <div className="text-sm text-slate-600">
+                    <div className="text-sm text-slate-300">
                       {calcSchoolMode === 'vocational'
                         ? 'Диплома за средно образование + Свидетелство за Трета СПК (Европас)'
                         : 'Диплома за средно образование (Профилирана подготовка)'}
@@ -1321,14 +1326,14 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="p-4 rounded-2xl bg-slate-50 border border-blue-200">
-                      <div className="text-[11px] font-bold uppercase text-brand-sapphire">
+                    <div className="p-4 rounded-2xl bg-slate-900/90 border border-blue-500/40">
+                      <div className="text-[11px] font-bold uppercase text-blue-300">
                         Общ успех — Диплома
                       </div>
-                      <div className="text-3xl font-bold text-slate-900 mt-1">
+                      <div className="text-3xl font-black text-white mt-1">
                         {finalDiplomaGrade.toFixed(2)}
                       </div>
-                      <div className="text-[11px] text-emerald-700 font-semibold mt-1">
+                      <div className="text-[11px] text-emerald-400 font-semibold mt-1">
                         {finalDiplomaGrade >= 5.5
                           ? 'Отличен (Почетна диплома)'
                           : finalDiplomaGrade >= 4.5
@@ -1338,45 +1343,45 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                     </div>
 
                     {calcSchoolMode === 'vocational' ? (
-                      <div className="p-4 rounded-2xl bg-slate-50 border border-amber-200">
-                        <div className="text-[11px] font-bold uppercase text-amber-700">
+                      <div className="p-4 rounded-2xl bg-slate-900/90 border border-amber-500/40">
+                        <div className="text-[11px] font-bold uppercase text-amber-300">
                           Трета СПК (ДИППК)
                         </div>
-                        <div className="text-3xl font-bold text-amber-700 mt-1">
+                        <div className="text-3xl font-black text-amber-400 mt-1">
                           {spkCertificateGrade.toFixed(2)}
                         </div>
-                        <div className="text-[11px] text-slate-600 mt-1">
+                        <div className="text-[11px] text-slate-300 mt-1">
                           Европейско ниво EQF 4
                         </div>
                       </div>
                     ) : (
-                      <div className="p-4 rounded-2xl bg-slate-50 border border-emerald-200">
-                        <div className="text-[11px] font-bold uppercase text-emerald-700">
+                      <div className="p-4 rounded-2xl bg-slate-900/90 border border-emerald-500/40">
+                        <div className="text-[11px] font-bold uppercase text-emerald-300">
                           Средно от 2-те матури ДЗИ
                         </div>
-                        <div className="text-3xl font-bold text-emerald-700 mt-1">
+                        <div className="text-3xl font-black text-emerald-400 mt-1">
                           {examsAverage.toFixed(2)}
                         </div>
-                        <div className="text-[11px] text-slate-600 mt-1">
+                        <div className="text-[11px] text-slate-300 mt-1">
                           Конкурсен бал за ВУЗ
                         </div>
                       </div>
                     )}
                   </div>
 
-                  <div className="rounded-2xl bg-slate-50 border border-slate-200 p-4 space-y-2 text-xs text-slate-600">
-                    <div className="font-bold text-slate-900">Разбивка по компоненти:</div>
+                  <div className="rounded-2xl bg-slate-900/70 border border-slate-800 p-4 space-y-2 text-xs text-slate-300">
+                    <div className="font-bold text-white">Разбивка по компоненти:</div>
                     <div className="flex justify-between">
                       <span>• Раздел А (ООП 8.–12. клас):</span>
-                      <strong className="text-brand-sapphire">{oopAverage.toFixed(2)}</strong>
+                      <strong className="text-blue-300">{oopAverage.toFixed(2)}</strong>
                     </div>
                     <div className="flex justify-between">
                       <span>• Раздел Б/В (Профил / Специалност):</span>
-                      <strong className="text-emerald-700">{specAverage.toFixed(2)}</strong>
+                      <strong className="text-emerald-300">{specAverage.toFixed(2)}</strong>
                     </div>
                     <div className="flex justify-between">
                       <span>• 1-ви ДЗИ (БЕЛ):</span>
-                      <strong className="text-amber-700">{dziBelGrade.toFixed(2)}</strong>
+                      <strong className="text-amber-300">{dziBelGrade.toFixed(2)}</strong>
                     </div>
                     <div className="flex justify-between">
                       <span>
@@ -1393,17 +1398,17 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
       </div>
 
       {/* СЕКЦИЯ 4: Интерактивен Тренажор за Защита на Дипломен проект пред Държавна изпитна комисия (ДИППК — Трета СПК) */}
-      <div className="rounded-2xl bg-slate-50 border border-emerald-200 p-6 sm:p-8 shadow-sm space-y-6 cv-auto">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="rounded-3xl bg-slate-900/90 border border-emerald-500/30 p-6 sm:p-8 shadow-2xl space-y-6 cv-auto">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
           <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold uppercase tracking-wider">
               <Award className="w-3.5 h-3.5" />
               Симулатор на Държавна изпитна комисия • 12. клас (Трета СПК)
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-white">
               4. Тренажор за Защита на Дипломен проект (ДИППК — Практика & Теория)
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 max-w-3xl">
+            <p className="text-xs sm:text-sm text-slate-400 max-w-3xl">
               Изберете направление и разгледайте реално структурирано <strong>Дипломно задание за 12. клас</strong> с изходни параметри, изчислителни стъпки и реални въпроси на Държавната квалификационна комисия с образцови отговори за <strong>Отличен (6.00)</strong>.
             </p>
           </div>
@@ -1419,8 +1424,8 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                 onClick={() => setSelectedDefenseId(item.id)}
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${
                   active
-                    ? 'bg-emerald-50 border-emerald-300 text-emerald-700 shadow-md'
-                    : 'bg-white border-slate-200 text-slate-500 hover:text-brand-sapphire hover:border-slate-300'
+                    ? 'bg-emerald-500/20 border-emerald-400 text-emerald-200 shadow-md'
+                    : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
                 }`}
               >
                 {item.sectorBadge}
@@ -1436,36 +1441,36 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
           return (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               {/* Ляв панел: Задание, Изходни данни и Етапи */}
-              <div className="lg:col-span-7 rounded-2xl bg-white border border-slate-200 p-5 space-y-4">
+              <div className="lg:col-span-7 rounded-2xl bg-slate-950/90 border border-slate-800 p-5 space-y-4">
                 <div className="space-y-1">
-                  <div className="text-xs font-mono font-bold text-emerald-700">
+                  <div className="text-xs font-mono font-bold text-emerald-400">
                     {activeDefense.professionCode}
                   </div>
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+                  <h3 className="text-base sm:text-lg font-bold text-white leading-snug">
                     Тема: {activeDefense.title}
                   </h3>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 space-y-1">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-brand-sapphire">
+                <div className="p-3.5 rounded-xl bg-blue-950/40 border border-blue-500/30 space-y-1">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-blue-300">
                     Изходни данни по задание:
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-800 font-mono">
+                  <p className="text-xs sm:text-sm text-slate-200 font-mono">
                     {activeDefense.inputParameters}
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                  <div className="text-xs font-bold uppercase tracking-wider text-slate-300">
                     Задължителни изчислителни и технологични етапи в обяснителната записка:
                   </div>
                   <div className="space-y-2">
                     {activeDefense.calculationSteps.map((step, idx) => (
                       <div
                         key={idx}
-                        className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800"
+                        className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 text-xs sm:text-sm text-slate-200"
                       >
-                        <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-mono font-bold text-xs shrink-0">
+                        <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 font-mono font-bold text-xs shrink-0">
                           Етап {idx + 1}
                         </span>
                         <span>{step}</span>
@@ -1494,12 +1499,12 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               </div>
 
               {/* Десен панел: Въпроси на Държавната изпитна комисия */}
-              <div className="lg:col-span-5 rounded-2xl bg-emerald-50/40 border border-emerald-200 p-5 space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="text-xs font-bold uppercase tracking-wider text-emerald-700">
+              <div className="lg:col-span-5 rounded-2xl bg-gradient-to-br from-slate-950 via-emerald-950/20 to-slate-950 border border-emerald-500/30 p-5 space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <div className="text-xs font-bold uppercase tracking-wider text-emerald-300">
                     Блиц въпроси на Държавната комисия при защита
                   </div>
-                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-bold">
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-bold">
                     Критерий: Отличен 6.00
                   </span>
                 </div>
@@ -1508,13 +1513,13 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                   {activeDefense.commissionQuestions.map((item, idx) => (
                     <div
                       key={idx}
-                      className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2"
+                      className="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2"
                     >
-                      <div className="text-xs sm:text-sm font-bold text-amber-700">
+                      <div className="text-xs sm:text-sm font-bold text-amber-300">
                         Въпрос {idx + 1}: {item.q}
                       </div>
-                      <div className="text-xs text-slate-600 leading-relaxed pl-3 border-l-2 border-emerald-200">
-                        <strong className="text-emerald-700">Еталонен отговор: </strong>
+                      <div className="text-xs text-slate-300 leading-relaxed pl-3 border-l-2 border-emerald-500/60">
+                        <strong className="text-emerald-400">Еталонен отговор: </strong>
                         {item.a}
                       </div>
                     </div>
@@ -1527,28 +1532,28 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
       </div>
 
       {/* СЕКЦИЯ 5: Интерактивен Калкулатор за Приемен Бал след 7. клас (НВО max 500 т.) и Кандидат-студентски Бал за ВУЗ */}
-      <div className="rounded-2xl bg-slate-50 border border-blue-200 p-6 sm:p-8 shadow-sm space-y-6 cv-auto">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="rounded-3xl bg-slate-900/90 border border-blue-500/30 p-6 sm:p-8 shadow-2xl space-y-6 cv-auto">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-brand-sapphire text-xs font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 border border-blue-500/30 text-blue-300 text-xs font-bold uppercase tracking-wider">
               <GraduationCap className="w-3.5 h-3.5" />
               Национално класиране & Университетски прием
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-white">
               5. Калкулатор за Приемен Бал след 7. клас (max 500 т.) & ВУЗ (СУ, МУ, ТУ, УАСГ, УНСС)
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500">
+            <p className="text-xs sm:text-sm text-slate-400">
               Симулирай състезателния си бал по официалните формули на МОН и провери в кои елитни гимназии и университетски специалности се класираш.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-slate-200 self-start">
+          <div className="flex items-center gap-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800 self-start">
             <button
               onClick={() => setAdmissionCalcTab('grade7_nvo')}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 admissionCalcTab === 'grade7_nvo'
                   ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-brand-sapphire'
+                  : 'text-slate-300 hover:text-white'
               }`}
             >
               Прием след 7. клас (НВО — max 500 т.)
@@ -1558,7 +1563,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 admissionCalcTab === 'university_vuz'
                   ? 'bg-emerald-700 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-brand-sapphire'
+                  : 'text-slate-300 hover:text-white'
               }`}
             >
               Кандидат-студентски Бал за ВУЗ (след 12. клас)
@@ -1615,10 +1620,10 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
             return (
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 <div className="lg:col-span-6 space-y-4">
-                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2">
-                    <div className="flex justify-between text-xs sm:text-sm font-bold text-slate-800">
+                  <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2">
+                    <div className="flex justify-between text-xs sm:text-sm font-bold text-slate-200">
                       <span>НВО Български език и литература (0–100 т.):</span>
-                      <span className="font-mono text-brand-sapphire text-base">{nvoBelPts} т.</span>
+                      <span className="font-mono text-blue-400 text-base">{nvoBelPts} т.</span>
                     </div>
                     <input
                       type="range"
@@ -1630,10 +1635,10 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                     />
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2">
-                    <div className="flex justify-between text-xs sm:text-sm font-bold text-slate-800">
+                  <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2">
+                    <div className="flex justify-between text-xs sm:text-sm font-bold text-slate-200">
                       <span>НВО Математика (0–100 т.):</span>
-                      <span className="font-mono text-emerald-700 text-base">{nvoMathPts} т.</span>
+                      <span className="font-mono text-emerald-400 text-base">{nvoMathPts} т.</span>
                     </div>
                     <input
                       type="range"
@@ -1646,14 +1651,14 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2">
-                      <label className="block text-xs font-bold text-slate-600">
+                    <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2">
+                      <label className="block text-xs font-bold text-slate-300">
                         1-ви предмет от свидетелството (7. клас):
                       </label>
                       <select
                         value={grade7Subj1Pts}
                         onChange={(e) => setGrade7Subj1Pts(Number(e.target.value))}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-300 text-xs font-bold text-slate-900"
+                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white"
                       >
                         <option value={50}>Отличен (6) = 50 точки</option>
                         <option value={39}>Много добър (5) = 39 точки</option>
@@ -1661,14 +1666,14 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                         <option value={15}>Среден (3) = 15 точки</option>
                       </select>
                     </div>
-                    <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2">
-                      <label className="block text-xs font-bold text-slate-600">
+                    <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2">
+                      <label className="block text-xs font-bold text-slate-300">
                         2-ри предмет от свидетелството (7. клас):
                       </label>
                       <select
                         value={grade7Subj2Pts}
                         onChange={(e) => setGrade7Subj2Pts(Number(e.target.value))}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-300 text-xs font-bold text-slate-900"
+                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-white"
                       >
                         <option value={50}>Отличен (6) = 50 точки</option>
                         <option value={39}>Много добър (5) = 39 точки</option>
@@ -1679,27 +1684,27 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-center">
-                      <div className="text-[11px] font-bold uppercase text-brand-sapphire">
+                    <div className="p-4 rounded-2xl bg-blue-950/60 border border-blue-500/40 text-center">
+                      <div className="text-[11px] font-bold uppercase text-blue-300">
                         Бал за ЕГ / НТБГ / СГСАГ (2×БЕЛ + 2×МАТ)
                       </div>
-                      <div className="text-2xl sm:text-3xl font-bold font-mono text-slate-900 mt-1">
+                      <div className="text-2xl sm:text-3xl font-black font-mono text-white mt-1">
                         {scoreFormula2x2} / 500 т.
                       </div>
                     </div>
-                    <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center">
-                      <div className="text-[11px] font-bold uppercase text-emerald-700">
+                    <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-center">
+                      <div className="text-[11px] font-bold uppercase text-emerald-300">
                         Бал за СМГ / ТУЕС / НПМГ (1×БЕЛ + 3×МАТ)
                       </div>
-                      <div className="text-2xl sm:text-3xl font-bold font-mono text-slate-900 mt-1">
+                      <div className="text-2xl sm:text-3xl font-black font-mono text-white mt-1">
                         {scoreFormula1x3} / 500 т.
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="lg:col-span-6 rounded-2xl bg-white border border-slate-200 p-5 space-y-3">
-                  <div className="text-xs font-bold uppercase tracking-wider text-brand-sapphire">
+                <div className="lg:col-span-6 rounded-2xl bg-slate-950/90 border border-slate-800 p-5 space-y-3">
+                  <div className="text-xs font-bold uppercase tracking-wider text-blue-300">
                     Ориентировъчно класиране за 1-ви етап по минимални балове:
                   </div>
                   <div className="space-y-2.5">
@@ -1710,12 +1715,12 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                           key={idx}
                           className={`p-3 rounded-xl border flex items-center justify-between gap-3 ${
                             admitted
-                              ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                              : 'bg-slate-50 border-slate-200 text-slate-500'
+                              ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-100'
+                              : 'bg-slate-900/80 border-slate-800 text-slate-400'
                           }`}
                         >
                           <div className="space-y-0.5">
-                            <div className="text-xs font-bold text-slate-900">{hs.name}</div>
+                            <div className="text-xs font-bold text-white">{hs.name}</div>
                             <div className="text-[11px] opacity-80">
                               Формула: {hs.formulaType} • Праг ~{hs.minCutoff} т. (Твой бал: <strong>{hs.userScore} т.</strong>)
                             </div>
@@ -1723,8 +1728,8 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                           <span
                             className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 ${
                               admitted
-                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                                : 'bg-rose-50 text-rose-700 border border-rose-200'
+                                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40'
+                                : 'bg-rose-500/20 text-rose-300 border border-rose-400/40'
                             }`}
                           >
                             {admitted ? '✓ ПРИЕТ' : `Недостигат ${hs.minCutoff - hs.userScore} т.`}
@@ -1782,10 +1787,10 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
             return (
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 <div className="lg:col-span-5 space-y-4">
-                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2">
-                    <div className="flex justify-between text-xs sm:text-sm font-bold text-slate-800">
+                  <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2">
+                    <div className="flex justify-between text-xs sm:text-sm font-bold text-slate-200">
                       <span>1-ви Конкурсен изпит / Профилна матура (Математика / Биология):</span>
-                      <span className="font-mono text-emerald-700 text-base">{uniKsi1Grade.toFixed(2)}</span>
+                      <span className="font-mono text-emerald-400 text-base">{uniKsi1Grade.toFixed(2)}</span>
                     </div>
                     <input
                       type="range"
@@ -1798,8 +1803,8 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                     />
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2">
-                    <div className="flex justify-between text-xs sm:text-sm font-bold text-slate-800">
+                  <div className="p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2">
+                    <div className="flex justify-between text-xs sm:text-sm font-bold text-slate-200">
                       <span>2-ри Конкурсен изпит (Химия / Физика / История / Икономика):</span>
                       <span className="font-mono text-cyan-400 text-base">{uniKsi2Grade.toFixed(2)}</span>
                     </div>
@@ -1814,15 +1819,15 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                     />
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-white border border-slate-200 text-xs text-slate-600 space-y-1.5">
-                    <div className="font-bold text-slate-900">Автоматично синхронизирани от Секция 3:</div>
+                  <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 text-xs text-slate-300 space-y-1.5">
+                    <div className="font-bold text-white">Автоматично синхронизирани от Секция 3:</div>
                     <div className="flex justify-between">
                       <span>• Оценка от ДЗИ БЕЛ:</span>
-                      <strong className="text-amber-700">{dziBelGrade.toFixed(2)}</strong>
+                      <strong className="text-amber-300">{dziBelGrade.toFixed(2)}</strong>
                     </div>
                     <div className="flex justify-between">
                       <span>• Балообразуващи предмети от дипломата:</span>
-                      <strong className="text-brand-sapphire">{specAverage.toFixed(2)}</strong>
+                      <strong className="text-blue-300">{specAverage.toFixed(2)}</strong>
                     </div>
                   </div>
                 </div>
@@ -1835,27 +1840,27 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                         key={i}
                         className={`p-4 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                           admitted
-                            ? 'bg-emerald-50 border-emerald-200'
-                            : 'bg-white border-slate-200'
+                            ? 'bg-emerald-950/40 border-emerald-500/40'
+                            : 'bg-slate-950/90 border-slate-800'
                         }`}
                       >
                         <div className="space-y-1">
-                          <div className="text-xs sm:text-sm font-bold text-slate-900">{tr.uni}</div>
-                          <div className="text-[11px] text-slate-500">{tr.formula}</div>
-                          <div className="text-[11px] text-amber-700 font-semibold">
+                          <div className="text-xs sm:text-sm font-bold text-white">{tr.uni}</div>
+                          <div className="text-[11px] text-slate-400">{tr.formula}</div>
+                          <div className="text-[11px] text-amber-300 font-semibold">
                             Минимален праг (ориентир): {tr.cutoff.toFixed(2)} / {tr.maxScore.toFixed(2)}
                           </div>
                         </div>
 
                         <div className="text-right shrink-0">
-                          <div className="font-mono text-xl font-bold text-slate-900">
+                          <div className="font-mono text-xl font-black text-white">
                             {tr.score.toFixed(2)} / {tr.maxScore}
                           </div>
                           <span
                             className={`inline-block mt-1 px-2.5 py-0.5 rounded-lg text-[11px] font-bold ${
                               admitted
-                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                                : 'bg-rose-50 text-rose-700 border border-rose-200'
+                                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40'
+                                : 'bg-rose-500/20 text-rose-300 border border-rose-400/40'
                             }`}
                           >
                             {admitted ? '✓ КЛАСИРАН (Държавна поръчка)' : 'Под минималния праг'}

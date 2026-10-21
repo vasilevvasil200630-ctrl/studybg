@@ -463,18 +463,18 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
   return (
     <div className="space-y-6">
       {/* Top Hero Banner */}
-      <div className="rounded-2xl bg-gradient-to-br from-[#083861] via-[#0a4b82] to-[#145a96] text-white p-6 sm:p-7 shadow-sm">
+      <div className="rounded-2xl bg-gradient-to-br from-blue-950 via-blue-950 to-slate-900 text-white p-6 sm:p-7 border border-blue-800/50 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           <div className="space-y-2 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs font-semibold">
+              <Compass className="w-3.5 h-3.5 text-cyan-300" />
+              <span>Интерактивна STEM & Математическа Лаборатория • НВО 10. клас & ДЗИ</span>
+            </div>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
               Пошагов Решавач, Чертежи & Живи Калкулатори
             </h2>
-            <p className="text-blue-100 text-sm leading-relaxed">
+            <p className="text-slate-300 text-sm leading-relaxed">
               Овладей задачите с пълно описание за максимален брой точки на НВО 10. клас (Задачи 16 и 17) и ДЗИ (Задачи 26–28) — с интерактивни чертежи, формули на Виет, прогресии, планиметрия и стереометрия.
-            </p>
-            <p className="flex items-center gap-1.5 text-xs font-semibold text-blue-100">
-              <Compass className="w-3.5 h-3.5 text-emerald-300 shrink-0" aria-hidden="true" />
-              <span>НВО 10. клас & ДЗИ</span>
             </p>
           </div>
 
@@ -483,7 +483,7 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
             {onOpenFormulaModal && (
               <button
                 onClick={onOpenFormulaModal}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-brand-sapphire font-bold text-xs shadow-sm transition-all cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold text-xs shadow-sm transition-all cursor-pointer"
               >
                 <BookOpen className="w-4 h-4" />
                 <span>Отвори МОН Формули</span>
@@ -505,10 +505,10 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeMode === 'step-by-step'
                 ? 'bg-white text-slate-900 shadow-sm'
-                : 'bg-white/10 text-white hover:bg-white/20'
+                : 'bg-white/10 text-slate-200 hover:bg-white/20'
             }`}
           >
-            <Layers className="w-4 h-4" aria-hidden="true" />
+            <Layers className="w-4 h-4 text-blue-600" />
             <span>1. Пошагови задачи с чертежи (Зад. 16–17 / 26–28)</span>
           </button>
 
@@ -517,10 +517,10 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeMode === 'live-solvers'
                 ? 'bg-white text-slate-900 shadow-sm'
-                : 'bg-white/10 text-white hover:bg-white/20'
+                : 'bg-white/10 text-slate-200 hover:bg-white/20'
             }`}
           >
-            <Calculator className="w-4 h-4" aria-hidden="true" />
+            <Calculator className="w-4 h-4 text-emerald-600" />
             <span>2. Живи Решавачи (Виет, Прогресии & Триъгълник)</span>
           </button>
 
@@ -529,10 +529,10 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeMode === 'quiz'
                 ? 'bg-white text-slate-900 shadow-sm'
-                : 'bg-white/10 text-white hover:bg-white/20'
+                : 'bg-white/10 text-slate-200 hover:bg-white/20'
             }`}
           >
-            <Sparkles className="w-4 h-4" aria-hidden="true" />
+            <Sparkles className="w-4 h-4 text-slate-600" />
             <span>3. Изпитен Тренажор ({MATH_QUIZ_QUESTIONS.length} задачи)</span>
           </button>
         </div>
@@ -718,7 +718,7 @@ export const MathStemLab: React.FC<MathStemLabProps> = ({ onOpenFormulaModal }) 
                   />
                   <button
                     onClick={() => handleCheckNumericAnswer(currentProblem)}
-                    className="px-3.5 py-2 rounded-lg bg-brand-sapphire hover:bg-brand-sapphire-light text-white text-xs font-bold transition-all cursor-pointer"
+                    className="px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all cursor-pointer"
                   >
                     Провери
                   </button>

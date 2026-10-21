@@ -534,7 +534,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-sapphire hover:bg-brand-sapphire-light text-white transition-colors cursor-pointer"
               >
                 <Printer className="w-3.5 h-3.5" />
                 <span>Принтирай</span>

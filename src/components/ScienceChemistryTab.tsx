@@ -38,7 +38,7 @@ export const ScienceChemistryTab: React.FC = () => {
             <span className="text-[11px] font-bold uppercase tracking-wider text-cyan-700">
               Неорганична и Аналитична Химия • Качествени реакции за ДЗИ
             </span>
-            <h3 className="text-base sm:text-lg font-extrabold text-slate-900">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900">
               Виртуална Епруветка: Разпознаване на катиони и аниони чрез утайки и газове
             </h3>
           </div>
@@ -95,7 +95,7 @@ export const ScienceChemistryTab: React.FC = () => {
                 <div className="text-[11px] font-bold uppercase text-cyan-800">
                   Съкратено йонно уравнение (изискване за 6.00 на матурата):
                 </div>
-                <div className="font-mono text-base font-black text-cyan-950">
+                <div className="font-mono text-base font-bold text-cyan-950">
                   {currentReaction.netIonicEq}
                 </div>
               </div>
@@ -117,7 +117,7 @@ export const ScienceChemistryTab: React.FC = () => {
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700">
               Водни разтвори и pH • 9. и 10. клас
             </span>
-            <h3 className="text-base sm:text-lg font-extrabold text-slate-900">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900">
               Симулатор за Хидролиза на Соли и Цвят на Индикаторите
             </h3>
           </div>
@@ -139,7 +139,7 @@ export const ScienceChemistryTab: React.FC = () => {
           </div>
 
           <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-            <div className="text-sm sm:text-base font-extrabold text-slate-900">
+            <div className="text-sm sm:text-base font-bold text-slate-900">
               {currentSalt.formula}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
@@ -172,7 +172,7 @@ export const ScienceChemistryTab: React.FC = () => {
               <span className="text-[11px] font-bold uppercase tracking-wider text-teal-700">
                 Обемно-аналитична химия • Трета СПК Лаборант (524010) & ДЗИ
               </span>
-              <h3 className="text-base font-extrabold text-slate-900">
+              <h3 className="text-base font-bold text-slate-900">
                 Интерактивен Киселинно-Основен Титратор (c₁·V₁·z₁ = c₂·V₂·z₂)
               </h3>
             </div>
@@ -252,7 +252,7 @@ export const ScienceChemistryTab: React.FC = () => {
                   V₂ = ({acidConc} × {acidVolMl} × {acidProtonsZ1}) / ({baseConc} × {baseHydroxylsZ2})
                 </span>
               </div>
-              <div className="text-xl font-black font-mono text-teal-950">
+              <div className="text-xl font-bold font-mono text-teal-950">
                 {eqBaseVolMl} mL
               </div>
             </div>
@@ -268,7 +268,7 @@ export const ScienceChemistryTab: React.FC = () => {
               <span className="text-[11px] font-bold uppercase tracking-wider text-rose-700">
                 Органична Химия за МУ (София / Пловдив / Варна) & ДЗИ
               </span>
-              <h3 className="text-base font-extrabold text-slate-900">
+              <h3 className="text-base font-bold text-slate-900">
                 Качествени реакции за разпознаване на органични съединения
               </h3>
             </div>
@@ -290,7 +290,7 @@ export const ScienceChemistryTab: React.FC = () => {
             </div>
 
             <div className="p-4 rounded-xl bg-rose-50/60 border border-rose-200 space-y-2.5 text-xs">
-              <div className="font-extrabold text-sm text-rose-950">
+              <div className="font-bold text-sm text-rose-950">
                 {currentOrganic.compoundClass}
               </div>
               <div>

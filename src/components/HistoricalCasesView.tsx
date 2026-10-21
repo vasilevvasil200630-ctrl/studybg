@@ -187,7 +187,7 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
                 {HISTORICAL_CASES_DATA.length} академични казуса
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
               Научи се да мислиш като историк, а не просто да зубриш дати
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
@@ -338,7 +338,7 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
               </span>
             </div>
 
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 leading-snug">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 leading-snug">
               {activeCase.title}
             </h1>
 
@@ -381,7 +381,7 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-slate-200/70 pb-2 font-sans">
                     <span className="text-xs font-bold text-slate-900">
-                      📜 {source.title}
+                      {source.title}
                     </span>
                     <span className="text-[11px] text-slate-500 italic">
                       Автор: {source.authorOrOrigin}
@@ -469,7 +469,7 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
             </div>
 
             {/* Synthesis Conclusion Card */}
-            <div className="p-5 rounded-2xl bg-slate-900 text-white shadow-xs space-y-2">
+            <div className="p-5 rounded-2xl bg-gradient-to-br from-[#083861] via-[#0a4b82] to-[#145a96] text-white shadow-xs space-y-2">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400">
                 <ShieldCheck className="w-4 h-4 text-amber-400" />
                 <span>Обобщаващ академичен синтез (Исторически консенсус)</span>
@@ -704,12 +704,12 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
                 }`}
               >
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-blue-200 pb-2.5">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-blue-950 flex items-center gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wider text-blue-950 flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4 text-blue-600" />
                     {aiHistoryEval.mode === 'ai' ? 'AI рецензия (ориентировъчна) по 4-те критерия' : STRUCTURAL_ANALYSIS_LABEL}
                   </span>
                   {aiHistoryEval.mode === 'ai' && aiHistoryEval.totalScore !== null && (
-                    <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-extrabold">
+                    <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-bold">
                       Резултат: {aiHistoryEval.totalScore} / 30 т.
                     </span>
                   )}
@@ -760,7 +760,7 @@ export const HistoricalCasesView: React.FC<HistoricalCasesViewProps> = () => {
                     setCaseQuizVariant((prev) => prev + 1);
                     setCaseQuizAnswers({});
                   }}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-sapphire hover:bg-brand-sapphire-light text-white text-xs font-bold cursor-pointer"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   <span>Нов вариант върху казуса (∞)</span>

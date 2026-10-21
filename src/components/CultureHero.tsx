@@ -26,7 +26,7 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
         </div>
 
         {/* Main Title */}
-        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 max-w-4xl mx-auto leading-tight">
+        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 max-w-4xl mx-auto leading-tight">
           Дълбочината на познанието носи{' '}
           <span className="text-amber-600">
             Отличен 6.00
@@ -43,49 +43,49 @@ export const CultureHero: React.FC<CultureHeroProps> = ({
         <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5 max-w-4xl mx-auto">
           <button
             onClick={() => onSelectSubTab?.('mysteries')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100/80 border border-amber-200 text-amber-900 text-xs font-semibold shadow-2xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-amber-50 border border-amber-200/80 text-amber-950 text-xs font-semibold shadow-2xs transition-colors"
           >
-            <Compass className="w-3.5 h-3.5 text-amber-600" />
-            <span>🕵️ 40 конспирации & загадки</span>
+            <Compass className="w-3.5 h-3.5 text-amber-700" aria-hidden="true" />
+            <span>40 конспирации & загадки</span>
           </button>
 
           <button
             onClick={() => onSelectSubTab?.('mysticmap')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100/80 border border-slate-200 text-slate-900 text-xs font-semibold shadow-2xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-amber-50 border border-amber-200/80 text-amber-950 text-xs font-semibold shadow-2xs transition-colors"
           >
-            <MapPin className="w-3.5 h-3.5 text-slate-600" />
-            <span>🛸 Карта на мистичните зони (12)</span>
+            <MapPin className="w-3.5 h-3.5 text-amber-700" aria-hidden="true" />
+            <span>Карта на мистичните зони (12)</span>
           </button>
 
           <button
             onClick={() => onSelectSubTab?.('timeline')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 text-emerald-900 text-xs font-semibold shadow-2xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-amber-50 border border-amber-200/80 text-amber-950 text-xs font-semibold shadow-2xs transition-colors"
           >
-            <Clock className="w-3.5 h-3.5 text-emerald-600" />
+            <Clock className="w-3.5 h-3.5 text-amber-700" aria-hidden="true" />
             <span>Хронология (681–1908)</span>
           </button>
 
           <button
             onClick={() => onSelectSubTab?.('heritage')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-50 hover:bg-orange-100/80 border border-orange-200 text-orange-900 text-xs font-semibold shadow-2xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-amber-50 border border-amber-200/80 text-amber-950 text-xs font-semibold shadow-2xs transition-colors"
           >
-            <Award className="w-3.5 h-3.5 text-orange-600" />
+            <Award className="w-3.5 h-3.5 text-amber-700" aria-hidden="true" />
             <span>16 ЮНЕСКО обекта & световни патенти</span>
           </button>
 
           <button
             onClick={() => onSelectSubTab?.('trivia')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100/80 border border-sky-200 text-sky-900 text-xs font-semibold shadow-2xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-amber-50 border border-amber-200/80 text-amber-950 text-xs font-semibold shadow-2xs transition-colors"
           >
-            <Sparkles className="w-3.5 h-3.5 text-sky-600" />
+            <Sparkles className="w-3.5 h-3.5 text-amber-700" aria-hidden="true" />
             <span>Куиз за ерудити (38 въпроса)</span>
           </button>
 
           <button
             onClick={() => onSelectSubTab?.('myths')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100/80 border border-rose-200 text-rose-900 text-xs font-semibold shadow-2xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-amber-50 border border-amber-200/80 text-amber-950 text-xs font-semibold shadow-2xs transition-colors"
           >
-            <HelpCircle className="w-3.5 h-3.5 text-rose-600" />
+            <HelpCircle className="w-3.5 h-3.5 text-amber-700" aria-hidden="true" />
             <span>Факт или Конспирация (24 теми)</span>
           </button>
 

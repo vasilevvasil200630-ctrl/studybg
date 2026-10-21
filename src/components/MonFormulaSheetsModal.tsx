@@ -407,7 +407,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
 
                 <button
                   onClick={handlePrint}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white text-xs font-extrabold shadow-xs cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold shadow-xs cursor-pointer"
                 >
                   <Printer className="w-3.5 h-3.5" />
                   <span>Принтирай това A4 табло</span>
@@ -416,12 +416,12 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
 
               {/* POSTER 1: BEL DZI 27 WORKS & 9 THEMATIC BLOCKS */}
               {selectedPoster === 'bel_dzi' && (
-                <div className="border-2 border-slate-900 rounded-xl p-5 bg-white space-y-4">
+                <div className="border border-slate-900 rounded-xl p-5 bg-white space-y-4">
                   <div className="text-center border-b-2 border-slate-900 pb-3">
                     <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                       StudyBG • Едностранично A4 Табло за Стена • ДЗИ Български език и литература (11.–12. клас)
                     </div>
-                    <h3 className="text-lg font-extrabold text-slate-900 font-serif mt-0.5">
+                    <h3 className="text-lg font-bold text-slate-900 font-serif mt-0.5">
                       Пълна Матрица на 9-те Тематични Блока за Матурата по БЕЛ (Задача 41)
                     </h3>
                   </div>
@@ -489,12 +489,12 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
 
               {/* POSTER 2: MATH ALL-IN-ONE A4 POSTER */}
               {selectedPoster === 'math_all' && (
-                <div className="border-2 border-slate-900 rounded-xl p-5 bg-white space-y-4">
+                <div className="border border-slate-900 rounded-xl p-5 bg-white space-y-4">
                   <div className="text-center border-b-2 border-slate-900 pb-3">
                     <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                       StudyBG • Едностранично A4 Табло за Стена • Математика (НВО 7. & 10. клас и ДЗИ)
                     </div>
-                    <h3 className="text-lg font-extrabold text-slate-900 font-serif mt-0.5">
+                    <h3 className="text-lg font-bold text-slate-900 font-serif mt-0.5">
                       Златни Формули по Алгебра, Тригонометрия и Геометрия на 1 лист
                     </h3>
                   </div>
@@ -545,12 +545,12 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
 
               {/* POSTER 3: HISTORY DATES 681-2007 A4 POSTER */}
               {selectedPoster === 'history_dates' && (
-                <div className="border-2 border-slate-900 rounded-xl p-5 bg-white space-y-4">
+                <div className="border border-slate-900 rounded-xl p-5 bg-white space-y-4">
                   <div className="text-center border-b-2 border-slate-900 pb-3">
                     <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                       StudyBG • Едностранично A4 Табло за Стена • История и цивилизации (НВО & ДЗИ)
                     </div>
-                    <h3 className="text-lg font-extrabold text-slate-900 font-serif mt-0.5">
+                    <h3 className="text-lg font-bold text-slate-900 font-serif mt-0.5">
                       Златна Хронология на Българската История (681 – 2007 г.)
                     </h3>
                   </div>
@@ -579,7 +579,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
                       ['29 март 2004 / 1 ян. 2007', 'Членство на Република България в НАТО (2004 г.) и в Европейския съюз (2007 г.)']
                     ].map(([year, event], idx) => (
                       <div key={idx} className="p-2.5 rounded-lg border border-slate-200 bg-slate-50/70 flex items-start gap-2.5">
-                        <span className="font-mono font-extrabold text-blue-800 shrink-0 min-w-[95px]">{year}</span>
+                        <span className="font-mono font-bold text-blue-800 shrink-0 min-w-[95px]">{year}</span>
                         <span className="text-slate-800">{event}</span>
                       </div>
                     ))}
@@ -589,12 +589,12 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
 
               {/* POSTER 4: CIVICS & EU A4 POSTER */}
               {selectedPoster === 'civics_eu' && (
-                <div className="border-2 border-slate-900 rounded-xl p-5 bg-white space-y-4">
+                <div className="border border-slate-900 rounded-xl p-5 bg-white space-y-4">
                   <div className="text-center border-b-2 border-slate-900 pb-3">
                     <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                       StudyBG • Едностранично A4 Табло за Стена • Гражданско образование и Философия
                     </div>
-                    <h3 className="text-lg font-extrabold text-slate-900 font-serif mt-0.5">
+                    <h3 className="text-lg font-bold text-slate-900 font-serif mt-0.5">
                       Разделение на властите в Република България и Институции на ЕС
                     </h3>
                   </div>
@@ -627,12 +627,12 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
 
               {/* POSTER 5: DIPPK & VOCATIONAL THIRD SPK A4 POSTER */}
               {selectedPoster === 'dippk_stem' && (
-                <div className="border-2 border-slate-900 rounded-xl p-5 bg-white space-y-4">
+                <div className="border border-slate-900 rounded-xl p-5 bg-white space-y-4">
                   <div className="text-center border-b-2 border-slate-900 pb-3">
                     <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                       StudyBG • Едностранично A4 Табло за Стена • ДИППК (Трета СПК — Професионални Гимназии)
                     </div>
-                    <h3 className="text-lg font-extrabold text-slate-900 font-serif mt-0.5">
+                    <h3 className="text-lg font-bold text-slate-900 font-serif mt-0.5">
                       Златни Инженерни, ИТ, Финансови и Строителни Еталони за Дипломна Защита
                     </h3>
                   </div>

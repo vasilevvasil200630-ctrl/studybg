@@ -276,7 +276,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
     >
       <div className="rounded-2xl bg-white border border-slate-200 shadow-2xl overflow-hidden text-slate-900">
         {/* Top Header */}
-        <div className="px-5 py-4 bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white flex items-center justify-between gap-3">
+        <div className="px-5 py-4 bg-gradient-to-br from-[#083861] via-[#0a4b82] to-[#145a96] text-white flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
               <GoogleLogoSvg className="w-5 h-5" />
@@ -335,20 +335,20 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
           {/* ================================================================= */}
           {/* XP LEVEL & DAILY STREAK BANNER (VISIBLE FOR BOTH STATES)          */}
           {/* ================================================================= */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white border border-slate-800 space-y-3">
+          <div className="p-4 rounded-2xl bg-gradient-to-br from-[#083861] via-[#0a4b82] to-[#145a96] text-white space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex flex-col items-center justify-center shrink-0">
                   <span className="text-[10px] font-bold uppercase text-amber-300 leading-none">
                     Ниво
                   </span>
-                  <span className="text-xl font-black text-amber-300 leading-tight font-mono">
+                  <span className="text-xl font-bold text-amber-300 leading-tight font-mono">
                     {levelInfo.level}
                   </span>
                 </div>
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm sm:text-base font-extrabold text-white">
+                    <span className="text-sm sm:text-base font-bold text-white">
                       {levelInfo.title}
                     </span>
                     <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-blue-500/25 text-blue-200 border border-blue-400/30">
@@ -366,7 +366,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
               <div className="flex items-center gap-3 px-3.5 py-2 rounded-xl bg-white/10 border border-white/15 shrink-0">
                 <Flame className="w-5 h-5 text-amber-400 shrink-0" aria-hidden="true" />
                 <div>
-                  <div className="text-xs font-extrabold text-amber-300">
+                  <div className="text-xs font-bold text-amber-300">
                     {currentStreak} {currentStreak === 1 ? 'пореден ден' : 'поредни дни'}
                   </div>
                   <div className="text-[11px] text-slate-300">
@@ -384,7 +384,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
               </div>
               <div className="w-full h-2.5 rounded-full bg-slate-800 overflow-hidden p-0.5 border border-white/10">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-blue-400 via-emerald-400 to-amber-400 transition-all duration-500"
+                  className="h-full rounded-full bg-emerald-500 transition-all duration-500"
                   style={{ width: `${Math.max(4, levelInfo.progressPercent)}%` }}
                 />
               </div>
@@ -407,7 +407,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
                       height={56}
                       referrerPolicy="no-referrer"
                       onError={() => setAvatarFailed(true)}
-                      className="w-14 h-14 rounded-2xl object-cover border-2 border-blue-500/30 shadow-xs shrink-0"
+                      className="w-14 h-14 rounded-2xl object-cover border border-blue-500/30 shadow-xs shrink-0"
                     />
                   ) : (
                     <div
@@ -492,7 +492,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
                     <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
                     <span>Усвоени теми</span>
                   </div>
-                  <p className="text-xl font-extrabold text-slate-900 mt-1">
+                  <p className="text-xl font-bold text-slate-900 mt-1">
                     {progress.masteredLessonIds.length}
                   </p>
                 </div>
@@ -502,7 +502,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
                     <Award className="w-3.5 h-3.5" aria-hidden="true" />
                     <span>Автори ДЗИ</span>
                   </div>
-                  <p className="text-xl font-extrabold text-slate-900 mt-1">
+                  <p className="text-xl font-bold text-slate-900 mt-1">
                     {progress.masteredAuthorIds.length} / 15
                   </p>
                 </div>
@@ -512,7 +512,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
                     <Clock className="w-3.5 h-3.5" aria-hidden="true" />
                     <span>Симулации</span>
                   </div>
-                  <p className="text-xl font-extrabold text-slate-900 mt-1">
+                  <p className="text-xl font-bold text-slate-900 mt-1">
                     {examAnalytics.totalAttempts}
                   </p>
                 </div>
@@ -522,7 +522,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
                     <AlertCircle className="w-3.5 h-3.5" aria-hidden="true" />
                     <span>Банка грешки</span>
                   </div>
-                  <p className="text-xl font-extrabold text-slate-900 mt-1">{allErrors.length}</p>
+                  <p className="text-xl font-bold text-slate-900 mt-1">{allErrors.length}</p>
                 </div>
               </div>
             </div>
@@ -531,7 +531,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
             /* SIGNED OUT / ANONYMOUS VIEW                                     */
             /* =============================================================== */
             <div className="space-y-4">
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 border border-blue-200/80 space-y-4">
+              <div className="p-4 rounded-2xl bg-blue-50/40 border border-blue-100 space-y-4">
                 <div className="space-y-1.5">
                   <span className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-700">
                     <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
@@ -552,7 +552,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
                   type="button"
                   onClick={handleGoogleSignIn}
                   disabled={isSigningIn || isLoadingSession}
-                  className="w-full py-3 px-4 rounded-xl bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-900 font-bold text-sm border-2 border-slate-300 hover:border-blue-500 shadow-sm hover:shadow transition-all flex items-center justify-center gap-3 disabled:opacity-60 cursor-pointer"
+                  className="w-full py-3 px-4 rounded-xl bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-900 font-bold text-sm border border-slate-300 hover:border-blue-500 shadow-sm hover:shadow transition-all flex items-center justify-center gap-3 disabled:opacity-60 cursor-pointer"
                 >
                   <GoogleLogoSvg className="w-5 h-5 shrink-0" />
                   <span>
@@ -604,7 +604,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
           <div className="space-y-3 pt-2 border-t border-slate-200">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
                   <Trophy className="w-4 h-4 text-amber-600" aria-hidden="true" />
                   <span>Академични Значки за Постижения ({unlockedBadgesCount}/{achievements.length})</span>
                 </h3>
@@ -712,7 +712,7 @@ export const AuthProfileModal: React.FC<AuthProfileModalProps> = ({
                   <Lock className="w-4 h-4 text-blue-700" aria-hidden="true" />
                 </div>
                 <div>
-                  <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-900">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
                     Европейска защита на акаунта (GDPR • Регламент (ЕС) 2016/679 • ЗЗЛД)
                   </h3>
                   <p className="text-[11px] text-slate-600 leading-relaxed mt-0.5">

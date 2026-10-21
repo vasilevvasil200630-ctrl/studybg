@@ -275,7 +275,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
           }`}
         >
           {/* Front Side */}
-          <div className="absolute inset-0 w-full h-full p-8 rounded-2xl bg-white border-2 border-slate-200 shadow-sm flex flex-col justify-between backface-hidden">
+          <div className="absolute inset-0 w-full h-full p-8 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between backface-hidden">
             <div className="flex items-center justify-between">
               <span className="px-2.5 py-1 rounded text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
                 {card.tag || 'Учебна концепция'}
@@ -304,7 +304,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
           </div>
 
           {/* Back Side */}
-          <div className="absolute inset-0 w-full h-full p-8 rounded-2xl bg-emerald-50/40 border-2 border-emerald-300 shadow-sm flex flex-col justify-between rotate-y-180 backface-hidden">
+          <div className="absolute inset-0 w-full h-full p-8 rounded-2xl bg-emerald-50/40 border border-emerald-300 shadow-sm flex flex-col justify-between rotate-y-180 backface-hidden">
             <div className="flex items-center justify-between">
               <span className="px-2.5 py-1 rounded text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
                 Официална дефиниция

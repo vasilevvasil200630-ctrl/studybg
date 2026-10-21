@@ -50,7 +50,7 @@ export const ExamModule3Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
             </div>
 
             {/* AI Essay Evaluation Action Bar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-gradient-to-r from-blue-50/90 to-blue-50/90 border border-blue-200 shadow-2xs">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-blue-50/90 border border-blue-200 shadow-2xs">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
                   <Sparkles className="w-4 h-4 text-amber-300" />
@@ -58,7 +58,7 @@ export const ExamModule3Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
                 <div>
                   <div className="text-xs font-bold text-blue-950 flex items-center gap-1.5">
                     <span>AI Оценител по 4-те критерия на МОН</span>
-                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-blue-200 text-blue-900 font-extrabold">
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-blue-200 text-blue-900 font-bold">
                       30 т. ДЗИ
                     </span>
                   </div>
@@ -82,7 +82,7 @@ export const ExamModule3Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
                 ) : (
                   <>
                     <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                    <span>{aiEssayEvaluation ? 'Преоцени текста отново' : '🤖 Оцени есето с AI'}</span>
+                    <span>{aiEssayEvaluation ? 'Преоцени текста отново' : 'Оцени есето с AI'}</span>
                   </>
                 )}
               </button>
@@ -98,7 +98,7 @@ export const ExamModule3Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
             {/* AI Detailed Audit Report Card */}
             {aiEssayEvaluation && (
               <div
-                className={`p-5 rounded-2xl bg-white border-2 shadow-md space-y-4 ${
+                className={`p-5 rounded-2xl bg-white border shadow-md space-y-4 ${
                   aiEssayEvaluation.mode === 'ai' ? 'border-blue-500/30' : 'border-amber-300'
                 }`}
               >
@@ -129,7 +129,7 @@ export const ExamModule3Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
                   {aiEssayEvaluation.mode === 'ai' && aiEssayEvaluation.totalScore !== null && (
                     <div className="flex items-baseline gap-1 bg-blue-50 text-blue-900 border border-blue-200 px-3.5 py-1.5 rounded-xl self-start sm:self-auto">
                       <span className="text-xs font-semibold text-blue-700">Оценка:</span>
-                      <span className="text-xl font-extrabold font-mono text-blue-700">
+                      <span className="text-xl font-bold font-mono text-blue-700">
                         {aiEssayEvaluation.totalScore}
                       </span>
                       <span className="text-xs font-medium text-slate-500">

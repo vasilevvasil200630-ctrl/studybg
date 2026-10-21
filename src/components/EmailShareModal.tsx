@@ -386,7 +386,7 @@ export const EmailShareModal: React.FC<EmailShareModalProps> = ({
                   >
                     {isLoading ? (
                       <>
-                        <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <div className="w-3.5 h-3.5 border border-white border-t-transparent rounded-full animate-spin" />
                         <span>Изпращане...</span>
                       </>
                     ) : (

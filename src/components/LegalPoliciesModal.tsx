@@ -100,7 +100,7 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
               <Scale className="w-5 h-5" />
             </div>
             <div>
-              <h2 id="legal-modal-title" className="text-base sm:text-lg font-extrabold text-slate-900 leading-tight">
+              <h2 id="legal-modal-title" className="text-base sm:text-lg font-bold text-slate-900 leading-tight">
                 Европейски правни политики, ИИ прозрачност & Достъпност
               </h2>
               <p className="text-xs text-slate-500">
@@ -213,7 +213,7 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div>
-                    <h3 className="text-sm font-extrabold text-slate-900">
+                    <h3 className="text-sm font-bold text-slate-900">
                       Интерактивен GDPR Център за управление на акаунта и данните
                     </h3>
                     <p className="text-xs text-slate-500">

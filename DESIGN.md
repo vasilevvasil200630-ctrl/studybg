@@ -174,7 +174,7 @@ The world ships light-only (`color-scheme: light`). Motion is limited to color t
 A two-brand palette on white: deep sapphire leads, emerald confirms, and slate does all the neutral work.
 
 ### Primary
-- **Matura Sapphire** (#0a4b82): The color of every primary action ("Пълен каталог", "Сканирай тетрадка", "Вход с Google" when signed out), active nav items and filter pills, links and inline highlights. It is also the highlighted phrase in the hero headline ("НВО 7, НВО 10 и ДЗИ 12"), the "Study" half of the wordmark, the focus ring, the caret and `theme-color`. Tailwind's blue, indigo, violet, purple, fuchsia, pink and cyan 600 steps all resolve to this value.
+- **Matura Sapphire** (#0a4b82): The color of every primary action ("Пълен каталог", "Сканирай тетрадка", "Вход с Google" when signed out), active nav items and filter pills, links and inline highlights. It is also the highlighted phrase in the hero headline ("НВО 7, НВО 10 и ДЗИ 12"), the "Study" half of the wordmark, the focus ring, the caret and `theme-color`. Tailwind's blue, indigo, violet, purple, fuchsia, pink, cyan and sky 600 steps all resolve to this value.
 - **Sapphire Night** (#083861): The deep end of the sapphire band gradient, the hover color for text links, and the text color of selected text.
 - **Sapphire Lift** (#0e5e9e): The hover state of the solid sapphire button. Hover goes one step lighter, never darker.
 - **Sapphire Mist** (#eef5fb) / **Sapphire Tint** (#d8e8f6) / **Sapphire Line** (#b5d5ef): The 50, 100 and 200 steps. They fill the hero status badge, the active nav pill, icon tiles and the academy portal card at 40% opacity, and they draw the hover borders on chips and result rows.
@@ -202,7 +202,7 @@ A two-brand palette on white: deep sapphire leads, emerald confirms, and slate d
 - **Slate Divider** (#f1f5f9, slate-100) / **Slate Wash** (#f8fafc, slate-50): Internal dividers inside cards, secondary-button hover, and the bottom of the white-to-wash panel gradient.
 
 ### Named Rules
-**The Two Voices Rule.** Sapphire acts and emerald confirms. No third brand hue exists. The token remap sends every legacy blue/indigo/violet/purple/fuchsia/pink/cyan class to sapphire and every emerald/green/teal class to emerald, so an inner screen cannot reintroduce a rainbow through Tailwind classes. Don't add new hue scales.
+**The Two Voices Rule.** Sapphire acts and emerald confirms. No third brand hue exists. The token remap sends every legacy blue/indigo/violet/purple/fuchsia/pink/cyan/sky class to sapphire, every emerald/green/teal class to emerald and every orange class to amber, so an inner screen cannot reintroduce a rainbow through Tailwind classes. Don't add new hue scales.
 
 **The Portal Amber Rule.** Amber surfaces (tinted cards, filled buttons, tags) belong to the "Мистерии" / "Обща култура" portal. Elsewhere amber appears only as small state accents already in the build: the daily-streak flame chip, the "Пауза" state of the focus timer, and the explanation note after a wrong answer.
 
@@ -312,7 +312,11 @@ This is the fully round sapphire-50 badge above the hero headline, with a sapphi
 - **Don't** introduce per-subject colors or new hue scales. The remap to two brands is the system.
 - **Don't** set UI text below 11px.
 
-## Open / stage 2
+## Open
 
-- Inner screens (lessons, tests, labs) inherit the remapped tokens but still carry some 3D bottom edges, colorful gradients and emoji from the previous system. They are not yet ported to this world.
-- There is no dark theme. The site is light-only (`color-scheme: light`). A dark theme is planned for stage 2 (PRODUCT.md, Accessibility & Inclusion).
+Stage 2 ported the inner screens: dark hero panels became the single sapphire band, tinted gradients became flat tints, gradient progress bars became solid sapphire or emerald, the dark "Училища & Специалности" directory moved to the light ground, interface emoji were removed, and the lesson sidebar badges and icons went neutral. Labels that sat as pills above band headings now sit as a quiet meta line under the subtitle.
+
+- There is no dark theme. The site is light-only (`color-scheme: light`). A dark theme is planned (PRODUCT.md, Accessibility & Inclusion).
+- Small pill labels above section headings still appear inside some lab cards (e.g. the science lab intro card, the simulator's format card). They are lower in the page than the band headings and were left for a later pass.
+- Body copy uses many 10–11px literal sizes from the previous system; the detector reports them as off-ramp advisories.
+- The certificate modal keeps its own print typography (Georgia/Roboto) because it renders a printable A4 document, not interface.

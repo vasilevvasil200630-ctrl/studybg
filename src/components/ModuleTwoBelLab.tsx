@@ -135,29 +135,29 @@ export const ModuleTwoBelLab: React.FC = () => {
       {/* ========================================================================= */}
       {/* 1. HEADER BANNER */}
       {/* ========================================================================= */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-blue-950 via-slate-900 to-slate-900 text-white shadow-md relative overflow-hidden">
+      <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-[#083861] via-[#0a4b82] to-[#145a96] text-white shadow-md relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-slate-500/20 text-slate-200 border border-slate-400/30">
-              <Feather className="w-3.5 h-3.5" />
-              <span>Модул 2 на ДЗИ & НВО 10 • 40 точки</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
               Лаборатория за Тропи, Фигури, Пароними & Резюме
             </h1>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-blue-100 leading-relaxed">
               Овладей художествените изразни средства в българската поезия, лексикалните капани с пароними и фразеологизми и формулирането на теза в 3–4 изречения (Задача 39/40 на ДЗИ и Резюме на НВО 10).
+            </p>
+            <p className="flex items-center gap-1.5 text-xs font-semibold text-blue-100">
+              <Feather className="w-3.5 h-3.5 text-emerald-300 shrink-0" aria-hidden="true" />
+              <span>Модул 2 на ДЗИ & НВО 10 • 40 точки</span>
             </p>
           </div>
 
           {/* Live Score & Streak Badges */}
           <div className="flex items-center gap-3 shrink-0">
             <div className="p-3.5 rounded-2xl bg-white/10 border border-white/15 text-center min-w-[90px]">
-              <div className="flex items-center justify-center gap-1 text-amber-400 text-xs font-bold">
+              <div className="flex items-center justify-center gap-1 text-emerald-300 text-xs font-bold">
                 <Flame className="w-4 h-4 fill-amber-400" />
                 <span>Серия</span>
               </div>
-              <div className="text-xl font-black text-white mt-0.5">{streak}</div>
+              <div className="text-xl font-bold text-white mt-0.5">{streak}</div>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-white/10 border border-white/15 text-center min-w-[90px]">
@@ -165,7 +165,7 @@ export const ModuleTwoBelLab: React.FC = () => {
                 <Award className="w-4 h-4" />
                 <span>Точки</span>
               </div>
-              <div className="text-xl font-black text-white mt-0.5">{score}</div>
+              <div className="text-xl font-bold text-white mt-0.5">{score}</div>
             </div>
           </div>
         </div>
@@ -241,12 +241,12 @@ export const ModuleTwoBelLab: React.FC = () => {
           </div>
 
           {/* Right 8 cols: Detailed Breakdown & Canon Quotes */}
-          <div className="lg:col-span-8 p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-xs space-y-6">
+          <div className="lg:col-span-8 p-6 sm:p-8 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-6">
             <div className="space-y-2 pb-4 border-b border-slate-100">
               <span className="px-2.5 py-1 rounded-lg bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider">
                 {activeFigure.kindLabel}
               </span>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight pt-1">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight pt-1">
                 {activeFigure.name}
               </h2>
             </div>
@@ -337,7 +337,7 @@ export const ModuleTwoBelLab: React.FC = () => {
         <div className="space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg sm:text-xl font-black text-slate-900">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900">
                 Речник-тренажор на паронимите и фразеологизмите за ДЗИ
               </h2>
               <p className="text-xs text-slate-500">
@@ -385,7 +385,7 @@ export const ModuleTwoBelLab: React.FC = () => {
                     </span>
                   </div>
 
-                  <h3 className="text-base font-black text-slate-900">{item.title}</h3>
+                  <h3 className="text-base font-bold text-slate-900">{item.title}</h3>
 
                   <div className="space-y-1.5 text-xs text-slate-700">
                     <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
@@ -449,12 +449,12 @@ export const ModuleTwoBelLab: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
             {/* Left 7 cols: Task Prompt, Criteria & Live Student Draft Validator */}
-            <div className="lg:col-span-7 space-y-5 p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-xs">
+            <div className="lg:col-span-7 space-y-5 p-6 sm:p-8 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
               <div className="space-y-2 pb-4 border-b border-slate-100">
                 <span className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 text-xs font-bold">
                   {activeSynthesis.examType} • {activeSynthesis.pointsBreakdown}
                 </span>
-                <h2 className="text-lg sm:text-xl font-black text-slate-900 pt-1">
+                <h2 className="text-lg sm:text-xl font-bold text-slate-900 pt-1">
                   {activeSynthesis.title}
                 </h2>
               </div>
@@ -540,7 +540,7 @@ export const ModuleTwoBelLab: React.FC = () => {
                     className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-600 hover:bg-slate-700 disabled:opacity-40 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
                   >
                     {isAiBelLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                    <span>{isAiBelLoading ? 'Проверява се по МОН...' : `🤖 Провери с ${AI_EXAMINER_LABEL} (критерии на МОН)`}</span>
+                    <span>{isAiBelLoading ? 'Проверява се по МОН...' : `Провери с ${AI_EXAMINER_LABEL} (критерии на МОН)`}</span>
                   </button>
                 </div>
 
@@ -553,11 +553,11 @@ export const ModuleTwoBelLab: React.FC = () => {
                 {aiBelEval && (
                   <div className="p-4 rounded-2xl bg-blue-950 text-white border border-blue-700 space-y-2.5">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-black uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
                         <Sparkles className="w-4 h-4 text-amber-400" />
                         <span>Оценка от {AI_EXAMINER_LABEL} (критерии на МОН):</span>
                       </span>
-                      <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-amber-950 text-xs font-black">
+                      <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-amber-950 text-xs font-bold">
                         {aiBelEval.verdict}
                       </span>
                     </div>
@@ -569,7 +569,7 @@ export const ModuleTwoBelLab: React.FC = () => {
                     </div>
                     {aiBelEval.modelImprovedVersion && (
                       <div className="p-3 rounded-xl bg-white/10 border border-white/10 text-xs text-emerald-200">
-                        <strong className="block text-white mb-0.5">✨ Редактиран еталонен вариант:</strong>
+                        <strong className="block text-white mb-0.5">Редактиран еталонен вариант:</strong>
                         {aiBelEval.modelImprovedVersion}
                       </div>
                     )}
@@ -582,7 +582,7 @@ export const ModuleTwoBelLab: React.FC = () => {
             <div className="lg:col-span-5 space-y-5">
               
               {/* Mandatory Criteria & Forbidden Mistakes */}
-              <div className="p-6 rounded-3xl bg-white border border-slate-200/90 shadow-xs space-y-4">
+              <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-4">
                 <div className="space-y-2">
                   <div className="text-xs font-bold uppercase tracking-wider text-emerald-700">
                     Задължителни елементи за пълни точки:
@@ -609,9 +609,9 @@ export const ModuleTwoBelLab: React.FC = () => {
               </div>
 
               {/* Model Answer Box */}
-              <div className="p-6 rounded-3xl bg-blue-50/60 border border-blue-200 space-y-3">
+              <div className="p-6 rounded-2xl bg-blue-50/60 border border-blue-200 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-black uppercase tracking-wider text-blue-900">
+                  <span className="text-xs font-bold uppercase tracking-wider text-blue-900">
                     Еталонен отговор за максимален резултат:
                   </span>
                   <button
@@ -663,7 +663,7 @@ export const ModuleTwoBelLab: React.FC = () => {
                   }`}
                 >
                   <span
-                    className={`inline-block text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded mb-1.5 ${
+                    className={`inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded mb-1.5 ${
                       isSelected ? 'bg-white/20 text-white' : 'bg-slate-50 text-slate-800'
                     }`}
                   >
@@ -680,12 +680,12 @@ export const ModuleTwoBelLab: React.FC = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Left 7 cols: Full Architectural Blueprint (Introduction -> Thesis -> 3 Arguments -> Conclusion) */}
-            <div className="lg:col-span-7 p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-5">
+            <div className="lg:col-span-7 p-6 sm:p-8 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-5">
               <div className="space-y-1 border-b border-slate-100 pb-4">
                 <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
                   {activeTask41.genreAndPeriod}
                 </div>
-                <h2 className="text-xl font-black text-slate-900">
+                <h2 className="text-xl font-bold text-slate-900">
                   Тема за 41. задача: „{activeTask41.examTopic}“
                 </h2>
                 <p className="text-xs text-slate-600 font-semibold">{activeTask41.workAndAuthor}</p>
@@ -694,7 +694,7 @@ export const ModuleTwoBelLab: React.FC = () => {
               {/* 1. Увод и Основна Теза */}
               <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-200 space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-black uppercase tracking-wider text-blue-900">
+                  <span className="text-xs font-bold uppercase tracking-wider text-blue-900">
                     1. Увод и Основна Теза (Критерий за 7 т. по литературни компетентности):
                   </span>
                   <button
@@ -715,12 +715,12 @@ export const ModuleTwoBelLab: React.FC = () => {
 
               {/* 2. Верига от 3 Аргументативни абзаца */}
               <div className="space-y-3">
-                <div className="text-xs font-black uppercase tracking-wider text-slate-700">
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-700">
                   2. Доказателствена част (3 микротези + художествени наблюдения и цитати):
                 </div>
                 {activeTask41.arguments.map((arg, aIdx) => (
                   <div key={aIdx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
-                    <div className="text-xs font-extrabold text-slate-900">{arg.title}</div>
+                    <div className="text-xs font-bold text-slate-900">{arg.title}</div>
                     <p className="text-xs text-slate-800 leading-relaxed font-medium">{arg.microThesis}</p>
                     <div className="text-[11px] text-blue-800 bg-white px-3 py-2 rounded-xl border border-slate-200">
                       <strong>Цитати и тропи за опора:</strong> {arg.evidenceAndQuotes}
@@ -731,14 +731,14 @@ export const ModuleTwoBelLab: React.FC = () => {
 
               {/* 3. Заключение и Мост за Есе */}
               <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-2">
-                <div className="text-xs font-black uppercase tracking-wider text-emerald-900">
+                <div className="text-xs font-bold uppercase tracking-wider text-emerald-900">
                   3. Обобщаващо заключение и Насока за Есе:
                 </div>
                 <p className="text-xs sm:text-sm text-emerald-950 font-semibold leading-relaxed">
                   {activeTask41.conclusion}
                 </p>
                 <div className="pt-2 border-t border-emerald-200/70 text-xs text-slate-700">
-                  <strong className="text-amber-900">💡 Морална и съвременна перспектива (ако избираш Есе):</strong>{' '}
+                  <strong className="text-amber-900">Морална и съвременна перспектива (ако избираш Есе):</strong>{' '}
                   {activeTask41.essayParallel}
                 </div>
               </div>
@@ -746,8 +746,8 @@ export const ModuleTwoBelLab: React.FC = () => {
 
             {/* Right 5 cols: Official МОН 30-Point Rubric & Student Practice Pad */}
             <div className="lg:col-span-5 space-y-5">
-              <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-3">
-                <div className="text-xs font-black uppercase tracking-wider text-slate-800">
+              <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-800">
                   Официална скала на МОН за Задача 41 (Общо 30 точки):
                 </div>
                 <div className="space-y-2 text-xs text-slate-700">
@@ -766,7 +766,7 @@ export const ModuleTwoBelLab: React.FC = () => {
                 </div>
               </div>
 
-              <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-3">
+              <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-slate-900">Чернова за твоята теза и аргументи:</span>
                   <button
@@ -818,21 +818,21 @@ export const ModuleTwoBelLab: React.FC = () => {
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-600 hover:bg-slate-700 disabled:opacity-40 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
                 >
                   {isAiBelLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                  <span>{isAiBelLoading ? 'Проверява се по МОН (30 т.)...' : `🤖 Провери черновата с ${AI_EXAMINER_LABEL} (30 т.)`}</span>
+                  <span>{isAiBelLoading ? 'Проверява се по МОН (30 т.)...' : `Провери черновата с ${AI_EXAMINER_LABEL} (30 т.)`}</span>
                 </button>
 
                 {aiBelEval && (
                   <div className="p-4 rounded-2xl bg-blue-950 text-white border border-blue-700 space-y-2">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-black uppercase text-slate-300">Рецензия — {AI_EXAMINER_LABEL}:</span>
-                      <span className="px-2 py-0.5 rounded-full bg-amber-400 text-amber-950 text-xs font-black">
+                      <span className="text-xs font-bold uppercase text-slate-300">Рецензия — {AI_EXAMINER_LABEL}:</span>
+                      <span className="px-2 py-0.5 rounded-full bg-amber-400 text-amber-950 text-xs font-bold">
                         {aiBelEval.verdict}
                       </span>
                     </div>
                     <p className="text-xs text-blue-100 leading-relaxed">{aiBelEval.feedback}</p>
                     {aiBelEval.modelImprovedVersion && (
                       <div className="p-2.5 rounded-xl bg-white/10 text-xs text-emerald-200">
-                        <strong className="block text-white mb-0.5">✨ Надградена теза (30/30 т.):</strong>
+                        <strong className="block text-white mb-0.5">Надградена теза (30/30 т.):</strong>
                         {aiBelEval.modelImprovedVersion}
                       </div>
                     )}
@@ -889,7 +889,7 @@ export const ModuleTwoBelLab: React.FC = () => {
                   setSelectedOption(null);
                   setIsSubmitted(false);
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-sapphire hover:bg-brand-sapphire-light text-white font-bold text-xs cursor-pointer"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 <span>Нов вариант Модул 2 (∞)</span>
@@ -898,7 +898,7 @@ export const ModuleTwoBelLab: React.FC = () => {
             </span>
           </div>
 
-          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-sm space-y-6">
+          <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200/90 shadow-sm space-y-6">
             <div className="flex items-center justify-between gap-3 pb-4 border-b border-slate-100 text-xs">
               <span className="px-2.5 py-1 rounded-lg bg-slate-50 text-slate-800 border border-slate-200 font-bold uppercase tracking-wider">
                 {currentQ.subcategoryLabel}

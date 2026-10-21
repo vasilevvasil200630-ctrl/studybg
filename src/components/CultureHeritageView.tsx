@@ -106,7 +106,7 @@ export const CultureHeritageView: React.FC<CultureHeritageViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-200/80">
+      <div className="p-6 rounded-2xl bg-amber-50/50 border border-amber-200/80">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-semibold mb-2">
@@ -271,7 +271,7 @@ export const CultureHeritageView: React.FC<CultureHeritageViewProps> = ({
                     <ExamBridgeCard
                       lesson={matchingLesson}
                       variant="compact"
-                      contextTag="🏆 ИЗПИТЕН МОСТ ЮНЕСКО"
+                      contextTag="ИЗПИТЕН МОСТ ЮНЕСКО"
                       onLaunchSimulator={() => {
                         if (onSelectLesson) {
                           onSelectLesson(matchingLesson, 'simulator');

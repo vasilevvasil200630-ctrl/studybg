@@ -144,7 +144,7 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({
             <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
               Степен на покритие
             </span>
-            <div className="text-3xl font-extrabold text-slate-900 my-1 font-mono">
+            <div className="text-3xl font-bold text-slate-900 my-1 font-mono">
               {coveragePercent}%
             </div>
             <span className="text-[11px] text-slate-500">

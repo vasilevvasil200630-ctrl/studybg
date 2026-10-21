@@ -399,21 +399,21 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
       {/* ========================================================================= */}
       {/* 1. HERO COUNTDOWN & OVERALL READINESS SCORE */}
       {/* ========================================================================= */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-blue-950 to-blue-950 text-white shadow-md relative overflow-hidden">
+      <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-[#083861] via-[#0a4b82] to-[#145a96] text-white shadow-md relative overflow-hidden">
         <div className="relative z-10 space-y-6">
           
           {/* Top Bar: Badge & Target Exam Selector Pills */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-white/10">
             <div className="space-y-1">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-400/30">
-                <Calendar className="w-3.5 h-3.5" />
-                <span>Официален изпитен календар на МОН • План за Отличен 6.00</span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white pt-1">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white pt-1">
                 {activeExam.title}
               </h1>
-              <p className="text-xs sm:text-sm text-slate-300">
+              <p className="text-xs sm:text-sm text-blue-100">
                 {activeExam.officialNote}
+              </p>
+              <p className="flex items-center gap-1.5 text-xs font-semibold text-blue-100">
+                <Calendar className="w-3.5 h-3.5 text-emerald-300 shrink-0" aria-hidden="true" />
+                <span>Официален изпитен календар на МОН • План за Отличен 6.00</span>
               </p>
             </div>
 
@@ -443,14 +443,14 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
             
             {/* Left 7 cols: Live Countdown Timer */}
             <div className="lg:col-span-7 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-300">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-300">
                 <Clock className="w-4 h-4" />
                 <span>Оставащо време до изпитното утро ({examDate.toLocaleDateString('bg-BG')} г., 08:30 ч.):</span>
               </div>
 
               <div className="grid grid-cols-4 gap-2.5 sm:gap-4">
                 <div className="p-3.5 sm:p-4 rounded-2xl bg-white/10 border border-white/15 text-center backdrop-blur-xs">
-                  <div className="text-2xl sm:text-4xl font-black font-mono text-white tracking-tight">
+                  <div className="text-2xl sm:text-4xl font-bold font-mono text-white tracking-tight">
                     {countdownDays}
                   </div>
                   <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-blue-200 mt-1">
@@ -459,7 +459,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                 </div>
 
                 <div className="p-3.5 sm:p-4 rounded-2xl bg-white/10 border border-white/15 text-center backdrop-blur-xs">
-                  <div className="text-2xl sm:text-4xl font-black font-mono text-white tracking-tight">
+                  <div className="text-2xl sm:text-4xl font-bold font-mono text-white tracking-tight">
                     {String(countdownHours).padStart(2, '0')}
                   </div>
                   <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-blue-200 mt-1">
@@ -468,7 +468,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                 </div>
 
                 <div className="p-3.5 sm:p-4 rounded-2xl bg-white/10 border border-white/15 text-center backdrop-blur-xs">
-                  <div className="text-2xl sm:text-4xl font-black font-mono text-white tracking-tight">
+                  <div className="text-2xl sm:text-4xl font-bold font-mono text-white tracking-tight">
                     {String(countdownMinutes).padStart(2, '0')}
                   </div>
                   <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-blue-200 mt-1">
@@ -476,11 +476,11 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                   </div>
                 </div>
 
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-amber-500/20 border border-amber-400/30 text-center backdrop-blur-xs">
-                  <div className="text-2xl sm:text-4xl font-black font-mono text-amber-300 tracking-tight">
+                <div className="p-3.5 sm:p-4 rounded-2xl bg-white/10 border border-emerald-300/40 text-center backdrop-blur-xs">
+                  <div className="text-2xl sm:text-4xl font-bold font-mono text-emerald-300 tracking-tight">
                     {String(countdownSeconds).padStart(2, '0')}
                   </div>
-                  <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-amber-200 mt-1">
+                  <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-blue-100 mt-1">
                     Секунди
                   </div>
                 </div>
@@ -511,7 +511,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                     Цел: Отличен ({progress.targetGrade.toFixed(2)})
                   </div>
                 </div>
-                <div className="text-3xl sm:text-4xl font-black text-emerald-400 font-mono">
+                <div className="text-3xl sm:text-4xl font-bold text-emerald-400 font-mono">
                   {overallReadinessPercent}%
                 </div>
               </div>
@@ -519,7 +519,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
               {/* Progress Bar */}
               <div className="w-full h-3 rounded-full bg-slate-800 overflow-hidden p-0.5 border border-white/10">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-blue-500 via-blue-400 to-emerald-400 transition-all duration-500"
+                  className="h-full rounded-full bg-emerald-500 transition-all duration-500"
                   style={{ width: `${Math.max(5, overallReadinessPercent)}%` }}
                 />
               </div>
@@ -547,7 +547,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsCertModalOpen(true)}
-                  className="w-full py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-amber-950 font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                  className="w-full py-2 px-3 rounded-lg bg-white hover:bg-slate-100 text-brand-sapphire font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
                 >
                   <Award className="w-4 h-4" />
                   <span>Генерирай Грамота / Сертификат за 6.00 (PDF / A4)</span>
@@ -580,13 +580,13 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
         <div className="flex items-center gap-3.5">
           <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex flex-col items-center justify-center shrink-0">
             <span className="text-[10px] font-bold uppercase text-amber-800 leading-none">Ниво</span>
-            <span className="text-xl font-black text-amber-900 font-mono leading-tight">
+            <span className="text-xl font-bold text-amber-900 font-mono leading-tight">
               {plannerLevelInfo.level}
             </span>
           </div>
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm sm:text-base font-extrabold text-slate-900">
+              <span className="text-sm sm:text-base font-bold text-slate-900">
                 {plannerLevelInfo.title}
               </span>
               <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200">
@@ -641,7 +641,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
               <div className="w-9 h-9 rounded-xl bg-slate-50 text-slate-700 border border-slate-200 flex items-center justify-center">
                 <BookMarked className="w-4 h-4" />
               </div>
-              <span className="text-sm font-black font-mono text-slate-700">{authorsPercent}%</span>
+              <span className="text-sm font-bold font-mono text-slate-700">{authorsPercent}%</span>
             </div>
             <h3 className="text-sm font-bold text-slate-900">Литературен канон (41. в-с)</h3>
             <p className="text-xs text-slate-500">
@@ -667,7 +667,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
               <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center">
                 <BookOpen className="w-4 h-4" />
               </div>
-              <span className="text-sm font-black font-mono text-blue-700">{lessonsPercent}%</span>
+              <span className="text-sm font-bold font-mono text-blue-700">{lessonsPercent}%</span>
             </div>
             <h3 className="text-sm font-bold text-slate-900">Учебни теми по МОН</h3>
             <p className="text-xs text-slate-500">
@@ -693,7 +693,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
               <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center">
                 <PenTool className="w-4 h-4" />
               </div>
-              <span className="text-sm font-black font-mono text-blue-700">{grammarPercent}%</span>
+              <span className="text-sm font-bold font-mono text-blue-700">{grammarPercent}%</span>
             </div>
             <h3 className="text-sm font-bold text-slate-900">Тренажор БЕЛ (Модул 1)</h3>
             <p className="text-xs text-slate-500">
@@ -723,7 +723,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
                   <AlertCircle className="w-4 h-4 text-rose-600" />
                 )}
               </div>
-              <span className="text-sm font-black font-mono text-emerald-700">{errorCleanPercent}%</span>
+              <span className="text-sm font-bold font-mono text-emerald-700">{errorCleanPercent}%</span>
             </div>
             <h3 className="text-sm font-bold text-slate-900">Досие в Банка с грешки</h3>
             <p className="text-xs text-slate-500">
@@ -749,7 +749,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
       {/* ========================================================================= */}
       {/* 3. INTERACTIVE WEEKLY SCHEDULE GENERATOR ("МОЯТ СЕДМИЧЕН ГРАФИК ЗА 6.00") */}
       {/* ========================================================================= */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-xs space-y-6 cv-auto">
+      <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-6 cv-auto">
         
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-100">
           <div className="space-y-1">
@@ -757,7 +757,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
               <Sparkles className="w-3.5 h-3.5" />
               <span>Персонализиран учебен алгоритъм</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
               Седмичен график за подготовка ({completedDaysCount}/7 дни изпълнени)
             </h2>
             <p className="text-xs sm:text-sm text-slate-500">
@@ -802,7 +802,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
 
             <button
               onClick={() => window.print()}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-2xs cursor-pointer print:hidden"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand-sapphire hover:bg-brand-sapphire-light text-white text-xs font-bold shadow-2xs cursor-pointer print:hidden"
               title="Разпечатай седмичния план-график и чеклиста във формат A4 за бюрото"
             >
               <Printer className="w-3.5 h-3.5 text-amber-400" />
@@ -826,7 +826,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
               >
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-black uppercase tracking-wider text-slate-900">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-900">
                       {day.dayName}
                     </span>
                     <button
@@ -869,13 +869,13 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
           })}
 
           {/* 8th Summary Card in Grid: Weekly Bonus Goal */}
-          <div className="p-5 rounded-2xl bg-gradient-to-br from-blue-900 to-blue-950 text-white flex flex-col justify-between space-y-4">
+          <div className="p-5 rounded-2xl bg-gradient-to-br from-[#083861] via-[#0a4b82] to-[#145a96] text-white flex flex-col justify-between space-y-4">
             <div className="space-y-2.5">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-400/20 text-amber-300 text-[11px] font-bold">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/10 text-emerald-300 text-[11px] font-bold">
                 <Award className="w-3.5 h-3.5" />
                 <span>Седмична равносметка</span>
               </div>
-              <h3 className="text-base font-black text-white">
+              <h3 className="text-base font-bold text-white">
                 {completedDaysCount >= 6
                   ? 'Безупречно темпо за Отличен 6.00!'
                   : `Още ${Math.max(0, 7 - completedDaysCount)} дни до пълна учебна седмица`}
@@ -889,7 +889,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
 
             <button
               onClick={() => onNavigateTab('simulator')}
-              className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-amber-950 font-black text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-100 text-brand-sapphire font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
             >
               <span>Тествай нивото си в 100т. Симулатор</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -902,11 +902,11 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
       {/* ========================================================================= */}
       {/* 4. INTERACTIVE MASTERY CHECKLIST: AUTHORS (15) & CURRICULUM LESSONS */}
       {/* ========================================================================= */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-xs space-y-6 cv-auto">
+      <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-6 cv-auto">
         
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
           <div>
-            <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
               Личен чеклист на овладения материал
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
@@ -1035,62 +1035,62 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
       {/* ========================================================================= */}
       {/* 5. TARGET SCORE & DIPLOMA STRATEGY MATRIX (НВО / ДЗИ / ТРЕТА СПК)         */}
       {/* ========================================================================= */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white border border-slate-800 shadow-lg space-y-5 cv-auto">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-[#083861] via-[#0a4b82] to-[#145a96] text-white shadow-sm space-y-5 cv-auto">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
           <div>
-            <div className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+            <div className="text-xs font-bold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
               <Target className="w-4 h-4" />
               <span>Стратегическа матрица за целева оценка ({progress.targetGrade.toFixed(2)})</span>
             </div>
-            <h3 className="text-lg sm:text-xl font-black text-white mt-0.5">
+            <h3 className="text-lg sm:text-xl font-bold text-white mt-0.5">
               Точкова разбивка по модули за постигане на Цел: Отличен {progress.targetGrade.toFixed(2)}
             </h3>
           </div>
 
           <button
             onClick={() => setIsCertModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-amber-950 font-black text-xs transition-all cursor-pointer shrink-0"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white hover:bg-slate-100 text-brand-sapphire font-bold text-xs transition-all cursor-pointer shrink-0"
           >
             <Award className="w-4 h-4" />
-            <span>📜 Издай Грамота / Свидетелство Трета СПК + EUROPASS</span>
+            <span>Издай Грамота / Свидетелство Трета СПК + EUROPASS</span>
           </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-          <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 space-y-2">
+          <div className="p-4 rounded-2xl bg-white/10 border border-white/15 space-y-2">
             <div className="text-amber-300 font-bold uppercase text-[11px]">
               1. ДЗИ Матура (БЕЛ / Профил — 100 т.)
             </div>
-            <div className="text-xl font-black font-mono text-white">
+            <div className="text-xl font-bold font-mono text-white">
               Минимум {progress.targetGrade >= 5.95 ? '95' : progress.targetGrade >= 5.5 ? '82' : '68'} / 100 т.
             </div>
-            <p className="text-slate-300 leading-relaxed">
+            <p className="text-blue-100 leading-relaxed">
               • Модул 1 (Тест): цел ≥ 28/30 т.<br />
               • Модул 2 (Практически задачи): цел ≥ 36/40 т.<br />
               • Модул 3 (Задача 41 ИС/Есе): цел ≥ 27/30 т.
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 space-y-2">
+          <div className="p-4 rounded-2xl bg-white/10 border border-white/15 space-y-2">
             <div className="text-emerald-300 font-bold uppercase text-[11px]">
               2. ДИППК Трета СПК (Наредба № 1 — 100 т.)
             </div>
-            <div className="text-xl font-black font-mono text-white">
+            <div className="text-xl font-bold font-mono text-white">
               Минимум {progress.targetGrade >= 5.95 ? '98' : progress.targetGrade >= 5.5 ? '92' : '84'} / 100 т.
             </div>
-            <p className="text-slate-300 leading-relaxed">
+            <p className="text-blue-100 leading-relaxed">
               По чл. 38 от ЗПОО прагът за Среден 3.00 е 50 т., а за Отличен 5.50 са нужни <strong>91,67 т.</strong> (Теория + Защита на дипломен проект пред комисия).
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-800/90 border border-slate-700 space-y-2">
+          <div className="p-4 rounded-2xl bg-white/10 border border-white/15 space-y-2">
             <div className="text-sky-300 font-bold uppercase text-[11px]">
               3. НВО 7. и 10. клас (БЕЛ + МАТ — 100 т.)
             </div>
-            <div className="text-xl font-black font-mono text-white">
+            <div className="text-xl font-bold font-mono text-white">
               Минимум {progress.targetGrade >= 5.95 ? '96' : progress.targetGrade >= 5.5 ? '86' : '74'} / 100 т.
             </div>
-            <p className="text-slate-300 leading-relaxed">
+            <p className="text-blue-100 leading-relaxed">
               Осигурява състезателен бал над <strong>465 / 500 т.</strong> за прием в първо желание (СМГ, ТУЕС, НПМГ, 91. НЕГ, НТБГ, СГСАГ).
             </p>
           </div>

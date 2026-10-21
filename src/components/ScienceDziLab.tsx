@@ -26,13 +26,13 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50/70 to-cyan-50 border border-emerald-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 sm:p-6 rounded-2xl bg-emerald-50/50 border border-emerald-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold border border-emerald-300">
             <Sparkles className="w-3.5 h-3.5 text-emerald-700" />
             <span>Биология, Химия и Физика • Живи симулатори за НВО 10 & ДЗИ 12</span>
           </div>
-          <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">
+          <h2 className="text-lg sm:text-xl font-bold text-slate-900">
             Интерактивна Лаборатория по Природни Науки за Отличен 6.00
           </h2>
           <p className="text-xs text-slate-600 max-w-2xl">
@@ -62,7 +62,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
           }`}
         >
           <Dna className="w-4 h-4" />
-          <span>🧬 Биология: ДНК Транслатор & Решетка на Пънет</span>
+          <span>Биология: ДНК Транслатор & Решетка на Пънет</span>
         </button>
 
         <button
@@ -74,7 +74,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
           }`}
         >
           <FlaskConical className="w-4 h-4" />
-          <span>🧪 Химия: Качествен анализ на йони & Хидролиза</span>
+          <span>Химия: Качествен анализ на йони & Хидролиза</span>
         </button>
 
         <button
@@ -86,7 +86,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
           }`}
         >
           <Zap className="w-4 h-4" />
-          <span>⚡ Физика: Вериги на Ом & Фотоефект на Айнщайн</span>
+          <span>Физика: Вериги на Ом & Фотоефект на Айнщайн</span>
         </button>
 
         <button
@@ -98,7 +98,7 @@ export const ScienceDziLab: React.FC<ScienceDziLabProps> = ({ onOpenFormulaModal
           }`}
         >
           <GraduationCap className="w-4 h-4" />
-          <span>🎯 Изпитен Тренажор ({SCIENCE_QUIZ.length} задачи)</span>
+          <span>Изпитен Тренажор ({SCIENCE_QUIZ.length} задачи)</span>
         </button>
       </div>
 

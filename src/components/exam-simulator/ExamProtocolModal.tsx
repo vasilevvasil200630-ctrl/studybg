@@ -34,7 +34,7 @@ export const ExamProtocolModal: React.FC<{ sim: ExamSimulatorState }> = ({ sim }
                 <h3 className="text-xs font-bold uppercase tracking-widest text-slate-700 font-sans">
                   Република България • Министерство на образованието и науката
                 </h3>
-                <h2 className="text-lg sm:text-xl font-extrabold uppercase text-slate-900 tracking-wide font-sans">
+                <h2 className="text-lg sm:text-xl font-bold uppercase text-slate-900 tracking-wide font-sans">
                   Протокол от симулационно изпитно оценяване
                 </h2>
                 <div className="text-[11px] font-sans text-slate-500 flex items-center justify-center gap-4 pt-1">
@@ -105,7 +105,7 @@ export const ExamProtocolModal: React.FC<{ sim: ExamSimulatorState }> = ({ sim }
                   <span className="text-[11px] text-slate-500 uppercase tracking-wider block">
                     {examScale.scale ? `Ориентировъчна оценка по скалата за ${examScale.label}:` : 'Резултат (НВО се оценява само в точки):'}
                   </span>
-                  <div className="text-xl font-extrabold text-slate-900 mt-0.5">
+                  <div className="text-xl font-bold text-slate-900 mt-0.5">
                     {gradeInfo.grade}
                   </div>
                   <p className="text-xs text-slate-600 mt-1">

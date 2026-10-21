@@ -99,7 +99,7 @@ export const HistoryTimelineView: React.FC<HistoryTimelineViewProps> = ({
                 >
                   {/* Timeline Node Dot */}
                   <span
-                    className={`absolute -left-[25px] sm:-left-[33px] top-5 w-3.5 h-3.5 rounded-full border-2 transition-colors ${
+                    className={`absolute -left-[25px] sm:-left-[33px] top-5 w-3.5 h-3.5 rounded-full border transition-colors ${
                       isActive
                         ? 'bg-blue-600 border-white ring-2 ring-blue-200'
                         : 'bg-slate-300 border-white'
@@ -146,7 +146,7 @@ export const HistoryTimelineView: React.FC<HistoryTimelineViewProps> = ({
             <div className="sticky top-20 p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-4">
               
               <div>
-                <span className="font-mono text-2xl font-black text-amber-800 block mb-1">
+                <span className="font-mono text-2xl font-bold text-amber-800 block mb-1">
                   {activeEvent.year} г.
                 </span>
                 <span className="text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 font-medium">
@@ -215,7 +215,7 @@ export const HistoryTimelineView: React.FC<HistoryTimelineViewProps> = ({
                   <ExamBridgeCard
                     lesson={matchingLesson}
                     variant="compact"
-                    contextTag="🏛️ ИЗПИТЕН МОСТ МОН"
+                    contextTag="ИЗПИТЕН МОСТ МОН"
                     onLaunchSimulator={() => {
                       if (onSelectLesson) {
                         onSelectLesson(matchingLesson, 'simulator');

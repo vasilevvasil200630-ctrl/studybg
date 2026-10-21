@@ -713,7 +713,7 @@ export const SpeedBlitzLab: React.FC = () => {
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  👤 Индивидуален Спринт
+                  Индивидуален Спринт
                 </button>
                 <button
                   disabled={gameState === 'playing'}
@@ -724,11 +724,11 @@ export const SpeedBlitzLab: React.FC = () => {
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  ⚔️ Отборен Дуел (Отбор А vs Отбор Б)
+                  Отборен Дуел (Отбор А vs Отбор Б)
                 </button>
               </div>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-serif">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight font-serif">
               Аркаден Блиц за 60 секунди (Speed Blitz 6.00)
             </h1>
             <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
@@ -745,7 +745,7 @@ export const SpeedBlitzLab: React.FC = () => {
               <div className="text-[11px] font-bold uppercase tracking-wider text-amber-800">
                 Личен рекорд ({categories.find(c => c.id === selectedCategory)?.label})
               </div>
-              <div className="text-2xl font-extrabold text-slate-900">
+              <div className="text-2xl font-bold text-slate-900">
                 {currentBest ? `${currentBest.bestScore} т.` : '0 т.'}
               </div>
               <div className="text-xs text-slate-600">
@@ -792,9 +792,9 @@ export const SpeedBlitzLab: React.FC = () => {
             <Flame className="w-8 h-8" />
           </div>
           <div className="max-w-xl mx-auto space-y-2">
-            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
               {matchMode === 'duel'
-                ? '⚔️ Отборен Дуел за Класна Стая: Отбор А (Сини) срещу Отбор Б (Златни)'
+                ? 'Отборен Дуел за Класна Стая: Отбор А (Сини) срещу Отбор Б (Златни)'
                 : 'Готов ли си за 60-секундния Блиц?'}
             </h2>
             <p className="text-sm text-slate-600">
@@ -807,7 +807,7 @@ export const SpeedBlitzLab: React.FC = () => {
 
           <button
             onClick={startBlitz}
-            className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-base shadow-sm transition-all cursor-pointer"
+            className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-base shadow-sm transition-all cursor-pointer"
           >
             <Play className="w-5 h-5 fill-current" />
             <span>
@@ -819,12 +819,12 @@ export const SpeedBlitzLab: React.FC = () => {
 
       {/* GAME STATE 2: ACTIVE 60-SECOND GAMEPLAY */}
       {gameState === 'playing' && (
-        <div className="bg-white border-2 border-blue-600 rounded-2xl p-5 sm:p-8 shadow-sm space-y-6">
+        <div className="bg-white border border-blue-600 rounded-2xl p-5 sm:p-8 shadow-sm space-y-6">
           {/* Team Duel Live Banner */}
           {matchMode === 'duel' && (
             <div className="grid grid-cols-2 gap-3">
               <div
-                className={`p-3.5 rounded-xl border-2 flex items-center justify-between transition-all ${
+                className={`p-3.5 rounded-xl border flex items-center justify-between transition-all ${
                   activeDuelTeam === 'A'
                     ? 'bg-blue-50 border-blue-600 ring-2 ring-blue-400/40'
                     : 'bg-slate-50 border-slate-200 opacity-75'
@@ -832,9 +832,9 @@ export const SpeedBlitzLab: React.FC = () => {
               >
                 <div>
                   <span className="text-[10px] font-bold uppercase text-blue-700 block">
-                    {activeDuelTeam === 'A' ? '👉 НА ХОД СЕГА: ОТБОР А (СИНИ)' : 'Отбор А (Сини)'}
+                    {activeDuelTeam === 'A' ? 'НА ХОД СЕГА: ОТБОР А (СИНИ)' : 'Отбор А (Сини)'}
                   </span>
-                  <strong className="text-lg font-black text-blue-950 font-mono">{teamAScore} т.</strong>
+                  <strong className="text-lg font-bold text-blue-950 font-mono">{teamAScore} т.</strong>
                 </div>
                 {activeDuelTeam === 'A' && (
                   <span className="px-2.5 py-1 rounded-lg bg-blue-600 text-white text-xs font-bold">
@@ -844,7 +844,7 @@ export const SpeedBlitzLab: React.FC = () => {
               </div>
 
               <div
-                className={`p-3.5 rounded-xl border-2 flex items-center justify-between transition-all ${
+                className={`p-3.5 rounded-xl border flex items-center justify-between transition-all ${
                   activeDuelTeam === 'B'
                     ? 'bg-amber-50 border-amber-500 ring-2 ring-amber-400/40'
                     : 'bg-slate-50 border-slate-200 opacity-75'
@@ -852,9 +852,9 @@ export const SpeedBlitzLab: React.FC = () => {
               >
                 <div>
                   <span className="text-[10px] font-bold uppercase text-amber-800 block">
-                    {activeDuelTeam === 'B' ? '👉 НА ХОД СЕГА: ОТБОР Б (ЗЛАТНИ)' : 'Отбор Б (Златни)'}
+                    {activeDuelTeam === 'B' ? 'НА ХОД СЕГА: ОТБОР Б (ЗЛАТНИ)' : 'Отбор Б (Златни)'}
                   </span>
-                  <strong className="text-lg font-black text-amber-950 font-mono">{teamBScore} т.</strong>
+                  <strong className="text-lg font-bold text-amber-950 font-mono">{teamBScore} т.</strong>
                 </div>
                 {activeDuelTeam === 'B' && (
                   <span className="px-2.5 py-1 rounded-lg bg-amber-500 text-amber-950 text-xs font-bold">
@@ -876,7 +876,7 @@ export const SpeedBlitzLab: React.FC = () => {
               <div>
                 <div className="text-[10px] font-bold uppercase text-slate-400">Оставащо време</div>
                 <div
-                  className={`text-xl sm:text-2xl font-black font-mono ${
+                  className={`text-xl sm:text-2xl font-bold font-mono ${
                     secondsLeft <= 10 ? 'text-rose-600' : 'text-slate-900'
                   }`}
                 >
@@ -889,7 +889,7 @@ export const SpeedBlitzLab: React.FC = () => {
               <Award className="w-6 h-6 text-emerald-600 shrink-0" />
               <div>
                 <div className="text-[10px] font-bold uppercase text-slate-400">Общо Точки</div>
-                <div className="text-xl sm:text-2xl font-black font-mono text-emerald-700">
+                <div className="text-xl sm:text-2xl font-bold font-mono text-emerald-700">
                   {score}
                 </div>
               </div>
@@ -911,7 +911,7 @@ export const SpeedBlitzLab: React.FC = () => {
               />
               <div>
                 <div className="text-[10px] font-bold uppercase opacity-75">Серия (Combo)</div>
-                <div className="text-lg sm:text-xl font-black font-mono">
+                <div className="text-lg sm:text-xl font-bold font-mono">
                   {streak} поред • x{multiplier}
                 </div>
               </div>
@@ -944,7 +944,7 @@ export const SpeedBlitzLab: React.FC = () => {
               </span>
             </div>
 
-            <h2 className="text-lg sm:text-2xl font-extrabold text-slate-900 leading-snug">
+            <h2 className="text-lg sm:text-2xl font-bold text-slate-900 leading-snug">
               {currentQuestion.prompt}
             </h2>
 
@@ -953,7 +953,7 @@ export const SpeedBlitzLab: React.FC = () => {
                 <button
                   key={idx}
                   onClick={() => handleAnswer(idx)}
-                  className="text-left p-4 rounded-xl border-2 border-slate-200 hover:border-blue-600 hover:bg-blue-50/60 active:scale-[0.99] transition-all cursor-pointer flex items-center gap-3.5 group"
+                  className="text-left p-4 rounded-xl border border-slate-200 hover:border-blue-600 hover:bg-blue-50/60 active:scale-[0.99] transition-all cursor-pointer flex items-center gap-3.5 group"
                 >
                   <span className="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-slate-200 group-hover:text-blue-700 text-slate-700 font-bold text-sm flex items-center justify-center shrink-0 transition-colors">
                     {idx + 1}
@@ -984,7 +984,7 @@ export const SpeedBlitzLab: React.FC = () => {
                 <span>{lastFeedback.rule}</span>
               </div>
               {lastFeedback.isCorrect && (
-                <span className="font-mono font-extrabold text-emerald-700 shrink-0">
+                <span className="font-mono font-bold text-emerald-700 shrink-0">
                   +{lastFeedback.pointsEarned} т.
                 </span>
               )}
@@ -1001,18 +1001,18 @@ export const SpeedBlitzLab: React.FC = () => {
               <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
               <span>Блиц рундът приключи!</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-serif">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 font-serif">
               Краен резултат: {score} точки
             </h2>
 
             {matchMode === 'duel' && (
               <div className="max-w-lg mx-auto p-4 rounded-2xl bg-blue-50 border border-blue-200 space-y-2">
-                <div className="text-sm font-extrabold text-blue-950">
+                <div className="text-sm font-bold text-blue-950">
                   {teamAScore > teamBScore
-                    ? `🏆 ПОБЕДИТЕЛ: ОТБОР А (СИНИ) — ${teamAScore} срещу ${teamBScore} т.!`
+                    ? `ПОБЕДИТЕЛ: ОТБОР А (СИНИ) — ${teamAScore} срещу ${teamBScore} т.!`
                     : teamBScore > teamAScore
-                    ? `🏆 ПОБЕДИТЕЛ: ОТБОР Б (ЗЛАТНИ) — ${teamBScore} срещу ${teamAScore} т.!`
-                    : `🤝 РАВЕНСТВО В ДУЕЛА: ${teamAScore} на ${teamBScore} т.!`}
+                    ? `ПОБЕДИТЕЛ: ОТБОР Б (ЗЛАТНИ) — ${teamBScore} срещу ${teamAScore} т.!`
+                    : `РАВЕНСТВО В ДУЕЛА: ${teamAScore} на ${teamBScore} т.!`}
                 </div>
               </div>
             )}

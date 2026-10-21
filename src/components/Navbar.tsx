@@ -486,11 +486,11 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/95 border-b-2 border-blue-100/90 shadow-xs transition-all">
       <div className="max-w-7xl mx-auto px-3 sm:px-5 lg:px-6">
         
-        {/* Main Platform Command Row — strictly constrained to viewport width (zero horizontal scroll) */}
-        <div className="flex items-center justify-between h-16 gap-1.5 sm:gap-2.5 min-w-0">
+        {/* Main Platform Command Row — every group uses shrink-0 so items never overlap or collide */}
+        <div className="flex items-center justify-between h-16 gap-2">
           
           {/* Left: Brand Identity + Segmented Portal Switcher */}
-          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <a
               href="/"
               className="flex items-center gap-2 cursor-pointer group shrink-0"
@@ -499,27 +499,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                 handleStudyNavClick('home');
               }}
             >
-              <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-600 text-white border-b-2 border-indigo-800 shadow-xs group-hover:scale-105 transition-all shrink-0">
+              <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-600 text-white border-b-2 border-indigo-800 shadow-xs group-hover:scale-105 transition-all shrink-0">
                 <GraduationCap className="w-5 h-5 text-white" />
               </div>
               
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-base sm:text-lg font-black tracking-tight text-slate-900">
-                    Study<span className="bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">BG</span>
-                  </span>
-                  <span className="text-[10px] font-extrabold tracking-wide uppercase px-1.5 py-0.5 rounded-md bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-800 border border-emerald-300 whitespace-nowrap">
-                    5.–12. кл.
-                  </span>
-                </div>
-                <span className="text-[10px] text-slate-500 font-semibold hidden 2xl:inline whitespace-nowrap">
-                  Национална образователна платформа
+              <div className="flex items-center gap-1.5">
+                <span className="text-base sm:text-lg font-black tracking-tight text-slate-900">
+                  Study<span className="bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">BG</span>
+                </span>
+                <span className="text-[10px] font-extrabold tracking-wide uppercase px-1.5 py-0.5 rounded-md bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-800 border border-emerald-300 whitespace-nowrap">
+                  5.–12. кл.
                 </span>
               </div>
             </a>
 
             {/* Segmented Portal Mode Switcher (Study Academy vs Culture & Mysteries) */}
-            <div className="hidden xl:flex items-center p-0.5 rounded-xl bg-slate-100 border border-slate-200/90">
+            <div className="hidden xl:flex items-center p-0.5 rounded-xl bg-slate-100 border border-slate-200/90 shrink-0">
               <button
                 onClick={() => handleStudyNavClick(activeTab === 'home' ? 'summary' : activeTab)}
                 className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
@@ -547,11 +542,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Center: Always-Available Interactive Platform Navigation */}
-          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 min-w-0">
+          {/* Center: Core Interactive Platform Navigation (shrink-0 prevents flex compression overlap) */}
+          <nav className="hidden lg:flex items-center gap-1 shrink-0">
             <button
               onClick={() => handleStudyNavClick('home')}
-              className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 portalMode === 'study' && activeTab === 'home'
                   ? 'bg-sky-50 text-sky-900 border border-sky-200 shadow-2xs'
                   : 'text-slate-700 hover:text-sky-800 hover:bg-sky-50/60'
@@ -563,7 +558,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => handleStudyNavClick('catalog')}
-              className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 portalMode === 'study' && activeTab === 'catalog'
                   ? 'bg-emerald-50 text-emerald-900 border border-emerald-200 shadow-2xs'
                   : 'text-slate-700 hover:text-emerald-800 hover:bg-emerald-50/60'
@@ -575,7 +570,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => handleStudyNavClick('simulator')}
-              className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 portalMode === 'study' && activeTab === 'simulator'
                   ? 'bg-amber-50 text-amber-900 border border-amber-200 shadow-2xs'
                   : 'text-slate-700 hover:text-amber-900 hover:bg-amber-50/60'
@@ -585,23 +580,11 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>100т. Симулатор</span>
             </button>
 
-            <button
-              onClick={() => handleStudyNavClick('oralexam')}
-              className={`hidden xl:flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-                portalMode === 'study' && activeTab === 'oralexam'
-                  ? 'bg-violet-50 text-violet-900 border border-violet-200 shadow-2xs'
-                  : 'text-slate-700 hover:text-violet-800 hover:bg-violet-50/60'
-              }`}
-            >
-              <Mic className="w-3.5 h-3.5 text-violet-600 shrink-0" />
-              <span>Устен изпит</span>
-            </button>
-
-            {/* Interactive Mega-Dropdown for All 12 Specialized Labs */}
+            {/* Interactive Mega-Dropdown for All 12 Specialized Labs (including Oral Exam & Formulas) */}
             <div className="relative" ref={labsDropdownRef}>
               <button
                 onClick={() => setIsLabsDropdownOpen(!isLabsDropdownOpen)}
-                className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                   isLabActive || isLabsDropdownOpen
                     ? 'bg-indigo-50 text-indigo-900 border border-indigo-200 shadow-2xs'
                     : 'text-slate-700 hover:text-indigo-800 hover:bg-indigo-50/60'
@@ -690,7 +673,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => handleCultureNavClick('mysteries')}
-              className={`xl:hidden flex items-center gap-1 px-2 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              className={`xl:hidden flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 portalMode === 'culture'
                   ? 'bg-amber-50 text-amber-900 border border-amber-200'
                   : 'text-slate-700 hover:text-amber-800 hover:bg-amber-50/60'
@@ -702,7 +685,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Right Action Bar: Compact Tools + Prominent Google Account Button */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0">
             {/* Global Quick Search Button */}
             {onOpenQuickSearch && (
               <button
@@ -711,19 +694,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 title="Бързо търсене на урок или тема (Ctrl+K)"
               >
                 <Search className="w-3.5 h-3.5 text-sky-600 shrink-0" />
-                <span className="hidden md:inline">Търси</span>
+                <span className="hidden xl:inline">Търси</span>
               </button>
             )}
-
-            {/* Official MON Formula Sheets Button */}
-            <button
-              onClick={onOpenFormulaModal}
-              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white hover:bg-indigo-50/70 text-slate-700 hover:text-indigo-900 text-xs font-bold border border-slate-300 hover:border-indigo-300 transition-colors shadow-2xs cursor-pointer whitespace-nowrap"
-              title="Официални свитъци и формули на МОН"
-            >
-              <FileText className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-              <span>Формули</span>
-            </button>
 
             {/* SmartScan OCR Button */}
             <button
@@ -746,7 +719,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     ? `${userProfile?.fullName} • Облачната синхронизация е активна (GDPR защитен профил)`
                     : 'Вход с Google акаунт за автоматична облачна синхронизация, XP нива и значки'
                 }
-                className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap shadow-xs ${
+                className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap shadow-xs ${
                   isGoogleUser
                     ? 'bg-gradient-to-r from-blue-50 via-white to-indigo-50 hover:from-blue-100 hover:to-indigo-100 text-blue-950 border-2 border-blue-400'
                     : 'bg-gradient-to-r from-white via-blue-50/40 to-indigo-50/40 hover:from-blue-50 hover:to-indigo-50 text-slate-900 border-2 border-blue-600 hover:border-indigo-600 ring-2 ring-blue-500/10'
@@ -767,10 +740,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <NavbarGoogleIcon className="w-3.5 h-3.5" />
                   </span>
                 )}
-                <span className="max-w-[115px] truncate">
+                <span className="max-w-[110px] truncate">
                   {isGoogleUser ? userFirstName : 'Вход с Google'}
                 </span>
-                <span className="hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-amber-100 to-orange-100 text-orange-950 font-mono text-[10px] font-extrabold border border-orange-300">
+                <span className="hidden xl:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-amber-100 to-orange-100 text-orange-950 font-mono text-[10px] font-extrabold border border-orange-300">
                   <Flame className="w-3 h-3 text-orange-600 shrink-0" aria-hidden="true" />
                   {navDailyStreak}д • Н.{navLevelInfo.level}
                 </span>

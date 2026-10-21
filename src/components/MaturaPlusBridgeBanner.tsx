@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUpRight, GraduationCap, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowUpRight, GraduationCap, ShieldCheck } from 'lucide-react';
 
 interface MaturaPlusBridgeBannerProps {
   compact?: boolean;
@@ -21,17 +21,17 @@ export const MaturaPlusBridgeBanner: React.FC<MaturaPlusBridgeBannerProps> = ({
   if (compact) {
     return (
       <aside data-print-hide
-        aria-label="Препратка към платформата Matura+ за прогимназиален етап"
-        className={`flex items-center justify-between gap-3 p-3 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border border-emerald-200/90 text-xs text-slate-800 shadow-2xs ${className}`}
+        aria-label="Препратка към сестринската платформа Матура Плюс"
+        className={`flex items-center justify-between gap-3 p-3 rounded-xl bg-brand-emerald-soft border border-slate-200 text-xs text-slate-800 shadow-2xs ${className}`}
       >
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-emerald-700 text-white flex items-center justify-center shrink-0 shadow-2xs font-bold text-xs">
+          <div className="w-7 h-7 rounded-lg bg-brand-sapphire text-white flex items-center justify-center shrink-0 font-bold text-xs">
             M+
           </div>
           <div>
             <span className="font-bold text-emerald-950">Готвиш се за 7. клас?</span>
             <span className="text-slate-600 hidden sm:inline ml-1.5">
-              Всички НВО симулации за 5.–7. клас са в специализираната академия <strong>Matura+</strong>.
+              Подготовката за НВО 7 е в сестринската платформа <strong>Матура Плюс</strong>.
             </span>
           </div>
         </div>
@@ -39,7 +39,7 @@ export const MaturaPlusBridgeBanner: React.FC<MaturaPlusBridgeBannerProps> = ({
           onClick={handleGoToMaturaPlus}
           className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-800 text-white font-semibold text-xs transition-colors shrink-0 shadow-2xs"
         >
-          <span>Към Matura+</span>
+          <span>Към Матура Плюс</span>
           <ArrowUpRight className="w-3.5 h-3.5" />
         </button>
       </aside>
@@ -48,55 +48,43 @@ export const MaturaPlusBridgeBanner: React.FC<MaturaPlusBridgeBannerProps> = ({
 
   return (
     <aside data-print-hide
-      aria-label="Специализирана платформа Matura+ за 5-7 клас"
-      className={`p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-emerald-900 via-teal-900 to-slate-900 text-white shadow-md relative overflow-hidden ${className}`}
+      aria-label="Сестринската платформа Матура Плюс за НВО след 7. клас"
+      className={`p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-[#083861] via-[#0a4b82] to-[#145a96] text-white shadow-sm ${className}`}
     >
-      {/* Background Glow */}
-      <div className="absolute -top-12 -right-12 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-teal-500/15 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
-        <div className="space-y-2 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-semibold">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Сестринска платформа за 5., 6. и 7. клас</span>
-            <span className="text-[10px] bg-emerald-400/20 text-emerald-200 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
-              НВО 7
-            </span>
-          </div>
-
-          <h3 className="text-lg sm:text-xl font-extrabold tracking-tight text-white">
-            Търсиш подготовка за НВО след 7. клас? Твоето място е <span className="text-emerald-400">Matura+</span>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="max-w-2xl">
+          <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white text-balance">
+            Готвиш се за НВО след 7. клас? Сестринската ни платформа е{' '}
+            <span className="whitespace-nowrap">Матура<span className="text-emerald-300">Плюс</span></span>
           </h3>
 
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            Докато <strong>StudyBG</strong> е специализиран изцяло за гимназиалния етап (<strong>8.–12. клас, НВО 10 и ДЗИ</strong>), цялата методика за прием в елитните гимназии (НВО по БЕЛ и Математика за 7. клас) живее в нашата първа платформа <strong>Matura+</strong>.
+          <p className="mt-3 text-sm text-blue-100 leading-relaxed">
+            StudyBG покрива всички предмети от 5. до 12. клас. Матура Плюс е съсредоточена само в НВО 7 по
+            български език, литература и математика — с 36-седмичен план, пълни текстове на творбите и симулации
+            по актуалния формат на МОН.
           </p>
 
-          <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-slate-300">
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-blue-100">
             <span className="flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              100% покритие на формата на МОН за 7. клас
+              <ShieldCheck className="w-4 h-4 text-emerald-300" aria-hidden="true" />
+              Формат на НВО 7 по МОН
             </span>
             <span className="flex items-center gap-1.5">
-              <GraduationCap className="w-4 h-4 text-teal-400" />
-              Преход към StudyBG за 8.–12. клас с преференциален достъп
+              <GraduationCap className="w-4 h-4 text-emerald-300" aria-hidden="true" />
+              След 7. клас продължаваш тук, в StudyBG
             </span>
           </div>
         </div>
 
-        <div className="shrink-0 flex flex-col sm:flex-row md:flex-col gap-2.5 justify-center">
+        <div className="shrink-0">
           <button
             onClick={handleGoToMaturaPlus}
             data-source={source}
-            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-emerald-950 font-bold text-sm shadow-md transition-all hover:scale-[1.02]"
+            className="w-full md:w-auto min-h-12 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-white hover:bg-slate-100 active:scale-[0.98] text-brand-sapphire font-bold text-sm shadow-sm transition"
           >
-            <span>Отвори Matura+ за 7. клас</span>
-            <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
+            <span>Отвори Матура Плюс</span>
+            <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
           </button>
-          <span className="text-[11px] text-slate-400 text-center">
-            Платформа №1 за прием след 7. клас
-          </span>
         </div>
       </div>
     </aside>

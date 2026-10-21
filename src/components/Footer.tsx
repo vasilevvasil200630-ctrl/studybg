@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Cookie,
   GraduationCap,
   ShieldCheck,
   BookOpen,
@@ -72,13 +73,13 @@ export const Footer: React.FC<FooterProps> = ({
           {/* Col 1: Brand Info & High-School Focus */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-600 text-white font-bold shadow-xs">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-brand-sapphire text-white shadow-sm">
                 <GraduationCap className="w-5 h-5 text-white" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-extrabold text-slate-900 text-base tracking-tight">StudyBG</span>
-                  <span className="text-[10px] uppercase font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded border border-blue-200">
+                  <span className="text-lg font-bold tracking-tight"><span className="text-brand-sapphire">Study</span><span className="text-emerald-700">BG</span></span>
+                  <span className="text-[10px] font-semibold text-slate-600 px-1.5 py-0.5 rounded-md border border-slate-200">
                     5.–12. клас
                   </span>
                 </div>
@@ -135,7 +136,7 @@ export const Footer: React.FC<FooterProps> = ({
                   onClick={() => handleOpenStudyTab('simulator')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
-                  <Clock className="w-3.5 h-3.5 text-amber-600" />
+                  <Clock className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
                   <span>100т. Симулатор МОН (НВО 10 & ДЗИ)</span>
                 </button>
               </li>
@@ -171,7 +172,7 @@ export const Footer: React.FC<FooterProps> = ({
                   onClick={() => handleOpenStudyTab('literature')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
-                  <BookOpen className="w-3.5 h-3.5 text-rose-600" />
+                  <BookOpen className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
                   <span>Литературен канон & Тези (Задача 41)</span>
                 </button>
               </li>
@@ -198,7 +199,7 @@ export const Footer: React.FC<FooterProps> = ({
                   onClick={() => handleOpenStudyTab('atlas')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
-                  <MapPin className="w-3.5 h-3.5 text-amber-600" />
+                  <MapPin className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
                   <span>Атлас История & География (NUTS 2)</span>
                 </button>
               </li>
@@ -225,7 +226,7 @@ export const Footer: React.FC<FooterProps> = ({
                   onClick={() => handleOpenStudyTab('blitz')}
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
-                  <Zap className="w-3.5 h-3.5 text-amber-600" />
+                  <Zap className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
                   <span>Блиц за 60 сек. (Speed Blitz 6.00)</span>
                 </button>
               </li>
@@ -316,17 +317,17 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Col 4: Исторически контекст & Първични извори */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-amber-800 mb-3.5 flex items-center gap-1.5">
-              <Compass className="w-3.5 h-3.5 text-amber-700" />
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3.5 flex items-center gap-1.5">
+              <Compass className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
               <span>Обща култура, Конспирации & Извори</span>
             </h4>
             <ul className="space-y-2 text-xs text-slate-600">
               <li>
                 <button
                   onClick={() => handleOpenCultureTab('mysteries')}
-                  className="hover:text-amber-800 transition-colors flex items-center gap-2 font-semibold text-amber-900"
+                  className="hover:text-brand-sapphire transition-colors flex items-center gap-2 font-semibold text-slate-800"
                 >
-                  <Compass className="w-3.5 h-3.5 text-amber-700" />
+                  <Compass className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
                   <span>41 Конспиративни досиета & Загадки</span>
                 </button>
               </li>
@@ -351,9 +352,9 @@ export const Footer: React.FC<FooterProps> = ({
               <li>
                 <button
                   onClick={() => handleOpenCultureTab('heritage')}
-                  className="hover:text-orange-700 transition-colors flex items-center gap-2"
+                  className="hover:text-brand-sapphire transition-colors flex items-center gap-2"
                 >
-                  <ShieldCheck className="w-3.5 h-3.5 text-orange-600" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
                   <span>Български принос & ЮНЕСКО (16)</span>
                 </button>
               </li>
@@ -413,7 +414,8 @@ export const Footer: React.FC<FooterProps> = ({
               onClick={() => onOpenCookieSettings?.()}
               className="text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1"
             >
-              🍪 Настройки на бисквитките
+              <Cookie className="w-3.5 h-3.5" aria-hidden="true" />
+              Настройки на бисквитките
             </button>
           </div>
 

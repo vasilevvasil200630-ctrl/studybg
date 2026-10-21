@@ -475,7 +475,7 @@ export function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
+    <div className="min-h-screen text-slate-900 flex flex-col font-sans">
       
       {/* Offline Status & PWA Install Banner */}
       <OfflineStatusBanner />
@@ -562,7 +562,7 @@ export function App() {
 
       {/* Main Content Area: Spacious Full-Width Homepage vs Focused Workspace */}
       {portalMode === 'study' && activeTab === 'home' ? (
-        <main className="flex-1 w-full bg-slate-50">
+        <main className="flex-1 w-full">
           <HomeLandingView
             lessons={lessons}
             onSelectLesson={handleLessonSelected}

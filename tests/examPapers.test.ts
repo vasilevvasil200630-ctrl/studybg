@@ -255,6 +255,15 @@ describe('официални варианти на МОН', () => {
   });
 });
 
+describe('НВО 10, 2025 (формат до 2025)', () => {
+  it('17 задачи, 90 мин, 15 × 4 т. + 2 × 20 т.', () => {
+    const paper = EXAM_PAPERS.find((x) => x.id === 'official-nvo10-math-2025')!;
+    expect(allQuestions(paper)).toHaveLength(17);
+    expect(paper.durationMinutes).toBe(90);
+    expect(paper.sections.map((sec) => sec.questions.reduce((n, q) => n + q.points, 0))).toEqual([60, 40]);
+  });
+});
+
 describe('задачи с подточки', () => {
   const paper = EXAM_PAPERS.find((x) => x.id === 'official-nvo10-math-2026')!;
   const find = (id: string) => allQuestions(paper).find((q) => q.id === id) as MultiPartQuestion;

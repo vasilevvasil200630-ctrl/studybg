@@ -19,6 +19,8 @@ export const formatTimer = (s: number): string => {
 interface ExamFocusBarProps {
   title: string;
   secondsLeft: number;
+  /** false = тренировка без таймер: няма часовник и сигнал */
+  timed?: boolean;
   submitted: boolean;
   answeredCount: number;
   totalCount: number;
@@ -34,6 +36,7 @@ interface ExamFocusBarProps {
 export const ExamFocusBar: React.FC<ExamFocusBarProps> = ({
   title,
   secondsLeft,
+  timed = true,
   submitted,
   answeredCount,
   totalCount,
@@ -78,6 +81,8 @@ export const ExamFocusBar: React.FC<ExamFocusBarProps> = ({
             )}
             {!submitted && (
               <>
+                {timed && (
+                <>
                 <button
                   type="button"
                   onClick={onToggleSound}
@@ -101,6 +106,8 @@ export const ExamFocusBar: React.FC<ExamFocusBarProps> = ({
                   <Clock className="h-3.5 w-3.5" aria-hidden="true" />
                   {formatTimer(secondsLeft)}
                 </div>
+                </>
+                )}
                 <button
                   type="button"
                   onClick={onSubmit}

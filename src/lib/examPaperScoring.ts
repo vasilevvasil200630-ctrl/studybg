@@ -64,8 +64,11 @@ export type PartAnswer =
   | { type: 'number'; acceptedAnswers: string[]; unit?: string }
   | { type: 'text'; acceptedAnswers: string[] }
   | { type: 'truefalse'; correct: boolean }
-  /** Избор на всички верни от списък — точките се дават само за точно съвпадение */
-  | { type: 'pick'; options: string[]; correctIndices: number[] }
+  /**
+   * Избор от списък — точките се дават само за точно съвпадение.
+   * single: точно един верен отговор (показва се с радио бутони).
+   */
+  | { type: 'pick'; options: string[]; correctIndices: number[]; single?: boolean }
   /** Израз, система или запис, който не се проверява автоматично — ученикът сравнява с еталона */
   | { type: 'self'; modelAnswer: string };
 
@@ -109,12 +112,17 @@ export interface ExamPaper {
   title: string;
   exam: 'ДЗИ' | 'НВО 10';
   subject: string;
-  /** 'practice' = тренировъчен вариант на StudyBG; 'official' = преписан официален вариант на МОН */
-  kind: 'practice' | 'official';
-  /** Задължителен за kind === 'official' (https връзка към официалния PDF/ключ) */
+  /**
+   * 'practice' = тренировъчен вариант на StudyBG; 'official' = преписан официален вариант на МОН;
+   * 'sample' = примерни задачи, публикувани от МОН (без ключ — отговорите са изчислени от StudyBG)
+   */
+  kind: 'practice' | 'official' | 'sample';
+  /** Задължителен за kind === 'official' и 'sample' (https връзка към PDF на МОН) */
   officialSourceUrl?: string;
   year?: number;
   durationMinutes: number;
+  /** Тренировка без таймер (напр. примерните задачи, за които МОН не дава време) */
+  untimed?: boolean;
   maxPoints: number;
   /** null = резултатът е само в точки (напр. НВО 10, където няма официално превръщане в оценка) */
   gradeScale: GradeScale | null;
@@ -135,9 +143,9 @@ export function validateExamPaper(paper: ExamPaper): string[] {
   const errors: string[] = [];
   const where = (q: PaperQuestion) => `${paper.id} / зад. ${q.number} (${q.id})`;
 
-  if (paper.kind === 'official') {
+  if (paper.kind === 'official' || paper.kind === 'sample') {
     if (!paper.officialSourceUrl?.startsWith('https://')) {
-      errors.push(`${paper.id}: официален вариант без https officialSourceUrl`);
+      errors.push(`${paper.id}: официален вариант или примерни задачи без https officialSourceUrl`);
     }
   } else if (paper.officialSourceUrl) {
     errors.push(`${paper.id}: тренировъчен вариант не бива да има officialSourceUrl`);
@@ -174,6 +182,7 @@ export function validateExamPaper(paper: ExamPaper): string[] {
         if (a.type === 'number' && a.acceptedAnswers.some((x) => parseNumberAnswer(x) === null)) errors.push(`${at}: числов ключ, който не е число`);
         if (a.type === 'pick') {
           if (a.correctIndices.length === 0) errors.push(`${at}: няма верни избори`);
+          if (a.single && a.correctIndices.length !== 1) errors.push(`${at}: избор с един отговор трябва да има точно един верен`);
           if (a.correctIndices.some((i) => !Number.isInteger(i) || i < 0 || i >= a.options.length)) errors.push(`${at}: невалиден индекс във верните избори`);
         }
         if (a.type === 'self' && !a.modelAnswer.trim()) errors.push(`${at}: липсва еталон`);

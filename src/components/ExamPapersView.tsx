@@ -62,18 +62,37 @@ export const ExamPapersView: React.FC = () => {
       )}
 
       {shown.map((exam) => {
-        const papers = EXAM_PAPERS.filter((p) => p.exam === exam).sort(byRelevance);
+        const papers = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind !== 'sample').sort(byRelevance);
+        const samples = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind === 'sample');
         return (
           <section key={exam} aria-labelledby={`papers-${exam}`} className="space-y-3">
             <h4 id={`papers-${exam}`} className="text-sm font-bold uppercase tracking-wide text-slate-500">
               {exam}
             </h4>
             {exam === 'НВО 10' && <Nvo10FormatCard />}
+            {samples.length > 0 && <h5 className="pt-2 text-base font-bold text-slate-900">Пълни варианти</h5>}
             <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
               {papers.map((p) => (
                 <PaperCard key={p.id} paper={p} onStart={() => setPaperId(p.id)} />
               ))}
             </ul>
+            {samples.length > 0 && (
+              <div className="space-y-3 pt-4">
+                <div>
+                  <h5 className="text-base font-bold text-slate-900">Другите предмети: задачи на МОН</h5>
+                  <p className="mt-1 max-w-3xl text-sm leading-relaxed text-slate-600">
+                    Биологията, химията, физиката и географията носят 42 от 100-те точки. Във всеки набор са задачите по предмета от НВО 2026 —
+                    с ключа на МОН — и примерните задачи, които МОН публикува без отговори; техните отговори са изчислени от StudyBG. Решаваш без
+                    таймер.
+                  </p>
+                </div>
+                <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  {samples.map((p) => (
+                    <PaperCard key={p.id} paper={p} onStart={() => setPaperId(p.id)} />
+                  ))}
+                </ul>
+              </div>
+            )}
           </section>
         );
       })}
@@ -106,7 +125,7 @@ const PaperCard: React.FC<{ paper: ExamPaper; onStart: () => void }> = ({ paper:
         </span>
         <span className="inline-flex items-center gap-1">
           <Clock className="h-4 w-4 text-slate-400" aria-hidden="true" />
-          {p.durationMinutes} мин
+          {p.untimed ? 'без таймер' : `${p.durationMinutes} мин`}
         </span>
         <span>{p.gradeScale ? 'оценка по скалата на МОН' : 'резултат в точки'}</span>
       </p>

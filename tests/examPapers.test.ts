@@ -208,8 +208,9 @@ const paperTexts = (paper: ExamPaper): string[] =>
     return texts;
   });
 
-describe('официални варианти на МОН', () => {
-  const official = EXAM_PAPERS.filter((p) => p.kind === 'official');
+describe('официални варианти и примерни задачи на МОН', () => {
+  // Примерните задачи също са на МОН и минават същите проверки (ключ, формули, връзка към PDF)
+  const official = EXAM_PAPERS.filter((p) => p.kind === 'official' || p.kind === 'sample');
 
   it('всеки официален вариант сочи PDF на МОН', () => {
     expect(official.length).toBeGreaterThan(0);
@@ -323,5 +324,34 @@ describe('задачи с подточки', () => {
       sections: paper.sections.map((sec) => ({ ...sec, questions: sec.questions.map((q) => (q.id === q15.id ? broken : q)) }))
     };
     expect(validateExamPaper(p2).join('\n')).toMatch(/подточките дават 5 т\., а задачата е за 6/);
+  });
+});
+
+describe('другите предмети в НВО 10 — примерни задачи на МОН', () => {
+  const samples = EXAM_PAPERS.filter((p) => p.kind === 'sample');
+
+  it('по един набор за всеки от четирите предмета, без таймер', () => {
+    expect(samples.map((p) => p.subject).sort()).toEqual(
+      ['Биология и здравно образование', 'География и икономика', 'Физика и астрономия', 'Химия и опазване на околната среда'].sort()
+    );
+    for (const p of samples) {
+      expect(p.untimed, p.id).toBe(true);
+      expect(p.exam).toBe('НВО 10');
+    }
+  });
+
+  it('първо са задачите от НВО 2026 (с ключа на МОН), после примерните; всяка задача е по предмета на набора', () => {
+    const nvo2026 = EXAM_PAPERS.find((p) => p.id === 'official-nvo10-math-2026')!;
+    const official2026 = new Map(allQuestions(nvo2026).map((q) => [q.id, q]));
+    for (const p of samples) {
+      expect(p.sections.map((s) => s.id), p.id).toEqual(['nvo2026', 'samples']);
+      for (const q of p.sections[0].questions) {
+        const src = official2026.get(q.id)!;
+        expect(src, q.id).toBeDefined();
+        expect({ ...q, number: src.number }).toEqual(src);
+      }
+      for (const q of allQuestions(p)) expect(q.topic, q.id).toBe(p.subject);
+      expect(p.sections[1].questions.length, p.id).toBeGreaterThanOrEqual(9);
+    }
   });
 });

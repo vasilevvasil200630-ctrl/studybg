@@ -4,6 +4,7 @@ import { Q10StaffChart, Q11Triangle, Q13Barrier, Q14Lake, Q15Prism, Q17Houses, Q
 import { Q11ObtuseTriangle, Q12Shadows, Q13Platform, Q14Triangle120, Q15Pyramid as Q15Pyramid2024, Q17Triangle, Q3GradesChart, Q5Motion } from './nvo10_2024';
 import { Q10Triangle120 as Q10Triangle120y23, Q11RightTriangle, Q12Slide, Q15Cone, Q17Isosceles, Q9TangentSecant } from './nvo10_2023';
 import { Q11RightTriangle2022, Q12TrapezoidDiagonals, Q13Triangle135, Q15Cylinder, Q17Triangle2022, Q5Line2022, Q9InscribedAngle } from './nvo10_2022';
+import { IntBioDrugs, IntBioFoodChain, IntBioHypertension, IntBioInvasive, IntBioPopulation, IntBioPunnett, IntChemFluoride, IntChemOxygen, IntGeoDayNight, IntGeoHydrograph, IntGeoVolcano, IntGeoWhittaker, IntPhysForces, IntPhysLightning, IntPhysRefraction, IntPhysVelocity, IntPhysWave } from './integrated';
 import { FormulaCircleAngles, FormulaCircleChords, FormulaCircleSecants, FormulaCircleTangent } from './formulaCircle';
 import { Q12River, Q13Chords, Q14RightTriangle2021, Q15Parallelogram, Q6FourGraphs, Q7Parabola2021 } from './nvo10_2021';
 
@@ -58,4 +59,21 @@ export const FIGURES: Readonly<Record<string, React.FC>> = {
   'formula-circle-chords': FormulaCircleChords,
   'formula-circle-secants': FormulaCircleSecants,
   'formula-circle-tangent': FormulaCircleTangent,
+  'int-bio-population': IntBioPopulation,
+  'int-bio-punnett': IntBioPunnett,
+  'int-bio-drugs': IntBioDrugs,
+  'int-bio-food-chain': IntBioFoodChain,
+  'int-bio-invasive': IntBioInvasive,
+  'int-bio-hypertension': IntBioHypertension,
+  'int-chem-oxygen': IntChemOxygen,
+  'int-chem-fluoride': IntChemFluoride,
+  'int-phys-velocity': IntPhysVelocity,
+  'int-phys-forces': IntPhysForces,
+  'int-phys-refraction': IntPhysRefraction,
+  'int-phys-wave': IntPhysWave,
+  'int-phys-lightning': IntPhysLightning,
+  'int-geo-hydrograph': IntGeoHydrograph,
+  'int-geo-volcano': IntGeoVolcano,
+  'int-geo-day-night': IntGeoDayNight,
+  'int-geo-whittaker': IntGeoWhittaker,
 };

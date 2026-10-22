@@ -50,7 +50,17 @@ type Snapshot = {
 const fmt = (n: number): string => (Number.isInteger(n) ? String(n) : n.toFixed(1).replace('.', ','));
 
 export const PaperBadge: React.FC<{ paper: ExamPaper }> = ({ paper }) =>
-  paper.kind === 'official' && paper.officialSourceUrl ? (
+  paper.kind === 'sample' && paper.officialSourceUrl ? (
+    <a
+      href={paper.officialSourceUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-1 rounded-md border border-sky-200 bg-sky-50 px-2 py-0.5 text-xs font-semibold text-sky-800 hover:bg-sky-100"
+    >
+      Примерни задачи на МОН
+      <ExternalLink className="h-3 w-3" aria-hidden="true" />
+    </a>
+  ) : paper.kind === 'official' && paper.officialSourceUrl ? (
     <a
       href={paper.officialSourceUrl}
       target="_blank"
@@ -132,7 +142,11 @@ interface ExamRunnerProps {
 
 export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
   const progressKey = `paper:${paper.id}`;
+  const timed = !paper.untimed;
   const fullSeconds = paper.durationMinutes * 60;
+  // Без таймер отчитаме само изминалото време (за историята)
+  const startedAtRef = useRef(Date.now());
+  const spentRef = useRef(0);
 
   const [answers, setAnswers] = useState<PaperAnswers>({});
   const [openScores, setOpenScores] = useState<Scores>({});
@@ -175,6 +189,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
   const unscored = countUnscored(questions, openScores);
 
   const submit = useCallback(() => {
+    spentRef.current = Math.round((Date.now() - startedAtRef.current) / 1000);
     setSubmitted(true);
     clearTestProgress(progressKey);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -182,7 +197,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
 
   // Таймер: сигнал 5 минути преди края, автоматично предаване при 0
   useEffect(() => {
-    if (!hydrated || submitted) return;
+    if (!hydrated || submitted || !timed) return;
     if (secondsLeft <= 0) {
       submit();
       return;
@@ -193,7 +208,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
     }
     const id = window.setTimeout(() => setSecondsLeft((s) => Math.max(0, s - 1)), 1000);
     return () => window.clearTimeout(id);
-  }, [hydrated, submitted, secondsLeft, soundMuted, submit]);
+  }, [hydrated, submitted, timed, secondsLeft, soundMuted, submit]);
 
   // Докато изпитът тече, долната лента на сайта отстъпва място на навигатора
   useEffect(() => {
@@ -207,7 +222,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
   // Запис в историята: веднъж при предаване, после обновяване при самооценката
   useEffect(() => {
     if (!submitted) return;
-    const data = buildAttempt(paper, result, Math.max(1, fullSeconds - secondsLeft));
+    const data = buildAttempt(paper, result, Math.max(1, timed ? fullSeconds - secondsLeft : spentRef.current));
     if (attemptIdRef.current === null) {
       attemptIdRef.current = 'pending';
       void examHistoryService.recordAttempt(data).then((rec) => {
@@ -233,6 +248,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
     setFlags({});
     setSubmitted(false);
     setSecondsLeft(fullSeconds);
+    startedAtRef.current = Date.now();
     setRestored(false);
     warnedRef.current = false;
     attemptIdRef.current = null;
@@ -271,6 +287,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
       <ExamFocusBar
         title={paper.title}
         secondsLeft={secondsLeft}
+        timed={timed}
         submitted={submitted}
         answeredCount={answeredCount}
         totalCount={questions.length}
@@ -287,7 +304,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-slate-600">
           <PaperBadge paper={paper} />
           <span className="tabular-nums">
-            {questions.length} задачи · {paper.maxPoints} точки · {paper.durationMinutes} минути
+            {questions.length} задачи · {paper.maxPoints} точки · {timed ? `${paper.durationMinutes} минути` : 'без таймер'}
           </span>
         </div>
         {paper.note && <p className="max-w-3xl text-sm leading-relaxed text-slate-600">{paper.note}</p>}
@@ -605,11 +622,13 @@ const PartRow: React.FC<{
               return (
                 <label key={i} className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-1.5 text-sm transition-colors ${cls}`}>
                   <input
-                    type="checkbox"
+                    type={a.single ? 'radio' : 'checkbox'}
+                    name={a.single ? inputId : undefined}
                     className="h-4 w-4 accent-[#1a6fb8]"
                     checked={picked}
                     disabled={submitted}
                     onChange={() => {
+                      if (a.single) return onAnswer(k, [i]);
                       const cur = Array.isArray(value) ? value : [];
                       onAnswer(k, picked ? cur.filter((x) => x !== i) : [...cur, i].sort((x, y) => x - y));
                     }}

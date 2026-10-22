@@ -120,6 +120,8 @@ export interface ExamPaper {
   gradeScale: GradeScale | null;
   /** Кратка бележка под заглавието — напр. кое е официално (условия, ключ) и кое е добавено от StudyBG */
   note?: string;
+  /** Лист с формули, който се отваря от лентата на изпита (както на истинския изпит) */
+  formulaSheet?: 'nvo10-math';
   sections: PaperSection[];
 }
 

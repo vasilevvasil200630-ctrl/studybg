@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AlertTriangle, ArrowLeft, Clock, Send, Volume2, VolumeX } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, Clock, Send, Sigma, Volume2, VolumeX } from 'lucide-react';
 
 /**
  * Лента на изпита (пренесена от Матура Плюс, components/exam/ExamHeader): изход с потвърждение,
@@ -27,6 +27,8 @@ interface ExamFocusBarProps {
   onSubmit: () => void;
   /** Потвърденият изход: изтрива прогреса и връща към списъка с варианти */
   onExit: () => void;
+  /** Ако вариантът има лист с формули — отваря го */
+  onOpenFormulas?: () => void;
 }
 
 export const ExamFocusBar: React.FC<ExamFocusBarProps> = ({
@@ -39,6 +41,7 @@ export const ExamFocusBar: React.FC<ExamFocusBarProps> = ({
   onToggleSound,
   onSubmit,
   onExit,
+  onOpenFormulas,
 }) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const isWarning = secondsLeft <= 300 && secondsLeft > 60;
@@ -60,6 +63,19 @@ export const ExamFocusBar: React.FC<ExamFocusBarProps> = ({
           <p className="hidden min-w-0 flex-1 truncate text-center text-sm font-semibold text-slate-900 md:block">{title}</p>
 
           <div className="flex shrink-0 items-center gap-2">
+            {onOpenFormulas && (
+              <button
+                type="button"
+                onClick={onOpenFormulas}
+                aria-haspopup="dialog"
+                aria-label="Формули"
+                title="Листът с формули на МОН"
+                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-700 transition-colors hover:border-brand-sapphire/40 hover:bg-brand-sapphire-soft hover:text-brand-ink"
+              >
+                <Sigma className="h-4 w-4" aria-hidden="true" />
+                <span className="hidden sm:inline">Формули</span>
+              </button>
+            )}
             {!submitted && (
               <>
                 <button

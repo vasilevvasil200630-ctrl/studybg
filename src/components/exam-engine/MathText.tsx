@@ -29,6 +29,12 @@ function split(text: string): Part[] {
 const render = (tex: string, displayMode: boolean): string =>
   katex.renderToString(tex, { displayMode, throwOnError: false, output: 'htmlAndMathml', strict: 'ignore' });
 
+/** Една формула (LaTeX без $) на отделен ред — за листа с формули */
+export const MathTex: React.FC<{ tex: string; className?: string }> = memo(function MathTex({ tex, className }) {
+  const html = useMemo(() => render(tex, true), [tex]);
+  return <span className={`block max-w-full overflow-x-auto ${className ?? ''}`} dangerouslySetInnerHTML={{ __html: html }} />;
+});
+
 export const MathText: React.FC<{ text: string; className?: string }> = memo(function MathText({ text, className }) {
   const parts = useMemo(() => split(text), [text]);
   return (

@@ -23,6 +23,7 @@ export const NVO10_MATH_2026: ExamPaper = {
   durationMinutes: 120,
   maxPoints: 100,
   gradeScale: null,
+  formulaSheet: 'nvo10-math',
   note:
     'Условията и ключът са официалните на МОН. Решенията на 17. и 18. са примерните решения от МОН; обясненията към 1.–16. са на StudyBG.',
   sections: [

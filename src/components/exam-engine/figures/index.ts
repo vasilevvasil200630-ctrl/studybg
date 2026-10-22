@@ -4,6 +4,7 @@ import { Q10StaffChart, Q11Triangle, Q13Barrier, Q14Lake, Q15Prism, Q17Houses, Q
 import { Q11ObtuseTriangle, Q12Shadows, Q13Platform, Q14Triangle120, Q15Pyramid as Q15Pyramid2024, Q17Triangle, Q3GradesChart, Q5Motion } from './nvo10_2024';
 import { Q10Triangle120 as Q10Triangle120y23, Q11RightTriangle, Q12Slide, Q15Cone, Q17Isosceles, Q9TangentSecant } from './nvo10_2023';
 import { Q11RightTriangle2022, Q12TrapezoidDiagonals, Q13Triangle135, Q15Cylinder, Q17Triangle2022, Q5Line2022, Q9InscribedAngle } from './nvo10_2022';
+import { FormulaCircleAngles, FormulaCircleChords, FormulaCircleSecants, FormulaCircleTangent } from './formulaCircle';
 import { Q12River, Q13Chords, Q14RightTriangle2021, Q15Parallelogram, Q6FourGraphs, Q7Parabola2021 } from './nvo10_2021';
 
 /**
@@ -53,4 +54,8 @@ export const FIGURES: Readonly<Record<string, React.FC>> = {
   'nvo10-2021-q13-chords': Q13Chords,
   'nvo10-2021-q14-right-triangle': Q14RightTriangle2021,
   'nvo10-2021-q15-parallelogram': Q15Parallelogram,
+  'formula-circle-angles': FormulaCircleAngles,
+  'formula-circle-chords': FormulaCircleChords,
+  'formula-circle-secants': FormulaCircleSecants,
+  'formula-circle-tangent': FormulaCircleTangent,
 };

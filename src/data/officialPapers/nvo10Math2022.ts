@@ -20,6 +20,7 @@ export const NVO10_MATH_2022: ExamPaper = {
   durationMinutes: 90,
   maxPoints: 100,
   gradeScale: null,
+  formulaSheet: 'nvo10-math',
   note:
     'Формат до 2025 г. (само математика, 90 минути). Условията и ключът са официалните на МОН. Решенията на 16. и 17. са примерните решения от МОН; обясненията към 1.–15. са на StudyBG.',
   sections: [

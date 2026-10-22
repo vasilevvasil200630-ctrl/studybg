@@ -21,6 +21,7 @@ export const NVO10_MATH_2021: ExamPaper = {
   durationMinutes: 90,
   maxPoints: 50,
   gradeScale: null,
+  formulaSheet: 'nvo10-math',
   note:
     'Този вариант е от 50 точки: задачите 1.–15. носят по 2 т., а 16. и 17. — по 10 т.; 90 минути. Условията и ключът са официалните на МОН. Решенията на 16. и 17. са примерните решения от МОН; обясненията към 1.–15. са на StudyBG.',
   sections: [

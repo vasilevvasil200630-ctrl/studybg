@@ -17,6 +17,8 @@ import { formatGrade } from '../../lib/monGradeScale';
 import { clearTestProgress, loadTestProgress, useTestProgressAutosave } from '../../lib/testProgress';
 import { examHistoryService, type ExamAttemptRecord } from '../../services/examHistoryService';
 import { ExamFocusBar } from './ExamFocusBar';
+import { FormulaSheetPanel } from './FormulaSheetPanel';
+import { FORMULA_SHEETS } from '../../data/formulaSheets/nvo10Math';
 import { FIGURES } from './figures';
 import { MathText } from './MathText';
 import { QuestionNavigator, type QuestionItemStatus } from './QuestionNavigator';
@@ -139,6 +141,8 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
   const [submitted, setSubmitted] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(fullSeconds);
   const [soundMuted, setSoundMuted] = useState(false);
+  const [formulasOpen, setFormulasOpen] = useState(false);
+  const formulaSheet = paper.formulaSheet ? FORMULA_SHEETS[paper.formulaSheet] : null;
   const [restored, setRestored] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const warnedRef = useRef(false);
@@ -274,7 +278,9 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
         onToggleSound={() => setSoundMuted((m) => !m)}
         onSubmit={submit}
         onExit={exit}
+        onOpenFormulas={formulaSheet ? () => setFormulasOpen(true) : undefined}
       />
+      {formulaSheet && <FormulaSheetPanel sheet={formulaSheet} open={formulasOpen} onClose={() => setFormulasOpen(false)} />}
 
       <div className="mb-6 space-y-2">
         <h2 className="text-xl font-bold tracking-tight text-slate-900 text-balance">{paper.title}</h2>

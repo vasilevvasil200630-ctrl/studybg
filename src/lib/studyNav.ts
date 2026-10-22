@@ -136,7 +136,7 @@ export function getStudyPageMeta(tab: AppNavTab, totalLessons: number): PageMeta
     case 'catalog':
       return { title: 'Учебна програма', description: `Всички ${totalLessons} урока, подредени по клас, предмет и изпит.` };
     case 'simulator':
-      return { title: 'Изпитен симулатор', description: 'Пълен изпит от 100 точки по формата на МОН, с таймер.' };
+      return { title: 'Изпитен симулатор', description: 'Изпит по текущия урок или пълен вариант на МОН — с таймер, ключ и точки.' };
     case 'generator':
       return { title: 'Контролни за печат', description: 'Варианти А и Б по избран урок, готови за принтиране.' };
     default:

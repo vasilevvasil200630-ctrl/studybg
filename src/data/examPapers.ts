@@ -305,6 +305,7 @@ export const EXAM_PAPERS: ExamPaper[] = [
     durationMinutes: 150,
     maxPoints: 100,
     gradeScale: null,
+    formulaSheet: 'nvo10-math',
     sections: [
       {
         id: 'math-choice',

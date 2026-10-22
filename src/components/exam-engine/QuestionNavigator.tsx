@@ -13,12 +13,15 @@ export type QuestionItemStatus = {
   isFlagged?: boolean;
   /** true/false след предаване; null = без отговор или задача със самооценка без въведени точки */
   isCorrect?: boolean | null;
+  /** Задача с подточки, решена частично (след предаване) */
+  isPartial?: boolean;
 };
 
 type Variant = 'desktop' | 'pill' | 'drawer';
 
 const statusClass = (q: QuestionItemStatus, submitted: boolean, variant: Variant): string => {
   if (submitted) {
+    if (q.isPartial) return 'bg-amber-100 text-amber-900 border border-amber-300';
     if (q.isCorrect === true) return 'bg-emerald-600 text-white border border-emerald-600';
     if (q.isCorrect === false) return 'bg-rose-600 text-white border border-rose-600';
     return 'bg-slate-100 text-slate-500 border border-slate-200';
@@ -134,6 +137,7 @@ export const QuestionNavigator: React.FC<QuestionNavigatorProps> = ({
             <>
               <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-emerald-600" aria-hidden="true" />Вярно</span>
               <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-rose-600" aria-hidden="true" />Грешно</span>
+              <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-amber-300" aria-hidden="true" />Частично</span>
               <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-slate-300" aria-hidden="true" />Без отговор / без оценка</span>
             </>
           ) : (

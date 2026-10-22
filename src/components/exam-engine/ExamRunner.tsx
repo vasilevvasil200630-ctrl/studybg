@@ -2,16 +2,23 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from '
 import { Bookmark, CheckCircle2, ExternalLink, Lightbulb, RotateCcw, Send, Trophy, X, XCircle } from 'lucide-react';
 import {
   PRACTICE_PAPER_LABEL,
+  isPartCorrect,
+  partKey,
   scorePaper,
   type ExamPaper,
   type PaperAnswers,
   type PaperQuestion,
-  type PaperResult
+  type PaperResult,
+  type PartValue,
+  type QuestionPart,
+  type Stimulus
 } from '../../lib/examPaperScoring';
 import { formatGrade } from '../../lib/monGradeScale';
 import { clearTestProgress, loadTestProgress, useTestProgressAutosave } from '../../lib/testProgress';
 import { examHistoryService, type ExamAttemptRecord } from '../../services/examHistoryService';
 import { ExamFocusBar } from './ExamFocusBar';
+import { FIGURES } from './figures';
+import { MathText } from './MathText';
 import { QuestionNavigator, type QuestionItemStatus } from './QuestionNavigator';
 import { Scratchpad } from './Scratchpad';
 
@@ -27,14 +34,18 @@ import { Scratchpad } from './Scratchpad';
 const LETTERS = ['А', 'Б', 'В', 'Г', 'Д', 'Е'];
 const Q_ID_PREFIX = 'exam-q-';
 
+type Scores = Record<string, number | undefined>;
+
 type Snapshot = {
   answers: PaperAnswers;
-  openScores: Record<string, number | undefined>;
+  openScores: Scores;
   drafts: Record<string, string>;
   flags: Record<string, boolean>;
   submitted: boolean;
   secondsLeft: number;
 };
+
+const fmt = (n: number): string => (Number.isInteger(n) ? String(n) : n.toFixed(1).replace('.', ','));
 
 export const PaperBadge: React.FC<{ paper: ExamPaper }> = ({ paper }) =>
   paper.kind === 'official' && paper.officialSourceUrl ? (
@@ -53,11 +64,23 @@ export const PaperBadge: React.FC<{ paper: ExamPaper }> = ({ paper }) =>
     </span>
   );
 
+const hasValue = (v: PartValue): boolean =>
+  typeof v === 'boolean' || (typeof v === 'number' && Number.isFinite(v)) || (typeof v === 'string' && v.trim() !== '') || (Array.isArray(v) && v.length > 0);
+
 const isAnswered = (q: PaperQuestion, s: Pick<Snapshot, 'answers' | 'drafts' | 'openScores'>): boolean => {
   if (q.kind === 'choice') return typeof s.answers[q.id] === 'number';
-  if (q.kind === 'short') return typeof s.answers[q.id] === 'string' && (s.answers[q.id] as string).trim() !== '';
+  if (q.kind === 'short') return hasValue(s.answers[q.id]);
+  if (q.kind === 'multi') return q.parts.some((p) => hasValue(s.answers[partKey(q, p)]) || typeof s.openScores[partKey(q, p)] === 'number');
   return (s.drafts[q.id] ?? '').trim() !== '' || typeof s.openScores[q.id] === 'number';
 };
+
+/** Броят на неоценените части със самооценка (цели задачи или подточки) */
+const countUnscored = (questions: PaperQuestion[], scores: Scores): number =>
+  questions.reduce((n, q) => {
+    if (q.kind === 'open') return n + (typeof scores[q.id] === 'number' ? 0 : 1);
+    if (q.kind === 'multi') return n + q.parts.filter((p) => p.answer.type === 'self' && typeof scores[partKey(q, p)] !== 'number').length;
+    return n;
+  }, 0);
 
 function playChime(): void {
   try {
@@ -93,7 +116,7 @@ function buildAttempt(paper: ExamPaper, result: PaperResult, timeSpentSeconds: n
     module2Points: s2?.points ?? 0,
     module3Points: rest.reduce((sum, s) => sum + s.points, 0),
     totalPoints: result.totalPoints,
-    gradeEquivalent: result.grade ? formatGrade(result.grade) : `${result.totalPoints} / ${result.maxPoints} точки`,
+    gradeEquivalent: result.grade ? formatGrade(result.grade) : `${fmt(result.totalPoints)} / ${result.maxPoints} точки`,
     gradeNumeric: result.grade?.numeric ?? null,
     passed: result.grade?.passed ?? false
   };
@@ -110,7 +133,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
   const fullSeconds = paper.durationMinutes * 60;
 
   const [answers, setAnswers] = useState<PaperAnswers>({});
-  const [openScores, setOpenScores] = useState<Record<string, number | undefined>>({});
+  const [openScores, setOpenScores] = useState<Scores>({});
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [flags, setFlags] = useState<Record<string, boolean>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -145,7 +168,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
   const result = useMemo(() => scorePaper(paper, answers, openScores), [paper, answers, openScores]);
   const resultById = useMemo(() => new Map(result.questions.map((q) => [q.id, q])), [result]);
   const answeredCount = questions.filter((q) => isAnswered(q, { answers, drafts, openScores })).length;
-  const openUnscored = questions.filter((q) => q.kind === 'open' && typeof openScores[q.id] !== 'number').length;
+  const unscored = countUnscored(questions, openScores);
 
   const submit = useCallback(() => {
     setSubmitted(true);
@@ -217,20 +240,27 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
     onExit();
   };
 
-  const navQuestions: QuestionItemStatus[] = questions.map((q) => ({
-    number: q.number,
-    isAnswered: isAnswered(q, { answers, drafts, openScores }),
-    isFlagged: !!flags[q.id],
-    isCorrect: submitted
-      ? q.kind === 'open'
-        ? typeof openScores[q.id] === 'number'
-          ? (openScores[q.id] as number) > 0
-          : null
-        : isAnswered(q, { answers, drafts, openScores })
-          ? resultById.get(q.id)?.correct ?? false
-          : null
-      : undefined
-  }));
+  const setAnswer = useCallback(
+    (key: string, v: PartValue) => {
+      if (!submitted) setAnswers((a) => ({ ...a, [key]: v }));
+    },
+    [submitted]
+  );
+  const setScore = useCallback((key: string, v: number) => setOpenScores((s) => ({ ...s, [key]: v })), []);
+  const setDraft = useCallback((key: string, v: string) => setDrafts((d) => ({ ...d, [key]: v })), []);
+  const toggleFlag = useCallback((key: string) => setFlags((f) => ({ ...f, [key]: !f[key] })), []);
+
+  const navQuestions: QuestionItemStatus[] = questions.map((q) => {
+    const r = resultById.get(q.id);
+    const answered = isAnswered(q, { answers, drafts, openScores });
+    return {
+      number: q.number,
+      isAnswered: answered,
+      isFlagged: !!flags[q.id],
+      isPartial: submitted && !!r?.partial,
+      isCorrect: !submitted ? undefined : q.kind === 'open' ? (typeof openScores[q.id] === 'number' ? (openScores[q.id] as number) > 0 : null) : answered ? r?.correct ?? false : null
+    };
+  });
 
   return (
     <div className="pb-24 xl:pb-0">
@@ -254,6 +284,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
             {questions.length} задачи · {paper.maxPoints} точки · {paper.durationMinutes} минути
           </span>
         </div>
+        {paper.note && <p className="max-w-3xl text-sm leading-relaxed text-slate-600">{paper.note}</p>}
       </div>
 
       {restored && !submitted && (
@@ -268,16 +299,14 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
         </div>
       )}
 
-      {submitted && (
-        <ResultPanel result={result} openUnscored={openUnscored} onRestart={reset} onExit={exit} />
-      )}
+      {submitted && <ResultPanel result={result} unscored={unscored} onRestart={reset} onExit={exit} />}
 
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_260px]">
         <div className="min-w-0">
           {paper.sections.map((section) => (
             <section key={section.id} className="mb-10">
               <h3 className="mb-1 text-lg font-bold text-slate-900">{section.title}</h3>
-              {section.instructions && <p className="mb-4 text-sm text-slate-600">{section.instructions}</p>}
+              {section.instructions && <p className="mb-4 max-w-3xl text-sm text-slate-600">{section.instructions}</p>}
               {section.sourceText && (
                 <article className="mb-5 rounded-xl border border-slate-200 bg-slate-50/60 p-5">
                   <h4 className="text-base font-bold text-slate-900">{section.sourceText.title}</h4>
@@ -290,16 +319,16 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
                   <QuestionCard
                     key={q.id}
                     q={q}
-                    answer={answers[q.id]}
-                    openScore={openScores[q.id]}
+                    answers={answers}
+                    scores={openScores}
                     draft={drafts[q.id] ?? ''}
                     flagged={!!flags[q.id]}
                     submitted={submitted}
                     correct={resultById.get(q.id)?.correct ?? null}
-                    onAnswer={(v) => !submitted && setAnswers((a) => ({ ...a, [q.id]: v }))}
-                    onDraft={(v) => setDrafts((d) => ({ ...d, [q.id]: v }))}
-                    onFlag={() => setFlags((f) => ({ ...f, [q.id]: !f[q.id] }))}
-                    onScore={(v) => setOpenScores((s) => ({ ...s, [q.id]: v }))}
+                    onAnswer={setAnswer}
+                    onScore={setScore}
+                    onDraft={setDraft}
+                    onFlag={toggleFlag}
                   />
                 ))}
               </ol>
@@ -336,12 +365,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
 /* Резултат                                                           */
 /* ------------------------------------------------------------------ */
 
-const ResultPanel: React.FC<{ result: PaperResult; openUnscored: number; onRestart: () => void; onExit: () => void }> = ({
-  result,
-  openUnscored,
-  onRestart,
-  onExit
-}) => {
+const ResultPanel: React.FC<{ result: PaperResult; unscored: number; onRestart: () => void; onExit: () => void }> = ({ result, unscored, onRestart, onExit }) => {
   const percent = result.maxPoints > 0 ? Math.round((result.totalPoints / result.maxPoints) * 100) : 0;
   return (
     <section role="status" aria-live="polite" className="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8">
@@ -353,7 +377,7 @@ const ResultPanel: React.FC<{ result: PaperResult; openUnscored: number; onResta
           <div>
             <p className="text-sm text-slate-600">Твоят резултат</p>
             <p className="text-3xl font-bold tabular-nums text-slate-900">
-              {result.totalPoints} / {result.maxPoints} т. <span className="text-lg font-semibold text-slate-500">({percent}%)</span>
+              {fmt(result.totalPoints)} / {result.maxPoints} т. <span className="text-lg font-semibold text-slate-500">({percent}%)</span>
             </p>
             <p className="mt-0.5 text-sm font-semibold text-slate-700">
               {result.grade ? formatGrade(result.grade) : 'НВО 10: резултатът се отчита в точки'}
@@ -361,19 +385,11 @@ const ResultPanel: React.FC<{ result: PaperResult; openUnscored: number; onResta
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={onRestart}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-brand-sapphire px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-sapphire-dark"
-          >
+          <button type="button" onClick={onRestart} className="inline-flex items-center gap-1.5 rounded-lg bg-brand-sapphire px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-sapphire-dark">
             <RotateCcw className="h-4 w-4" aria-hidden="true" />
             Реши отново
           </button>
-          <button
-            type="button"
-            onClick={onExit}
-            className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-          >
+          <button type="button" onClick={onExit} className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
             Всички варианти
           </button>
         </div>
@@ -384,17 +400,253 @@ const ResultPanel: React.FC<{ result: PaperResult; openUnscored: number; onResta
           <li key={s.id} className="flex items-center justify-between gap-3 text-slate-700">
             <span className="truncate">{s.title.replace(/\s*\(\d+ т\.\)$/, '')}</span>
             <span className="font-semibold tabular-nums text-slate-900">
-              {s.points}/{s.maxPoints}
+              {fmt(s.points)}/{s.maxPoints}
             </span>
           </li>
         ))}
       </ul>
 
       <p className="mt-4 text-sm text-slate-600">
-        По ключа: <strong className="tabular-nums">{result.autoPoints} т.</strong> · Самооценка: <strong className="tabular-nums">{result.selfAssessedPoints} т.</strong>
-        {openUnscored > 0 && ` — оцени още ${openUnscored} ${openUnscored === 1 ? 'задача' : 'задачи'} със свободен отговор по-долу; резултатът ще се обнови.`}
+        По ключа: <strong className="tabular-nums">{fmt(result.autoPoints)} т.</strong> · Самооценка:{' '}
+        <strong className="tabular-nums">{fmt(result.selfAssessedPoints)} т.</strong>
+        {unscored > 0 && ` — оцени още ${unscored} ${unscored === 1 ? 'отговор' : 'отговора'} по еталона по-долу; резултатът ще се обнови.`}
       </p>
     </section>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/* Онагледяване: чертеж или таблица                                   */
+/* ------------------------------------------------------------------ */
+
+const StimulusView: React.FC<{ s: Stimulus }> = ({ s }) => {
+  if (s.kind === 'figure') {
+    const Figure = FIGURES[s.figureId];
+    if (!Figure) return null;
+    return (
+      <figure className="my-4 flex justify-center rounded-xl border border-slate-100 bg-white p-3">
+        <Figure />
+      </figure>
+    );
+  }
+  return (
+    <figure className="my-4">
+      {s.caption && <figcaption className="mb-2 text-sm font-semibold text-slate-800">{s.caption}</figcaption>}
+      <div className="overflow-x-auto rounded-xl border border-slate-200">
+        <table className="w-full min-w-max border-collapse text-sm">
+          <thead className="bg-slate-50 text-slate-700">
+            {s.groups && (
+              <tr>
+                {s.groups.map((g) => (
+                  <th key={g.label} colSpan={g.span} scope="colgroup" className="border-b border-r border-slate-200 px-3 py-2 text-center font-semibold last:border-r-0">
+                    {g.label}
+                  </th>
+                ))}
+              </tr>
+            )}
+            <tr>
+              {s.head.map((h, i) => (
+                <th key={i} scope="col" className="border-b border-r border-slate-200 px-3 py-2 text-left font-semibold last:border-r-0">
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {s.rows.map((row, ri) => (
+              <tr key={ri} className="border-b border-slate-100 last:border-b-0">
+                {row.map((cell, ci) => (
+                  <td key={ci} className="border-r border-slate-100 px-3 py-2 tabular-nums text-slate-800 last:border-r-0">
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {s.source && <p className="mt-1.5 text-right text-xs italic text-slate-500">{s.source}</p>}
+    </figure>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/* Самооценка: бутони 0 … max (с половинки, ако максимумът е дробен)  */
+/* ------------------------------------------------------------------ */
+
+const ScoreButtons: React.FC<{ id: string; max: number; value: number | undefined; onChange: (v: number) => void; label: string }> = ({ id, max, value, onChange, label }) => {
+  const step = Number.isInteger(max) ? 1 : 0.5;
+  const steps = Array.from({ length: Math.round(max / step) + 1 }, (_, i) => i * step);
+  return (
+    <div>
+      <p id={`${id}-score-label`} className="mb-2 text-sm font-semibold text-slate-900">
+        {label}
+      </p>
+      <div role="radiogroup" aria-labelledby={`${id}-score-label`} className="flex flex-wrap gap-1.5">
+        {steps.map((v) => (
+          <button
+            key={v}
+            type="button"
+            role="radio"
+            aria-checked={value === v}
+            onClick={() => onChange(v)}
+            className={`grid h-9 min-w-9 place-items-center rounded-lg px-2 text-sm font-semibold tabular-nums transition-colors ${
+              value === v ? 'bg-brand-sapphire text-white' : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+            }`}
+          >
+            {fmt(v)}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/* Подточка на задача с няколко части                                 */
+/* ------------------------------------------------------------------ */
+
+const keyText = (part: QuestionPart): string => {
+  const a = part.answer;
+  if (a.type === 'number') return `${a.acceptedAnswers[0]}${a.unit ? ` ${a.unit}` : ''}`;
+  if (a.type === 'text') return a.acceptedAnswers[0];
+  if (a.type === 'truefalse') return a.correct ? 'вярно' : 'грешно';
+  if (a.type === 'pick') return a.correctIndices.map((i) => a.options[i]).join('; ');
+  return a.modelAnswer;
+};
+
+const PartRow: React.FC<{
+  part: QuestionPart;
+  value: PartValue;
+  score: number | undefined;
+  submitted: boolean;
+  onAnswer: (key: string, v: PartValue) => void;
+  onScore: (key: string, v: number) => void;
+  k: string;
+}> = ({ part, value, score, submitted, onAnswer, onScore, k }) => {
+  const a = part.answer;
+  const ok = submitted && a.type !== 'self' ? isPartCorrect(part, value) : null;
+  const inputId = `${k}-input`;
+  return (
+    <li className="rounded-xl border border-slate-200 bg-slate-50/40 p-4">
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-[15px] leading-relaxed text-slate-900">
+          <span className="mr-1.5 font-semibold text-brand-sapphire">{part.label}</span>
+          <MathText text={part.prompt} />
+        </p>
+        <span className="shrink-0 rounded-md bg-white px-2 py-0.5 text-xs font-semibold tabular-nums text-slate-600 ring-1 ring-slate-200">{fmt(part.points)} т.</span>
+      </div>
+
+      <div className="mt-3">
+        {(a.type === 'number' || a.type === 'text') && (
+          <div className="flex items-center gap-2">
+            <label htmlFor={inputId} className="sr-only">
+              Отговор на {part.label}
+            </label>
+            <input
+              id={inputId}
+              type="text"
+              inputMode={a.type === 'number' ? 'decimal' : 'text'}
+              value={typeof value === 'string' ? value : ''}
+              disabled={submitted}
+              onChange={(e) => onAnswer(k, e.target.value)}
+              placeholder={a.type === 'number' ? 'Число' : 'Отговор'}
+              className={`w-40 rounded-lg border px-3 py-2 text-base text-slate-900 focus:border-brand-sapphire focus:outline-none ${
+                ok === null ? 'border-slate-300 bg-white' : ok ? 'border-emerald-400 bg-emerald-50' : 'border-rose-400 bg-rose-50'
+              }`}
+            />
+            {a.type === 'number' && a.unit && <span className="text-sm text-slate-600">{a.unit}</span>}
+          </div>
+        )}
+
+        {a.type === 'truefalse' && (
+          <div role="radiogroup" aria-label={`Отговор на ${part.label}`} className="inline-flex rounded-lg border border-slate-200 bg-white p-0.5">
+            {[true, false].map((b) => {
+              const chosen = value === b;
+              const isKey = submitted && a.correct === b;
+              return (
+                <button
+                  key={String(b)}
+                  type="button"
+                  role="radio"
+                  aria-checked={chosen}
+                  disabled={submitted}
+                  onClick={() => onAnswer(k, b)}
+                  className={`rounded-md px-4 py-1.5 text-sm font-semibold transition-colors ${
+                    isKey ? 'bg-emerald-600 text-white' : submitted && chosen ? 'bg-rose-600 text-white' : chosen ? 'bg-brand-sapphire text-white' : 'text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  {b ? 'вярно' : 'грешно'}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {a.type === 'pick' && (
+          <fieldset className="flex flex-wrap gap-2">
+            <legend className="sr-only">Избор за {part.label}</legend>
+            {a.options.map((opt, i) => {
+              const picked = Array.isArray(value) && value.includes(i);
+              const isKey = submitted && a.correctIndices.includes(i);
+              const cls = isKey
+                ? 'border-emerald-400 bg-emerald-50 text-emerald-900'
+                : submitted && picked
+                  ? 'border-rose-400 bg-rose-50 text-rose-900'
+                  : picked
+                    ? 'border-brand-sapphire bg-blue-50 text-brand-sapphire'
+                    : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50';
+              return (
+                <label key={i} className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-1.5 text-sm transition-colors ${cls}`}>
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 accent-[#1a6fb8]"
+                    checked={picked}
+                    disabled={submitted}
+                    onChange={() => {
+                      const cur = Array.isArray(value) ? value : [];
+                      onAnswer(k, picked ? cur.filter((x) => x !== i) : [...cur, i].sort((x, y) => x - y));
+                    }}
+                  />
+                  <MathText text={opt} />
+                </label>
+              );
+            })}
+          </fieldset>
+        )}
+
+        {a.type === 'self' && (
+          <textarea
+            value={typeof value === 'string' ? value : ''}
+            disabled={submitted}
+            onChange={(e) => onAnswer(k, e.target.value)}
+            rows={2}
+            aria-label={`Отговор на ${part.label}`}
+            placeholder="Запиши отговора си — след предаване ще го сравниш с еталона."
+            className="w-full resize-y rounded-lg border border-slate-300 bg-white p-3 text-sm text-slate-900 focus:border-brand-sapphire focus:outline-none disabled:bg-slate-50"
+          />
+        )}
+      </div>
+
+      {submitted && a.type !== 'self' && (
+        <p className={`mt-2 flex items-start gap-1.5 text-sm ${ok ? 'text-emerald-800' : 'text-slate-700'}`}>
+          {ok ? <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" aria-hidden="true" /> : <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-600" aria-hidden="true" />}
+          <span>
+            {ok ? 'Вярно' : 'Верен отговор:'} {!ok && <strong className="text-emerald-800"><MathText text={keyText(part)} /></strong>}
+          </span>
+        </p>
+      )}
+
+      {submitted && a.type === 'self' && (
+        <div className="mt-3 space-y-3 rounded-lg border border-blue-100 bg-white p-3">
+          <p className="text-sm text-slate-800">
+            <span className="font-semibold text-slate-900">Еталон: </span>
+            <MathText text={a.modelAnswer} />
+          </p>
+          <ScoreButtons id={k} max={part.points} value={score} onChange={(v) => onScore(k, v)} label="Колко точки заслужава отговорът ти?" />
+        </div>
+      )}
+    </li>
   );
 };
 
@@ -404,29 +656,33 @@ const ResultPanel: React.FC<{ result: PaperResult; openUnscored: number; onResta
 
 interface QuestionCardProps {
   q: PaperQuestion;
-  answer: number | string | undefined;
-  openScore: number | undefined;
+  answers: PaperAnswers;
+  scores: Scores;
   draft: string;
   flagged: boolean;
   submitted: boolean;
   correct: boolean | null;
-  onAnswer: (v: number | string) => void;
-  onDraft: (v: string) => void;
-  onFlag: () => void;
-  onScore: (v: number) => void;
+  onAnswer: (key: string, v: PartValue) => void;
+  onScore: (key: string, v: number) => void;
+  onDraft: (key: string, v: string) => void;
+  onFlag: (key: string) => void;
 }
 
-const QuestionCard = memo(function QuestionCard({ q, answer, openScore, draft, flagged, submitted, correct, onAnswer, onDraft, onFlag, onScore }: QuestionCardProps) {
+const QuestionCard = memo(function QuestionCard({ q, answers, scores, draft, flagged, submitted, correct, onAnswer, onScore, onDraft, onFlag }: QuestionCardProps) {
   const promptId = `${q.id}-prompt`;
+  const answer = answers[q.id];
   return (
     <li id={`${Q_ID_PREFIX}${q.number}`} className="scroll-mt-40 rounded-2xl border border-slate-200 bg-white p-5 transition-shadow sm:p-6">
       <div className="mb-3 flex items-start justify-between gap-3">
-        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-blue-50 text-sm font-bold tabular-nums text-brand-sapphire">{q.number}</span>
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-blue-50 text-sm font-bold tabular-nums text-brand-sapphire">{q.number}</span>
+          {q.topic && <span className="text-xs font-semibold text-slate-500">{q.topic}</span>}
+        </div>
         <div className="flex items-center gap-2">
           {!submitted && (
             <button
               type="button"
-              onClick={onFlag}
+              onClick={() => onFlag(q.id)}
               aria-pressed={flagged}
               aria-label={flagged ? 'Махни отбелязването' : 'Отбележи за връщане'}
               title={flagged ? 'Отбелязана за връщане' : 'Отбележи за връщане'}
@@ -437,13 +693,15 @@ const QuestionCard = memo(function QuestionCard({ q, answer, openScore, draft, f
               <Bookmark className="h-4 w-4" fill={flagged ? 'currentColor' : 'none'} />
             </button>
           )}
-          <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-semibold tabular-nums text-slate-700">{q.points} т.</span>
+          <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-semibold tabular-nums text-slate-700">{fmt(q.points)} т.</span>
         </div>
       </div>
 
-      <p id={promptId} className="whitespace-pre-line text-base font-semibold leading-relaxed text-slate-900 sm:text-lg">
-        {q.prompt}
+      <p id={promptId} className="text-base font-medium leading-relaxed text-slate-900 sm:text-[17px]">
+        <MathText text={q.prompt} />
       </p>
+
+      {q.stimulus?.map((s, i) => <StimulusView key={i} s={s} />)}
 
       {q.kind === 'choice' && (
         <fieldset aria-labelledby={promptId} className="mt-4 grid gap-2.5 sm:grid-cols-2">
@@ -460,14 +718,16 @@ const QuestionCard = memo(function QuestionCard({ q, answer, openScore, draft, f
                   : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50';
             const badge = isKey ? 'bg-emerald-600 text-white' : wrongPick ? 'bg-rose-600 text-white' : chosen ? 'bg-brand-sapphire text-white' : 'bg-slate-100 text-slate-700';
             return (
-              <label key={idx} className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition-colors ${box} ${submitted ? 'cursor-default' : ''}`}>
-                <input type="radio" name={q.id} className="sr-only" checked={chosen} disabled={submitted} onChange={() => onAnswer(idx)} />
+              <label key={idx} className={`flex items-center gap-3 rounded-xl border p-3.5 transition-colors ${box} ${submitted ? 'cursor-default' : 'cursor-pointer'}`}>
+                <input type="radio" name={q.id} className="sr-only" checked={chosen} disabled={submitted} onChange={() => onAnswer(q.id, idx)} />
                 <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-sm font-bold ${badge}`} aria-hidden="true">
                   {LETTERS[idx] ?? idx + 1}
                 </span>
-                <span className="flex-1 pt-0.5 text-[15px] leading-relaxed text-slate-900">{option}</span>
-                {isKey && <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-emerald-600" aria-label="Верен отговор" />}
-                {wrongPick && <XCircle className="mt-1 h-5 w-5 shrink-0 text-rose-600" aria-label="Твоят отговор е грешен" />}
+                <span className="min-w-0 flex-1 text-[15px] leading-relaxed text-slate-900">
+                  <MathText text={option} />
+                </span>
+                {isKey && <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" aria-label="Верен отговор" />}
+                {wrongPick && <XCircle className="h-5 w-5 shrink-0 text-rose-600" aria-label="Твоят отговор е грешен" />}
               </label>
             );
           })}
@@ -483,7 +743,7 @@ const QuestionCard = memo(function QuestionCard({ q, answer, openScore, draft, f
               aria-labelledby={promptId}
               value={typeof answer === 'string' ? answer : ''}
               disabled={submitted}
-              onChange={(e) => onAnswer(e.target.value)}
+              onChange={(e) => onAnswer(q.id, e.target.value)}
               placeholder={q.answerType === 'number' ? 'Числов отговор' : 'Кратък отговор'}
               className={`w-full max-w-xs rounded-lg border px-3.5 py-2.5 text-base text-slate-900 focus:border-brand-sapphire focus:outline-none ${
                 submitted ? (correct ? 'border-emerald-400 bg-emerald-50' : 'border-rose-400 bg-rose-50') : 'border-slate-300 bg-white'
@@ -493,23 +753,36 @@ const QuestionCard = memo(function QuestionCard({ q, answer, openScore, draft, f
           </div>
           {submitted && !correct && (
             <p className="mt-2 text-sm text-slate-700">
-              Верен отговор: <strong className="text-emerald-800">{q.acceptedAnswers[0]}</strong>
+              Верен отговор: <strong className="text-emerald-800"><MathText text={q.acceptedAnswers[0]} /></strong>
             </p>
           )}
         </div>
       )}
 
-      {q.kind !== 'open' && <Scratchpad id={`${q.id}-scratch`} value={draft} onChange={onDraft} disabled={submitted} />}
+      {q.kind === 'multi' && (
+        <ol className="mt-4 space-y-3">
+          {q.parts.map((part) => {
+            const k = partKey(q, part);
+            return (
+              <PartRow key={k} k={k} part={part} value={answers[k]} score={scores[k]} submitted={submitted} onAnswer={onAnswer} onScore={onScore} />
+            );
+          })}
+        </ol>
+      )}
+
+      {(q.kind === 'choice' || q.kind === 'short' || q.kind === 'multi') && (
+        <Scratchpad id={`${q.id}-scratch`} value={draft} onChange={(v) => onDraft(q.id, v)} disabled={submitted} />
+      )}
 
       {q.kind === 'open' && (
         <Scratchpad
           id={`${q.id}-solution`}
           value={draft}
-          onChange={onDraft}
+          onChange={(v) => onDraft(q.id, v)}
           disabled={submitted}
           defaultOpen
           label="Твоето решение"
-          placeholder="Запиши решението си стъпка по стъпка. След предаване ще го сравниш с еталона и критериите."
+          placeholder="Запиши решението си стъпка по стъпка. След предаване ще го сравниш с примерното решение и критериите."
         />
       )}
 
@@ -519,7 +792,9 @@ const QuestionCard = memo(function QuestionCard({ q, answer, openScore, draft, f
             <Lightbulb className="h-4 w-4 text-brand-sapphire" aria-hidden="true" />
             Обяснение
           </p>
-          <p className="mt-1 whitespace-pre-line">{q.explanation}</p>
+          <div className="mt-1">
+            <MathText text={q.explanation} />
+          </div>
         </div>
       )}
 
@@ -530,40 +805,25 @@ const QuestionCard = memo(function QuestionCard({ q, answer, openScore, draft, f
             <ul className="mt-1.5 divide-y divide-blue-100">
               {q.criteria.map((c) => (
                 <li key={c.label} className="flex items-start justify-between gap-3 py-1.5">
-                  <span>{c.label}</span>
-                  <span className="shrink-0 font-semibold tabular-nums text-brand-sapphire">{c.points} т.</span>
+                  <span>
+                    <MathText text={c.label} />
+                  </span>
+                  <span className="shrink-0 font-semibold tabular-nums text-brand-sapphire">{fmt(c.points)} т.</span>
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <p className="font-semibold text-slate-900">Еталон</p>
-            <p className="mt-1 whitespace-pre-line leading-relaxed">{q.modelAnswer}</p>
+            <p className="font-semibold text-slate-900">Примерно решение</p>
+            <div className="mt-1 leading-relaxed">
+              <MathText text={q.modelAnswer} />
+            </div>
           </div>
           <div className="border-t border-blue-100 pt-3">
-            <p id={`${q.id}-score-label`} className="mb-2 font-semibold text-slate-900">
-              Колко точки заслужава решението ти? (0–{q.points})
-            </p>
-            <div role="radiogroup" aria-labelledby={`${q.id}-score-label`} className="flex flex-wrap gap-1.5">
-              {Array.from({ length: q.points + 1 }, (_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  role="radio"
-                  aria-checked={openScore === i}
-                  onClick={() => onScore(i)}
-                  className={`grid h-9 w-9 place-items-center rounded-lg text-sm font-semibold tabular-nums transition-colors ${
-                    openScore === i ? 'bg-brand-sapphire text-white' : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                  }`}
-                >
-                  {i}
-                </button>
-              ))}
-            </div>
+            <ScoreButtons id={q.id} max={q.points} value={scores[q.id]} onChange={(v) => onScore(q.id, v)} label={`Колко точки заслужава решението ти? (0–${fmt(q.points)})`} />
           </div>
         </div>
       )}
     </li>
   );
 });
-

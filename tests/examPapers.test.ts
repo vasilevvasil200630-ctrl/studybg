@@ -1,26 +1,48 @@
 import { describe, expect, it } from 'vitest';
 import { EXAM_PAPERS } from '../src/data/examPapers';
+import katex from 'katex';
+import { FIGURES } from '../src/components/exam-engine/figures';
 import {
+  isPartCorrect,
   isShortAnswerCorrect,
+  partKey,
   scorePaper,
   validateExamPaper,
   type ExamPaper,
+  type MultiPartQuestion,
   type PaperAnswers,
   type ShortAnswerQuestion
 } from '../src/lib/examPaperScoring';
 
 const allQuestions = (paper: ExamPaper) => paper.sections.flatMap((s) => s.questions);
 
-/** Отговори „по ключа“ за всички автоматично проверявани задачи */
-const keyAnswers = (paper: ExamPaper): PaperAnswers =>
-  Object.fromEntries(
-    allQuestions(paper)
-      .filter((q) => q.kind !== 'open')
-      .map((q) => [q.id, q.kind === 'choice' ? q.correctIndex : q.acceptedAnswers[0]])
-  );
+/** Отговори „по ключа“ за всички автоматично проверявани задачи и подточки */
+const keyAnswers = (paper: ExamPaper): PaperAnswers => {
+  const out: PaperAnswers = {};
+  for (const q of allQuestions(paper)) {
+    if (q.kind === 'choice') out[q.id] = q.correctIndex;
+    else if (q.kind === 'short') out[q.id] = q.acceptedAnswers[0];
+    else if (q.kind === 'multi') {
+      for (const part of q.parts) {
+        const a = part.answer;
+        if (a.type === 'number' || a.type === 'text') out[partKey(q, part)] = a.acceptedAnswers[0];
+        else if (a.type === 'truefalse') out[partKey(q, part)] = a.correct;
+        else if (a.type === 'pick') out[partKey(q, part)] = [...a.correctIndices];
+      }
+    }
+  }
+  return out;
+};
 
-const fullOpenScores = (paper: ExamPaper) =>
-  Object.fromEntries(allQuestions(paper).filter((q) => q.kind === 'open').map((q) => [q.id, q.points]));
+/** Пълни точки за всичко със самооценка (задачи със свободен отговор и подточки „self“) */
+const fullOpenScores = (paper: ExamPaper): Record<string, number> => {
+  const out: Record<string, number> = {};
+  for (const q of allQuestions(paper)) {
+    if (q.kind === 'open') out[q.id] = q.points;
+    if (q.kind === 'multi') q.parts.filter((p) => p.answer.type === 'self').forEach((p) => (out[partKey(q, p)] = p.points));
+  }
+  return out;
+};
 
 describe('изпитни варианти: данни', () => {
   it('има поне 2 варианта: БЕЛ ДЗИ и Математика', () => {
@@ -44,7 +66,7 @@ describe('изпитни варианти: данни', () => {
 });
 
 describe('validateExamPaper хваща грешки', () => {
-  const base = EXAM_PAPERS[1];
+  const base = EXAM_PAPERS.find((p) => p.id === 'practice-nvo10-math-1')!;
 
   it('официален вариант без https източник', () => {
     const errors = validateExamPaper({ ...base, kind: 'official', officialSourceUrl: undefined });
@@ -165,5 +187,124 @@ describe('кратки отговори', () => {
     expect(isShortAnswerCorrect(textQ, '„Петнадесетте минути“.')).toBe(true);
     expect(isShortAnswerCorrect(textQ, 'петнадесетте  минути')).toBe(true);
     expect(isShortAnswerCorrect(textQ, 'пет минути')).toBe(false);
+  });
+});
+
+/** Всички текстове на варианта, в които може да има формули */
+const paperTexts = (paper: ExamPaper): string[] =>
+  allQuestions(paper).flatMap((q) => {
+    const texts = [q.prompt];
+    if (q.kind === 'choice') texts.push(...q.options, q.explanation);
+    if (q.kind === 'short') texts.push(...q.acceptedAnswers, q.explanation);
+    if (q.kind === 'open') texts.push(q.modelAnswer, ...q.criteria.map((c) => c.label));
+    if (q.kind === 'multi') {
+      texts.push(q.explanation);
+      for (const p of q.parts) {
+        texts.push(p.prompt);
+        if (p.answer.type === 'self') texts.push(p.answer.modelAnswer);
+        if (p.answer.type === 'pick') texts.push(...p.answer.options);
+      }
+    }
+    return texts;
+  });
+
+describe('официални варианти на МОН', () => {
+  const official = EXAM_PAPERS.filter((p) => p.kind === 'official');
+
+  it('всеки официален вариант сочи PDF на МОН', () => {
+    expect(official.length).toBeGreaterThan(0);
+    for (const paper of official) expect(paper.officialSourceUrl, paper.id).toMatch(/^https:\/\/www\.mon\.bg\/.+\.pdf$/);
+  });
+
+  it('целият официален ключ дава максимума точки', () => {
+    for (const paper of official) {
+      const result = scorePaper(paper, keyAnswers(paper), fullOpenScores(paper));
+      expect(result.totalPoints, paper.id).toBe(paper.maxPoints);
+    }
+  });
+
+  it('всяка формула се изобразява от KaTeX без грешка', () => {
+    const pattern = /\$\$([\s\S]+?)\$\$|\$([^$\n]+?)\$/g;
+    for (const paper of official) {
+      for (const text of paperTexts(paper)) {
+        for (const m of text.matchAll(pattern)) {
+          const tex = (m[1] ?? m[2]).trim();
+          expect(() => katex.renderToString(tex, { throwOnError: true, strict: 'ignore' }), `${paper.id}: ${tex}`).not.toThrow();
+        }
+        // Нечетен брой $ = незатворена формула
+        expect((text.match(/\$/g) ?? []).length % 2, `${paper.id}: ${text.slice(0, 60)}`).toBe(0);
+      }
+    }
+  });
+
+  it('всеки чертеж, към който сочат данните, съществува', () => {
+    for (const paper of EXAM_PAPERS) {
+      for (const q of allQuestions(paper)) {
+        for (const st of q.stimulus ?? []) {
+          if (st.kind === 'figure') expect(FIGURES[st.figureId], `${q.id} → ${st.figureId}`).toBeTypeOf('function');
+        }
+      }
+    }
+  });
+
+  it('НВО 10, 2026: 18 задачи, 120 мин, 40 + 35 + 25 т.', () => {
+    const paper = EXAM_PAPERS.find((x) => x.id === 'official-nvo10-math-2026')!;
+    expect(allQuestions(paper)).toHaveLength(18);
+    expect(paper.durationMinutes).toBe(120);
+    expect(paper.sections.map((sec) => sec.questions.reduce((n, q) => n + q.points, 0))).toEqual([40, 35, 25]);
+  });
+});
+
+describe('задачи с подточки', () => {
+  const paper = EXAM_PAPERS.find((x) => x.id === 'official-nvo10-math-2026')!;
+  const find = (id: string) => allQuestions(paper).find((q) => q.id === id) as MultiPartQuestion;
+  const q14 = find('m26-q14');
+  const q15 = find('m26-q15');
+  const q16 = find('m26-q16');
+
+  it('половин точки: само А) на 15. носи 1,5 т. и задачата е частично решена', () => {
+    const r = scorePaper(paper, { [partKey(q15, q15.parts[0])]: 'I = 10 A' }, {});
+    const res = r.questions.find((x) => x.id === 'm26-q15')!;
+    expect(res.points).toBe(1.5);
+    expect(res.correct).toBeNull();
+    expect(res.partial).toBe(true);
+  });
+
+  it('числото се приема с мерна единица и десетична запетая', () => {
+    expect(isPartCorrect(q15.parts[2], '4,4 kWh')).toBe(true);
+    expect(isPartCorrect(q15.parts[2], 'E = 4.4')).toBe(true);
+    expect(isPartCorrect(q15.parts[1], '22 Ω')).toBe(true);
+    expect(isPartCorrect(q15.parts[1], '2,2')).toBe(false);
+  });
+
+  it('изборът на градове се признава само при точно съвпадение', () => {
+    const part = q14.parts[0];
+    expect(isPartCorrect(part, [9, 3, 6])).toBe(true);
+    expect(isPartCorrect(part, [3, 6])).toBe(false);
+    expect(isPartCorrect(part, [3, 6, 9, 0])).toBe(false);
+  });
+
+  it('вярно/грешно и самооценка на израз', () => {
+    expect(isPartCorrect(q16.parts[1], true)).toBe(true);
+    expect(isPartCorrect(q16.parts[1], false)).toBe(false);
+    const r = scorePaper(paper, {}, { [partKey(q16, q16.parts[2])]: 2 });
+    expect(r.questions.find((x) => x.id === 'm26-q16')!.points).toBe(2);
+    expect(r.selfAssessedPoints).toBe(2);
+  });
+
+  it('самооценката се закръгля до половин точка и не надхвърля максимума', () => {
+    const r = scorePaper(paper, {}, { 'm26-q17': 7.3, 'm26-q18': 99 });
+    expect(r.questions.find((x) => x.id === 'm26-q17')!.points).toBe(7.5);
+    expect(r.questions.find((x) => x.id === 'm26-q18')!.points).toBe(13);
+  });
+
+  it('валидацията хваща подточки, чийто сбор не е равен на точките на задачата', () => {
+    const broken = { ...q15, points: 6 };
+    const p2: ExamPaper = {
+      ...paper,
+      maxPoints: 101,
+      sections: paper.sections.map((sec) => ({ ...sec, questions: sec.questions.map((q) => (q.id === q15.id ? broken : q)) }))
+    };
+    expect(validateExamPaper(p2).join('\n')).toMatch(/подточките дават 5 т\., а задачата е за 6/);
   });
 });

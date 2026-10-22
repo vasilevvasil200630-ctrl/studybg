@@ -35,6 +35,8 @@ export interface ExamAnalyticsSummary {
 
 const STORAGE_KEY = 'studybg_exam_history';
 
+const toCloudInt = (n: number): number => Math.round(Number.isFinite(n) ? n : 0);
+
 // Облачното копие е възможно само с истински Supabase проект (без да зареждаме supabase-js)
 export const isCloudSyncEnabled = (): boolean => isSupabaseConfigured();
 
@@ -299,11 +301,13 @@ async function pushAttemptsToCloud(records: ExamAttemptRecord[]): Promise<number
         grade: r.grade,
         exam_preset: r.examPreset,
         duration_minutes: r.durationMinutes,
-        time_spent_seconds: r.timeSpentSeconds,
-        module1_points: r.module1Points,
-        module2_points: r.module2Points,
-        module3_points: r.module3Points,
-        total_points: r.totalPoints,
+        // Колоните за точки в облака са integer; при половин точки (напр. 1,5 т. по ключа на МОН)
+        // се закръглява тук, а точната стойност остава локално и в grade_equivalent
+        time_spent_seconds: toCloudInt(r.timeSpentSeconds),
+        module1_points: toCloudInt(r.module1Points),
+        module2_points: toCloudInt(r.module2Points),
+        module3_points: toCloudInt(r.module3Points),
+        total_points: toCloudInt(r.totalPoints),
         grade_equivalent: r.gradeEquivalent,
         grade_numeric: r.gradeNumeric,
         passed: r.passed,

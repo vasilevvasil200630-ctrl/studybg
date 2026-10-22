@@ -4,26 +4,45 @@ import { pointsToGrade, type GradeResult, type GradeScale } from './monGradeScal
 // Модел на пълен изпитен вариант (тренировъчен или официален)
 // ---------------------------------------------------------------------------
 
-export interface ChoiceQuestion {
+/**
+ * Текстовете (условия, отговори, обяснения) могат да съдържат математика между $…$ (KaTeX).
+ * Онагледяването към задачата — чертеж, таблица — е в `stimulus` и се показва над отговорите.
+ */
+export type Stimulus =
+  /** Чертеж или диаграма, нарисувани като SVG компонент (components/exam-engine/figures) */
+  | { kind: 'figure'; figureId: string; alt: string }
+  /** Таблица с данни; `groups` е горен ред с обединени клетки */
+  | {
+      kind: 'table';
+      caption?: string;
+      groups?: { label: string; span: number }[];
+      head: string[];
+      rows: string[][];
+      source?: string;
+    };
+
+interface QuestionBase {
   id: string;
   number: number;
-  kind: 'choice';
   prompt: string;
+  points: number;
+  /** Предмет при интегрираните изпити (напр. „Биология и здравно образование“) */
+  topic?: string;
+  stimulus?: Stimulus[];
+}
+
+export interface ChoiceQuestion extends QuestionBase {
+  kind: 'choice';
   options: string[];
   correctIndex: number;
-  points: number;
   explanation: string;
 }
 
-export interface ShortAnswerQuestion {
-  id: string;
-  number: number;
+export interface ShortAnswerQuestion extends QuestionBase {
   kind: 'short';
-  prompt: string;
   /** 'number' сравнява числено („12 000“ = „12000“); 'text' — без значение на главни букви и кавички */
   answerType: 'number' | 'text';
   acceptedAnswers: string[];
-  points: number;
   explanation: string;
 }
 
@@ -33,17 +52,49 @@ export interface OpenTaskCriterion {
 }
 
 /** Задача със свободен отговор: оценява се от ученика по критериите и еталона. */
-export interface OpenQuestion {
-  id: string;
-  number: number;
+export interface OpenQuestion extends QuestionBase {
   kind: 'open';
-  prompt: string;
-  points: number;
   criteria: OpenTaskCriterion[];
   modelAnswer: string;
 }
 
-export type PaperQuestion = ChoiceQuestion | ShortAnswerQuestion | OpenQuestion;
+/** Отговорът на една подточка от задача с няколко части */
+export type PartAnswer =
+  /** Число; мерната единица (unit) се показва до полето и в ключа, но не се проверява */
+  | { type: 'number'; acceptedAnswers: string[]; unit?: string }
+  | { type: 'text'; acceptedAnswers: string[] }
+  | { type: 'truefalse'; correct: boolean }
+  /** Избор на всички верни от списък — точките се дават само за точно съвпадение */
+  | { type: 'pick'; options: string[]; correctIndices: number[] }
+  /** Израз, система или запис, който не се проверява автоматично — ученикът сравнява с еталона */
+  | { type: 'self'; modelAnswer: string };
+
+export interface QuestionPart {
+  id: string;
+  /** „А)“, „Б)“, „1.“ … */
+  label: string;
+  prompt: string;
+  points: number;
+  answer: PartAnswer;
+}
+
+/** Задача с подточки (А, Б, В …) — всяка се оценява поотделно, точките се събират */
+export interface MultiPartQuestion extends QuestionBase {
+  kind: 'multi';
+  parts: QuestionPart[];
+  explanation: string;
+}
+
+export type PaperQuestion = ChoiceQuestion | ShortAnswerQuestion | OpenQuestion | MultiPartQuestion;
+
+/** Ключът, под който се пази отговорът на подточка */
+export const partKey = (q: { id: string }, part: { id: string }): string => `${q.id}.${part.id}`;
+
+/** Точките могат да са и половинки (напр. 1,5 т. в ключа на МОН) */
+export const isHalfStep = (p: number): boolean => p > 0 && Number.isInteger(p * 2);
+
+const clampHalf = (raw: unknown, max: number): number =>
+  typeof raw === 'number' && Number.isFinite(raw) ? Math.min(max, Math.max(0, Math.round(raw * 2) / 2)) : 0;
 
 export interface PaperSection {
   id: string;
@@ -67,6 +118,8 @@ export interface ExamPaper {
   maxPoints: number;
   /** null = резултатът е само в точки (напр. НВО 10, където няма официално превръщане в оценка) */
   gradeScale: GradeScale | null;
+  /** Кратка бележка под заглавието — напр. кое е официално (условия, ключ) и кое е добавено от StudyBG */
+  note?: string;
   sections: PaperSection[];
 }
 
@@ -97,10 +150,35 @@ export function validateExamPaper(paper: ExamPaper): string[] {
     if (ids.has(q.id)) errors.push(`${where(q)}: дублирано id`);
     ids.add(q.id);
     if (q.number !== i + 1) errors.push(`${where(q)}: номерацията трябва да е последователна (очаквана ${i + 1})`);
-    if (!(q.points > 0) || !Number.isInteger(q.points)) errors.push(`${where(q)}: точките трябва да са цяло положително число`);
+    if (!isHalfStep(q.points)) errors.push(`${where(q)}: точките трябва да са положително число, кратно на 0,5`);
     if (!q.prompt.trim()) errors.push(`${where(q)}: празно условие`);
+    q.stimulus?.forEach((s, si) => {
+      if (s.kind === 'figure' && (!s.figureId.trim() || !s.alt.trim())) errors.push(`${where(q)}: чертеж ${si + 1} без id или описание (alt)`);
+      if (s.kind === 'table' && s.rows.some((r) => r.length !== s.head.length)) errors.push(`${where(q)}: таблица ${si + 1} с редове с различен брой клетки`);
+    });
 
-    if (q.kind === 'choice') {
+    if (q.kind === 'multi') {
+      if (q.parts.length === 0) errors.push(`${where(q)}: задача с подточки без подточки`);
+      const partIds = new Set<string>();
+      let partsTotal = 0;
+      q.parts.forEach((p) => {
+        const at = `${where(q)} ${p.label}`;
+        if (partIds.has(p.id)) errors.push(`${at}: дублирано id на подточка`);
+        partIds.add(p.id);
+        partsTotal += p.points;
+        if (!isHalfStep(p.points)) errors.push(`${at}: точките трябва да са кратни на 0,5`);
+        const a = p.answer;
+        if ((a.type === 'number' || a.type === 'text') && a.acceptedAnswers.length === 0) errors.push(`${at}: няма верни отговори`);
+        if (a.type === 'number' && a.acceptedAnswers.some((x) => parseNumberAnswer(x) === null)) errors.push(`${at}: числов ключ, който не е число`);
+        if (a.type === 'pick') {
+          if (a.correctIndices.length === 0) errors.push(`${at}: няма верни избори`);
+          if (a.correctIndices.some((i) => !Number.isInteger(i) || i < 0 || i >= a.options.length)) errors.push(`${at}: невалиден индекс във верните избори`);
+        }
+        if (a.type === 'self' && !a.modelAnswer.trim()) errors.push(`${at}: липсва еталон`);
+      });
+      if (Math.abs(partsTotal - q.points) > 1e-9) errors.push(`${where(q)}: подточките дават ${partsTotal} т., а задачата е за ${q.points}`);
+      if (!q.explanation.trim()) errors.push(`${where(q)}: липсва обяснение към ключа`);
+    } else if (q.kind === 'choice') {
       if (q.options.length < 2) errors.push(`${where(q)}: по-малко от 2 отговора`);
       if (new Set(q.options).size !== q.options.length) errors.push(`${where(q)}: повтарящи се отговори`);
       if (!Number.isInteger(q.correctIndex) || q.correctIndex < 0 || q.correctIndex >= q.options.length) {
@@ -187,28 +265,52 @@ export function normalizeTextAnswer(raw: string): string {
     .trim();
 }
 
-export function isShortAnswerCorrect(q: ShortAnswerQuestion, answer: string): boolean {
+function matchesAccepted(answerType: 'number' | 'text', acceptedAnswers: string[], answer: string): boolean {
   if (!answer.trim()) return false;
-  if (q.answerType === 'number') {
+  if (answerType === 'number') {
     const readings = numberReadings(answer);
-    if (readings.length > 0 && q.acceptedAnswers.some((a) => readings.includes(parseNumberAnswer(a) ?? NaN))) {
+    if (readings.length > 0 && acceptedAnswers.some((a) => readings.includes(parseNumberAnswer(a) ?? NaN))) {
       return true;
     }
-    const normalized = normalizeTextAnswer(answer);
-    return q.acceptedAnswers.some((a) => normalizeTextAnswer(a) === normalized);
   }
   const normalized = normalizeTextAnswer(answer);
-  return q.acceptedAnswers.some((a) => normalizeTextAnswer(a) === normalized);
+  return acceptedAnswers.some((a) => normalizeTextAnswer(a) === normalized);
 }
 
-export type PaperAnswers = Record<string, number | string | undefined>;
+export function isShortAnswerCorrect(q: ShortAnswerQuestion, answer: string): boolean {
+  return matchesAccepted(q.answerType, q.acceptedAnswers, answer);
+}
+
+export type PartValue = number | string | boolean | number[] | undefined;
+export type PaperAnswers = Record<string, PartValue>;
+
+/** Дали отговорът на подточка е верен (за 'self' — винаги false; там решава самооценката) */
+export function isPartCorrect(part: QuestionPart, value: PartValue): boolean {
+  const a = part.answer;
+  switch (a.type) {
+    case 'number':
+    case 'text':
+      return typeof value === 'string' && matchesAccepted(a.type, a.acceptedAnswers, value);
+    case 'truefalse':
+      return value === a.correct;
+    case 'pick': {
+      if (!Array.isArray(value)) return false;
+      const picked = new Set(value);
+      return picked.size === a.correctIndices.length && a.correctIndices.every((i) => picked.has(i));
+    }
+    case 'self':
+      return false;
+  }
+}
 
 export interface QuestionResult {
   id: string;
   points: number;
   maxPoints: number;
-  /** null за задачи със свободен отговор (самооценка) */
+  /** true = пълни точки, false = 0 т.; null = самооценка без въведени точки или частично решена задача */
   correct: boolean | null;
+  /** Частично вярна задача с подточки */
+  partial?: boolean;
 }
 
 export interface PaperResult {
@@ -242,13 +344,28 @@ export function scorePaper(paper: ExamPaper, answers: PaperAnswers, openScores: 
         correct = typeof value === 'string' && isShortAnswerCorrect(q, value);
         points = correct ? q.points : 0;
         autoPoints += points;
+      } else if (q.kind === 'multi') {
+        let selfPending = false;
+        for (const part of q.parts) {
+          const key = partKey(q, part);
+          if (part.answer.type === 'self') {
+            if (typeof openScores[key] !== 'number') selfPending = true;
+            const got = clampHalf(openScores[key], part.points);
+            points += got;
+            selfAssessedPoints += got;
+          } else if (isPartCorrect(part, answers[key])) {
+            points += part.points;
+            autoPoints += part.points;
+          }
+        }
+        correct = points === q.points ? true : points === 0 && !selfPending ? false : null;
       } else {
-        const raw = openScores[q.id];
-        points = typeof raw === 'number' && Number.isFinite(raw) ? Math.min(q.points, Math.max(0, Math.round(raw))) : 0;
+        points = clampHalf(openScores[q.id], q.points);
         selfAssessedPoints += points;
       }
       sectionPoints += points;
-      questions.push({ id: q.id, points, maxPoints: q.points, correct });
+      const partial = q.kind === 'multi' && points > 0 && points < q.points;
+      questions.push({ id: q.id, points, maxPoints: q.points, correct, ...(partial ? { partial } : {}) });
     }
     return { id: section.id, title: section.title, points: sectionPoints, maxPoints: sectionMax };
   });

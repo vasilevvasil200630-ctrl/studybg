@@ -115,6 +115,17 @@ describe('examHistoryService.syncWithCloud', () => {
     expect(cloud.upserted).toHaveLength(1);
     expect(cloud.upserted[0]).toMatchObject({ id: 'exam-local-1', user_id: 'user-123', total_points: 50 });
   });
+
+  it('половин точки се закръгляват само за облака (колоните са integer); точният резултат остава в текста', async () => {
+    cloud.session = { user: { id: 'user-123' } };
+    const half = { ...localAttempt, id: 'exam-half', module1Points: 20, module2Points: 15.5, module3Points: 0, totalPoints: 35.5, gradeEquivalent: '35,5 / 100 точки', gradeNumeric: null };
+    store.studybg_exam_history = JSON.stringify([half]);
+
+    await examHistoryService.syncWithCloud();
+
+    expect(cloud.upserted[0]).toMatchObject({ module2_points: 16, total_points: 36, grade_equivalent: '35,5 / 100 точки' });
+    expect(examHistoryService.getAllAttempts()[0].totalPoints).toBe(35.5);
+  });
 });
 
 describe('examHistoryService.getAnalytics', () => {

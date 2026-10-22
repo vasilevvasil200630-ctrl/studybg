@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Search, BookOpen, Copy, Check, FileText, Layers, Award, Printer, ShieldCheck } from 'lucide-react';
+import { X, Search, BookOpen, Copy, Check, FileText, Layers, Award, Printer, ShieldCheck, Sigma } from 'lucide-react';
 import {
   MATH_FORMULA_SHEETS,
   LITERATURE_EXAM_MATRIX,
   SCIENCE_CONSTANTS
 } from '../data/monFormulaSheets';
+import { NVO10_MATH_FORMULAS } from '../data/formulaSheets/nvo10Math';
+import { FormulaSheetBrowser, FormulaSheetSource } from './exam-engine/FormulaSheetPanel';
 
 interface MonFormulaSheetsModalProps {
   onClose: () => void;
@@ -12,7 +14,8 @@ interface MonFormulaSheetsModalProps {
 
 export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ onClose }) => {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
-  const [activeTab, setActiveTab] = useState<'math' | 'literature' | 'science' | 'posters'>('math');
+  const [activeTab, setActiveTab] = useState<'official' | 'math' | 'literature' | 'science' | 'posters'>('official');
+  const isOfficial = activeTab === 'official';
   const [selectedPoster, setSelectedPoster] = useState<'bel_dzi' | 'math_all' | 'history_dates' | 'civics_eu' | 'dippk_stem'>('bel_dzi');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedText, setCopiedText] = useState<string | null>(null);
@@ -98,17 +101,18 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
           <div>
             <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-50 border border-blue-200 text-blue-700 mb-1">
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Официален свитък по стандартите на МОН</span>
+              <span>{isOfficial ? 'Официален лист на МОН' : 'Справочник на StudyBG'}</span>
             </div>
             <h2 id="mon-formula-sheets-title" className="text-xl sm:text-2xl font-bold text-slate-900">
               Справочник с формули, матрици и A4 Табла за Стена
             </h2>
             <p className="text-xs text-slate-600 mt-0.5">
-              Официално разрешените формули, литературни матрици и принтируеми A4 шпаргалки за бюрото.
+              Официалният лист с формули на МОН за НВО в X клас и справочниците на StudyBG: формули, литературни матрици и A4 табла за печат.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
+            {!isOfficial && (
             <button
               onClick={handlePrint}
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-xs font-bold text-white shadow-2xs transition-colors cursor-pointer"
@@ -116,6 +120,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
               <Printer className="w-3.5 h-3.5" />
               <span>Принтирай A4</span>
             </button>
+            )}
             <button
               onClick={onClose}
               className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-800 transition-colors cursor-pointer"
@@ -132,6 +137,19 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
           {/* Segmented Controls */}
           <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg bg-white border border-slate-200 w-full sm:w-auto shadow-2xs">
             <button
+              onClick={() => setActiveTab('official')}
+              aria-pressed={isOfficial}
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
+                isOfficial
+                  ? 'bg-blue-600 text-white font-semibold shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Sigma className="w-3.5 h-3.5" />
+              <span>НВО 10 — лист на МОН</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('math')}
               className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
                 activeTab === 'math'
@@ -140,7 +158,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
               }`}
             >
               <BookOpen className="w-3.5 h-3.5" />
-              <span>Математика</span>
+              <span>Математика (StudyBG)</span>
             </button>
 
             <button
@@ -181,6 +199,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
           </div>
 
           {/* Quick Search */}
+          {!isOfficial && (
           <div className="relative w-full sm:w-64">
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
@@ -191,10 +210,19 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
               className="w-full bg-white text-slate-900 placeholder-slate-400 pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-blue-600"
             />
           </div>
+          )}
 
         </div>
 
+        {/* Официалният лист на МОН — същото съдържание като панела „Формули“ в изпита */}
+        {isOfficial && (
+          <div className="flex h-[70vh] min-h-0 flex-col bg-slate-50/60 pt-4">
+            <FormulaSheetBrowser sheet={NVO10_MATH_FORMULAS} padX="px-5 sm:px-6" />
+          </div>
+        )}
+
         {/* Content Body */}
+        {!isOfficial && (
         <div className="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1 print:text-black">
           
           {/* MATH TAB */}
@@ -684,12 +712,17 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
           )}
 
         </div>
+        )}
 
         {/* Modal Footer */}
-        <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between text-xs text-slate-500 flex-shrink-0">
-          <span>StudyBG Справочник за НВО & ДЗИ (натисни Esc или кликни извън прозореца за затваряне)</span>
-          <span>Съгласувано с учебните програми на МОН</span>
-        </div>
+        {isOfficial ? (
+          <FormulaSheetSource sheet={NVO10_MATH_FORMULAS} className="p-4 border-t border-slate-200 bg-slate-50 flex-shrink-0" />
+        ) : (
+          <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between gap-3 text-xs text-slate-500 flex-shrink-0">
+            <span>Справочник на StudyBG за НВО и ДЗИ. Официалният лист на МОН е в първия раздел.</span>
+            <span className="hidden sm:inline">Esc или клик извън прозореца — затваряне</span>
+          </div>
+        )}
 
       </div>
     </dialog>

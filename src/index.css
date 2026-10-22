@@ -396,3 +396,8 @@ textarea {
     scroll-behavior: auto !important;
   }
 }
+
+/* Докато тече изпит (ExamRunner), долната лента на телефона отстъпва място на навигатора по задачите */
+body[data-exam-focus] [data-hide-in-exam] {
+  display: none;
+}

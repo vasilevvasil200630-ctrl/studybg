@@ -18,6 +18,8 @@ import { clearTestProgress, loadTestProgress, useTestProgressAutosave } from '..
 import { examHistoryService, type ExamAttemptRecord } from '../../services/examHistoryService';
 import { ExamFocusBar } from './ExamFocusBar';
 import { FormulaSheetPanel } from './FormulaSheetPanel';
+import { topicBreakdown, topicPercent, type TopicKey, type TopicScore } from '../../data/examTopics';
+import { saveTopicAttempt } from '../../lib/topicProgress';
 import { FORMULA_SHEETS } from '../../data/formulaSheets/nvo10Math';
 import { FIGURES } from './figures';
 import { MathText } from './MathText';
@@ -50,7 +52,11 @@ type Snapshot = {
 const fmt = (n: number): string => (Number.isInteger(n) ? String(n) : n.toFixed(1).replace('.', ','));
 
 export const PaperBadge: React.FC<{ paper: ExamPaper }> = ({ paper }) =>
-  paper.kind === 'sample' && paper.officialSourceUrl ? (
+  paper.kind === 'topic' ? (
+    <span className="inline-block rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-800">
+      Официални задачи по тема · ключ на МОН
+    </span>
+  ) : paper.kind === 'sample' && paper.officialSourceUrl ? (
     <a
       href={paper.officialSourceUrl}
       target="_blank"
@@ -138,9 +144,13 @@ interface ExamRunnerProps {
   paper: ExamPaper;
   /** Връщане към списъка с варианти */
   onExit: () => void;
+  /** Отваря тренировката по дадена тема (бутонът „Упражни“ в анализа по теми) */
+  onPracticeTopic?: (key: TopicKey) => void;
+  /** Темите, за които има тренировка, различна от текущия набор */
+  practiceTopics?: TopicKey[];
 }
 
-export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
+export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPracticeTopic, practiceTopics = [] }) => {
   const progressKey = `paper:${paper.id}`;
   const timed = !paper.untimed;
   const fullSeconds = paper.durationMinutes * 60;
@@ -187,6 +197,12 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
   const resultById = useMemo(() => new Map(result.questions.map((q) => [q.id, q])), [result]);
   const answeredCount = questions.filter((q) => isAnswered(q, { answers, drafts, openScores })).length;
   const unscored = countUnscored(questions, openScores);
+  const topics = useMemo(() => topicBreakdown(paper, result), [paper, result]);
+
+  // Резултатът по теми се пази след предаване и се обновява при самооценката
+  useEffect(() => {
+    if (submitted) saveTopicAttempt(paper.id, topics);
+  }, [submitted, topics, paper.id]);
 
   const submit = useCallback(() => {
     spentRef.current = Math.round((Date.now() - startedAtRef.current) / 1000);
@@ -322,7 +338,17 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
         </div>
       )}
 
-      {submitted && <ResultPanel result={result} unscored={unscored} onRestart={reset} onExit={exit} />}
+      {submitted && (
+        <ResultPanel
+          result={result}
+          unscored={unscored}
+          onRestart={reset}
+          onExit={exit}
+          topics={topics}
+          practiceTopics={practiceTopics}
+          onPracticeTopic={onPracticeTopic}
+        />
+      )}
 
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_260px]">
         <div className="min-w-0">
@@ -388,7 +414,15 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit }) => {
 /* Резултат                                                           */
 /* ------------------------------------------------------------------ */
 
-const ResultPanel: React.FC<{ result: PaperResult; unscored: number; onRestart: () => void; onExit: () => void }> = ({ result, unscored, onRestart, onExit }) => {
+const ResultPanel: React.FC<{
+  result: PaperResult;
+  unscored: number;
+  onRestart: () => void;
+  onExit: () => void;
+  topics: TopicScore[];
+  practiceTopics: TopicKey[];
+  onPracticeTopic?: (key: TopicKey) => void;
+}> = ({ result, unscored, onRestart, onExit, topics, practiceTopics, onPracticeTopic }) => {
   const percent = result.maxPoints > 0 ? Math.round((result.totalPoints / result.maxPoints) * 100) : 0;
   return (
     <section role="status" aria-live="polite" className="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8">
@@ -434,7 +468,56 @@ const ResultPanel: React.FC<{ result: PaperResult; unscored: number; onRestart: 
         <strong className="tabular-nums">{fmt(result.selfAssessedPoints)} т.</strong>
         {unscored > 0 && ` — оцени още ${unscored} ${unscored === 1 ? 'отговор' : 'отговора'} по еталона по-долу; резултатът ще се обнови.`}
       </p>
+
+      {topics.length > 1 && <TopicAnalysis topics={topics} practiceTopics={practiceTopics} onPracticeTopic={onPracticeTopic} />}
     </section>
+  );
+};
+
+/** Резултатът по теми: най-слабата тема е отбелязана и води към тренировка по нея */
+const TopicAnalysis: React.FC<{ topics: TopicScore[]; practiceTopics: TopicKey[]; onPracticeTopic?: (key: TopicKey) => void }> = ({
+  topics,
+  practiceTopics,
+  onPracticeTopic,
+}) => {
+  const weakest = topics.filter((t) => t.points < t.maxPoints).sort((a, b) => topicPercent(a) - topicPercent(b) || b.maxPoints - a.maxPoints)[0];
+  return (
+    <div className="mt-6 border-t border-slate-100 pt-5">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h3 className="text-sm font-bold text-slate-900">По теми</h3>
+        <p className="text-xs text-slate-500">Задачите със свободен отговор се броят след самооценката.</p>
+      </div>
+      <ul className="mt-3 space-y-2.5">
+        {topics.map((t) => {
+          const pct = topicPercent(t);
+          const isWeakest = weakest?.key === t.key;
+          const canPractice = !!onPracticeTopic && practiceTopics.includes(t.key);
+          return (
+            <li key={t.key} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 sm:grid-cols-[13rem_minmax(0,1fr)_auto]">
+              <span className="flex min-w-0 items-center gap-2 text-sm text-slate-700">
+                <span className="truncate">{t.label}</span>
+                {isWeakest && <span className="shrink-0 rounded bg-amber-50 px-1.5 py-0.5 text-[11px] font-semibold text-amber-800 ring-1 ring-inset ring-amber-200">най-слаба</span>}
+              </span>
+              <span className="order-3 col-span-2 h-2 overflow-hidden rounded-full bg-slate-100 sm:order-none sm:col-span-1" aria-hidden="true">
+                <span className={`block h-full rounded-full ${pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-brand-sapphire' : 'bg-amber-400'}`} style={{ width: `${pct}%` }} />
+              </span>
+              <span className="flex items-center justify-end gap-2 text-sm tabular-nums">
+                <span className="font-semibold text-slate-900">{fmt(t.points)}/{fmt(t.maxPoints)}</span>
+                {isWeakest && canPractice && (
+                  <button
+                    type="button"
+                    onClick={() => onPracticeTopic?.(t.key)}
+                    className="rounded-md border border-brand-sapphire/30 bg-brand-sapphire-soft px-2 py-0.5 text-xs font-semibold text-brand-ink hover:bg-blue-100"
+                  >
+                    Упражни
+                  </button>
+                )}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 };
 

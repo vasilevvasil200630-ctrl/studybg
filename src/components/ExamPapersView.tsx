@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { ChevronDown, Clock, ExternalLink, FileText, ListChecks } from 'lucide-react';
+import { ChevronDown, Clock, ExternalLink, FileText, ListChecks, Target } from 'lucide-react';
 import { EXAM_PAPERS } from '../data/examPapers';
 import { NVO10_FORMAT_2027, nvo10FormatTag } from '../data/examFormats';
+import { TOPICS, TOPIC_BY_KEY, topicPercent, type TopicKey } from '../data/examTopics';
+import { TOPIC_PAPERS, topicPaperId } from '../data/topicPapers';
 import type { ExamPaper } from '../lib/examPaperScoring';
+import { loadTopicStats, type TopicStat } from '../lib/topicProgress';
 import { ExamRunner, PaperBadge } from './exam-engine/ExamRunner';
 
 /**
  * Пълни изпитни варианти с ключ. Списъкът избира вариант, а ExamRunner го провежда
  * (двигателят от Матура Плюс: таймер, навигатор, чернова, запазване, самооценка, история).
- * Вариантите са групирани по изпит; за НВО 10 отгоре стои форматът за 2027 г. по модела на МОН.
+ * Вариантите са групирани по изпит; за НВО 10 отгоре стои форматът за 2027 г. по модела на МОН,
+ * а под вариантите — тренировка по тема с последния резултат по всяка тема.
  */
 
 type ExamFilter = 'all' | ExamPaper['exam'];
@@ -19,12 +23,40 @@ const EXAM_ORDER: ExamPaper['exam'][] = ['НВО 10', 'ДЗИ'];
 const byRelevance = (a: ExamPaper, b: ExamPaper) =>
   (a.kind === b.kind ? 0 : a.kind === 'official' ? -1 : 1) || (b.year ?? 0) - (a.year ?? 0);
 
+const ALL_PAPERS: ExamPaper[] = [...EXAM_PAPERS, ...TOPIC_PAPERS];
+
+/** Къде се упражнява всяка тема: по математика — набор по тема, за другите предмети — примерните задачи на МОН */
+const SUBJECT_SETS: Partial<Record<TopicKey, string>> = { bio: 'sample-nvo10-bio', chem: 'sample-nvo10-chem', phys: 'sample-nvo10-phys', geo: 'sample-nvo10-geo' };
+const practicePaperFor = (key: TopicKey): string | null => {
+  const id = TOPIC_BY_KEY[key].area === 'math' ? topicPaperId(key) : SUBJECT_SETS[key];
+  return id && ALL_PAPERS.some((p) => p.id === id) ? id : null;
+};
+
 export const ExamPapersView: React.FC = () => {
   const [paperId, setPaperId] = useState<string | null>(null);
   const [filter, setFilter] = useState<ExamFilter>('all');
-  const paper = EXAM_PAPERS.find((p) => p.id === paperId) ?? null;
+  const paper = ALL_PAPERS.find((p) => p.id === paperId) ?? null;
 
-  if (paper) return <ExamRunner key={paper.id} paper={paper} onExit={() => setPaperId(null)} />;
+  if (paper) {
+    const practiceTopics = TOPICS.map((t) => t.key).filter((k) => {
+      const id = practicePaperFor(k);
+      return id !== null && id !== paper.id;
+    });
+    return (
+      <ExamRunner
+        key={paper.id}
+        paper={paper}
+        onExit={() => setPaperId(null)}
+        practiceTopics={practiceTopics}
+        onPracticeTopic={(k) => {
+          const id = practicePaperFor(k);
+          if (!id) return;
+          setPaperId(id);
+          window.scrollTo({ top: 0 });
+        }}
+      />
+    );
+  }
 
   const exams = EXAM_ORDER.filter((e) => EXAM_PAPERS.some((p) => p.exam === e));
   const shown = filter === 'all' ? exams : exams.filter((e) => e === filter);
@@ -76,6 +108,7 @@ export const ExamPapersView: React.FC = () => {
                 <PaperCard key={p.id} paper={p} onStart={() => setPaperId(p.id)} />
               ))}
             </ul>
+            {exam === 'НВО 10' && TOPIC_PAPERS.length > 0 && <TopicPractice onStart={setPaperId} />}
             {samples.length > 0 && (
               <div className="space-y-3 pt-4">
                 <div>
@@ -237,6 +270,74 @@ const Nvo10FormatCard: React.FC = () => {
           ))}
         </ul>
       </details>
+    </div>
+  );
+};
+
+/** Тренировка по тема: всички официални задачи по една тема, с последния резултат по нея */
+const TopicPractice: React.FC<{ onStart: (paperId: string) => void }> = ({ onStart }) => {
+  const stats = loadTopicStats();
+  const mathTopics = TOPICS.filter((t) => t.area === 'math');
+  const scored = mathTopics.filter((t) => (stats[t.key]?.maxPoints ?? 0) > 0);
+  const weakest = scored
+    .map((t) => ({ key: t.key, pct: topicPercent(stats[t.key] as TopicStat), max: (stats[t.key] as TopicStat).maxPoints }))
+    .filter((x) => x.pct < 100)
+    // при равен процент — темата с повече точки (същото правило като в анализа след изпита)
+    .sort((a, b) => a.pct - b.pct || b.max - a.max)[0]?.key;
+  return (
+    <div className="space-y-3 pt-4">
+      <div>
+        <h5 className="text-base font-bold text-slate-900">Тренировка по тема</h5>
+        <p className="mt-1 max-w-3xl text-sm leading-relaxed text-slate-600">
+          Всички задачи по една тема от официалните варианти 2021–2026, с ключа на МОН и без таймер.
+          {scored.length > 0
+            ? ' Процентите са от последния ти опит на всеки вариант или набор.'
+            : ' След като решиш вариант, тук ще виждаш резултата си по всяка тема.'}
+        </p>
+      </div>
+      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {mathTopics.map((t) => {
+          const p = TOPIC_PAPERS.find((x) => x.id === topicPaperId(t.key));
+          if (!p) return null;
+          const count = p.sections.reduce((n, sec) => n + sec.questions.length, 0);
+          const stat = stats[t.key];
+          const pct = stat && stat.maxPoints > 0 ? topicPercent(stat) : null;
+          const isWeakest = weakest === t.key;
+          return (
+            <li
+              key={t.key}
+              className={`flex flex-col gap-2 rounded-2xl border bg-white p-4 ${isWeakest ? 'border-amber-300 ring-1 ring-amber-200' : 'border-slate-200'}`}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <p className="text-sm font-bold text-slate-900">{t.label}</p>
+                {isWeakest && <span className="shrink-0 rounded bg-amber-50 px-1.5 py-0.5 text-[11px] font-semibold text-amber-800 ring-1 ring-inset ring-amber-200">най-слаба</span>}
+              </div>
+              <p className="text-xs leading-relaxed text-slate-500">{t.scope}</p>
+              <p className="text-xs font-medium text-slate-600 tabular-nums">{count} задачи · {p.sections.length} години</p>
+              {pct !== null ? (
+                <div className="space-y-1">
+                  <div className="h-1.5 overflow-hidden rounded-full bg-slate-100" aria-hidden="true">
+                    <div className={`h-full rounded-full ${pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-brand-sapphire' : 'bg-amber-400'}`} style={{ width: `${pct}%` }} />
+                  </div>
+                  <p className="text-xs text-slate-600 tabular-nums">
+                    Последно: <span className="font-semibold text-slate-900">{pct}%</span> ({String(Math.round(stat!.points * 10) / 10).replace('.', ',')} от {stat!.maxPoints} т.)
+                  </p>
+                </div>
+              ) : (
+                <p className="text-xs text-slate-400">Още няма решени задачи по темата</p>
+              )}
+              <button
+                type="button"
+                onClick={() => onStart(p.id)}
+                className="mt-auto inline-flex items-center justify-center gap-1.5 self-start rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:border-brand-sapphire/40 hover:bg-brand-sapphire-soft hover:text-brand-ink"
+              >
+                <Target className="h-3.5 w-3.5" aria-hidden="true" />
+                Упражни
+              </button>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 };

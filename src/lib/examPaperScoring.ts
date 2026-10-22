@@ -114,9 +114,10 @@ export interface ExamPaper {
   subject: string;
   /**
    * 'practice' = тренировъчен вариант на StudyBG; 'official' = преписан официален вариант на МОН;
-   * 'sample' = примерни задачи, публикувани от МОН (без ключ — отговорите са изчислени от StudyBG)
+   * 'sample' = примерни задачи, публикувани от МОН (без ключ — отговорите са изчислени от StudyBG);
+   * 'topic' = официални задачи от няколко варианта, събрани по тема (ключът е на МОН)
    */
-  kind: 'practice' | 'official' | 'sample';
+  kind: 'practice' | 'official' | 'sample' | 'topic';
   /** Задължителен за kind === 'official' и 'sample' (https връзка към PDF на МОН) */
   officialSourceUrl?: string;
   year?: number;
@@ -143,7 +144,7 @@ export function validateExamPaper(paper: ExamPaper): string[] {
   const errors: string[] = [];
   const where = (q: PaperQuestion) => `${paper.id} / зад. ${q.number} (${q.id})`;
 
-  if (paper.kind === 'official' || paper.kind === 'sample') {
+  if (paper.kind === 'official' || paper.kind === 'sample' || paper.kind === 'topic') {
     if (!paper.officialSourceUrl?.startsWith('https://')) {
       errors.push(`${paper.id}: официален вариант или примерни задачи без https officialSourceUrl`);
     }

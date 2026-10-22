@@ -638,26 +638,14 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-slate-900 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/20 border border-blue-400/40 text-blue-300 text-xs font-bold">
-            <Mic className="w-3.5 h-3.5 text-blue-400" />
-            <span>ГЛАСОВ И ПИСМЕН ТРЕНАЖОР • {lessons.length} УРОКА + ДИППК КОМИСИЯ (ТРЕТА СПК) + ВУЗ</span>
-          </div>
-          <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
-            Устно Изпитване & Защита пред Държавна Изпитна Комисия (6.00)
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-            Тренирай устно изпитване пред дъската, защита на Дипломен проект по Наредба № 1 за Трета СПК с контравъпроси на комисията или академично събеседване за ВУЗ.
-          </p>
-        </div>
+      <div className="flex flex-wrap items-center gap-3">
 
         <button
           onClick={handleRandomBoardCall}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-amber-950 text-xs font-black shadow-sm transition-colors shrink-0 cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-brand-sapphire hover:bg-brand-sapphire-dark text-white text-xs font-bold shadow-sm transition-colors shrink-0 cursor-pointer"
         >
           <Shuffle className="w-4 h-4" />
-          <span>🎲 Изтегли случаен билет</span>
+          <span>Изтегли случаен билет</span>
         </button>
       </div>
 
@@ -677,7 +665,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
               : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200'
           }`}
         >
-          <div className="text-xs font-black">📚 1. Устно пред дъската (МОН Уроци)</div>
+          <div className="text-xs font-bold">1. Устно пред дъската (МОН Уроци)</div>
           <div className={`text-[11px] mt-0.5 ${oralMode === 'lesson' ? 'text-blue-100' : 'text-slate-500'}`}>
             Всички {lessons.length} урока от 5. до 12. клас с гласов радар
           </div>
@@ -694,11 +682,11 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
           }}
           className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
             oralMode === 'dippk'
-              ? 'bg-emerald-700 text-white border-emerald-700 shadow-sm'
+              ? 'bg-brand-sapphire text-white border-brand-sapphire shadow-sm'
               : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200'
           }`}
         >
-          <div className="text-xs font-black">🛠️ 2. ДИППК Защита пред Комисия (Трета СПК)</div>
+          <div className="text-xs font-bold">2. ДИППК Защита пред Комисия (Трета СПК)</div>
           <div className={`text-[11px] mt-0.5 ${oralMode === 'dippk' ? 'text-emerald-100' : 'text-slate-500'}`}>
             6 дипломни защити (IT, Ядрена/Електро, СГСАГ, НТБГ, CNC, Биотех)
           </div>
@@ -719,7 +707,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
               : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200'
           }`}
         >
-          <div className="text-xs font-black">🎓 3. Академично събеседване за ВУЗ</div>
+          <div className="text-xs font-bold">3. Академично събеседване за ВУЗ</div>
           <div className={`text-[11px] mt-0.5 ${oralMode === 'university' ? 'text-amber-100' : 'text-slate-500'}`}>
             Колоквиум за СУ (ФМИ/Право), МУ (Медицина) и ТУ / УАСГ
           </div>
@@ -808,14 +796,14 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
                     }}
                     className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                       isSelected
-                        ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                        ? 'bg-brand-sapphire text-white border-brand-sapphire shadow-xs'
                         : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'
                     }`}
                   >
-                    <div className={`text-[10px] font-mono font-bold uppercase ${isSelected ? 'text-amber-300' : 'text-blue-700'}`}>
+                    <div className={`text-[10px] tabular-nums font-bold uppercase ${isSelected ? 'text-amber-300' : 'text-blue-700'}`}>
                       {ticket.code}
                     </div>
-                    <div className="text-xs font-extrabold mt-0.5 line-clamp-2">{ticket.title}</div>
+                    <div className="text-xs font-bold mt-0.5 line-clamp-2">{ticket.title}</div>
                     <div className={`text-[10px] mt-1 line-clamp-1 ${isSelected ? 'text-slate-300' : 'text-slate-500'}`}>
                       {ticket.specialty}
                     </div>
@@ -841,7 +829,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
                       : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300'
                   }`}
                 >
-                  {qIdx === 0 ? '🎯 Основно експозе на проекта' : `⚡ Контравъпрос #${qIdx} от Комисията`}
+                  {qIdx === 0 ? 'Основно експозе на проекта' : `Контравъпрос #${qIdx} от Комисията`}
                 </button>
               ))}
             </div>
@@ -865,7 +853,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
                   : activeSpecialTicket.code}
               </span>
             </div>
-            <h3 className="text-base sm:text-lg font-extrabold text-slate-900 leading-snug">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
               „{activeQuestion}“
             </h3>
           </div>
@@ -903,7 +891,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
               <span>МОН Радар на задължителните понятия за Отличен 6.00 (светват при споменаване):</span>
             </span>
-            <span className="font-mono font-bold text-blue-800 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
+            <span className="tabular-nums font-bold text-blue-800 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
               Покрити: {matchedKeywords.length} / {rubricKeywords.length}
             </span>
           </div>
@@ -923,7 +911,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
                   title={`Кликни, за да вмъкнеш или виж жокер: ${rk.hint}`}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
                     isMatched
-                      ? 'bg-emerald-700 text-white border-emerald-600 shadow-2xs'
+                      ? 'bg-brand-sapphire text-white border-brand-sapphire shadow-2xs'
                       : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300'
                   }`}
                 >
@@ -954,7 +942,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
                 }`}
               >
                 {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
-                <span>{isListening ? 'Слушам... (Спри микрофона)' : '🎙️ Диктувай с микрофон'}</span>
+                <span>{isListening ? 'Слушам... (Спри микрофона)' : 'Диктувай с микрофон'}</span>
               </button>
 
               <button
@@ -1016,7 +1004,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 disabled:opacity-40 text-white text-xs sm:text-sm font-bold shadow-xs transition-all cursor-pointer"
             >
               {isAiEvaluating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-              <span>{isAiEvaluating ? 'Комисията оценява...' : `🤖 AI оценка от комисията (${AI_EXAMINER_LABEL})`}</span>
+              <span>{isAiEvaluating ? 'Комисията оценява...' : `AI оценка от комисията (${AI_EXAMINER_LABEL})`}</span>
             </button>
 
             <button
@@ -1036,7 +1024,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
           <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4 animate-in fade-in duration-200">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
               <div className="flex items-center gap-3">
-                <span className={`px-3.5 py-1.5 rounded-xl text-sm font-black ${evaluation.color}`}>
+                <span className={`px-3.5 py-1.5 rounded-xl text-sm font-bold ${evaluation.color}`}>
                   {aiOralEval ? aiOralEval.gradeLabel : evaluation.label}
                 </span>
                 <span className="text-xs text-slate-600 font-medium">
@@ -1054,11 +1042,11 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
             {aiOralEval && (
               <div className="p-4 rounded-xl bg-blue-950 text-white border border-blue-700 space-y-3">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-black uppercase tracking-wider text-blue-300 flex items-center gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wider text-blue-300 flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4 text-amber-400" />
                     <span>Рецензия от председателя на комисията ({AI_EXAMINER_LABEL}):</span>
                   </span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-amber-950 text-xs font-black">
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-amber-950 text-xs font-bold">
                     {aiOralEval.gradeLabel}
                   </span>
                 </div>
@@ -1067,20 +1055,20 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
                   <div className="p-3 rounded-xl bg-white/10 border border-white/10 space-y-1">
-                    <div className="text-[11px] font-bold text-emerald-300 uppercase">✅ Силни страни в защитата:</div>
+                    <div className="text-[11px] font-bold text-emerald-300 uppercase">Силни страни в защитата:</div>
                     {aiOralEval.strengths.map((s, idx) => (
                       <div key={idx} className="text-xs text-slate-200">• {s}</div>
                     ))}
                   </div>
                   <div className="p-3 rounded-xl bg-white/10 border border-white/10 space-y-1">
-                    <div className="text-[11px] font-bold text-amber-300 uppercase">⚠️ Какво да добавиш за 6.00:</div>
+                    <div className="text-[11px] font-bold text-amber-300 uppercase">Какво да добавиш за 6.00:</div>
                     {aiOralEval.missingPoints.map((m, idx) => (
                       <div key={idx} className="text-xs text-slate-200">• {m}</div>
                     ))}
                   </div>
                 </div>
                 <div className="p-3 rounded-xl bg-amber-500/20 border border-amber-400/40 text-xs text-amber-200 font-semibold">
-                  ⚡ Допълнителен контравъпрос от комисията: „{aiOralEval.followUpQuestion}“
+                  Допълнителен контравъпрос от комисията: „{aiOralEval.followUpQuestion}“
                 </div>
               </div>
             )}
@@ -1114,7 +1102,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
       {gradeBook.length > 0 && (
         <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               <Award className="w-4 h-4 text-amber-600" />
               <span>Електронен Бележник от устни изпитвания ({gradeBook.length})</span>
             </h3>
@@ -1134,7 +1122,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
               <div key={entry.id} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
                 <div className="flex items-center justify-between text-[11px]">
                   <span className="font-bold text-blue-700 truncate">{entry.subject}</span>
-                  <span className="font-mono font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-900">
+                  <span className="tabular-nums font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-900">
                     {entry.gradeLabel}
                   </span>
                 </div>

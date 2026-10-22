@@ -66,7 +66,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = (props) => {
 
   const tabClass = (active: boolean) =>
     `px-3.5 py-2 rounded-xl text-xs font-semibold border transition-colors ${
-      active ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400'
+      active ? 'bg-brand-sapphire text-white border-brand-sapphire' : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400'
     }`;
 
   return (
@@ -136,7 +136,7 @@ const ExamSimulatorScreen: React.FC<ExamSimulatorScreenProps> = (props) => {
         {isExamRunning && (
           <div className="pt-6 mt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3 text-xs text-slate-600">
-              <span>Оставащо време: <strong className="font-mono text-slate-900">{formatTimer(secondsLeft)}</strong></span>
+              <span>Оставащо време: <strong className="tabular-nums text-slate-900">{formatTimer(secondsLeft)}</strong></span>
               <span>•</span>
               <span>Попълнени: {mod1CompletedCount} въпроса, {mod2CompletedCount} задачи от извора</span>
             </div>

@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-22T00:00:00.000Z",
+  "title": "Design System: StudyBG",
+  "extensions": {
+    "colorMeta": {
+      "sapphire": { "role": "primary", "displayName": "Matura Sapphire", "canonical": "#1a6fb8", "tonalRamp": ["#0a2a47", "#10406a", "#134d80", "#165c9a", "#1a6fb8", "#5ea5dd", "#c6def4", "#f2f8fd"] },
+      "sapphire-dark": { "role": "primary", "displayName": "Sapphire Deep", "canonical": "#165c9a", "tonalRamp": ["#0a2a47", "#10406a", "#134d80", "#165c9a", "#1a6fb8", "#5ea5dd", "#c6def4", "#f2f8fd"] },
+      "sapphire-soft": { "role": "primary", "displayName": "Sapphire Mist", "canonical": "#f2f8fd", "tonalRamp": ["#0a2a47", "#134d80", "#1a6fb8", "#2f88cf", "#5ea5dd", "#98c4ea", "#e3effa", "#f2f8fd"] },
+      "sapphire-tint": { "role": "primary", "displayName": "Sapphire Tint", "canonical": "#e3effa", "tonalRamp": ["#0a2a47", "#134d80", "#1a6fb8", "#2f88cf", "#5ea5dd", "#98c4ea", "#c6def4", "#e3effa"] },
+      "sapphire-line": { "role": "primary", "displayName": "Sapphire Line", "canonical": "#c6def4", "tonalRamp": ["#0a2a47", "#134d80", "#1a6fb8", "#2f88cf", "#5ea5dd", "#98c4ea", "#c6def4", "#f2f8fd"] },
+      "sapphire-sky": { "role": "primary", "displayName": "Sapphire Sky", "canonical": "#2f88cf", "tonalRamp": ["#0a2a47", "#10406a", "#165c9a", "#1a6fb8", "#2f88cf", "#5ea5dd", "#98c4ea", "#f2f8fd"] },
+      "brand-ink": { "role": "primary", "displayName": "Brand Ink", "canonical": "#0a4b82", "tonalRamp": ["#041d33", "#072d4c", "#07345b", "#083d6b", "#0a4b82", "#2f88cf", "#98c4ea", "#f2f8fd"] },
+      "emerald": { "role": "secondary", "displayName": "Matura Emerald", "canonical": "#1ea858", "tonalRamp": ["#06301a", "#0f4528", "#135631", "#157a40", "#1ea858", "#48c983", "#b5eccb", "#eefbf4"] },
+      "emerald-text": { "role": "secondary", "displayName": "Emerald Ink", "canonical": "#157a40", "tonalRamp": ["#06301a", "#0f4528", "#135631", "#136c3a", "#157a40", "#48c983", "#b5eccb", "#eefbf4"] },
+      "emerald-wordmark": { "role": "secondary", "displayName": "Wordmark Emerald", "canonical": "#136c3a", "tonalRamp": ["#06301a", "#0f4528", "#135631", "#136c3a", "#157a40", "#1ea858", "#82deaa", "#eefbf4"] },
+      "emerald-soft": { "role": "secondary", "displayName": "Emerald Mist", "canonical": "#edf9f2", "tonalRamp": ["#06301a", "#135631", "#157a40", "#1ea858", "#48c983", "#82deaa", "#d8f5e4", "#edf9f2"] },
+      "emerald-line": { "role": "secondary", "displayName": "Emerald Line", "canonical": "#82deaa", "tonalRamp": ["#06301a", "#0f4528", "#135631", "#157a40", "#1ea858", "#48c983", "#82deaa", "#eefbf4"] },
+      "mysteries-amber": { "role": "tertiary", "displayName": "Mysteries Amber", "canonical": "#b45309", "tonalRamp": ["#461901", "#78350f", "#92400e", "#b45309", "#d97706", "#fbbf24", "#fde68a", "#fffbeb"] },
+      "mysteries-amber-ink": { "role": "tertiary", "displayName": "Mysteries Ink", "canonical": "#92400e", "tonalRamp": ["#461901", "#78350f", "#92400e", "#b45309", "#d97706", "#fbbf24", "#fde68a", "#fffbeb"] },
+      "mysteries-amber-soft": { "role": "tertiary", "displayName": "Mysteries Parchment", "canonical": "#fffbeb", "tonalRamp": ["#461901", "#78350f", "#b45309", "#d97706", "#fbbf24", "#fde68a", "#fef3c7", "#fffbeb"] },
+      "mysteries-amber-line": { "role": "tertiary", "displayName": "Mysteries Line", "canonical": "#fef3c7", "tonalRamp": ["#461901", "#78350f", "#b45309", "#d97706", "#fbbf24", "#fde68a", "#fef3c7", "#fffbeb"] },
+      "error-rose": { "role": "error", "displayName": "Error Rose", "canonical": "#e11d48", "tonalRamp": ["#4d0218", "#881337", "#9f1239", "#be123c", "#e11d48", "#fb7185", "#fecdd3", "#fff1f2"] },
+      "error-rose-soft": { "role": "error", "displayName": "Error Rose Mist", "canonical": "#fff1f2", "tonalRamp": ["#4d0218", "#9f1239", "#e11d48", "#fb7185", "#fda4af", "#fecdd3", "#ffe4e6", "#fff1f2"] },
+      "body-ink": { "role": "neutral", "displayName": "Body Ink", "canonical": "#09090b", "tonalRamp": ["#09090b", "#18181b", "#27272a", "#3f3f46", "#71717a", "#a1a1aa", "#e4e4e7", "#fafafa"] },
+      "slate-heading": { "role": "neutral", "displayName": "Slate Heading", "canonical": "#0f172a", "tonalRamp": ["#020617", "#0f172a", "#1e293b", "#334155", "#64748b", "#94a3b8", "#e2e8f0", "#f8fafc"] },
+      "slate-strong": { "role": "neutral", "displayName": "Slate Strong", "canonical": "#334155", "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#e2e8f0", "#f8fafc"] },
+      "slate-body": { "role": "neutral", "displayName": "Slate Body", "canonical": "#475569", "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#e2e8f0", "#f8fafc"] },
+      "slate-muted": { "role": "neutral", "displayName": "Slate Muted", "canonical": "#64748b", "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#e2e8f0", "#f8fafc"] },
+      "slate-icon": { "role": "neutral", "displayName": "Slate Icon", "canonical": "#94a3b8", "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#f8fafc"] },
+      "slate-border": { "role": "neutral", "displayName": "Slate Border", "canonical": "#e2e8f0", "tonalRamp": ["#0f172a", "#334155", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#f1f5f9", "#f8fafc"] },
+      "slate-divider": { "role": "neutral", "displayName": "Slate Divider", "canonical": "#f1f5f9", "tonalRamp": ["#0f172a", "#334155", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#f1f5f9", "#f8fafc"] },
+      "slate-wash": { "role": "neutral", "displayName": "Slate Wash", "canonical": "#f8fafc", "tonalRamp": ["#0f172a", "#334155", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#f1f5f9", "#f8fafc"] },
+      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "#ffffff", "tonalRamp": ["#0f172a", "#334155", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#f8fafc", "#ffffff"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The single centered hero h1 on the home page; one phrase in solid sapphire." },
+      "page-title": { "displayName": "Page Title", "purpose": "The h1 of every study screen (24px to 30px), followed by one sentence of description; text from studyNav." },
+      "headline": { "displayName": "Headline", "purpose": "Home section h2s and feature-card headings (20–36px responsive)." },
+      "title": { "displayName": "Title", "purpose": "Card, portal and widget titles; trainer question text at 600." },
+      "body": { "displayName": "Body", "purpose": "Card descriptions and running copy in slate-600." },
+      "body-lead": { "displayName": "Body Lead", "purpose": "Hero subtitle, 16–18px, max 42rem, text-pretty." },
+      "nav-item": { "displayName": "Nav Item", "purpose": "Sidebar items, 14px/600; the site header uses 13px/600." },
+      "label": { "displayName": "Label", "purpose": "Buttons, chips, badges, pills and meta rows; sentence case." },
+      "nav-group": { "displayName": "Nav Group", "purpose": "Sidebar group titles only: 11px/700 uppercase, slate-500. Never above a page or section heading." },
+      "numeral": { "displayName": "Numeral", "purpose": "Focus-timer readout and telemetry figures, tabular." }
+    },
+    "ground": {
+      "body": "background-color: #ffffff; background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(26, 111, 184, 0.06), transparent 70%); background-repeat: no-repeat; color: #09090b;",
+      "selection": "background-color: rgba(10, 75, 130, 0.15); color: #165c9a;",
+      "focusRing": "outline: 2px solid #1a6fb8; outline-offset: 2px;",
+      "caret": "#1a6fb8",
+      "colorScheme": "light",
+      "themeColor": "#ffffff",
+      "lightPanel": "background: rgb(242 248 253 / 0.6); border: 1px solid #e3effa; color: #0f172a;",
+      "darkDataCanvas": "background: #0f172a; border: 1px solid #334155; (chart and map canvases in MathStemLab, HistoryGeoAtlasLab, CultureMysticMapView only)",
+      "logoBookGradient": "linear-gradient(#0a4b82, #2f88cf)",
+      "tricolourHairline": "#ffffff (slate-300 edge), #00966E, #D62612; 2.5px, wordmark only"
+    },
+    "shadows": [
+      { "name": "hairline", "value": "0 1px rgb(0 0 0 / 0.05)", "purpose": "Icon tiles in dropdowns and small inline chips." },
+      { "name": "hairline-lift", "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "purpose": "Active sidebar item, segmented thumbs, badges, icon tiles, secondary buttons." },
+      { "name": "resting-card", "value": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)", "purpose": "Cards, light panels and solid buttons." },
+      { "name": "sapphire-resting", "value": "0 1px 3px 0 rgb(47 136 207 / 0.1), 0 1px 2px -1px rgb(47 136 207 / 0.1)", "purpose": "Hero search field and demo panel; echoes the top glow." },
+      { "name": "portal-hover", "value": "0 4px 6px -1px rgb(47 136 207 / 0.1), 0 2px 4px -2px rgb(47 136 207 / 0.1)", "purpose": "Portal cards on hover (amber equivalent on the Mysteries portal)." },
+      { "name": "overlay", "value": "0 10px 15px -3px rgb(15 23 42 / 0.1), 0 4px 6px -4px rgb(15 23 42 / 0.1)", "purpose": "Search results panel and navbar dropdowns." },
+      { "name": "drawer", "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)", "purpose": "The sidebar while open as a mobile drawer." }
+    ],
+    "motion": [
+      { "name": "color-transition", "value": "150ms cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Default hover/state transition for colors and borders." },
+      { "name": "drawer-slide", "value": "transform 200ms (translateX(-100%) to 0)", "purpose": "Sidebar drawer below lg." },
+      { "name": "press-scale", "value": "transform: scale(0.98)", "purpose": "Active state of solid buttons." },
+      { "name": "arrow-nudge", "value": "transform: translateX(4px)", "purpose": "Arrow icon in portal titles on group hover." },
+      { "name": "logo-scale", "value": "transform: scale(1.05)", "purpose": "Logo on hover in the site header." },
+      { "name": "reduced-motion", "value": "animation/transition-duration: 0.01ms", "purpose": "All motion collapses under prefers-reduced-motion." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px", "note": "Sidebar becomes sticky (256px); bottom nav and page-header lesson actions hide." },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Solid sapphire action; one per screen.",
+      "html": "<button class=\"ds-btn-primary\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"/></svg><span>Пълен каталог</span></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 20px; border: none; border-radius: 8px; background: var(--color-brand-sapphire, #1a6fb8); color: #fff; font-family: Geist, 'Geist Fallback', system-ui, sans-serif; font-size: 14px; font-weight: 700; box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); cursor: pointer; transition: background-color 150ms cubic-bezier(0.4,0,0.2,1), transform 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-primary:hover { background: var(--color-brand-sapphire-dark, #165c9a); } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:focus-visible { outline: 2px solid #1a6fb8; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "White outlined button for every non-primary action (\"Сканирай\", \"Смени урока\").",
+      "html": "<button class=\"ds-btn-secondary\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#64748b\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z\"/><circle cx=\"12\" cy=\"13\" r=\"3\"/></svg><span>Сканирай</span></button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 20px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; color: #334155; font-family: Geist, 'Geist Fallback', system-ui, sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-secondary:hover { background: #f8fafc; } .ds-btn-secondary:focus-visible { outline: 2px solid #1a6fb8; outline-offset: 2px; }"
+    },
+    {
+      "name": "App Sidebar",
+      "kind": "nav",
+      "refersTo": "sidebar-item-active",
+      "description": "White study-screen sidebar: logo row, current-lesson card, grouped items, solid sapphire active item.",
+      "html": "<aside class=\"ds-side\"><div class=\"ds-side-logo\"><span class=\"ds-word\"><span class=\"ds-s\">Study</span><span class=\"ds-b\">BG</span></span></div><nav class=\"ds-side-nav\"><p class=\"ds-side-group\">Избраният урок</p><div class=\"ds-side-lesson\"><p class=\"ds-side-meta\">Български език · 10. клас</p><p class=\"ds-side-title\">Пунктуация на простото изречение</p><button class=\"ds-side-change\">Смени урока</button></div><button class=\"ds-side-item ds-side-item-active\" aria-current=\"page\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 7v14\"/><path d=\"M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z\"/></svg><span>Конспект</span></button><button class=\"ds-side-item\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m3 17 2 2 4-4\"/><path d=\"m3 7 2 2 4-4\"/><path d=\"M13 6h8\"/><path d=\"M13 12h8\"/><path d=\"M13 18h8\"/></svg><span>Тест по урока</span></button><div class=\"ds-side-sep\"></div><p class=\"ds-side-group\">Изпити</p><button class=\"ds-side-item\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 8v4\"/><path d=\"M12 16h.01\"/></svg><span>Банка с грешки</span><span class=\"ds-side-count\">3</span></button></nav></aside>",
+      "css": ".ds-side { width: 256px; border-right: 1px solid #e2e8f0; background: #fff; font-family: Geist, 'Geist Fallback', system-ui, sans-serif; } .ds-side-logo { display: flex; align-items: center; height: 64px; padding: 0 16px; border-bottom: 1px solid #e2e8f0; } .ds-word { font-size: 19px; font-weight: 700; letter-spacing: -0.025em; line-height: 1; } .ds-s { color: var(--color-brand-ink, #0a4b82); } .ds-b { color: #136c3a; } .ds-side-nav { display: flex; flex-direction: column; gap: 2px; padding: 16px 12px; } .ds-side-group { margin: 0 0 8px; padding: 0 12px; color: #64748b; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; } .ds-side-sep { margin: 18px 0 14px; border-top: 1px solid #f1f5f9; } .ds-side-lesson { margin-bottom: 8px; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; background: #f8fafc; } .ds-side-meta { margin: 0; color: #64748b; font-size: 11px; font-weight: 600; } .ds-side-title { margin: 2px 0 0; color: #0f172a; font-size: 13px; font-weight: 700; line-height: 1.375; } .ds-side-change { margin-top: 8px; padding: 0; border: none; background: none; color: #1a6fb8; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; } .ds-side-change:hover { color: #165c9a; } .ds-side-item { display: flex; align-items: center; gap: 12px; width: 100%; padding: 8px 12px; border: none; border-radius: 8px; background: transparent; color: #334155; font: inherit; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer; transition: background-color 150ms, color 150ms; } .ds-side-item svg { flex-shrink: 0; color: #64748b; } .ds-side-item span:first-of-type { flex: 1; } .ds-side-item:hover { background: #f1f5f9; color: #0f172a; } .ds-side-item:focus-visible, .ds-side-change:focus-visible { outline: 2px solid #1a6fb8; outline-offset: 2px; } .ds-side-item-active, .ds-side-item-active:hover { background: #1a6fb8; color: #fff; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); } .ds-side-item-active svg { color: #fff; } .ds-side-count { padding: 2px 6px; border-radius: 6px; background: #fff1f2; color: #be123c; font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "App Top Bar",
+      "kind": "nav",
+      "refersTo": "topbar",
+      "description": "64px blurred top bar: breadcrumb, search with Ctrl K, Сканирай, Академия/Мистерии switch, solid sign-in.",
+      "html": "<header class=\"ds-top\"><p class=\"ds-crumb\">Учебна академия <span class=\"ds-crumb-sep\">/</span> <strong>Конспект</strong></p><div class=\"ds-top-actions\"><button class=\"ds-top-btn\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#64748b\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><span>Търси урок</span><kbd class=\"ds-kbd\">Ctrl K</kbd></button><button class=\"ds-top-btn\">Сканирай</button><div class=\"ds-seg\"><span class=\"ds-seg-on\">Академия</span><button class=\"ds-seg-off\">Мистерии</button></div><button class=\"ds-top-signin\">Вход с Google</button></div></header>",
+      "css": ".ds-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 64px; padding: 0 24px; border-bottom: 1px solid rgb(226 232 240 / 0.8); background: rgb(255 255 255 / 0.85); backdrop-filter: blur(12px); font-family: Geist, 'Geist Fallback', system-ui, sans-serif; } .ds-crumb { margin: 0; color: #64748b; font-size: 14px; } .ds-crumb strong { color: #0f172a; font-weight: 600; } .ds-crumb-sep { margin: 0 4px; color: #cbd5e1; } .ds-top-actions { display: flex; align-items: center; gap: 6px; } .ds-top-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; color: #334155; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: background-color 150ms; } .ds-top-btn:hover { background: #f8fafc; } .ds-kbd { padding: 0 4px; border: 1px solid #e2e8f0; border-radius: 4px; background: #f8fafc; color: #64748b; font-family: inherit; font-size: 10px; font-weight: 500; } .ds-seg { display: flex; padding: 2px; border: 1px solid rgb(226 232 240 / 0.8); border-radius: 8px; background: #f1f5f9; } .ds-seg-on, .ds-seg-off { padding: 4px 10px; border: none; border-radius: 6px; font: inherit; font-size: 12px; font-weight: 600; } .ds-seg-on { background: #fff; color: #1a6fb8; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); } .ds-seg-off { background: transparent; color: #475569; cursor: pointer; transition: color 150ms; } .ds-seg-off:hover { color: #92400e; } .ds-top-signin { padding: 6px 14px; border: none; border-radius: 8px; background: #1a6fb8; color: #fff; font: inherit; font-size: 12px; font-weight: 700; box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1); cursor: pointer; transition: background-color 150ms; } .ds-top-signin:hover { background: #165c9a; } .ds-top-btn:focus-visible, .ds-seg-off:focus-visible, .ds-top-signin:focus-visible { outline: 2px solid #1a6fb8; outline-offset: 2px; }"
+    },
+    {
+      "name": "Page Header",
+      "kind": "custom",
+      "refersTo": "page-title",
+      "description": "The only heading block on a study screen: h1 plus one sentence.",
+      "html": "<header class=\"ds-page\"><h1 class=\"ds-page-title\">Моят план</h1><p class=\"ds-page-desc\">Колко време остава до изпита, седмичен график и готовност по теми.</p></header>",
+      "css": ".ds-page { margin-bottom: 24px; font-family: Geist, 'Geist Fallback', system-ui, sans-serif; } .ds-page-title { margin: 0; color: #0f172a; font-size: 30px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.2; text-wrap: balance; } .ds-page-desc { margin: 6px 0 0; max-width: 42rem; color: #475569; font-size: 14px; line-height: 1.625; }"
+    },
+    {
+      "name": "Filter Pill",
+      "kind": "chip",
+      "refersTo": "chip-filter-active",
+      "description": "8px-corner toggle pills and tool tabs; active is solid sapphire.",
+      "html": "<div class=\"ds-pills\"><button class=\"ds-pill ds-pill-active\" aria-pressed=\"true\">Всички предмети</button><button class=\"ds-pill\" aria-pressed=\"false\">Математика</button></div>",
+      "css": ".ds-pills { display: flex; gap: 6px; font-family: Geist, 'Geist Fallback', system-ui, sans-serif; } .ds-pill { padding: 4px 10px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; color: #334155; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: background-color 150ms; } .ds-pill:hover { background: #f8fafc; } .ds-pill-active, .ds-pill-active:hover { background: #1a6fb8; border-color: #1a6fb8; color: #fff; } .ds-pill:focus-visible { outline: 2px solid #1a6fb8; outline-offset: 2px; }"
+    },
+    {
+      "name": "Light Panel",
+      "kind": "card",
+      "refersTo": "card-light-panel",
+      "description": "The high-emphasis panel of a screen: pale sapphire tint, dark text. Replaces the old dark band.",
+      "html": "<aside class=\"ds-panel\"><h3 class=\"ds-panel-title\">Готвиш се за НВО след 7. клас? Сестринската ни платформа е <span class=\"ds-ink\">Матура</span><span class=\"ds-plus\">Плюс</span></h3><p class=\"ds-panel-body\">Матура Плюс е съсредоточена само в НВО 7 по български език, литература и математика.</p><button class=\"ds-panel-btn\">Отвори Матура Плюс</button></aside>",
+      "css": ".ds-panel { padding: 24px; border: 1px solid #e3effa; border-radius: 16px; background: rgb(242 248 253 / 0.6); color: #0f172a; box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); font-family: Geist, 'Geist Fallback', system-ui, sans-serif; } .ds-panel-title { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.025em; } .ds-ink { color: #0a4b82; } .ds-plus { color: #136c3a; } .ds-panel-body { margin: 10px 0 0; color: #475569; font-size: 14px; line-height: 1.625; } .ds-panel-btn { margin-top: 18px; min-height: 44px; padding: 10px 20px; border: none; border-radius: 8px; background: #1a6fb8; color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: background-color 150ms, transform 150ms; } .ds-panel-btn:hover { background: #165c9a; } .ds-panel-btn:active { transform: scale(0.98); } .ds-panel-btn:focus-visible { outline: 2px solid #1a6fb8; outline-offset: 2px; }"
+    },
+    {
+      "name": "Hero Search",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "The home hero's main action: search field with embedded primary button.",
+      "html": "<div class=\"ds-search\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#94a3b8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><input class=\"ds-search-input\" type=\"text\" placeholder=\"Търси сред 108 урока, мистерии, формули или автори…\" aria-label=\"Търси урок\"><button class=\"ds-search-btn\">Пълен каталог</button></div>",
+      "css": ".ds-search { display: flex; align-items: center; gap: 4px; padding-left: 16px; border: 1px solid #e2e8f0; border-radius: 12px; background: #fff; box-shadow: 0 1px 3px 0 rgb(47 136 207 / 0.1), 0 1px 2px -1px rgb(47 136 207 / 0.1); font-family: Geist, 'Geist Fallback', system-ui, sans-serif; transition: box-shadow 150ms, border-color 150ms; } .ds-search:focus-within { border-color: #1a6fb8; box-shadow: 0 0 0 2px rgb(26 111 184 / 0.15); } .ds-search-input { flex: 1; min-height: 48px; padding: 14px 12px; border: none; background: transparent; color: #0f172a; font: inherit; font-size: 16px; caret-color: #1a6fb8; outline: none; } .ds-search-input::placeholder { color: #64748b; } .ds-search-btn { margin-right: 6px; padding: 10px 16px; border: none; border-radius: 8px; background: #1a6fb8; color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; } .ds-search-btn:hover { background: #165c9a; } .ds-search-btn:focus-visible { outline: 2px solid #1a6fb8; outline-offset: 2px; }"
+    },
+    {
+      "name": "Answer Option",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Trainer option button with resting, correct and wrong states.",
+      "html": "<div class=\"ds-options\"><button class=\"ds-opt\"><strong>А)</strong> През 1876 г.</button><button class=\"ds-opt ds-opt-correct\"><strong>Б)</strong> През 1878 г.</button><button class=\"ds-opt ds-opt-wrong\"><strong>В)</strong> През 1885 г.</button></div>",
+      "css": ".ds-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-family: Geist, 'Geist Fallback', system-ui, sans-serif; } .ds-opt { padding: 12px; text-align: left; border: 1px solid #e2e8f0; border-radius: 12px; background: #fff; color: #1e293b; font: inherit; font-size: 14px; cursor: pointer; transition: background-color 150ms, border-color 150ms; } .ds-opt strong { margin-right: 6px; color: #64748b; font-weight: 600; } .ds-opt:hover { background: #f2f8fd; border-color: #c6def4; } .ds-opt:focus-visible { outline: 2px solid #1a6fb8; outline-offset: 2px; } .ds-opt-correct, .ds-opt-correct:hover { background: #eefbf4; border-color: #82deaa; color: #06301a; font-weight: 600; } .ds-opt-wrong, .ds-opt-wrong:hover { background: #fff1f2; border-color: #fda4af; color: #4c0519; font-weight: 500; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Calm Academy",
+    "overview": "StudyBG uses the visual world of its sister site Матура Плюс, a quiet, institutional academy. The surface is a white sheet with a faint sapphire light at the top. It carries two brand voices: a clear mid sapphire for action and emerald for success. The study screens wear the same app shell as Матура Плюс: a white sidebar, a slim blurred top bar, and one page heading per screen. The goal is to look like one family with Матура Плюс while keeping the StudyBG name and wordmark.\n\nDensity is high, because the site carries a whole national curriculum. The calm comes from discipline, not from empty space. Containers are white cards or pale sapphire panels with a slate or blue-100 hairline and a soft shadow. Each screen has one solid sapphire action; everything else is a white outlined button. Icons are Lucide line icons in slate or a brand color. There are no dark bands and no black surfaces. Text is always dark on a light ground, apart from three data canvases drawn for a dark ground.\n\nThe world ships light-only (`color-scheme: light`, `theme-color` white). Motion is limited to color transitions, a 4px arrow nudge on hover, a 0.98 press scale, a 1.05 logo scale and the 200ms sidebar drawer slide. All of it collapses under `prefers-reduced-motion`.",
+    "keyCharacteristics": [
+      "White ground with a radial sapphire glow at 6% opacity at the top of the page.",
+      "Two brand colors: sapphire for actions, active states, links, highlights and focus, and emerald for correct answers, success and results.",
+      "Brand Ink, the old deep blue, survives only in the logo and the \"Study\" half of the wordmark.",
+      "Amber belongs to the \"Мистерии\" / \"Обща култура\" portal. Rose marks errors and wrong answers only.",
+      "Geist variable (100–900, Cyrillic subsets), self-hosted, with a metric-matched Arial fallback.",
+      "An app shell on study screens: a white 256px sidebar, a 64px top bar, a page header with an h1 and one sentence, and content directly on the page.",
+      "Cards with 16px corners, slate-200 borders and soft low shadows. Buttons with 8px corners.",
+      "Lucide line icons only. No emoji, no gradient text, no 3D bottom edges, no dark bands."
+    ],
+    "rules": [
+      { "name": "The Two Voices Rule", "body": "Sapphire acts and emerald confirms. No third brand hue exists. The token remap sends every legacy blue/indigo/violet/purple/fuchsia/pink/cyan/sky class to sapphire, every emerald/green/teal class to emerald and every orange class to amber, so an inner screen cannot reintroduce a rainbow through Tailwind classes. Don't add new hue scales.", "section": "colors" },
+      { "name": "The One Active Color Rule", "body": "A selected item in any tool (sidebar entry, tab, filter pill, toggle) is solid sapphire with white text. Amber is the active color only inside the \"Мистерии\" portal. Emerald is never an active state; it means correct, success or result.", "section": "colors" },
+      { "name": "The Ink Is Identity Rule", "body": "Brand Ink (#0a4b82) belongs to the logo and wordmark. Interface color uses the sapphire ramp.", "section": "colors" },
+      { "name": "The Portal Amber Rule", "body": "Amber surfaces (tinted cards, filled buttons, tags) belong to the \"Мистерии\" / \"Обща култура\" portal. Elsewhere amber appears only as small state accents: the daily-streak flame chip, the \"Пауза\" state of the focus timer, the explanation note after a wrong answer, and the portal's own compass icon in the sidebar.", "section": "colors" },
+      { "name": "The Rose Means Wrong Rule", "body": "Rose marks a wrong choice, an error count or a destructive action. It never decorates.", "section": "colors" },
+      { "name": "The No Black Rule", "body": "No interface surface is black or near-black. The only dark grounds are the chart and map canvases in MathStemLab, HistoryGeoAtlasLab and CultureMysticMapView (slate-900 / slate-950), because their strokes are drawn for a dark ground. The mobile drawer scrim is slate-900 at 30%.", "section": "colors" },
+      { "name": "The One Heading Block Rule", "body": "A study screen has one heading block: the page header. Tools do not carry their own hero heading or a kicker above it.", "section": "typography" },
+      { "name": "The One Highlight Rule", "body": "A headline may carry one sapphire phrase as solid color. It never uses gradient text.", "section": "typography" },
+      { "name": "The Counted Numbers Rule", "body": "Every count (lessons, dossiers, questions, error-bank items) is set `tabular-nums` and comes from the data.", "section": "typography" },
+      { "name": "The Mono Means Data Rule", "body": "Monospace is set only on code-like content: sequences, formulas, equations. Figures, scores and timers use `tabular-nums` in Geist.", "section": "typography" },
+      { "name": "The Soft Edge Rule", "body": "Depth is a soft blur under a hairline. There are no hard offset shadows and no thick bottom borders as a 3D edge.", "section": "elevation" },
+      { "name": "The Light Panel Rule", "body": "The high-emphasis panel of a screen (the planner focus timer, the Матура Плюс bridge, lab intro panels and status panels) is a light panel: Sapphire Mist at 60% with a Sapphire Tint hairline and dark slate text. Emphasis comes from the tint and the content, never from a dark band.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do give each screen one solid sapphire (#1a6fb8) action with 8px corners, hovering to #165c9a and pressing at 0.98 scale. Make every other action white with a slate-200 border.",
+      "Do mark the selected item in any tool as solid sapphire with white text. Inside the \"Мистерии\" portal, use amber.",
+      "Do build containers as white 16px cards with a 1px slate-200 border and the resting soft shadow.",
+      "Do make a high-emphasis panel a light panel (Sapphire Mist at 60%, Sapphire Tint hairline, dark text).",
+      "Do let the page header (an h1 and one sentence, from `studyNav`) be the only heading block on a study screen, and set tool content directly on the page.",
+      "Do add new study screens to `studyNav` so the sidebar, breadcrumb and page header stay in step.",
+      "Do use Lucide line icons at 14–20px in slate-400/500, or in the brand color of their context.",
+      "Do keep amber surfaces inside the \"Мистерии\" / \"Обща култура\" portal, emerald for correct, success or result, and rose for wrong or error states.",
+      "Do set every count `tabular-nums` and source it from the data."
+    ],
+    "donts": [
+      "Don't use black or near-black surfaces or dark gradient bands. Only data canvases drawn for a dark ground may be dark.",
+      "Don't use Brand Ink (#0a4b82) for buttons, fills or active states. It belongs to the logo and wordmark.",
+      "Don't use emerald as an active or selected state.",
+      "Don't use emoji as icons or inside UI strings.",
+      "Don't use gradient text. Highlight one headline phrase in solid sapphire instead.",
+      "Don't add 3D bottom edges (thick `border-b-4` ledges) or hard offset shadows.",
+      "Don't put kicker or eyebrow labels above headings, and don't give a tool its own hero heading under the page header.",
+      "Don't set monospace on anything that is not code or data.",
+      "Don't introduce per-subject colors or new hue scales. The remap to two brands is the system.",
+      "Don't set UI text below 11px."
+    ]
+  }
+}

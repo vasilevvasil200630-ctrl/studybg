@@ -110,7 +110,7 @@ export const ExamPapersView: React.FC = () => {
           <p id={`${q.id}-prompt`} className="text-sm font-semibold text-slate-900">
             {q.number}. {q.prompt}
           </p>
-          <span className="text-[11px] font-mono text-slate-500 shrink-0">{q.points} т.</span>
+          <span className="text-[11px] tabular-nums text-slate-500 shrink-0">{q.points} т.</span>
         </div>
 
         {q.kind === 'choice' && (
@@ -240,24 +240,24 @@ export const ExamPapersView: React.FC = () => {
       </div>
 
       {result && (
-        <div role="status" className="p-4 rounded-2xl bg-slate-900 text-white space-y-2">
+        <div role="status" className="p-4 rounded-2xl bg-blue-50/60 border border-blue-100 space-y-2">
           <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-            <span className="text-2xl font-black font-mono">
+            <span className="text-2xl font-bold tabular-nums">
               {result.totalPoints} / {result.maxPoints} т.
             </span>
             {result.grade ? (
-              <span className="text-sm font-semibold text-amber-300">{formatGrade(result.grade)}</span>
+              <span className="text-sm font-semibold text-amber-700">{formatGrade(result.grade)}</span>
             ) : (
-              <span className="text-xs text-slate-300">НВО 10: резултатът се отчита в точки</span>
+              <span className="text-xs text-slate-600">НВО 10: резултатът се отчита в точки</span>
             )}
           </div>
-          <p className="text-xs text-slate-300">
+          <p className="text-xs text-slate-600">
             По ключа: {result.autoPoints} т. • Самооценка (свободен отговор): {result.selfAssessedPoints} т.
             {result.selfAssessedPoints === 0 && ' — въведете самооценка за задачите със свободен отговор по-долу.'}
           </p>
           <ul className="flex flex-wrap gap-2 text-[11px]">
             {result.sections.map((s) => (
-              <li key={s.id} className="px-2 py-1 rounded-lg bg-white/10">
+              <li key={s.id} className="px-2 py-1 rounded-lg bg-white">
                 {s.title.replace(/\s*\(\d+ т\.\)$/, '')}: {s.points}/{s.maxPoints}
               </li>
             ))}

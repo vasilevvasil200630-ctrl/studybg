@@ -100,7 +100,7 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
               <Scale className="w-5 h-5" />
             </div>
             <div>
-              <h2 id="legal-modal-title" className="text-base sm:text-lg font-extrabold text-slate-900 leading-tight">
+              <h2 id="legal-modal-title" className="text-base sm:text-lg font-bold text-slate-900 leading-tight">
                 Европейски правни политики, ИИ прозрачност & Достъпност
               </h2>
               <p className="text-xs text-slate-500">
@@ -154,7 +154,7 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
             onClick={() => setActiveTab('accessibility')}
             className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === 'accessibility'
-                ? 'bg-emerald-700 text-white shadow-xs'
+                ? 'bg-brand-sapphire text-white shadow-xs'
                 : 'bg-slate-100 text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -213,7 +213,7 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div>
-                    <h3 className="text-sm font-extrabold text-slate-900">
+                    <h3 className="text-sm font-bold text-slate-900">
                       Интерактивен GDPR Център за управление на акаунта и данните
                     </h3>
                     <p className="text-xs text-slate-500">
@@ -287,16 +287,16 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                     <strong>Опционален вход с Google акаунт (OAuth 2.0 с PKCE):</strong> Когато доброволно натиснете бутона <em>„Вход с Google“</em>, автентикацията се извършва директно през официалните сървъри на Google чрез криптиран протокол OAuth 2.0 (OpenID Connect). <strong>StudyBG никога не получава, не вижда и не съхранява вашата парола в Google.</strong>
                   </li>
                   <li>
-                    <strong>Минимален обхват на данните в профила:</strong> В таблицата <code className="text-xs font-mono">public.user_profiles</code> се записват единствено базовите идентификатори от Google профила ви (уникален потребителски идентификатор <code className="text-xs font-mono">user_id</code>, име, имейл и адрес на профилна снимка) заедно с учебния ви прогрес (усвоени уроци, XP точки, дневна серия Streak, Банка с грешки и история на изпитните симулации) с единствена цел синхронизация между вашите устройства (чл. 6, ал. 1, б. „б“ от GDPR).
+                    <strong>Минимален обхват на данните в профила:</strong> В таблицата <code className="text-xs tabular-nums">public.user_profiles</code> се записват единствено базовите идентификатори от Google профила ви (уникален потребителски идентификатор <code className="text-xs tabular-nums">user_id</code>, име, имейл и адрес на профилна снимка) заедно с учебния ви прогрес (усвоени уроци, XP точки, дневна серия Streak, Банка с грешки и история на изпитните симулации) с единствена цел синхронизация между вашите устройства (чл. 6, ал. 1, б. „б“ от GDPR).
                   </li>
                   <li>
-                    <strong>Криптирана изолация на ниво ред (Row-Level Security — Чл. 32 от GDPR):</strong> Базата данни в Supabase PostgreSQL прилага строги правила за достъп (<code className="text-xs font-mono">user_id = auth.uid()</code>), при които всеки потребител може да чете, обновява или изтрива единствено собствения си профил чрез криптографски подписан JWT токен по TLS 1.3.
+                    <strong>Криптирана изолация на ниво ред (Row-Level Security — Чл. 32 от GDPR):</strong> Базата данни в Supabase PostgreSQL прилага строги правила за достъп (<code className="text-xs tabular-nums">user_id = auth.uid()</code>), при които всеки потребител може да чете, обновява или изтрива единствено собствения си профил чрез криптографски подписан JWT токен по TLS 1.3.
                   </li>
                   <li>
                     <strong>Локални учебни данни (LocalStorage на вашето устройство):</strong> Ако използвате платформата без вход в Google акаунт, напредъкът в „Моят План за 6.00“, хронологията на 100-точковите симулации и Банката с грешки се съхраняват локално във вашия браузър.
                   </li>
                   <li>
-                    <strong>Имейл адрес за Седмичен бюлетин и споделяне на конспекти (Чл. 6, ал. 1, б. „а“ от GDPR — изрично съгласие):</strong> Когато доброволно въведете имейл адрес във формата за седмичен изпитен бюлетин, ние обработваме този имейл единствено за заявената цел. Споделянето на конспект или резултат подготвя писмото във вашия собствен имейл клиент (<code className="text-xs font-mono">mailto:</code>). Можете да оттеглите съгласието си с <strong>1 клик („Отпиши се“)</strong> по всяко време.
+                    <strong>Имейл адрес за Седмичен бюлетин и споделяне на конспекти (Чл. 6, ал. 1, б. „а“ от GDPR — изрично съгласие):</strong> Когато доброволно въведете имейл адрес във формата за седмичен изпитен бюлетин, ние обработваме този имейл единствено за заявената цел. Споделянето на конспект или резултат подготвя писмото във вашия собствен имейл клиент (<code className="text-xs tabular-nums">mailto:</code>). Можете да оттеглите съгласието си с <strong>1 клик („Отпиши се“)</strong> по всяко време.
                   </li>
                   <li>
                     <strong>Сканирани записки и есета (SmartScan & Симулатор):</strong> Снимките на тетрадки или текстовете на есета се предават криптирано (TLS 1.3) в реално време към Google Gemini API единствено за генериране на образователна обратна връзка и не се съхраняват на наши сървъри.
@@ -310,7 +310,7 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                   StudyBG не продава и не предоставя данни на рекламни мрежи. За техническото функциониране на облачните и ИИ функции използваме следните сертифицирани инфраструктурни партньори при спазване на Стандартните договорни клаузи на Европейската комисия (SCCs):
                 </p>
                 <ul className="list-disc list-inside space-y-1 pl-1">
-                  <li><strong>Supabase Inc.</strong> — управлявана PostgreSQL база данни и OAuth 2.0 автентикация със строга Row-Level Security (RLS) защита за облачните потребителски профили (<code className="text-xs font-mono">user_profiles</code>), историята на изпитните симулации (<code className="text-xs font-mono">exam_attempts</code>) и абонатите на бюлетина, както и Edge Function сървър за защитени заявки към Google Gemini;</li>
+                  <li><strong>Supabase Inc.</strong> — управлявана PostgreSQL база данни и OAuth 2.0 автентикация със строга Row-Level Security (RLS) защита за облачните потребителски профили (<code className="text-xs tabular-nums">user_profiles</code>), историята на изпитните симулации (<code className="text-xs tabular-nums">exam_attempts</code>) и абонатите на бюлетина, както и Edge Function сървър за защитени заявки към Google Gemini;</li>
                   <li><strong>Vercel Inc.</strong> — статичен хостинг и глобална доставка (CDN) с принудително HTTPS/TLS 1.3 криптиране;</li>
                   <li><strong>Google Ireland Limited (Google OAuth 2.0 & Google Gemini API)</strong> — сигурна идентификация при вход с Google акаунт и обработка на текст/ръкопис по заявка на потребителя;</li>
                   <li><strong>Google Ireland Limited (Google Analytics 4)</strong> — статистика за посещенията, само след изрично съгласие за аналитика;</li>
@@ -333,7 +333,7 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                 <div className="p-3.5 rounded-xl bg-slate-100 border border-slate-200 text-xs space-y-1">
                   <div className="font-bold text-slate-900">Комисия за защита на личните данни (КЗЛД)</div>
                   <div>Адрес: гр. София 1592, бул. „Проф. Цветан Лазаров“ № 2</div>
-                  <div>Имейл: <span className="font-mono">kzld@cpdp.bg</span> • Уебсайт: <a href="https://www.cpdp.bg" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline inline-flex items-center gap-0.5">www.cpdp.bg <ExternalLink className="w-3 h-3" /></a></div>
+                  <div>Имейл: <span className="tabular-nums">kzld@cpdp.bg</span> • Уебсайт: <a href="https://www.cpdp.bg" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline inline-flex items-center gap-0.5">www.cpdp.bg <ExternalLink className="w-3 h-3" /></a></div>
                 </div>
               </section>
             </div>
@@ -497,61 +497,61 @@ export const LegalPoliciesModal: React.FC<LegalPoliciesModalProps> = ({
                     </thead>
                     <tbody className="divide-y divide-slate-200">
                       <tr>
-                        <td className="p-3 font-mono text-blue-600">studybg_cookie_consent</td>
+                        <td className="p-3 tabular-nums text-blue-600">studybg_cookie_consent</td>
                         <td className="p-3">Строго необходим</td>
                         <td className="p-3">Съхранява избора ви за настройки на бисквитките и поверителността</td>
                         <td className="p-3">1 година</td>
                       </tr>
                       <tr>
-                        <td className="p-3 font-mono text-blue-600">studybg_study_progress_v1</td>
+                        <td className="p-3 tabular-nums text-blue-600">studybg_study_progress_v1</td>
                         <td className="p-3">Функционален</td>
                         <td className="p-3">Запазва прогреса в „Моят План за 6.00“, дневната серия (Streak), XP и целевата оценка</td>
                         <td className="p-3">До изчистване</td>
                       </tr>
                       <tr>
-                        <td className="p-3 font-mono text-blue-600">studybg_exam_history</td>
+                        <td className="p-3 tabular-nums text-blue-600">studybg_exam_history</td>
                         <td className="p-3">Функционален</td>
                         <td className="p-3">Съхранява историята и оценките от проведените 100-точкови изпитни симулации</td>
                         <td className="p-3">До изчистване</td>
                       </tr>
                       <tr>
-                        <td className="p-3 font-mono text-blue-600">studybg_error_bank</td>
+                        <td className="p-3 tabular-nums text-blue-600">studybg_error_bank</td>
                         <td className="p-3">Функционален</td>
                         <td className="p-3">Запазва сгрешените тестови въпроси за персонализиран поправителен тест</td>
                         <td className="p-3">До изчистване</td>
                       </tr>
                       <tr>
-                        <td className="p-3 font-mono text-blue-600">sb-*-auth-token / studybg_cached_google_profile_v1</td>
+                        <td className="p-3 tabular-nums text-blue-600">sb-*-auth-token / studybg_cached_google_profile_v1</td>
                         <td className="p-3">Строго необходим (само при вход с Google)</td>
                         <td className="p-3">Криптирана OAuth 2.0 сесия и кеш на потребителския профил за облачна синхронизация</td>
                         <td className="p-3">До изход от профила</td>
                       </tr>
                       <tr>
-                        <td className="p-3 font-mono text-blue-600">studybg_newsletter_subscribers</td>
+                        <td className="p-3 tabular-nums text-blue-600">studybg_newsletter_subscribers</td>
                         <td className="p-3">По избор (Съгласие)</td>
                         <td className="p-3">Помни статуса на абонамент за седмичния учебен бюлетин</td>
                         <td className="p-3">До отписване</td>
                       </tr>
                       <tr>
-                        <td className="p-3 font-mono text-blue-600">studybg_gemini_api_key</td>
+                        <td className="p-3 tabular-nums text-blue-600">studybg_gemini_api_key</td>
                         <td className="p-3">По избор</td>
                         <td className="p-3">Съхранява локално въведения от потребителя личен Google Gemini API ключ</td>
                         <td className="p-3">До изчистване</td>
                       </tr>
                       <tr>
-                        <td className="p-3 font-mono text-blue-600">studybg-pwa-v4 / studybg-assets-v4</td>
+                        <td className="p-3 tabular-nums text-blue-600">studybg-pwa-v4 / studybg-assets-v4</td>
                         <td className="p-3">Строго необходим</td>
                         <td className="p-3">Service Worker кеш за работа на конспектите и формулите без интернет</td>
                         <td className="p-3">До обновяване</td>
                       </tr>
                       <tr>
-                        <td className="p-3 font-mono text-blue-600">_ga, _ga_EE8QCTTSKD</td>
+                        <td className="p-3 tabular-nums text-blue-600">_ga, _ga_EE8QCTTSKD</td>
                         <td className="p-3">Аналитичен (само със съгласие)</td>
                         <td className="p-3">Google Analytics 4 — статистика за посещенията (Google Ireland Limited)</td>
                         <td className="p-3">До 2 години</td>
                       </tr>
                       <tr>
-                        <td className="p-3 font-mono text-blue-600">_clck, _clsk</td>
+                        <td className="p-3 tabular-nums text-blue-600">_clck, _clsk</td>
                         <td className="p-3">Аналитичен (само със съгласие)</td>
                         <td className="p-3">Microsoft Clarity — записи на сесии и топлинни карти (Microsoft Ireland Operations Limited)</td>
                         <td className="p-3">До 1 година / 1 ден</td>

@@ -34,7 +34,7 @@ export const ExamProtocolModal: React.FC<{ sim: ExamSimulatorState }> = ({ sim }
                 <h3 className="text-xs font-bold uppercase tracking-widest text-slate-700 font-sans">
                   Република България • Министерство на образованието и науката
                 </h3>
-                <h2 className="text-lg sm:text-xl font-extrabold uppercase text-slate-900 tracking-wide font-sans">
+                <h2 className="text-lg sm:text-xl font-bold uppercase text-slate-900 tracking-wide font-sans">
                   Протокол от симулационно изпитно оценяване
                 </h2>
                 <div className="text-[11px] font-sans text-slate-500 flex items-center justify-center gap-4 pt-1">
@@ -78,23 +78,23 @@ export const ExamProtocolModal: React.FC<{ sim: ExamSimulatorState }> = ({ sim }
                   </div>
                   <div className="grid grid-cols-12 p-2.5 border-b border-slate-200">
                     <span className="col-span-6 font-medium">Модул 1: Тестова част (Избираем отговор)</span>
-                    <span className="col-span-3 text-center font-mono">40 т.</span>
-                    <span className="col-span-3 text-right font-mono font-bold">{module1Points} т.</span>
+                    <span className="col-span-3 text-center tabular-nums">40 т.</span>
+                    <span className="col-span-3 text-right tabular-nums font-bold">{module1Points} т.</span>
                   </div>
                   <div className="grid grid-cols-12 p-2.5 border-b border-slate-200">
                     <span className="col-span-6 font-medium">Модул 2: Анализ на извор / Приложни задачи</span>
-                    <span className="col-span-3 text-center font-mono">30 т.</span>
-                    <span className="col-span-3 text-right font-mono font-bold">{module2Points} т.</span>
+                    <span className="col-span-3 text-center tabular-nums">30 т.</span>
+                    <span className="col-span-3 text-right tabular-nums font-bold">{module2Points} т.</span>
                   </div>
                   <div className="grid grid-cols-12 p-2.5 border-b border-slate-200">
                     <span className="col-span-6 font-medium">Модул 3: Разширен аргументиран отговор / Есе</span>
-                    <span className="col-span-3 text-center font-mono">30 т.</span>
-                    <span className="col-span-3 text-right font-mono font-bold">{module3Points} т.</span>
+                    <span className="col-span-3 text-center tabular-nums">30 т.</span>
+                    <span className="col-span-3 text-right tabular-nums font-bold">{module3Points} т.</span>
                   </div>
                   <div className="grid grid-cols-12 p-3 bg-slate-50 font-bold text-sm">
                     <span className="col-span-6 uppercase">Общ резултат:</span>
-                    <span className="col-span-3 text-center font-mono">100 т.</span>
-                    <span className="col-span-3 text-right font-mono text-blue-700">{totalPoints} т.</span>
+                    <span className="col-span-3 text-center tabular-nums">100 т.</span>
+                    <span className="col-span-3 text-right tabular-nums text-blue-700">{totalPoints} т.</span>
                   </div>
                 </div>
               </div>
@@ -105,7 +105,7 @@ export const ExamProtocolModal: React.FC<{ sim: ExamSimulatorState }> = ({ sim }
                   <span className="text-[11px] text-slate-500 uppercase tracking-wider block">
                     {examScale.scale ? `Ориентировъчна оценка по скалата за ${examScale.label}:` : 'Резултат (НВО се оценява само в точки):'}
                   </span>
-                  <div className="text-xl font-extrabold text-slate-900 mt-0.5">
+                  <div className="text-xl font-bold text-slate-900 mt-0.5">
                     {gradeInfo.grade}
                   </div>
                   <p className="text-xs text-slate-600 mt-1">
@@ -113,7 +113,7 @@ export const ExamProtocolModal: React.FC<{ sim: ExamSimulatorState }> = ({ sim }
                   </p>
                 </div>
                 <div className="text-right">
-                  <span className="inline-block px-3 py-1 rounded text-xs font-bold font-mono bg-white border border-slate-300">
+                  <span className="inline-block px-3 py-1 rounded text-xs font-bold tabular-nums bg-white border border-slate-300">
                     {totalPoints} / 100 точки
                   </span>
                 </div>

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Sparkles, Compass } from 'lucide-react';
+import { Sparkles, Compass, CheckCircle2, TrendingUp, Target, ArrowRight, Check, RotateCcw, Zap } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 
@@ -56,14 +56,14 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
         {/* 2.8 UNIVERSITY ADMISSION COMPASS & LIVE FLASHCARD FLIP-DECK */}
         {/* ========================================================================= */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 cv-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
             
             {/* Left Panel (7 cols): Interactive University & Career Admission Compass */}
-            <div className="lg:col-span-7 p-5 sm:p-7 rounded-3xl bg-white border-2 border-emerald-200/90 border-b-4 border-b-emerald-500 shadow-xs flex flex-col justify-between space-y-5">
+            <div className="lg:col-span-7 p-5 sm:p-7 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between space-y-5">
               {(() => {
                 const uniConfigs = {
                   'su-fmi': {
-                    shortTitle: '💻 СУ — ФМИ (Софтуерно инж. / КН)',
+                    shortTitle: 'СУ — ФМИ (Софтуерно инж. / КН)',
                     fullTitle: 'Софийски университет „Св. Климент Охридски“ — Факултет по математика и информатика (ФМИ)',
                     formulaText: '3 × Изпит/ДЗИ Математика или Информатика + 1 × ДЗИ БЕЛ',
                     maxBall: 24,
@@ -80,7 +80,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                     ]
                   },
                   'mu-med': {
-                    shortTitle: '🩺 МУ — Медицина, Дентална & Фармация',
+                    shortTitle: 'МУ — Медицина, Дентална & Фармация',
                     fullTitle: 'Медицински университети (МУ София, Пловдив, Варна, Плевен) — Магистър „Медицина / Фармация“',
                     formulaText: '2 × Изпит Биология + 2 × Изпит Химия + 1 × Диплома Биология + 1 × Диплома Химия',
                     maxBall: 36,
@@ -97,7 +97,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                     ]
                   },
                   'tu-eng': {
-                    shortTitle: '⚙️ ТУ — КСИ, AI, Мехатроника & Авиация',
+                    shortTitle: 'ТУ — КСИ, AI, Мехатроника & Авиация',
                     fullTitle: 'Технически университет (ТУ София / Пловдив / Варна) — Компютърно и софтуерно инж., Мехатроника, Авиация',
                     formulaText: '3 × Изпит/ДЗИ Математика или Физика + 1 × Диплома Математика + 1 × Диплома Физика',
                     maxBall: 30,
@@ -114,7 +114,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                     ]
                   },
                   'unwe-econ': {
-                    shortTitle: '📈 УНСС — Финанси, МИО & Бизнес',
+                    shortTitle: 'УНСС — Финанси, МИО & Бизнес',
                     fullTitle: 'Университет за национално и световно стопанство (УНСС) & Икономически университети',
                     formulaText: '2 × ЕПИ / ДЗИ (БЕЛ, Математика, География, История или Икономика) + 1 × Диплома БЕЛ + 1 × Диплома Математика',
                     maxBall: 24,
@@ -131,7 +131,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                     ]
                   },
                   'uacg-arch': {
-                    shortTitle: '🏗️ УАСГ — Архитектура, ССС & Геодезия',
+                    shortTitle: 'УАСГ — Архитектура, ССС & Геодезия',
                     fullTitle: 'Университет по архитектура, строителство и геодезия (УАСГ) — Архитектура, ССС и Геодезия',
                     formulaText: '2 × Изпит/ДЗИ Математика + 2 × Изпит Рисуване / Физика + 1 × Диплома Математика + 1 × Диплома БЕЛ',
                     maxBall: 36,
@@ -148,7 +148,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                     ]
                   },
                   'su-law-hum': {
-                    shortTitle: '⚖️ СУ — Право, МО, Психология & Езици',
+                    shortTitle: 'СУ — Право, МО, Психология & Езици',
                     fullTitle: 'СУ „Св. Климент Охридски“ — Юридически, Исторически, Философски и Филологически факултети',
                     formulaText: '2 × ДЗИ БЕЛ + 2 × ДЗИ История / Философия / Чужд език + 1 × Диплома БЕЛ + 1 × Диплома История/Език',
                     maxBall: 36,
@@ -182,25 +182,27 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                   <>
                     <div className="space-y-3">
                       <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
-                        <div className="space-y-0.5">
-                          <div className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-emerald-700">
-                            <Compass className="w-4 h-4 text-emerald-600" />
-                            <span>Университетски & Кариерен Компас след 12. клас</span>
+                        <div className="flex items-center gap-2.5">
+                          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-blue-50 text-brand-sapphire">
+                            <Compass className="w-4.5 h-4.5" aria-hidden="true" />
                           </div>
-                          <h3 className="text-lg sm:text-xl font-black text-slate-900">
-                            Калкулатор на Състезателен бал за ВУЗ (СУ, МУ, ТУ, УНСС, УАСГ)
-                          </h3>
+                          <h2 className="text-lg sm:text-xl font-bold text-slate-900">
+                            Състезателен бал за университет след 12. клас
+                          </h2>
                         </div>
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-extrabold border ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
                             isAdmittedFirstRound
-                              ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                              : 'bg-amber-50 text-amber-800 border-amber-300'
+                              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                              : 'bg-blue-50 text-blue-800 border-blue-200'
                           }`}
                         >
-                          {isAdmittedFirstRound
-                            ? '✅ Приет по Първо желание (Топ класиране)'
-                            : '⚡ Нужен е още малко ръст за I класиране'}
+                          {isAdmittedFirstRound ? (
+                            <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" />
+                          ) : (
+                            <TrendingUp className="w-3.5 h-3.5" aria-hidden="true" />
+                          )}
+                          {isAdmittedFirstRound ? 'Приет по първо желание' : 'Нужен е още малко ръст за I класиране'}
                         </span>
                       </div>
 
@@ -213,10 +215,11 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                               key={uKey}
                               type="button"
                               onClick={() => setSelectedUniId(uKey)}
-                              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                              aria-pressed={isSel}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer border ${
                                 isSel
-                                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-teal-700 shadow-2xs'
-                                  : 'bg-slate-50 hover:bg-emerald-50/70 text-slate-700 hover:text-emerald-800 border-slate-200 hover:border-emerald-300'
+                                  ? 'bg-brand-sapphire text-white border-brand-sapphire'
+                                  : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
                               }`}
                             >
                               {uniConfigs[uKey].shortTitle}
@@ -226,16 +229,16 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                       </div>
 
                       {/* Active University Formula Banner */}
-                      <div className="p-3.5 rounded-2xl bg-emerald-50/50 border border-emerald-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="space-y-0.5">
-                          <div className="text-xs font-extrabold text-slate-900">{activeUni.fullTitle}</div>
+                          <div className="text-xs font-bold text-slate-900">{activeUni.fullTitle}</div>
                           <div className="text-[11px] text-slate-600">
                             <strong>Формула за бал:</strong> {activeUni.formulaText}
                           </div>
                         </div>
-                        <div className="shrink-0 text-right bg-white px-3.5 py-2 rounded-xl border border-emerald-300 shadow-2xs">
-                          <div className="text-[10px] font-bold uppercase text-slate-500">Твоят състезателен бал</div>
-                          <div className="text-xl sm:text-2xl font-mono font-black text-emerald-700">
+                        <div className="shrink-0 text-right bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-xs">
+                          <div className="text-[11px] font-medium text-slate-500">Твоят състезателен бал</div>
+                          <div className="text-xl sm:text-2xl font-bold tabular-nums text-emerald-700">
                             {calculatedBall.toFixed(2)}{' '}
                             <span className="text-xs font-semibold text-slate-400">/ {activeUni.maxBall.toFixed(2)}</span>
                           </div>
@@ -247,7 +250,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                         <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-200/80 space-y-1">
                           <div className="flex items-center justify-between text-xs font-bold text-slate-700">
                             <span className="truncate pr-2">{activeUni.primaryLabel}</span>
-                            <span className="font-mono text-emerald-700">{uniGradePrimary.toFixed(2)}</span>
+                            <span className="tabular-nums text-emerald-700">{uniGradePrimary.toFixed(2)}</span>
                           </div>
                           <input
                             type="range"
@@ -263,7 +266,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                         <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-200/80 space-y-1">
                           <div className="flex items-center justify-between text-xs font-bold text-slate-700">
                             <span className="truncate pr-2">{activeUni.secondaryLabel}</span>
-                            <span className="font-mono text-emerald-700">{uniGradeSecondary.toFixed(2)}</span>
+                            <span className="tabular-nums text-emerald-700">{uniGradeSecondary.toFixed(2)}</span>
                           </div>
                           <input
                             type="range"
@@ -279,7 +282,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                         <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-200/80 space-y-1">
                           <div className="flex items-center justify-between text-xs font-bold text-slate-700">
                             <span className="truncate pr-2">{activeUni.dip1Label}</span>
-                            <span className="font-mono text-blue-700">{uniGradeDiploma1.toFixed(2)}</span>
+                            <span className="tabular-nums text-blue-700">{uniGradeDiploma1.toFixed(2)}</span>
                           </div>
                           <input
                             type="range"
@@ -295,7 +298,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                         <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-200/80 space-y-1">
                           <div className="flex items-center justify-between text-xs font-bold text-slate-700">
                             <span className="truncate pr-2">{activeUni.dip2Label}</span>
-                            <span className="font-mono text-blue-700">{uniGradeDiploma2.toFixed(2)}</span>
+                            <span className="tabular-nums text-blue-700">{uniGradeDiploma2.toFixed(2)}</span>
                           </div>
                           <input
                             type="range"
@@ -312,8 +315,9 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
 
                     {/* Direct Launch to Target University Preparation Lessons */}
                     <div className="pt-3 border-t border-slate-100 space-y-2">
-                      <div className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
-                        🎯 Препоръчани уроци за максимален бал в тази специалност:
+                      <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700">
+                        <Target className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
+                        <span>Препоръчани уроци за тази специалност</span>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         {recommendedLessons.map((recLesson) => (
@@ -321,14 +325,15 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                             key={recLesson.id}
                             type="button"
                             onClick={() => onSelectLesson?.(recLesson, 'summary')}
-                            className="p-2.5 rounded-xl bg-emerald-50/60 hover:bg-emerald-100/80 border border-emerald-200 text-left transition-all cursor-pointer flex flex-col justify-between gap-1"
+                            className="p-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 text-left transition-colors cursor-pointer flex flex-col justify-between gap-1"
                           >
-                            <span className="text-[10px] font-bold text-emerald-800">{recLesson.subject}</span>
+                            <span className="text-[11px] font-semibold text-brand-sapphire">{recLesson.subject}</span>
                             <span className="text-xs font-bold text-slate-900 line-clamp-2 leading-snug">
                               {recLesson.title}
                             </span>
-                            <span className="text-[10px] font-extrabold text-emerald-700 pt-0.5">
-                              Отвори конспекта →
+                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-600 pt-0.5">
+                              Отвори конспекта
+                              <ArrowRight className="w-3 h-3" aria-hidden="true" />
                             </span>
                           </button>
                         ))}
@@ -340,47 +345,56 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
             </div>
 
             {/* Right Panel (5 cols): Live Interactive Flashcard Flip-Deck from all 108 Lessons */}
-            <div className="lg:col-span-5 p-5 sm:p-7 rounded-3xl bg-gradient-to-br from-violet-950 via-indigo-950 to-blue-950 border-2 border-indigo-400/30 text-white shadow-md flex flex-col justify-between space-y-5">
+            <div className="lg:col-span-5 p-5 sm:p-7 rounded-2xl bg-blue-50/60 border border-blue-100 shadow-sm flex flex-col justify-between space-y-5">
               <div className="space-y-4">
-                <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/15">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-300" />
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-amber-300">
-                      Експресни Флашкарти ({interleavedFlashcards.length} карти)
-                    </span>
-                  </div>
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-200">
+                  <h2 className="flex items-center gap-2 text-base font-bold text-slate-900">
+                    <Sparkles className="w-4 h-4 text-emerald-700" aria-hidden="true" />
+                    <span>Експресни флашкарти</span>
+                    <span className="text-xs font-medium text-slate-600 tabular-nums">({interleavedFlashcards.length})</span>
+                  </h2>
                   {knownFlashcardsCount > 0 && (
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[11px] font-bold">
-                      ✓ Научени днес: {knownFlashcardsCount}
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-emerald-700 text-xs font-semibold tabular-nums">
+                      <Check className="w-3.5 h-3.5" aria-hidden="true" />
+                      Научени днес: {knownFlashcardsCount}
                     </span>
                   )}
                 </div>
 
                 {currentFlashcardItem && (
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between gap-2 text-xs text-blue-200">
-                      <span className="font-bold text-amber-300">
+                    <div className="flex items-center justify-between gap-2 text-xs text-slate-500">
+                      <span className="font-semibold text-emerald-700">
                         {currentFlashcardItem.lesson.subject} • {currentFlashcardItem.lesson.grade}
                       </span>
-                      <span className="font-mono text-[11px] text-indigo-200">
+                      <span className="tabular-nums text-[11px] text-slate-600">
                         Карта #{(flashcardIndex % interleavedFlashcards.length) + 1} / {interleavedFlashcards.length}
                       </span>
                     </div>
 
                     {/* Interactive Flip Card Box */}
                     <div
+                      role="button"
+                      tabIndex={0}
+                      aria-label={isFlashcardFlipped ? 'Покажи въпроса' : 'Покажи отговора'}
                       onClick={() => setIsFlashcardFlipped(!isFlashcardFlipped)}
-                      className={`min-h-[210px] p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between select-none ${
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setIsFlashcardFlipped(!isFlashcardFlipped);
+                        }
+                      }}
+                      className={`min-h-[210px] p-5 rounded-2xl border transition-colors cursor-pointer flex flex-col justify-between select-none ${
                         isFlashcardFlipped
                           ? 'bg-emerald-950/75 border-emerald-400/60 shadow-lg'
-                          : 'bg-white/10 hover:bg-white/15 border-white/25'
+                          : 'bg-white hover:bg-slate-50 border-slate-200'
                       }`}
                     >
-                      <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider">
-                        <span className={isFlashcardFlipped ? 'text-emerald-300' : 'text-sky-300'}>
-                          {isFlashcardFlipped ? '💡 Академичен отговор / Формула' : '❓ Въпрос / Термин (Кликни за обръщане)'}
+                      <div className="flex items-center justify-between text-xs font-semibold">
+                        <span className={isFlashcardFlipped ? 'text-emerald-700' : 'text-slate-600'}>
+                          {isFlashcardFlipped ? 'Отговор / формула' : 'Въпрос / термин — кликни, за да обърнеш'}
                         </span>
-                        <span className="px-2 py-0.5 rounded bg-white/15 text-white text-[10px]">
+                        <span className="px-2 py-0.5 rounded bg-white text-slate-900 text-[10px]">
                           {isFlashcardFlipped ? 'Гръб' : 'Лице'}
                         </span>
                       </div>
@@ -389,19 +403,22 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                         <p
                           className={`leading-relaxed ${
                             isFlashcardFlipped
-                              ? 'text-xs sm:text-sm text-emerald-100 font-medium'
-                              : 'text-sm sm:text-base text-white font-extrabold'
+                              ? 'text-xs sm:text-sm text-emerald-700 font-medium'
+                              : 'text-sm sm:text-base text-slate-900 font-bold'
                           }`}
                         >
                           {isFlashcardFlipped ? currentFlashcardItem.card.back : currentFlashcardItem.card.front}
                         </p>
                       </div>
 
-                      <div className="text-[11px] text-indigo-200 flex items-center justify-between pt-2 border-t border-white/15">
+                      <div className="text-[11px] text-slate-500 flex items-center justify-between pt-2 border-t border-slate-200">
                         <span className="truncate max-w-[230px]">
                           Урок: {currentFlashcardItem.lesson.title}
                         </span>
-                        <span className="font-extrabold text-amber-300">Обърни ↻</span>
+                        <span className="inline-flex items-center gap-1 font-semibold text-emerald-700">
+                          <RotateCcw className="w-3 h-3" aria-hidden="true" />
+                          Обърни
+                        </span>
                       </div>
                     </div>
 
@@ -410,7 +427,7 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                       <button
                         type="button"
                         onClick={() => setIsFlashcardFlipped(!isFlashcardFlipped)}
-                        className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-bold text-white transition-colors cursor-pointer"
+                        className="min-h-10 py-2 px-3 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-900 transition-colors cursor-pointer"
                       >
                         {isFlashcardFlipped ? 'Виж въпроса' : 'Виж отговора'}
                       </button>
@@ -421,9 +438,10 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                           setIsFlashcardFlipped(false);
                           setFlashcardIndex((prev) => (prev + 1) % Math.max(1, interleavedFlashcards.length));
                         }}
-                        className="py-2.5 px-3 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-emerald-950 text-xs font-extrabold transition-colors cursor-pointer"
+                        className="min-h-10 inline-flex items-center justify-center gap-1 py-2 px-3 rounded-lg bg-brand-sapphire hover:bg-brand-sapphire-dark text-white text-xs font-bold transition-colors cursor-pointer shadow-sm"
                       >
-                        ✓ Знам го (+1)
+                        <Check className="w-3.5 h-3.5" aria-hidden="true" />
+                        Знам го
                       </button>
                       <button
                         type="button"
@@ -431,16 +449,17 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                           setIsFlashcardFlipped(false);
                           setFlashcardIndex((prev) => (prev + 1) % Math.max(1, interleavedFlashcards.length));
                         }}
-                        className="py-2.5 px-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-extrabold transition-colors cursor-pointer"
+                        className="min-h-10 inline-flex items-center justify-center gap-1 py-2 px-3 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-slate-900 text-xs font-semibold transition-colors cursor-pointer"
                       >
-                        Следваща →
+                        Следваща
+                        <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                       </button>
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className="pt-3 border-t border-white/15 flex items-center justify-between text-xs text-blue-200">
+              <div className="pt-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
                 <button
                   type="button"
                   onClick={() => {
@@ -450,16 +469,18 @@ export const HomeTrainerSection: React.FC<HomeTrainerSectionProps> = ({ lessons,
                       onNavigateTab('flashcards');
                     }
                   }}
-                  className="text-amber-300 hover:text-amber-200 font-extrabold cursor-pointer"
+                  className="inline-flex items-center gap-1 text-slate-900 hover:text-emerald-700 font-semibold cursor-pointer"
                 >
-                  Отвори всички флашкарти към урока →
+                  Всички флашкарти към урока
+                  <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                 </button>
                 <button
                   type="button"
                   onClick={() => onNavigateTab('blitz')}
-                  className="text-white hover:text-amber-300 font-bold cursor-pointer"
+                  className="inline-flex items-center gap-1 text-slate-900 hover:text-emerald-700 font-semibold cursor-pointer"
                 >
-                  ⚡ 60-сек. Блиц
+                  <Zap className="w-3.5 h-3.5 text-emerald-700" aria-hidden="true" />
+                  60-сек. блиц
                 </button>
               </div>
             </div>

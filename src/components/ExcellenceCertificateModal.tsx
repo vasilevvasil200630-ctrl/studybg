@@ -364,8 +364,8 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
   const handleCopySummary = () => {
     const text =
       docMode === 'spk_europass'
-        ? `📜 Свидетелство за Трета СПК + EUROPASS (StudyBG)\nДипломант: ${studentName} (${schoolAndGrade})\nПрофесия: ${selectedSpk.code} ${selectedSpk.profession} (${selectedSpk.specialty})\nРезултат ДИППК: ${scoreText} | ${gradeLabel}\nРег. код: ${certificateCode} • studybg.vercel.app`
-        : `🏆 Удостоверение за Академично Отличие (StudyBG)\nУченик: ${studentName} (${schoolAndGrade})\nПостижение: ${achievementTitle} — ${examOrTrackLabel}\nРезултат: ${scoreText} | ${gradeLabel}\nКод: ${certificateCode} • studybg.vercel.app`;
+        ? `Свидетелство за Трета СПК + EUROPASS (StudyBG)\nДипломант: ${studentName} (${schoolAndGrade})\nПрофесия: ${selectedSpk.code} ${selectedSpk.profession} (${selectedSpk.specialty})\nРезултат ДИППК: ${scoreText} | ${gradeLabel}\nРег. код: ${certificateCode} • studybg.vercel.app`
+        : `Удостоверение за Академично Отличие (StudyBG)\nУченик: ${studentName} (${schoolAndGrade})\nПостижение: ${achievementTitle} — ${examOrTrackLabel}\nРезултат: ${scoreText} | ${gradeLabel}\nКод: ${certificateCode} • studybg.vercel.app`;
     navigator.clipboard?.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -373,7 +373,7 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
 
   return (
     <NativeDialog onClose={onClose} labelledBy="cert-modal-title" widthClassName="max-w-3xl">
-      <div className="bg-white w-full max-w-3xl max-h-[92vh] rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
+      <div className="bg-white w-full max-w-3xl max-h-[92vh] rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
         
         {/* Header */}
         <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
@@ -382,7 +382,7 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
               <Award className="w-5 h-5" />
             </div>
             <div>
-              <h2 id="cert-modal-title" className="text-base sm:text-lg font-extrabold text-slate-900">
+              <h2 id="cert-modal-title" className="text-base sm:text-lg font-bold text-slate-900">
                 Генератор на Грамота за 6.00 & Свидетелство за Трета СПК (EUROPASS)
               </h2>
               <p className="text-xs text-slate-500">
@@ -413,7 +413,7 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
                   : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'
               }`}
             >
-              <div className="text-xs font-black">🏅 1. Академична Грамота за Отличие</div>
+              <div className="text-xs font-bold">1. Академична Грамота за Отличие</div>
               <div className={`text-[11px] mt-0.5 ${docMode === 'academic' ? 'text-blue-100' : 'text-slate-500'}`}>
                 За отличен резултат на ДЗИ, НВО и профилирана подготовка
               </div>
@@ -424,11 +424,11 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
               onClick={() => setDocMode('spk_europass')}
               className={`p-3 rounded-2xl border text-left transition-all cursor-pointer ${
                 docMode === 'spk_europass'
-                  ? 'bg-emerald-700 text-white border-emerald-700 shadow-xs'
+                  ? 'bg-brand-sapphire text-white border-brand-sapphire shadow-xs'
                   : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'
               }`}
             >
-              <div className="text-xs font-black">📜 2. Свидетелство за Трета СПК + EUROPASS</div>
+              <div className="text-xs font-bold">2. Свидетелство за Трета СПК + EUROPASS</div>
               <div className={`text-[11px] mt-0.5 ${docMode === 'spk_europass' ? 'text-emerald-100' : 'text-slate-500'}`}>
                 Професионална квалификация (EQF Ниво 4 по Наредба № 1 на МОН)
               </div>
@@ -486,9 +486,9 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
           </div>
 
           {/* Live Certificate Preview Card */}
-          <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-br from-blue-950 via-blue-950 to-slate-900 shadow-lg">
-            <div className="bg-white rounded-xl border-2 border-amber-400/90 p-5 sm:p-8 text-center space-y-4 relative overflow-hidden">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-800 border border-blue-200 text-[10px] sm:text-xs font-extrabold uppercase tracking-wider">
+          <div className="p-3 sm:p-4 rounded-2xl bg-blue-50/60 border border-blue-100 shadow-sm">
+            <div className="bg-white rounded-xl border border-amber-400/90 p-5 sm:p-8 text-center space-y-4 relative overflow-hidden">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-800 border border-blue-200 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
                 <GraduationCap className="w-3.5 h-3.5 text-blue-600" />
                 <span>
                   {docMode === 'spk_europass'
@@ -498,7 +498,7 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
               </div>
 
               <div className="space-y-1">
-                <h3 className="text-lg sm:text-2xl font-black uppercase tracking-wide text-slate-900 font-serif">
+                <h3 className="text-lg sm:text-2xl font-bold uppercase tracking-wide text-slate-900 font-serif">
                   {docMode === 'spk_europass'
                     ? 'Свидетелство за Професионална Квалификация (Трета СПК)'
                     : 'Удостоверение за Академично Отличие'}
@@ -511,7 +511,7 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
               </div>
 
               <div className="py-1">
-                <div className="text-xl sm:text-3xl font-black text-blue-900 font-serif border-b-2 border-slate-200 inline-block px-6 pb-1">
+                <div className="text-xl sm:text-3xl font-bold text-blue-900 font-serif border-b-2 border-slate-200 inline-block px-6 pb-1">
                   {studentName || 'Отличник на StudyBG'}
                 </div>
                 <div className="text-xs font-semibold text-slate-500 mt-1">
@@ -521,10 +521,10 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
 
               {/* Achievement Box */}
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 max-w-xl mx-auto space-y-2.5">
-                <div className="text-xs sm:text-sm font-extrabold text-slate-900">
+                <div className="text-xs sm:text-sm font-bold text-slate-900">
                   {docMode === 'spk_europass' ? (
                     <>
-                      Професия <span className="font-mono text-emerald-700">{selectedSpk.code}</span> „{selectedSpk.profession}“ •{' '}
+                      Професия <span className="tabular-nums text-emerald-700">{selectedSpk.code}</span> „{selectedSpk.profession}“ •{' '}
                       <span className="text-blue-700">{selectedSpk.specialty}</span>
                     </>
                   ) : (
@@ -535,10 +535,10 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
                 </div>
 
                 <div className="flex flex-wrap items-center justify-center gap-2">
-                  <span className="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-black">
+                  <span className="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
                     {scoreText}
                   </span>
-                  <span className="px-3 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-300 text-xs font-black flex items-center gap-1">
+                  <span className="px-3 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-300 text-xs font-bold flex items-center gap-1">
                     <Sparkles className="w-3.5 h-3.5 text-amber-600" />
                     <span>{gradeLabel}</span>
                   </span>
@@ -561,10 +561,10 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
               <div className="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
                 <div className="text-center sm:text-left">
                   <div>Дата: <strong className="text-slate-700">{formattedDate}</strong></div>
-                  <div>Рег. код: <strong className="font-mono text-slate-700">{certificateCode}</strong></div>
+                  <div>Рег. код: <strong className="tabular-nums text-slate-700">{certificateCode}</strong></div>
                 </div>
 
-                <div className="px-3.5 py-1 rounded-full bg-amber-50 border border-amber-300 text-amber-800 font-extrabold uppercase tracking-wider text-[10px] flex items-center gap-1">
+                <div className="px-3.5 py-1 rounded-full bg-amber-50 border border-amber-300 text-amber-800 font-bold uppercase tracking-wider text-[10px] flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
                   <span>{docMode === 'spk_europass' ? 'Трета СПК • EQF Level 4' : 'Верифициран Стандарт 6.00'}</span>
                 </div>

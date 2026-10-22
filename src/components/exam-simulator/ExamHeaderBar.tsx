@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, ShieldAlert, GraduationCap } from 'lucide-react';
+import { Clock, GraduationCap } from 'lucide-react';
 import type { ExamSimulatorState } from './useExamSimulator';
 
 export const ExamHeaderBar: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) => {
@@ -10,10 +10,6 @@ export const ExamHeaderBar: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =>
         {/* Header & Controls */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 uppercase tracking-wider mb-1">
-              <ShieldAlert className="w-3.5 h-3.5" />
-              <span>3-модулен изпитен формат по стандарта на МОН (100 точки)</span>
-            </div>
             <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
               Симулация на изпит: „{currentLesson.title}“
             </h3>
@@ -27,7 +23,7 @@ export const ExamHeaderBar: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =>
             {isExamRunning && (
               <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-amber-50 border border-amber-200">
                 <Clock className="w-4 h-4 text-amber-600 animate-pulse" />
-                <span className="font-mono text-base font-bold text-amber-900">
+                <span className="tabular-nums text-base font-bold text-amber-900">
                   {formatTimer(secondsLeft)}
                 </span>
               </div>
@@ -37,7 +33,7 @@ export const ExamHeaderBar: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =>
               <div className="flex flex-wrap items-center gap-1.5">
                 <button
                   onClick={() => handleStartExam(240)}
-                  className="px-3 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 active:bg-amber-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
+                  className="px-3 py-2 rounded-lg bg-brand-sapphire hover:bg-brand-sapphire-light text-white text-xs font-bold transition-colors shadow-xs flex items-center gap-1.5"
                   title="Официален изпитен регламент на МОН за ДЗИ 12. клас: 240 минути"
                 >
                   <GraduationCap className="w-3.5 h-3.5" />
@@ -45,7 +41,7 @@ export const ExamHeaderBar: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =>
                 </button>
                 <button
                   onClick={() => handleStartExam(90)}
-                  className="px-3 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 active:bg-teal-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
+                  className="px-3 py-2 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-brand-sapphire text-xs font-bold transition-colors shadow-xs flex items-center gap-1.5"
                   title="Официален изпитен регламент на МОН за НВО 10. клас: 90 минути"
                 >
                   <Clock className="w-3.5 h-3.5" />
@@ -53,13 +49,13 @@ export const ExamHeaderBar: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =>
                 </button>
                 <button
                   onClick={() => handleStartExam(60)}
-                  className="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs font-semibold transition-all shadow-xs"
+                  className="px-3 py-2 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-brand-sapphire text-xs font-semibold transition-colors shadow-xs"
                 >
                   60 мин (Експресен)
                 </button>
                 <button
                   onClick={() => handleStartExam(0)}
-                  className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium border border-slate-200 transition-colors"
+                  className="px-3 py-2 rounded-lg bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium border border-slate-200 transition-colors"
                   title="Учебно темпо без таймер за спокойна самоподготовка"
                 >
                   Без таймер

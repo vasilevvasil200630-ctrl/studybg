@@ -21,7 +21,7 @@ export const ExamModuleTabs: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =
               >
                 <BookOpen className="w-3.5 h-3.5" />
                 <span>Модул 1: Тестови въпроси (40 т.)</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
+                <span className={`text-[10px] px-1.5 py-0.2 rounded tabular-nums ${
                   activeModuleTab === 1 ? 'bg-blue-700 text-white' : 'bg-slate-200 text-slate-800'
                 }`}>
                   {mod1CompletedCount}/{questions.length}
@@ -38,7 +38,7 @@ export const ExamModuleTabs: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =
               >
                 <FileText className="w-3.5 h-3.5" />
                 <span>Модул 2: Анализ на извор (30 т.)</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
+                <span className={`text-[10px] px-1.5 py-0.2 rounded tabular-nums ${
                   activeModuleTab === 2 ? 'bg-blue-700 text-white' : 'bg-slate-200 text-slate-800'
                 }`}>
                   {mod2CompletedCount}/{examData.module2.questions.length}
@@ -55,7 +55,7 @@ export const ExamModuleTabs: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =
               >
                 <Scale className="w-3.5 h-3.5" />
                 <span>Модул 3: Аргументиран отговор (30 т.)</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
+                <span className={`text-[10px] px-1.5 py-0.2 rounded tabular-nums ${
                   activeModuleTab === 3 ? 'bg-blue-700 text-white' : 'bg-slate-200 text-slate-800'
                 }`}>
                   {mod3HasText ? '✓ Написан' : 'Чернова'}

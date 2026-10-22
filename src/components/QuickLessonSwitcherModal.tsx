@@ -120,14 +120,14 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
                 onClick={() => setSelectedStage(opt.id)}
                 className={`px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 ${
                   selectedStage === opt.id
-                    ? 'bg-slate-900 text-white font-semibold shadow-xs'
+                    ? 'bg-brand-sapphire text-white font-semibold shadow-xs'
                     : 'bg-white text-slate-700 hover:text-slate-900 border border-slate-200 hover:bg-slate-100'
                 }`}
               >
                 <span>{opt.label}</span>
                 {opt.badge && (
                   <span className={`text-[9px] px-1 py-0.2 rounded font-semibold ${
-                    selectedStage === opt.id ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-600'
+                    selectedStage === opt.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
                   }`}>
                     {opt.badge}
                   </span>

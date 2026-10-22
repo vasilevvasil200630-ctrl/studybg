@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Impeccable — снимки от прегледа (локални, не се комитват)
+.impeccable/review/

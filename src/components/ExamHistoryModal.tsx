@@ -73,7 +73,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
             <div>
               <h3 id="exam-history-title" className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                 <span>Академичен прогрес & История на изпитите</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold">
+                <span className="text-[10px] tabular-nums px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold">
                   МОН 100т.
                 </span>
               </h3>
@@ -122,7 +122,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
                   <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700">
                     Среден резултат
                   </span>
-                  <div className="text-xl sm:text-2xl font-extrabold text-blue-900 font-mono">
+                  <div className="text-xl sm:text-2xl font-bold text-blue-900 tabular-nums">
                     {analytics.averageScore} <span className="text-xs font-sans text-blue-600 font-medium">/ 100т.</span>
                   </div>
                   <span className="text-[10px] text-blue-700">
@@ -135,7 +135,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
                   <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700">
                     Средна оценка МОН
                   </span>
-                  <div className="text-xl sm:text-2xl font-extrabold text-amber-900 font-mono">
+                  <div className="text-xl sm:text-2xl font-bold text-amber-900 tabular-nums">
                     {analytics.averageGrade === null ? '—' : analytics.averageGrade.toFixed(2)}
                   </div>
                   <span className="text-[10px] text-amber-700">
@@ -148,7 +148,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
                   <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
                     Най-висок резултат
                   </span>
-                  <div className="text-xl sm:text-2xl font-extrabold text-emerald-900 font-mono">
+                  <div className="text-xl sm:text-2xl font-bold text-emerald-900 tabular-nums">
                     {analytics.highestScore} <span className="text-xs font-sans text-emerald-600 font-medium">т.</span>
                   </div>
                   <span className="text-[10px] text-emerald-700">
@@ -161,7 +161,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
                   <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800">
                     Успеваемост
                   </span>
-                  <div className="text-xl sm:text-2xl font-extrabold text-amber-900 font-mono">
+                  <div className="text-xl sm:text-2xl font-bold text-amber-900 tabular-nums">
                     {analytics.passRate}%
                   </div>
                   <span className="text-[10px] text-amber-800">
@@ -178,13 +178,13 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
                     <Award className="w-4 h-4 text-amber-500" />
                     <span>Път към Отличен 6.00 (90+ точки по скалата на МОН)</span>
                   </span>
-                  <span className="font-mono font-bold text-blue-700">
+                  <span className="tabular-nums font-bold text-blue-700">
                     {analytics.averageScore} / 100 т.
                   </span>
                 </div>
                 <div className="w-full h-3 rounded-full bg-slate-200 overflow-hidden relative">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-blue-500 via-blue-500 to-emerald-500 transition-all duration-500"
+                    className="h-full rounded-full bg-brand-sapphire transition-all duration-500"
                     style={{ width: `${Math.min(100, Math.max(5, analytics.averageScore))}%` }}
                   />
                   {/* МОН Threshold Marks */}
@@ -192,7 +192,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
                   <div className="absolute top-0 bottom-0 left-[75%] w-0.5 bg-blue-400" title="Много добър: 75 т." />
                   <div className="absolute top-0 bottom-0 left-[90%] w-0.5 bg-emerald-500" title="Отличен 6.00: 90 т." />
                 </div>
-                <div className="flex justify-between text-[10px] font-mono text-slate-500 pt-0.5">
+                <div className="flex justify-between text-[10px] tabular-nums text-slate-500 pt-0.5">
                   <span>0т.</span>
                   <span className="text-rose-600 font-bold">30т. (Тройка)</span>
                   <span className="text-blue-600 font-bold">75т. (Мн. добър)</span>
@@ -240,7 +240,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
                                 {attempt.formattedDate}
                               </span>
                               <span>•</span>
-                              <span className="flex items-center gap-1 font-mono">
+                              <span className="flex items-center gap-1 tabular-nums">
                                 <Clock className="w-3 h-3 text-slate-400" />
                                 {Math.round(attempt.timeSpentSeconds / 60)} мин. прекарани
                               </span>
@@ -264,16 +264,16 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
                             </span>
 
                             <div className="text-right">
-                              <span className="text-base font-extrabold font-mono text-blue-700">
+                              <span className="text-base font-bold tabular-nums text-blue-700">
                                 {attempt.totalPoints}
                               </span>
-                              <span className="text-xs text-slate-400 font-mono"> / 100</span>
+                              <span className="text-xs text-slate-400 tabular-nums"> / 100</span>
                             </div>
                           </div>
                         </div>
 
                         {/* Module breakdown pills */}
-                        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100 text-[11px] font-mono">
+                        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100 text-[11px] tabular-nums">
                           <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200">
                             М1 (Тест): <strong>{attempt.module1Points}</strong>/40т.
                           </span>
@@ -285,7 +285,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
                           </span>
                           {attempt.hasAiEvaluation && (
                             <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-sans font-semibold">
-                              🤖 AI Оценено с Gemini
+                              AI Оценено с Gemini
                             </span>
                           )}
                         </div>
@@ -306,7 +306,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
           </span>
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs transition-colors"
+            className="px-4 py-2 rounded-xl bg-brand-sapphire hover:bg-brand-sapphire-light text-white text-xs font-semibold shadow-xs transition-colors"
           >
             Затвори
           </button>

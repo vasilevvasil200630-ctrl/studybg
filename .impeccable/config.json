@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "geist",
+        "createdAt": "2026-10-21T12:54:56.432Z",
+        "reason": "Brief-pinned: user asked to port the Matura Plus design wholesale; Geist is Matura Plus's typeface"
+      }
+    ]
+  }
+}

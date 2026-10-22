@@ -39,27 +39,27 @@ export const OfflineStatusBanner: React.FC = () => {
       data-print-hide
       aria-label="Системни известия за връзка"
       aria-live="polite"
-      className="fixed bottom-3 left-3 right-3 sm:left-auto sm:right-4 sm:bottom-4 sm:max-w-md z-40 rounded-2xl bg-slate-900 text-white text-xs border border-slate-800 shadow-2xl"
+      className="fixed bottom-20 left-3 right-3 sm:left-auto sm:right-4 lg:bottom-4 sm:max-w-md z-40 rounded-xl bg-white text-slate-700 text-xs border border-slate-200 shadow-lg shadow-slate-900/10"
     >
       <div className="px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
         {/* Offline indicator */}
         {!isOnline && (
-          <div className="flex items-center gap-2 text-amber-300 font-semibold">
-            <WifiOff className="w-4 h-4 text-amber-400 flex-shrink-0" />
+          <div className="flex items-center gap-2 text-amber-800 font-semibold">
+            <WifiOff className="w-4 h-4 text-amber-600 flex-shrink-0" aria-hidden="true" />
             <span>
-              Офлайн режим активен: Пълният конспект по МОН, тестовете и формулите работят без интернет!
+              Няма връзка. Отворените уроци, тестовете и формулите работят и без интернет.
             </span>
           </div>
         )}
 
         {/* Update available prompt */}
         {hasUpdate && (
-          <div className="flex items-center gap-2 text-emerald-300 font-medium">
-            <RefreshCw className="w-4 h-4 text-emerald-400 animate-spin" />
-            <span>Налице е обновена версия на учебното съдържание.</span>
+          <div className="flex items-center gap-2 text-emerald-800 font-medium">
+            <RefreshCw className="w-4 h-4 text-emerald-600" aria-hidden="true" />
+            <span>Има нова версия на сайта.</span>
             <button
               onClick={handleUpdateClick}
-              className="ml-2 px-2.5 py-1 rounded-md bg-emerald-700 hover:bg-emerald-500 text-white text-[11px] font-bold transition-colors"
+              className="ml-2 px-2.5 py-1 rounded-md bg-brand-sapphire hover:bg-brand-sapphire-dark text-white text-xs font-semibold transition-colors"
             >
               Презареди сега
             </button>
@@ -68,10 +68,10 @@ export const OfflineStatusBanner: React.FC = () => {
 
         {/* PWA Install prompt */}
         {isOnline && !hasUpdate && canInstall && !isDismissed && (
-          <div className="flex items-center gap-2 text-slate-200">
-            <Smartphone className="w-4 h-4 text-blue-400 flex-shrink-0" />
+          <div className="flex items-center gap-2 text-slate-700">
+            <Smartphone className="w-4 h-4 text-brand-sapphire flex-shrink-0" aria-hidden="true" />
             <span>
-              Инсталирайте StudyBG като самостоятелно приложение за бърз офлайн достъп в клас.
+              Добави StudyBG на устройството си — уроците се отварят и без интернет.
             </span>
           </div>
         )}
@@ -81,17 +81,17 @@ export const OfflineStatusBanner: React.FC = () => {
           {canInstall && !isDismissed && (
             <button
               onClick={handleInstallClick}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-[11px] shadow-xs transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-sapphire hover:bg-brand-sapphire-dark text-white font-semibold text-xs transition-colors"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Инсталирай приложението</span>
+              <span>Инсталирай</span>
             </button>
           )}
 
           {canInstall && !isDismissed && (
             <button
               onClick={() => setIsDismissed(true)}
-              className="p-1 rounded text-slate-400 hover:text-white transition-colors"
+              className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
               aria-label="Скрий известието"
             >
               <X className="w-3.5 h-3.5" />

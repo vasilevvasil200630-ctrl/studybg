@@ -16,7 +16,7 @@ export const ExamResultsBanner: React.FC<{ sim: ExamSimulatorState }> = ({ sim }
                   {examScale.scale ? `Ориентировъчна оценка (${examScale.label}): ${gradeInfo.grade}` : examScale.label}
                 </span>
                 <div className="flex items-baseline gap-3">
-                  <h4 className="text-4xl font-extrabold text-slate-900 font-mono">
+                  <h4 className="text-4xl font-bold text-slate-900 tabular-nums">
                     {totalPoints} <span className="text-xl text-slate-400 font-normal">/ 100 точки</span>
                   </h4>
                 </div>
@@ -28,15 +28,15 @@ export const ExamResultsBanner: React.FC<{ sim: ExamSimulatorState }> = ({ sim }
                 <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-200">
                   <div className="bg-white p-2.5 rounded-lg border border-slate-200">
                     <span className="text-[11px] text-slate-500 block">Модул 1 (Тест)</span>
-                    <span className="text-sm font-bold font-mono text-slate-900">{module1Points} / 40 т.</span>
+                    <span className="text-sm font-bold tabular-nums text-slate-900">{module1Points} / 40 т.</span>
                   </div>
                   <div className="bg-white p-2.5 rounded-lg border border-slate-200">
                     <span className="text-[11px] text-slate-500 block">Модул 2 (Извор)</span>
-                    <span className="text-sm font-bold font-mono text-slate-900">{module2Points} / 30 т.</span>
+                    <span className="text-sm font-bold tabular-nums text-slate-900">{module2Points} / 30 т.</span>
                   </div>
                   <div className="bg-white p-2.5 rounded-lg border border-slate-200">
                     <span className="text-[11px] text-slate-500 block">Модул 3 (Есе)</span>
-                    <span className="text-sm font-bold font-mono text-slate-900">{module3Points} / 30 т.</span>
+                    <span className="text-sm font-bold tabular-nums text-slate-900">{module3Points} / 30 т.</span>
                   </div>
                 </div>
               </div>
@@ -44,7 +44,7 @@ export const ExamResultsBanner: React.FC<{ sim: ExamSimulatorState }> = ({ sim }
               <div className="flex flex-wrap items-center gap-2.5">
                 <button
                   onClick={() => setIsCertModalOpen(true)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-700 hover:bg-amber-800 text-white text-xs font-extrabold transition-colors shadow-xs"
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold transition-colors shadow-xs"
                 >
                   <Award className="w-3.5 h-3.5" />
                   <span>Дигитална Грамота / Сертификат (A4)</span>
@@ -52,7 +52,7 @@ export const ExamResultsBanner: React.FC<{ sim: ExamSimulatorState }> = ({ sim }
 
                 <button
                   onClick={() => setIsPrintModalOpen(true)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-black text-white text-xs font-semibold transition-colors shadow-xs"
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-brand-sapphire hover:bg-brand-sapphire-light text-white text-xs font-semibold transition-colors shadow-xs"
                 >
                   <Printer className="w-3.5 h-3.5" />
                   <span>Протокол от изпита (Печат / PDF)</span>

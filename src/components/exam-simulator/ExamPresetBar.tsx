@@ -49,7 +49,7 @@ export const ExamPresetBar: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =>
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              🛠️ ДИППК (Трета СПК)
+              ДИППК (Трета СПК)
             </button>
 
             <button
@@ -137,7 +137,7 @@ export const ExamPresetBar: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =>
                     : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
-                💻 ИТ & Киберсигурност (ТУЕС)
+                ИТ & Киберсигурност (ТУЕС)
               </button>
               <button
                 type="button"
@@ -148,7 +148,7 @@ export const ExamPresetBar: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =>
                     : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
-                🏦 Финанси & Банки (НТБГ)
+                Финанси & Банки (НТБГ)
               </button>
               <button
                 type="button"
@@ -159,7 +159,7 @@ export const ExamPresetBar: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =>
                     : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
-                🏗️ Строителство & Геодезия (СГСАГ)
+                Строителство & Геодезия (СГСАГ)
               </button>
               <button
                 type="button"
@@ -170,7 +170,7 @@ export const ExamPresetBar: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =>
                     : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
-                ✈️ Авиация & Мореплаване
+                Авиация & Мореплаване
               </button>
               <button
                 type="button"
@@ -181,7 +181,7 @@ export const ExamPresetBar: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =>
                     : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                 }`}
               >
-                ⚛️ Ядрена & Лазерна техника
+                Ядрена & Лазерна техника
               </button>
             </div>
           )}
@@ -240,7 +240,7 @@ export const ExamPresetBar: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) =>
             <span className="hidden sm:inline">Моят прогрес & История</span>
             <span className="sm:hidden">История</span>
             {historyCount > 0 && (
-              <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-blue-600 text-white font-bold">
+              <span className="tabular-nums text-[10px] px-1.5 py-0.2 rounded-full bg-blue-600 text-white font-bold">
                 {historyCount}
               </span>
             )}

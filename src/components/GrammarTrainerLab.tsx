@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import {
-  PenTool,
   CheckCircle2,
   XCircle,
   Sparkles,
@@ -96,37 +95,25 @@ export const GrammarTrainerLab: React.FC = () => {
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* Header Banner */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-blue-900 via-blue-900 to-slate-900 text-white shadow-md relative overflow-hidden">
+      <div className="p-6 sm:p-8 rounded-2xl bg-blue-50/60 border border-blue-100 shadow-xs relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-400/30">
-              <PenTool className="w-3.5 h-3.5" />
-              <span>Модул 1 на ДЗИ & НВО 10 • 30 точки • Вариант #{variantNumber}</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-              Тренажор по Граматика, Правопис & Пунктуация
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Официални тестови въпроси и безкраен генератор на нови изречения по нормите на Института за български език (БАН) и МОН. Овладей пълния и краткия член, трудните запетаи и слятото писане без грешка.
-            </p>
-          </div>
 
           {/* Stats Badges */}
           <div className="flex items-center gap-3 shrink-0">
-            <div className="p-3.5 rounded-2xl bg-white/10 border border-white/15 text-center min-w-[90px]">
-              <div className="flex items-center justify-center gap-1 text-amber-400 text-xs font-bold">
+            <div className="p-3.5 rounded-2xl bg-white border border-slate-200 text-center min-w-[90px]">
+              <div className="flex items-center justify-center gap-1 text-emerald-700 text-xs font-bold">
                 <Flame className="w-4 h-4 fill-amber-400" />
                 <span>Серия</span>
               </div>
-              <div className="text-xl font-black text-white mt-0.5">{streak}</div>
+              <div className="text-xl font-bold text-slate-900 mt-0.5">{streak}</div>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-white/10 border border-white/15 text-center min-w-[90px]">
-              <div className="flex items-center justify-center gap-1 text-emerald-400 text-xs font-bold">
+            <div className="p-3.5 rounded-2xl bg-white border border-slate-200 text-center min-w-[90px]">
+              <div className="flex items-center justify-center gap-1 text-emerald-700 text-xs font-bold">
                 <Award className="w-4 h-4" />
                 <span>Точки</span>
               </div>
-              <div className="text-xl font-black text-white mt-0.5">{score}</div>
+              <div className="text-xl font-bold text-slate-900 mt-0.5">{score}</div>
             </div>
           </div>
         </div>
@@ -197,7 +184,7 @@ export const GrammarTrainerLab: React.FC = () => {
       {/* Mode 1: PRACTICE DRILL */}
       {activeMode === 'practice' && currentQ && (
         <div className="max-w-4xl mx-auto space-y-6">
-          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-sm space-y-6">
+          <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200/90 shadow-sm space-y-6">
             {/* Top Question Info */}
             <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100 text-xs">
               <div className="flex items-center gap-2">
@@ -205,7 +192,7 @@ export const GrammarTrainerLab: React.FC = () => {
                   {currentQ.categoryLabel}
                 </span>
                 {currentQ.monExamReference && (
-                  <span className="text-slate-500 font-mono hidden sm:inline">
+                  <span className="text-slate-500 tabular-nums hidden sm:inline">
                     {currentQ.monExamReference}
                   </span>
                 )}
@@ -217,7 +204,7 @@ export const GrammarTrainerLab: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleNewInfiniteVariant}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-sapphire hover:bg-brand-sapphire-light text-white font-bold text-xs transition-colors cursor-pointer"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   <span>Нов вариант с нови изречения (∞)</span>
@@ -362,12 +349,12 @@ export const GrammarTrainerLab: React.FC = () => {
           </div>
 
           {/* Rule Detail Panel */}
-          <div className="lg:col-span-8 p-6 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-sm space-y-6">
+          <div className="lg:col-span-8 p-6 sm:p-8 rounded-2xl bg-white border border-slate-200/90 shadow-sm space-y-6">
             <div className="space-y-2">
               <span className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 text-xs font-bold uppercase tracking-wider">
                 {selectedRule.categoryLabel}
               </span>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                 {selectedRule.title}
               </h2>
             </div>

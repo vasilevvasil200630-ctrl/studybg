@@ -39,10 +39,10 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
 
   const examTypesList = [
     { id: 'Всички изпити', label: 'Всички изпитни формати' },
-    { id: 'ДЗИ / Матура', label: '🎓 ДЗИ / Матура (12. кл.)' },
-    { id: 'ДИППК / Професионален изпит', label: '🛠️ ДИППК / Професионален изпит (III СПК)' },
-    { id: 'НВО (10. клас)', label: '📘 НВО (10. клас)' },
-    { id: 'НВО (7. клас)', label: '🌱 НВО (7. клас)' }
+    { id: 'ДЗИ / Матура', label: 'ДЗИ / Матура (12. кл.)' },
+    { id: 'ДИППК / Професионален изпит', label: 'ДИППК / Професионален изпит (III СПК)' },
+    { id: 'НВО (10. клас)', label: 'НВО (10. клас)' },
+    { id: 'НВО (7. клас)', label: 'НВО (7. клас)' }
   ];
 
   const isJuniorHigh =
@@ -184,7 +184,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
               >
                 <span>{examItem.label}</span>
                 <span
-                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
+                  className={`text-[10px] tabular-nums px-1.5 py-0.2 rounded ${
                     isSelected
                       ? 'bg-blue-700 text-blue-100'
                       : 'bg-white text-slate-600 border border-slate-200/80'
@@ -283,7 +283,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
               >
                 <span>{subj}</span>
                 <span
-                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
+                  className={`text-[10px] tabular-nums px-1.5 py-0.2 rounded ${
                     selectedSubject === subj
                       ? 'bg-blue-700 text-blue-100'
                       : 'bg-white text-slate-600 border border-slate-200/80'
@@ -305,14 +305,14 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
       )}
 
       {/* Official MON Curriculum Tree (56 SubDomains with Study Material & Infinite Quiz) */}
-      <div className="mb-8 p-4 sm:p-5 rounded-2xl bg-indigo-50/40 border border-indigo-200/80">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-indigo-200/60">
+      <div className="mb-8 p-4 sm:p-5 rounded-2xl bg-blue-50/40 border border-blue-200/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-blue-200/60">
           <div>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-100 text-indigo-900 border border-indigo-200 mb-1">
-              <Layers className="w-3 h-3 text-indigo-700" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-900 border border-blue-200 mb-1">
+              <Layers className="w-3 h-3 text-blue-700" />
               <span>Официално дърво на учебната програма на МОН (56 тематични раздела • 5.–12. клас)</span>
             </span>
-            <h4 className="text-base sm:text-lg font-extrabold text-slate-900">
+            <h4 className="text-base sm:text-lg font-bold text-slate-900">
               Раздели, задължителни изисквания за Отличен (6.00), учебен материал и тестове по всяка подтема
             </h4>
           </div>
@@ -347,21 +347,21 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                       return (
                         <div
                           key={sub.id}
-                          className="p-3.5 rounded-xl bg-white border border-indigo-100 hover:border-indigo-300 shadow-2xs flex flex-col justify-between gap-2.5 transition-all"
+                          className="p-3.5 rounded-xl bg-white border border-blue-100 hover:border-blue-300 shadow-2xs flex flex-col justify-between gap-2.5 transition-all"
                         >
                           <div className="space-y-1.5">
                             <div className="flex items-center justify-between gap-1.5 text-[10px]">
-                              <span className="font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 truncate">
+                              <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 truncate">
                                 {tree.subject}
                               </span>
-                              <span className="font-mono font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">
+                              <span className="tabular-nums font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">
                                 {g.grade}
                               </span>
                             </div>
                             <div className="text-[11px] font-semibold text-slate-500 line-clamp-1">
                               {dom.name}
                             </div>
-                            <h5 className="text-xs sm:text-sm font-extrabold text-slate-900 leading-snug">
+                            <h5 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
                               {sub.name}
                             </h5>
                             <ul className="space-y-1 pt-1">
@@ -393,9 +393,9 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                                 );
                                 onSelectLesson(tailored, 'summary');
                               }}
-                              className="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200 text-[11px] font-bold transition-colors cursor-pointer"
+                              className="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-[11px] font-bold transition-colors cursor-pointer"
                             >
-                              <BookOpen className="w-3 h-3 text-indigo-700" />
+                              <BookOpen className="w-3 h-3 text-blue-700" />
                               <span>Материал по МОН</span>
                             </button>
                             <button

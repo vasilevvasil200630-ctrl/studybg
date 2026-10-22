@@ -16,13 +16,13 @@ export const ExamBridgeCard: React.FC<ExamBridgeCardProps> = ({
   lesson,
   onLaunchSimulator,
   onOpenSummary,
-  contextTag = '🎓 МОН ИЗПИТЕН МОСТ',
+  contextTag = 'МОН ИЗПИТЕН МОСТ',
   className = '',
   variant = 'card'
 }) => {
   if (variant === 'compact') {
     return (
-      <div className={`p-4 rounded-xl bg-gradient-to-r from-amber-50 via-white to-blue-50 border border-amber-300/80 shadow-2xs ${className}`}>
+      <div className={`p-4 rounded-xl bg-amber-50/40 border border-amber-200/80 shadow-2xs ${className}`}>
         <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
           <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
             <GraduationCap className="w-3 h-3 text-amber-700" />
@@ -42,19 +42,18 @@ export const ExamBridgeCard: React.FC<ExamBridgeCardProps> = ({
 
         <button
           onClick={onLaunchSimulator}
-          className="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-600 via-amber-700 to-blue-700 hover:from-amber-700 hover:to-blue-800 text-white font-bold text-xs shadow-xs hover:shadow-md transition-all active:scale-[0.99]"
+          className="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs shadow-xs hover:shadow-md transition-all active:scale-[0.99]"
         >
           <Clock className="w-3.5 h-3.5" />
-          <span>👉 Тествай знанията си в 100-точковия симулатор на МОН</span>
+          <span>Тествай знанията си в 100-точковия симулатор на МОН</span>
         </button>
       </div>
     );
   }
 
   return (
-    <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-50/90 via-white to-blue-50/70 border-2 border-amber-300/90 p-5 sm:p-6 shadow-sm hover:shadow-md transition-all ${className}`}>
+    <div className={`relative overflow-hidden rounded-2xl bg-amber-50/40 border border-amber-200/80 p-5 sm:p-6 shadow-sm hover:shadow-md transition-all ${className}`}>
       {/* Decorative background glow */}
-      <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-gradient-to-br from-amber-400/10 to-blue-400/10 rounded-full blur-2xl pointer-events-none" />
 
       {/* Top Tag & Grade strip */}
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3 relative z-10">
@@ -110,10 +109,10 @@ export const ExamBridgeCard: React.FC<ExamBridgeCardProps> = ({
         {/* Primary User-Requested CTA Button */}
         <button
           onClick={onLaunchSimulator}
-          className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-600 via-amber-700 to-blue-700 hover:from-amber-700 hover:to-blue-800 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:scale-[0.99] group cursor-pointer"
+          className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all transform active:scale-[0.99] group cursor-pointer"
         >
-          <Trophy className="w-4 h-4 text-amber-200 group-hover:scale-110 transition-transform" />
-          <span>👉 Готвиш се за изпит по тази тема? Тествай знанията си в 100-точковия симулатор на МОН</span>
+          <Trophy className="w-4 h-4 text-amber-200 transition-transform" />
+          <span>Готвиш се за изпит по тази тема? Тествай знанията си в 100-точковия симулатор на МОН</span>
         </button>
 
         {/* Secondary Conspectus / Audit Button */}

@@ -427,7 +427,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
 
         <div className="flex flex-wrap items-center gap-2">
           <div className="text-xs font-medium text-slate-600 mr-1">
-            Попълнени: <strong className="text-slate-900 font-mono">{answeredCount}</strong> / {activeQuestions.length}
+            Попълнени: <strong className="text-slate-900 tabular-nums">{answeredCount}</strong> / {activeQuestions.length}
           </div>
 
           <button
@@ -454,7 +454,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
             <button
               type="button"
               onClick={handleAppendMoreQuestions}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 transition-colors shadow-2xs cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 transition-colors shadow-2xs cursor-pointer"
               title="Добави още 5 нови въпроса върху материала към текущия тест"
             >
               <span>+5 въпроса по материала</span>
@@ -507,7 +507,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
               <button
                 type="button"
                 onClick={handleRegenerateWorksheet}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-amber-50 text-slate-800 border border-amber-300 transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-amber-50 text-amber-950 border border-amber-300 transition-colors cursor-pointer"
               >
                 <RefreshCw className="w-3.5 h-3.5 text-amber-700" />
                 <span>Нови Група А/Б</span>
@@ -516,7 +516,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
               <button
                 type="button"
                 onClick={() => handleCopyWorksheet(false)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-amber-50 text-slate-800 border border-amber-300 transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-amber-50 text-amber-950 border border-amber-300 transition-colors cursor-pointer"
               >
                 {copiedMode === 'noKey' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-600" />}
                 <span>{copiedMode === 'noKey' ? 'Копирано (без ключ)!' : 'Копирай без ключ'}</span>
@@ -534,7 +534,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-sapphire hover:bg-brand-sapphire-light text-white transition-colors cursor-pointer"
               >
                 <Printer className="w-3.5 h-3.5" />
                 <span>Принтирай</span>
@@ -592,7 +592,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 pl-4 text-slate-700">
                     {q.options.map((opt, optIdx) => (
                       <div key={optIdx}>
-                        <span className="font-mono font-bold text-slate-900">{OPTION_LETTERS[optIdx]})</span> {opt}
+                        <span className="tabular-nums font-bold text-slate-900">{OPTION_LETTERS[optIdx]})</span> {opt}
                       </div>
                     ))}
                   </div>
@@ -608,7 +608,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                 {worksheetData.groupA.map((q, idx) => (
                   <div key={q.id} className="text-xs text-slate-700 pb-2 border-b border-slate-100 last:border-b-0">
                     <div>
-                      <strong className="font-mono text-slate-900">{idx + 1}. {OPTION_LETTERS[q.correctIndex]})</strong>{' '}
+                      <strong className="tabular-nums text-slate-900">{idx + 1}. {OPTION_LETTERS[q.correctIndex]})</strong>{' '}
                       <span className="font-semibold text-emerald-900">{q.options[q.correctIndex]}</span>
                     </div>
                     <div className="text-[11px] text-slate-500 mt-0.5">{q.explanation}</div>
@@ -622,7 +622,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                 {worksheetData.groupB.map((q, idx) => (
                   <div key={q.id} className="text-xs text-slate-700 pb-2 border-b border-slate-100 last:border-b-0">
                     <div>
-                      <strong className="font-mono text-slate-900">{idx + 1}. {OPTION_LETTERS[q.correctIndex]})</strong>{' '}
+                      <strong className="tabular-nums text-slate-900">{idx + 1}. {OPTION_LETTERS[q.correctIndex]})</strong>{' '}
                       <span className="font-semibold text-emerald-900">{q.options[q.correctIndex]}</span>
                     </div>
                     <div className="text-[11px] text-slate-500 mt-0.5">{q.explanation}</div>
@@ -656,7 +656,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                 const el = document.getElementById(`question-${q.id}`);
                 el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
               }}
-              className={`w-8 h-8 rounded-lg text-xs font-bold font-mono flex items-center justify-center border transition-colors flex-shrink-0 ${btnBg}`}
+              className={`w-8 h-8 rounded-lg text-xs font-bold tabular-nums flex items-center justify-center border transition-colors flex-shrink-0 ${btnBg}`}
             >
               {idx + 1}
             </button>
@@ -689,7 +689,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                   </button>
                 )}
               </div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 font-mono">
+              <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 tabular-nums">
                 {correctScore} от {activeQuestions.length} верни отговора ({activeQuestions.length > 0 ? Math.round((correctScore / activeQuestions.length) * 100) : 0}%)
               </h3>
               <p className="mt-2 text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed">
@@ -773,7 +773,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
             >
               {/* Question Header */}
               <div className="flex items-start gap-3 mb-4">
-                <span className="flex-shrink-0 w-6 h-6 rounded-md bg-blue-50 border border-blue-200 text-blue-700 font-mono font-bold text-xs flex items-center justify-center mt-0.5">
+                <span className="flex-shrink-0 w-6 h-6 rounded-md bg-blue-50 border border-blue-200 text-blue-700 tabular-nums font-bold text-xs flex items-center justify-center mt-0.5">
                   {idx + 1}
                 </span>
                 <div className="flex-1">
@@ -812,7 +812,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                       onClick={() => handleSelectOption(q.id, optIdx)}
                       className={`flex items-center gap-3 p-3 rounded-lg border text-left text-xs sm:text-sm transition-all ${optionStyles}`}
                     >
-                      <span className="w-5 h-5 rounded bg-slate-100 font-mono text-[11px] font-semibold text-slate-600 flex items-center justify-center flex-shrink-0 border border-slate-200">
+                      <span className="w-5 h-5 rounded bg-slate-100 tabular-nums text-[11px] font-semibold text-slate-600 flex items-center justify-center flex-shrink-0 border border-slate-200">
                         {letters[optIdx]}
                       </span>
                       <span className="flex-1 leading-snug">{option}</span>

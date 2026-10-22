@@ -3,7 +3,6 @@ import {
   MapPin,
   ShieldAlert,
   Sparkles,
-  Radio,
   Eye,
   Layers,
   ArrowRight,
@@ -37,7 +36,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     mapX: 25,
     mapY: 46,
     clearance: 'top_secret',
-    clearanceLabel: '🔴 СТРОГО СЕКРЕТНО (ГЩ)',
+    clearanceLabel: 'СТРОГО СЕКРЕТНО (ГЩ)',
     frequencyOrMetric: 'Дълбочина: 165 м • 16 секретни тома',
     summary: 'Двегодишна засекретена военна експедиция на Генералния щаб, изкопала спираловиден тунел по диктовка на сензитиви в търсене на първия двуполов прародител и извънземен биологичен код.',
     secretProtocol: 'На 19 ноември 1992 г. обектът е внезапно запечатан с тонове стоманобетон, а дневниците са засекретени.',
@@ -52,7 +51,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     mapX: 82,
     mapY: 79,
     clearance: 'top_secret',
-    clearanceLabel: '🔴 ДЪРЖАВНА ЕКСПЕДИЦИЯ',
+    clearanceLabel: 'ДЪРЖАВНА ЕКСПЕДИЦИЯ',
     frequencyOrMetric: 'Радиоактивен гранит • V–III в. пр.Хр.',
     summary: 'Тайна правителствена експедиция под егидата на Людмила Живкова и указанията на Ванга по разчетени знаци върху египетска мумия, сочещи към светилище в Странджа.',
     secretProtocol: 'Свидетели описват сияние над върха и гладък полиран изкуствен свод в скалата под връх Голямо Градище.',
@@ -67,7 +66,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     mapX: 16,
     mapY: 18,
     clearance: 'ancient_code',
-    clearanceLabel: '🟡 ДРЕВЕН КОД (42 000 г.)',
+    clearanceLabel: 'ДРЕВЕН КОД (42 000 г.)',
     frequencyOrMetric: '366 дни • Шахматни и соларни матрици',
     summary: 'Над 700 праисторически рисунки, изписани с многопластово прилепно гуано. Включва най-древния слънчев календар в Европа и „Сцената на Сътворението“ с Т-образни антени.',
     secretProtocol: 'Галерията с рисунките има постоянна температура 12°C и специфична йонизация на въздуха.',
@@ -82,7 +81,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     mapX: 48,
     mapY: 77,
     clearance: 'anomaly',
-    clearanceLabel: '🟣 МАГНИТНА АНОМАЛИЯ',
+    clearanceLabel: 'МАГНИТНА АНОМАЛИЯ',
     frequencyOrMetric: 'Отклонение на компаса • Огледална звездна карта',
     summary: 'Равнобедрен енергиен триъгълник от три мегалитни светилища върху тектонски разлом с висока концентрация на железни и магнитни руди, изкривяващи стрелките на компасите.',
     secretProtocol: 'Улеите и стотиците кръгли кладенчета върху Белинташ повтарят проекцията на съзвездията Орион, Голяма мечка и Лъв.',
@@ -97,7 +96,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     mapX: 57,
     mapY: 82,
     clearance: 'ancient_code',
-    clearanceLabel: '🟡 ДРЕВНА ОБСЕРВАТОРИЯ',
+    clearanceLabel: 'ДРЕВНА ОБСЕРВАТОРИЯ',
     frequencyOrMetric: 'Слънчеви прорези за равноденствията',
     summary: 'Мегалитен комплекс, където според римския историк Светоний на Александър Велики и бащата на Октавиан Август е предсказано, че ще завладеят света чрез винено-огнен ритуал.',
     secretProtocol: 'Изсечените в скалата трапецовидни ниши и оптични коридори измерват зимното и лятното слънцестоене с точност до минута.',
@@ -112,7 +111,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     mapX: 25,
     mapY: 88,
     clearance: 'anomaly',
-    clearanceLabel: '🟣 ЕНЕРГИЕН & ТЕРМАЛЕН ВЪЗЕЛ',
+    clearanceLabel: 'ЕНЕРГИЕН & ТЕРМАЛЕН ВЪЗЕЛ',
     frequencyOrMetric: 'Минерални извори 74°C • Древна Хераклея Синтика',
     summary: 'Котловина в кратера на загасналия вулкан Кожух, която пророчицата Ванга нарича свой „енергиен акумулатор“, зареждащ я със сили над погребания античен град.',
     secretProtocol: 'Висока естествена геотермална активност, рядка ендемична флора и пресечна точка на южния меридиан.',
@@ -127,7 +126,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     mapX: 27,
     mapY: 66,
     clearance: 'anomaly',
-    clearanceLabel: '🟣 САКРАЛНА ГЕОМЕТРИЯ',
+    clearanceLabel: 'САКРАЛНА ГЕОМЕТРИЯ',
     frequencyOrMetric: '7 глациални тераси • Хармонични цикли',
     summary: 'На 19 август край езерото „Бъбрека“ се изпълняват концентричните кръгове на Паневритмията — система от музикални интервали и геометрия за синхрон с природните ритми.',
     secretProtocol: 'Легендата за 7-те енергийни центъра на Рила, свързани по меридиана с Магурата на север и Рупите на юг.',
@@ -142,7 +141,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     mapX: 28,
     mapY: 54,
     clearance: 'underground',
-    clearanceLabel: '🔵 ПОДЗЕМЕН ЛАБИРИНТ',
+    clearanceLabel: 'ПОДЗЕМЕН ЛАБИРИНТ',
     frequencyOrMetric: 'Многоетажни галерии • Шишманови нишани',
     summary: 'Мрежа от римски галерии, правителствени бункери под ларгото на София и скалните знаци (стрели, кръстове и змии) за седемте запечатани хазни на цар Иван Шишман при Урвич.',
     secretProtocol: 'Подземните комуникационни коридори между бившия мавзолей, Министерския съвет и ЦУМ остават частично запечатани.',
@@ -157,7 +156,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     mapX: 56,
     mapY: 36,
     clearance: 'underground',
-    clearanceLabel: '🔵 ЗАПЕЧАТАНА КРИПТА',
+    clearanceLabel: 'ЗАПЕЧАТАНА КРИПТА',
     frequencyOrMetric: 'Златни обкови • Богомилски апокрифи',
     summary: 'Преди падането на Търновград през юли 1393 г. патриарх Евтимий запечатва най-ценните царски хрисовули и древни книги в тайна подземна крипта под крепостта и р. Янтра.',
     secretProtocol: 'Свързана с разпространението на „Тайната книга на Богомилите“ към катарите в крепостта Монсегюр.',
@@ -172,7 +171,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     mapX: 51,
     mapY: 53,
     clearance: 'ancient_code',
-    clearanceLabel: '🟡 АКУСТИЧЕН РЕЗОНАНС 110 Hz',
+    clearanceLabel: 'АКУСТИЧЕН РЕЗОНАНС 110 Hz',
     frequencyOrMetric: '110–112 Hz стоящи вълни • Тета-ритъм',
     summary: 'Каменните „кошерни“ куполи (толоси) в Старосел, Казанлък и Александрово са математически изчислени акустични резонатори, които усилват мъжкия баритон точно на 110 Hz.',
     secretProtocol: 'При честота 110 Hz (Алфа/Тета граница) се потиска езиковият център и се активира дясното полукълбо за мистичен транс.',
@@ -187,7 +186,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     mapX: 52,
     mapY: 85,
     clearance: 'ancient_code',
-    clearanceLabel: '🟡 ЕЗОТЕРИЧЕН ШИФЪР',
+    clearanceLabel: 'ЕЗОТЕРИЧЕН ШИФЪР',
     frequencyOrMetric: 'Ключов камък с хексагон • Огледална сянка',
     summary: 'Майстор Димитър вгражда в централния свод тайния „Печат на Соломон“, а между 11:00 и 12:00 ч. арката и нейното отражение във водата образуват идеален геометричен образ.',
     secretProtocol: 'Мостът издържа над 500 години придошлите води на р. Арда без нито една стоманена скоба или цимент.',
@@ -202,7 +201,7 @@ const MYSTIC_ZONES: MysticZoneItem[] = [
     mapX: 91,
     mapY: 50,
     clearance: 'underground',
-    clearanceLabel: '🔵 ПОДВОДНА АНОМАЛИЯ (H₂S)',
+    clearanceLabel: 'ПОДВОДНА АНОМАЛИЯ (H₂S)',
     frequencyOrMetric: 'Под 150 м: 0% кислород • 60 запазени кораба',
     summary: 'След катастрофалния пробив на Босфора се формира безкислороден сероводороден слой, в който експедицията MAP откри над 60 антични кораба с непокътнати мачти и въжета.',
     secretProtocol: 'Край Варна и Созопол под водата лежат потопени селища от епохата на най-старото обработено злато в света.',
@@ -230,16 +229,12 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Radar Header */}
-      <div className="p-6 rounded-2xl bg-slate-900 text-white border border-slate-800 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl bg-amber-50/50 border border-amber-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold">
-            <Radio className="w-3.5 h-3.5 animate-pulse" />
-            <span>СЕКРЕТНА КАРТОГРАФИЯ • 12 АНОМАЛНИ И МИСТИЧНИ ЗОНИ</span>
-          </div>
-          <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
             Интерактивен Радар на Конспиративните, Енергийните и Древните Зони в България
           </h2>
-          <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
             Кликни върху пиновете на картата, за да инспектираш координатите, магнитните и акустичните аномалии, грифа за секретност и енергийните меридиани между обектите.
           </p>
         </div>
@@ -249,7 +244,7 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all shrink-0 cursor-pointer ${
             showLeyLines
               ? 'bg-amber-500 text-amber-950 border-amber-400 shadow-sm'
-              : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
           }`}
         >
           <Sparkles className="w-4 h-4" />
@@ -261,17 +256,17 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
       <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
         {[
           { id: 'all', label: `Всички зони (${MYSTIC_ZONES.length})` },
-          { id: 'top_secret', label: '🔴 Строго секретни експедиции' },
-          { id: 'anomaly', label: '🟣 Магнитни & Енергийни аномалии' },
-          { id: 'ancient_code', label: '🟡 Древни кодове & 110 Hz акустика' },
-          { id: 'underground', label: '🔵 Подземни тунели & Черно море' }
+          { id: 'top_secret', label: 'Строго секретни експедиции' },
+          { id: 'anomaly', label: 'Магнитни & Енергийни аномалии' },
+          { id: 'ancient_code', label: 'Древни кодове & 110 Hz акустика' },
+          { id: 'underground', label: 'Подземни тунели & Черно море' }
         ].map((f) => (
           <button
             key={f.id}
             onClick={() => setSelectedClearance(f.id)}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               selectedClearance === f.id
-                ? 'bg-slate-900 text-white shadow-xs'
+                ? 'bg-amber-700 text-white shadow-xs'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
@@ -284,7 +279,7 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left 7 Cols: Interactive Radar Map of Bulgaria */}
         <div className="lg:col-span-7 p-4 sm:p-5 rounded-2xl bg-slate-950 border border-slate-800 shadow-lg relative overflow-hidden">
-          <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-3 pb-2 border-b border-slate-800">
+          <div className="flex items-center justify-between text-[11px] tabular-nums text-slate-400 mb-3 pb-2 border-b border-slate-800">
             <span className="flex items-center gap-1.5 text-amber-400 font-bold">
               <Navigation className="w-3.5 h-3.5" />
               <span>ГЕО-РАДАР БЪЛГАРИЯ (41°N–44°N / 22°E–29°E)</span>
@@ -293,7 +288,7 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
           </div>
 
           {/* Map Canvas */}
-          <div className="relative w-full aspect-[16/10] rounded-xl bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-slate-800/90 overflow-hidden">
+          <div className="relative w-full aspect-[16/10] rounded-xl bg-slate-950 border border-slate-800/90 overflow-hidden">
             {/* Subtle Radar Grid & Bulgaria Stylized Contour */}
             <svg
               viewBox="0 0 100 100"
@@ -358,7 +353,7 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
                   ? 'bg-slate-500 border-slate-200 text-white'
                   : zone.clearance === 'ancient_code'
                   ? 'bg-amber-500 border-amber-200 text-amber-950'
-                  : 'bg-sky-500 border-sky-200 text-white';
+                  : 'bg-blue-500 border-blue-200 text-white';
 
               return (
                 <button
@@ -366,7 +361,7 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
                   onClick={() => setSelectedZoneId(zone.id)}
                   style={{ left: `${zone.mapX}%`, top: `${zone.mapY}%` }}
                   className={`absolute -translate-x-1/2 -translate-y-1/2 group cursor-pointer transition-all ${
-                    isSelected ? 'z-30 scale-125' : 'z-10 hover:scale-110'
+                    isSelected ? 'z-30 scale-125' : 'z-10'
                   }`}
                   title={`${zone.title} (${zone.coordsText})`}
                 >
@@ -374,14 +369,14 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
                     <span className="absolute -inset-2 rounded-full bg-amber-400/40 animate-ping" />
                   )}
                   <div
-                    className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shadow-md ${pinColor} ${
+                    className={`w-6 h-6 rounded-full border flex items-center justify-center shadow-md ${pinColor} ${
                       isSelected ? 'ring-2 ring-white' : ''
                     }`}
                   >
                     <MapPin className="w-3.5 h-3.5" />
                   </div>
                   <span
-                    className={`mt-1 block px-1.5 py-0.5 rounded text-[9px] font-mono font-bold whitespace-nowrap shadow-sm ${
+                    className={`mt-1 block px-1.5 py-0.5 rounded text-[9px] tabular-nums font-bold whitespace-nowrap shadow-sm ${
                       isSelected
                         ? 'bg-amber-400 text-amber-950'
                         : 'bg-slate-900/90 text-slate-200 border border-slate-700'
@@ -410,11 +405,11 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
                 <span>Древни кодове (110 Hz)</span>
               </span>
               <span className="inline-flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-sky-500" />
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
                 <span>Подземни/Подводни</span>
               </span>
             </div>
-            <span className="font-mono text-amber-400">
+            <span className="tabular-nums text-amber-400">
               Западен меридиан: Магурата – Царичина – Рила – Рупите
             </span>
           </div>
@@ -426,26 +421,26 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
             <span className="px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold">
               {activeZone.clearanceLabel}
             </span>
-            <span className="text-xs font-mono font-bold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
+            <span className="text-xs tabular-nums font-bold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
               {activeZone.coordsText}
             </span>
           </div>
 
           <div>
-            <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-700">
+            <div className="text-[11px] tabular-nums font-bold uppercase tracking-wider text-amber-700">
               КОДОВО ИМЕ: {activeZone.codeName}
             </div>
-            <h3 className="text-lg sm:text-xl font-black text-slate-900 mt-0.5 leading-snug">
+            <h3 className="text-lg sm:text-xl font-bold text-slate-900 mt-0.5 leading-snug">
               {activeZone.title}
             </h3>
             <div className="text-xs text-slate-500 font-medium mt-1">
-              📍 Регион: {activeZone.region}
+              Регион: {activeZone.region}
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-900 text-amber-300 font-mono text-xs flex items-center justify-between">
+          <div className="p-3 rounded-xl bg-amber-50 border border-amber-200/80 text-amber-900 text-xs flex items-center justify-between">
             <span>Измерен параметър / Телеметрия:</span>
-            <strong className="text-white">{activeZone.frequencyOrMetric}</strong>
+            <strong className="text-amber-950 tabular-nums">{activeZone.frequencyOrMetric}</strong>
           </div>
 
           <div className="space-y-2 text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -493,10 +488,10 @@ export const CultureMysticMapView: React.FC<CultureMysticMapViewProps> = ({
                 }`}
               >
                 <div className="flex items-center justify-between gap-2 mb-1.5">
-                  <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded">
+                  <span className="text-[10px] tabular-nums font-bold text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded">
                     {zone.codeName}
                   </span>
-                  <span className="text-[10px] font-mono text-slate-400">{zone.coordsText}</span>
+                  <span className="text-[10px] tabular-nums text-slate-400">{zone.coordsText}</span>
                 </div>
                 <h4 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-1">
                   {zone.title}

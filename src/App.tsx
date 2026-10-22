@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback, useRef, useTransition, lazy, Suspense
 import { Navbar, type AppNavTab } from './components/Navbar';
 import { CultureHero, type CultureSubTab } from './components/CultureHero';
 import { Footer } from './components/Footer';
-import { StudySidebar } from './components/StudySidebar';
+import { AppSidebar } from './components/AppSidebar';
+import { MobileBottomNav } from './components/MobileBottomNav';
+import { LESSON_TABS, getStudyPageMeta, getStudyNavLabel } from './lib/studyNav';
 import { CultureSidebar } from './components/CultureSidebar';
 import { NewsletterSection } from './components/NewsletterSection';
 import { OfflineStatusBanner } from './components/OfflineStatusBanner';
@@ -54,27 +56,9 @@ import {
 import type { LessonData, QuizQuestion } from './types';
 import {
   Camera,
-  BookOpen,
-  Zap,
   ChevronRight,
-  CheckSquare,
-  GraduationCap,
-  AlertCircle,
-  Clock,
-  Printer,
   Search,
   Home,
-  BookMarked,
-  Scale,
-  Calculator,
-  PenTool,
-  Calendar,
-  Feather,
-  Compass,
-  MapPin,
-  Globe,
-  FlaskConical,
-  Mic
 } from 'lucide-react';
 import './App.css';
 
@@ -121,7 +105,7 @@ function prefetchStudyTabChunk(tab: AppNavTab): void {
 const ViewLoadingSkeleton = () => (
   <div className="p-8 rounded-2xl bg-white border border-slate-200 animate-pulse flex items-center justify-center min-h-[300px] shadow-xs">
     <div className="flex items-center gap-3 text-slate-500 text-xs sm:text-sm font-medium">
-      <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      <div className="w-5 h-5 border border-blue-600 border-t-transparent rounded-full animate-spin" />
       <span>Зареждане на модула...</span>
     </div>
   </div>
@@ -156,6 +140,7 @@ export function App() {
     // /lesson/<id> от базовия пакет се отваря веднага; иначе каталогът го дозарежда
     return CURRICULUM_LESSONS.some((l) => l.id === initialRoute.lessonId) ? 'summary' : 'catalog';
   });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
   const [isFormulaModalOpen, setIsFormulaModalOpen] = useState(false);
   const [isQuickLessonModalOpen, setIsQuickLessonModalOpen] = useState(false);
@@ -448,40 +433,40 @@ export function App() {
     errorBankService.recordQuizError(q, currentLesson, chosenIndex);
   };
 
-  const mobileNavPills: { tab: AppNavTab; label: string; icon: React.ReactNode }[] = [
-    { tab: 'home', label: 'Начало', icon: <Home className="w-3.5 h-3.5 text-blue-600" /> },
-    { tab: 'planner', label: 'План за 6.00', icon: <Calendar className="w-3.5 h-3.5 text-emerald-600" /> },
-    { tab: 'summary', label: 'Конспект', icon: <BookOpen className="w-3.5 h-3.5" /> },
-    { tab: 'oralexam', label: 'Устен изпит', icon: <Mic className="w-3.5 h-3.5 text-blue-600" /> },
-    { tab: 'cases', label: 'Казуси ДЗИ', icon: <Scale className="w-3.5 h-3.5 text-slate-600" /> },
-    { tab: 'grammar', label: 'Тренажор БЕЛ', icon: <PenTool className="w-3.5 h-3.5 text-blue-600" /> },
-    { tab: 'moduletwo', label: 'Модул 2 БЕЛ', icon: <Feather className="w-3.5 h-3.5 text-slate-600" /> },
-    { tab: 'literature', label: 'Литературен Канон', icon: <BookMarked className="w-3.5 h-3.5 text-slate-600" /> },
-    { tab: 'specialties', label: 'Училища & Специалности 8–12', icon: <GraduationCap className="w-3.5 h-3.5 text-blue-600" /> },
-    { tab: 'mathlab', label: 'Математика & STEM', icon: <Compass className="w-3.5 h-3.5 text-cyan-600" /> },
-    { tab: 'sciencelab', label: 'Природни науки Лаб', icon: <FlaskConical className="w-3.5 h-3.5 text-emerald-600" /> },
-    { tab: 'atlas', label: 'Атлас Ист. & Гео.', icon: <MapPin className="w-3.5 h-3.5 text-amber-600" /> },
-    { tab: 'english', label: 'Английски ДЗИ', icon: <Globe className="w-3.5 h-3.5 text-sky-600" /> },
-    { tab: 'civics', label: 'Конституция & ЕС', icon: <Scale className="w-3.5 h-3.5 text-blue-600" /> },
-    { tab: 'blitz', label: 'Блиц 60с.', icon: <Zap className="w-3.5 h-3.5 text-amber-600" /> },
-    { tab: 'audit', label: 'Одит 6.00', icon: <CheckSquare className="w-3.5 h-3.5" /> },
-    { tab: 'flashcards', label: 'Флаш карти', icon: <Zap className="w-3.5 h-3.5" /> },
-    { tab: 'quiz', label: 'Тест', icon: <GraduationCap className="w-3.5 h-3.5" /> },
-    { tab: 'simulator', label: 'Симулатор', icon: <Clock className="w-3.5 h-3.5" /> },
-    { tab: 'errorbank', label: 'Грешки', icon: <AlertCircle className="w-3.5 h-3.5" /> },
-    { tab: 'generator', label: 'Група А & Б', icon: <Printer className="w-3.5 h-3.5" /> },
-    { tab: 'calculator', label: 'Калкулатор', icon: <Calculator className="w-3.5 h-3.5" /> },
-    { tab: 'catalog', label: 'Каталог', icon: <BookMarked className="w-3.5 h-3.5" /> },
-  ];
+
+  // Вътрешните екрани на академията ползват обвивката на Матура Плюс: странично меню + горна лента
+  const isAppShell = portalMode === 'study' && activeTab !== 'home';
+  const studyPageMeta = getStudyPageMeta(activeTab, totalLessonsDisplayCount);
+  const isLessonTab = LESSON_TABS.has(activeTab);
+  const pageLabel = studyPageMeta?.title ?? getStudyNavLabel(activeTab) ?? currentLesson.title;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
-      
+    <div className="min-h-screen text-slate-900 font-sans">
       {/* Offline Status & PWA Install Banner */}
       <OfflineStatusBanner />
 
+      <div className={isAppShell ? 'flex min-h-screen' : 'flex min-h-screen flex-col'}>
+      {isAppShell && (
+        <AppSidebar
+          activeTab={activeTab}
+          onSelectTab={handleNavigateStudyTab}
+          currentLesson={currentLesson}
+          unresolvedErrorCount={unresolvedErrorCount}
+          totalLessonsCount={totalLessonsDisplayCount}
+          onOpenLessonPicker={() => setIsQuickLessonModalOpen(true)}
+          onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
+          onOpenCulture={() => handleNavigateCultureTab('mysteries')}
+          mobileOpen={isSidebarOpen}
+          onCloseMobile={() => setIsSidebarOpen(false)}
+        />
+      )}
+      <div className={isAppShell ? 'flex min-w-0 flex-1 flex-col' : 'contents'}>
+
       {/* Sticky Clean Navigation Bar with Portal Switcher */}
       <Navbar
+        variant={isAppShell ? 'app' : 'site'}
+        onOpenSidebar={() => setIsSidebarOpen(true)}
+        pageLabel={pageLabel}
         portalMode={portalMode}
         onSelectPortalMode={handleSelectPortalMode}
         activeTab={activeTab}
@@ -562,7 +547,7 @@ export function App() {
 
       {/* Main Content Area: Spacious Full-Width Homepage vs Focused Workspace */}
       {portalMode === 'study' && activeTab === 'home' ? (
-        <main className="flex-1 w-full bg-slate-50">
+        <main className="flex-1 w-full">
           <HomeLandingView
             lessons={lessons}
             onSelectLesson={handleLessonSelected}
@@ -575,262 +560,59 @@ export function App() {
           />
         </main>
       ) : (
-        <main id="workspace" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 min-h-[100svh]">
+        <main
+          id="workspace"
+          className={
+            isAppShell
+              ? 'w-full flex-1 px-4 sm:px-6 lg:px-10 pt-6 lg:pt-8 pb-28 lg:pb-12'
+              : 'py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 min-h-[100svh]'
+          }
+        >
           {portalMode === 'study' ? (
-            <div>
-            
-            {/* Top Workspace Breadcrumbs & Topic Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200">
-              <div className="space-y-1">
-                {/* Breadcrumbs Trail */}
-                <nav aria-label="Хлябни трохи" className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-500">
-                  <a
-                    href="/"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleSelectPortalMode('study');
-                    }}
-                    className="flex items-center gap-1 text-slate-500 hover:text-slate-900 transition-colors"
-                  >
-                    <Home className="w-3.5 h-3.5" />
-                    <span>StudyBG</span>
-                  </a>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="text-blue-700 font-semibold">Учебна академия (5.–12. кл)</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                  {activeTab === 'specialties' ? (
-                    <span className="text-blue-700 font-semibold">Специални секции по училища, специалности и класове (8.–12. клас)</span>
-                  ) : activeTab === 'planner' ? (
-                    <span className="text-emerald-700 font-semibold">Моят План за 6.00 (Хронометър & Седмичен график)</span>
-                  ) : activeTab === 'grammar' ? (
-                    <span className="text-blue-700 font-semibold">Тренажор БЕЛ (Модул 1 • Норми на БАН)</span>
-                  ) : activeTab === 'moduletwo' ? (
-                    <span className="text-slate-700 font-semibold">Модул 2 БЕЛ (Тропи, Пароними & Резюме)</span>
-                  ) : activeTab === 'literature' ? (
-                    <span className="text-slate-700 font-semibold">Литературен Канон & Тези (41. задача ДЗИ)</span>
-                  ) : activeTab === 'mathlab' ? (
-                    <span className="text-cyan-700 font-semibold">Математика & STEM Лаб (НВО 10 & ДЗИ)</span>
-                  ) : activeTab === 'sciencelab' ? (
-                    <span className="text-emerald-700 font-semibold">Лаборатория Природни науки (Биология, Химия и Физика)</span>
-                  ) : activeTab === 'oralexam' ? (
-                    <span className="text-blue-700 font-semibold">Устно изпитване пред дъската (Гласов и текстов тренажор за 6.00)</span>
-                  ) : activeTab === 'atlas' ? (
-                    <span className="text-amber-700 font-semibold">Атлас История & География (Договори & NUTS 2)</span>
-                  ) : activeTab === 'english' ? (
-                    <span className="text-sky-700 font-semibold">Английски език ДЗИ & НВО (CEFR B1.1 & B2)</span>
-                  ) : activeTab === 'civics' ? (
-                    <span className="text-blue-700 font-semibold">Конституция на РБ, Власти & Европейски съюз (ГО & ДЗИ)</span>
-                  ) : activeTab === 'blitz' ? (
-                    <span className="text-amber-700 font-semibold">Speed Blitz 6.00 (Аркаден 60-секунден Блиц)</span>
-                  ) : activeTab === 'cases' ? (
-                    <span className="text-slate-700 font-semibold">Казуси за ДЗИ (11.–12. клас)</span>
-                  ) : activeTab === 'calculator' ? (
-                    <span className="text-blue-700 font-semibold">МОН Калкулатор & Балообразуване</span>
-                  ) : activeTab === 'errorbank' ? (
-                    <span className="text-rose-700 font-semibold">Интерактивна банка с грешки</span>
-                  ) : activeTab === 'catalog' ? (
-                    <span className="text-blue-700 font-semibold">Пълна учебна програма ({totalLessonsDisplayCount} теми)</span>
-                  ) : (
-                    <>
-                      <span className="text-emerald-700 font-medium">{currentLesson.subject}</span>
-                      <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                      <span className="text-slate-700 font-medium">{currentLesson.grade}</span>
-                    </>
-                  )}
-                </nav>
-
-                {/* Lesson or Specialized Module Title */}
-                <div className="flex flex-wrap items-center gap-3 pt-1">
-                  {activeTab === 'specialties' ? (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>Специални секции по училища, специалности и класове (8.–12. клас)</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
-                        Раздел А (ООП) • Раздел Б (ДЗИ) • Раздел В (ДИППК)
-                      </span>
-                    </h2>
-                  ) : activeTab === 'planner' ? (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>Моят План за Отличен 6.00 & Изпитен Календар</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
-                        ДЗИ 12 & НВО 10 • На живо
-                      </span>
-                    </h2>
-                  ) : activeTab === 'grammar' ? (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>Тренажор по Граматика, Правопис и Пунктуация</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
-                        ДЗИ Модул 1 • 20 задачи
-                      </span>
-                    </h2>
-                  ) : activeTab === 'moduletwo' ? (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>Лаборатория за Тропи, Фигури, Пароними и Резюме</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-50 text-slate-800 border border-slate-200 font-semibold">
-                        ДЗИ Модул 2 & НВО 10
-                      </span>
-                    </h2>
-                  ) : activeTab === 'literature' ? (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>Литературен Канон (15 автори) & Генератор на Тези</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-50 text-slate-800 border border-slate-200 font-semibold">
-                        41. задача • ЕСЕ & ЛИС
-                      </span>
-                    </h2>
-                  ) : activeTab === 'mathlab' ? (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>Интерактивна STEM & Математическа Лаборатория</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-cyan-50 text-cyan-800 border border-cyan-200 font-semibold">
-                        Задачи 16–17 НВО & 26–28 ДЗИ
-                      </span>
-                    </h2>
-                  ) : activeTab === 'sciencelab' ? (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>Виртуална Лаборатория по Природни науки (Биология, Химия и Физика)</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
-                        ДНК Синтез • Йонни реакции • Закон на Ом & Фотоефект
-                      </span>
-                    </h2>
-                  ) : activeTab === 'oralexam' ? (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>Гласов Симулатор „Устно изпитване пред дъската за 6.00“</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
-                        Глас & Микрофон • Радар на термини • Бележник
-                      </span>
-                    </h2>
-                  ) : activeTab === 'atlas' ? (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>Интерактивен Атлас по История и География</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
-                        Договори (681–1940) & Райони NUTS 2
-                      </span>
-                    </h2>
-                  ) : activeTab === 'english' ? (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>Лаборатория по Английски език за ДЗИ и НВО</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-sky-50 text-sky-800 border border-sky-200 font-semibold">
-                        CEFR B1.1 & B2 • Use of English & Writing
-                      </span>
-                    </h2>
-                  ) : activeTab === 'civics' ? (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>Конституция на РБ, Разделение на властите и Европейски съюз</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
-                        Гражданско образование & ДЗИ Философия
-                      </span>
-                    </h2>
-                  ) : activeTab === 'blitz' ? (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>Аркаден 60-секунден Блиц за Отличен 6.00</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
-                        Speed Blitz • Combo x5
-                      </span>
-                    </h2>
-                  ) : activeTab === 'cases' ? (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>Академични Казуси с Архивни Извори</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-50 text-slate-800 border border-slate-200 font-semibold">
-                        ЦДА & ЛИБИ • 11.–12. клас
-                      </span>
-                    </h2>
-                  ) : activeTab === 'calculator' ? (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>Официален МОН Калкулатор за Оценка и Бал</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
-                        Наредба №11 • 0–100 точки
-                      </span>
-                    </h2>
-                  ) : (
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex flex-wrap items-center gap-2">
-                      <span>{currentLesson.title}</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-200 font-medium">
-                        {currentLesson.grade}
-                      </span>
-                      {currentLesson.examType && (
-                        <span className="text-xs px-2.5 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
-                          {currentLesson.examType}
-                        </span>
-                      )}
-                    </h2>
-                  )}
+            <div className="mx-auto w-full max-w-6xl">
+              <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0">
+                  <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 text-balance">
+                    {studyPageMeta ? studyPageMeta.title : currentLesson.title}
+                  </h1>
+                  <p className="mt-1.5 max-w-2xl text-sm text-slate-600 leading-relaxed">
+                    {studyPageMeta
+                      ? studyPageMeta.description
+                      : [currentLesson.subject, currentLesson.grade, currentLesson.examType].filter(Boolean).join(' · ')}
+                  </p>
                 </div>
 
-                {/* Direct Referral to Matura+ if user browses a 5-7th grade lesson */}
-                {!['specialties', 'planner', 'grammar', 'moduletwo', 'literature', 'mathlab', 'sciencelab', 'oralexam', 'atlas', 'english', 'civics', 'blitz', 'cases', 'calculator'].includes(activeTab) &&
-                  (currentLesson.grade.includes('7.') || currentLesson.grade.includes('6.') || currentLesson.grade.includes('5.')) && (
-                  <div className="pt-2">
+                {isLessonTab && (
+                  <div className="flex shrink-0 flex-wrap items-center gap-2 lg:hidden">
+                    <button
+                      type="button"
+                      onClick={() => setIsQuickLessonModalOpen(true)}
+                      className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+                    >
+                      <Search className="h-4 w-4 text-slate-500" aria-hidden="true" />
+                      Смени урока
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsScanModalOpen(true)}
+                      className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+                    >
+                      <Camera className="h-4 w-4 text-slate-500" aria-hidden="true" />
+                      Сканирай записки
+                    </button>
+                  </div>
+                )}
+              </header>
+
+              {/* Урок от 5.–7. клас → сестринската платформа за НВО 7 */}
+              {isLessonTab &&
+                (currentLesson.grade.includes('7.') || currentLesson.grade.includes('6.') || currentLesson.grade.includes('5.')) && (
+                  <div className="mb-6">
                     <MaturaPlusBridgeBanner compact={true} source="lesson-breadcrumb" />
                   </div>
                 )}
-              </div>
 
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setIsQuickLessonModalOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 border border-slate-300 text-xs font-medium shadow-xs transition-all"
-                  title="Отвори списъка с уроци"
-                >
-                  <Search className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Смени тема</span>
-                </button>
-
-                <button
-                  onClick={() => setIsScanModalOpen(true)}
-                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-all"
-                >
-                  <Camera className="w-4 h-4 text-white" />
-                  <span>Сканирай записки</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Mobile / Tablet Horizontal Quick Tab Strip (visible only on small viewports) */}
-            <div className="lg:hidden mb-6 p-1.5 rounded-xl bg-white border border-slate-200 shadow-xs overflow-x-auto no-scrollbar flex items-center gap-1">
-              {mobileNavPills.map((p) => {
-                const isActive = activeTab === p.tab;
-                return (
-                  <button
-                    key={p.tab}
-                    onClick={() => handleNavigateStudyTab(p.tab)}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
-                      isActive
-                        ? 'bg-blue-600 text-white shadow-xs font-semibold'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                    }`}
-                  >
-                    {p.icon}
-                    <span>{p.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Two-Column Responsive Workspace: LEFT SIDEBAR + RIGHT MAIN CONTENT */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-              
-              {/* Left Column: Vertical Study Sidebar */}
-              <div className="hidden lg:block lg:col-span-4 xl:col-span-3">
-                <StudySidebar
-                  currentLesson={currentLesson}
-                  activeTab={activeTab}
-                  onSelectTab={handleNavigateStudyTab}
-                  unresolvedErrorCount={unresolvedErrorCount}
-                  totalLessonsCount={totalLessonsDisplayCount}
-                  onOpenQuickLessonPicker={() => setIsQuickLessonModalOpen(true)}
-                  onOpenScan={() => setIsScanModalOpen(true)}
-                  onOpenFormulaModal={() => setIsFormulaModalOpen(true)}
-                  onOpenCultureContext={() => handleNavigateCultureTab('mysteries')}
-                />
-              </div>
-
-              {/* Right Column: Clean Main Content Area Strictly Scoped to Active Tab */}
-              <div className="lg:col-span-8 xl:col-span-9 min-w-0">
-                <div
-                  className={`rounded-2xl bg-white border border-slate-200 p-4 sm:p-6 lg:p-7 shadow-xs transition-opacity duration-150 ${
-                    isPendingTab ? 'opacity-80' : 'opacity-100'
-                  }`}
-                >
-                  
+              <div className={`transition-opacity duration-150 ${isPendingTab ? 'opacity-80' : 'opacity-100'}`}>
                   <ChunkErrorBoundary key={activeTab}>
                   <Suspense fallback={<ViewLoadingSkeleton />}>
                     {activeTab === 'specialties' && (
@@ -989,12 +771,7 @@ export function App() {
                     )}
                   </Suspense>
                   </ChunkErrorBoundary>
-
-                </div>
               </div>
-
-            </div>
-
           </div>
         ) : (
           /* ========================================================================= */
@@ -1020,22 +797,22 @@ export function App() {
                 <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                 <span className="text-slate-800 font-medium">
                   {cultureSubTab === 'heritage'
-                    ? '🏆 Български принос & ЮНЕСКО (16)'
+                    ? 'Български принос & ЮНЕСКО (16)'
                     : cultureSubTab === 'mysteries'
-                    ? '🕵️ Конспирации, секретни досиета & загадки (41)'
+                    ? 'Конспирации, секретни досиета & загадки (41)'
                     : cultureSubTab === 'mysticmap'
-                    ? '🛸 Карта на мистичните и секретни зони (12 координати)'
+                    ? 'Карта на мистичните и секретни зони (12 координати)'
                     : cultureSubTab === 'timeline'
-                    ? '⏳ Интерактивна хронология (681–1908 г.)'
+                    ? 'Интерактивна хронология (681–1908 г.)'
                     : cultureSubTab === 'cases'
-                    ? '⚖️ Отворени исторически казуси & Есета (12)'
+                    ? 'Отворени исторически казуси & Есета (12)'
                     : cultureSubTab === 'wonders'
-                    ? '🗺️ Природни чудеса & мистични зони (18)'
+                    ? 'Природни чудеса & мистични зони (18)'
                     : cultureSubTab === 'trivia'
-                    ? '🧠 Куиз за ерудити (38 въпроса)'
+                    ? 'Куиз за ерудити (38 въпроса)'
                     : cultureSubTab === 'myths'
-                    ? '⚖️ Факт, Мит или Конспирация? (24)'
-                    : '🏛️ Златен фонд & Мъдрост на епохите (16)'}
+                    ? 'Факт, Мит или Конспирация? (24)'
+                    : 'Златен фонд & Мъдрост на епохите (16)'}
                 </span>
               </nav>
             </div>
@@ -1043,8 +820,8 @@ export function App() {
             {/* Mobile / Tablet Horizontal Quick Tab Strip for Culture (visible only on small viewports) */}
             <div className="lg:hidden mb-6 p-1.5 rounded-xl bg-white border border-slate-200 shadow-xs overflow-x-auto no-scrollbar flex items-center gap-1.5">
               {[
-                { tab: 'mysteries', label: '🕵️ Конспирации & Загадки (41)' },
-                { tab: 'mysticmap', label: '🛸 Карта на мистичните зони (12)' },
+                { tab: 'mysteries', label: 'Конспирации & Загадки (41)' },
+                { tab: 'mysticmap', label: 'Карта на мистичните зони (12)' },
                 { tab: 'heritage', label: 'Принос & ЮНЕСКО (16)' },
                 { tab: 'wonders', label: 'Природни чудеса (18)' },
                 { tab: 'trivia', label: 'Куиз за ерудити (38)' },
@@ -1107,9 +884,11 @@ export function App() {
       )}
 
       {/* Weekly Exam Prep Newsletter (deferred offscreen rendering via content-visibility) */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full cv-auto">
-        <NewsletterSection onOpenPolicyModal={handleOpenPolicy} />
-      </div>
+      {!isAppShell && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full cv-auto">
+          <NewsletterSection onOpenPolicyModal={handleOpenPolicy} />
+        </div>
+      )}
 
       {/* Footer with Legal Policies */}
       <div className="cv-auto">
@@ -1124,6 +903,10 @@ export function App() {
           onOpenCookieSettings={() => setForceOpenCookieSettings(true)}
         />
       </div>
+      </div>
+      </div>
+
+      {isAppShell && <MobileBottomNav activeTab={activeTab} onSelectTab={handleNavigateStudyTab} />}
 
       {/* GDPR Cookie Consent Banner */}
       <CookieConsentBanner

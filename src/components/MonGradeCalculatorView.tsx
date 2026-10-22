@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import {
-  Calculator,
   Award,
   TrendingUp,
   Target,
@@ -47,8 +46,8 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
       status: 'Пълно покритие на държавните образователни стандарти за ДЗИ / НВО. Отличен резултат за прием във всички университети.'
     },
     'Много добър': {
-      badge: 'bg-sky-50 text-sky-800 border-sky-200',
-      color: 'text-sky-700',
+      badge: 'bg-blue-50 text-blue-800 border-blue-200',
+      color: 'text-blue-700',
       status: 'Високо ниво на знания и аналитични умения. Конкурентен бал за повечето водещи университетски специалности.'
     },
     'Добър': {
@@ -126,34 +125,12 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
   }, [dippkTheoryPoints, dippkPracticePoints, dippkSubjectsAvg]);
 
   return (
-    <div className="space-y-8 animate-fade-in max-w-5xl mx-auto">
+    <div className="space-y-8 animate-fade-in">
       
-      {/* Title & Header Banner */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-600 to-blue-700 text-white shadow-sm space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center">
-              <Calculator className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <span className="text-xs uppercase font-extrabold tracking-wider text-blue-200">
-                Официален държавен стандарт
-              </span>
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight">
-                МОН Калкулатор: Точки, Оценка, Бал и ДИППК (Трета СПК)
-              </h2>
-            </div>
-          </div>
-
-          <span className="text-xs px-3 py-1 rounded-full bg-white/20 font-semibold border border-white/30 backdrop-blur-md">
-            ДЗИ 12. кл. • ДИППК • НВО 10. кл.
-          </span>
-        </div>
-
-        <p className="text-xs sm:text-sm text-blue-100 max-w-3xl leading-relaxed">
-          Изчислете ориентировъчната си оценка по линейна скала (Наредба № 11 за ДЗИ — праг <strong>30 т.</strong>) или по Наредба № 1 за <strong>ДИППК / Трета СПК</strong> (Теория + Практика на професията — праг <strong>50 т.</strong>).
-        </p>
-      </div>
+      {/* Как се смята: праговете по двете наредби */}
+      <p className="text-sm text-slate-600 max-w-3xl leading-relaxed">
+        Изчислете ориентировъчната си оценка по линейна скала (Наредба № 11 за ДЗИ — праг <strong>30 т.</strong>) или по Наредба № 1 за <strong>ДИППК / Трета СПК</strong> (Теория + Практика на професията — праг <strong>50 т.</strong>).
+      </p>
 
       {/* Mode Switcher Tabs */}
       <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-xl bg-slate-200/80 border border-slate-300">
@@ -202,7 +179,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
           }`}
         >
           <Award className="w-4 h-4 text-amber-600" />
-          <span>🛠️ ДИППК Калкулатор (Трета СПК)</span>
+          <span>ДИППК Калкулатор (Трета СПК)</span>
         </button>
       </div>
 
@@ -218,7 +195,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Задайте точки от изпита
               </span>
-              <span className="text-xs font-mono text-slate-500">
+              <span className="text-xs tabular-nums text-slate-500">
                 Максимум: 100 точки
               </span>
             </div>
@@ -237,9 +214,9 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                     step={1}
                     value={points}
                     onChange={(e) => setPoints(Math.min(100, Math.max(0, Number(e.target.value) || 0)))}
-                    className="w-20 p-2 rounded-xl border border-slate-300 text-center font-mono text-lg font-bold text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    className="w-20 p-2 rounded-xl border border-slate-300 text-center tabular-nums text-lg font-bold text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                   />
-                  <span className="text-sm font-bold text-slate-400 font-mono">/ 100</span>
+                  <span className="text-sm font-bold text-slate-400 tabular-nums">/ 100</span>
                 </div>
               </div>
 
@@ -256,7 +233,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                 />
                 
                 {/* Scale markers */}
-                <div className="flex justify-between text-[10px] font-mono text-slate-500">
+                <div className="flex justify-between text-[10px] tabular-nums text-slate-500">
                   <span>0т.</span>
                   <span className="text-rose-600 font-bold">30т. (Тройка)</span>
                   <span className="text-amber-600 font-bold">42т. (Добър)</span>
@@ -311,7 +288,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
             {/* Large Grade Display */}
             <div className="text-center py-4 bg-slate-50/70 rounded-2xl border border-slate-200 space-y-1">
               <span className="text-xs text-slate-500 font-medium">Крайна оценка за дипломата:</span>
-              <div className="text-4xl sm:text-5xl font-black font-mono tracking-tight text-blue-900">
+              <div className="text-4xl sm:text-5xl font-bold tabular-nums tracking-tight text-blue-900">
                 {currentResult.numeric.toFixed(2)}
               </div>
               <div className={`text-base font-bold ${currentResult.color}`}>
@@ -334,7 +311,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                   <TrendingUp className="w-4 h-4 text-amber-600" />
                   <span>{points < 88.5 ? 'До Отличен (5.50):' : 'До Пълен Отличен (6.00):'}</span>
                 </span>
-                <span className="font-bold font-mono">
+                <span className="font-bold tabular-nums">
                   още +{(points < 88.5 ? 88.5 - points : 100 - points).toFixed(1)} точки
                 </span>
               </div>
@@ -367,7 +344,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Каква оценка целите на матурата?
               </span>
-              <span className="text-xs font-mono text-slate-700 font-bold">
+              <span className="text-xs tabular-nums text-slate-700 font-bold">
                 Целева оценка
               </span>
             </div>
@@ -385,7 +362,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                     step={0.05}
                     value={targetGrade}
                     onChange={(e) => setTargetGrade(Math.min(6.00, Math.max(3.00, Number(e.target.value) || 3)))}
-                    className="w-24 p-2 rounded-xl border border-slate-300 text-center font-mono text-xl font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500/20 focus:border-slate-500"
+                    className="w-24 p-2 rounded-xl border border-slate-300 text-center tabular-nums text-xl font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500/20 focus:border-slate-500"
                   />
                 </div>
               </div>
@@ -401,7 +378,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                   onChange={(e) => setTargetGrade(Number(e.target.value))}
                   className="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-600"
                 />
-                <div className="flex justify-between text-[10px] font-mono text-slate-500">
+                <div className="flex justify-between text-[10px] tabular-nums text-slate-500">
                   <span>3.00 (Среден)</span>
                   <span>4.00 (Добър)</span>
                   <span>5.00 (Много добър)</span>
@@ -418,7 +395,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                   onClick={() => setTargetGrade(g)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
                     targetGrade === g
-                      ? 'bg-slate-600 text-white border-slate-600 shadow-xs'
+                      ? 'bg-brand-sapphire text-white border-brand-sapphire shadow-xs'
                       : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
                   }`}
                 >
@@ -435,17 +412,17 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Стратегически план по модули
               </span>
-              <span className="text-xs font-mono font-bold text-slate-700 bg-slate-50 px-2.5 py-0.5 rounded-full border border-slate-200">
+              <span className="text-xs tabular-nums font-bold text-slate-700 bg-slate-50 px-2.5 py-0.5 rounded-full border border-slate-200">
                 {reqPoints} точки
               </span>
             </div>
 
             <div className="text-center py-4 bg-blue-50/60 rounded-2xl border border-blue-200 space-y-1">
               <span className="text-xs text-blue-900 font-medium">Необходими точки за оценка {targetGrade.toFixed(2)}:</span>
-              <div className="text-4xl sm:text-5xl font-black font-mono text-blue-900">
+              <div className="text-4xl sm:text-5xl font-bold tabular-nums text-blue-900">
                 {reqPoints}
               </div>
-              <span className="text-xs text-slate-500 font-mono">от 100 точки</span>
+              <span className="text-xs text-slate-500 tabular-nums">от 100 точки</span>
             </div>
 
             {/* Module Breakdown Plan */}
@@ -459,7 +436,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                   <span className="font-bold text-slate-900 block">Модул 1: Тест със затворени въпроси</span>
                   <span className="text-[11px] text-slate-500">40 въпроса • Езикови норми и факти</span>
                 </div>
-                <span className="font-mono font-bold text-blue-700 text-sm">
+                <span className="tabular-nums font-bold text-blue-700 text-sm">
                   {strategyBreakdown.m1} / 40 т.
                 </span>
               </div>
@@ -469,7 +446,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                   <span className="font-bold text-slate-900 block">Модул 2: Анализ на извори и отворени въпроси</span>
                   <span className="text-[11px] text-slate-500">Работа с първични документи и цитати</span>
                 </div>
-                <span className="font-mono font-bold text-amber-700 text-sm">
+                <span className="tabular-nums font-bold text-amber-700 text-sm">
                   {strategyBreakdown.m2} / 30 т.
                 </span>
               </div>
@@ -479,7 +456,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                   <span className="font-bold text-slate-900 block">Модул 3: Есе или ЛИС (Задача 41)</span>
                   <span className="text-[11px] text-slate-500">4-критерийна рубрика на МОН</span>
                 </div>
-                <span className="font-mono font-bold text-slate-700 text-sm">
+                <span className="tabular-nums font-bold text-slate-700 text-sm">
                   {strategyBreakdown.m3} / 30 т.
                 </span>
               </div>
@@ -501,7 +478,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Кандидатстудентски състезателен бал
               </span>
-              <span className="text-xs font-mono text-emerald-700 font-bold">
+              <span className="text-xs tabular-nums text-emerald-700 font-bold">
                 Висши училища
               </span>
             </div>
@@ -524,7 +501,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                   step={0.05}
                   value={examGrade}
                   onChange={(e) => setExamGrade(Math.min(6.00, Math.max(2.00, Number(e.target.value) || 2)))}
-                  className="w-20 p-2 rounded-xl border border-slate-300 text-center font-mono text-base font-bold text-blue-700"
+                  className="w-20 p-2 rounded-xl border border-slate-300 text-center tabular-nums text-base font-bold text-blue-700"
                 />
               </div>
 
@@ -575,7 +552,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                   step={0.05}
                   value={diplomaGrade}
                   onChange={(e) => setDiplomaGrade(Math.min(6.00, Math.max(2.00, Number(e.target.value) || 2)))}
-                  className="w-20 p-2 rounded-xl border border-slate-300 text-center font-mono text-base font-bold text-slate-800"
+                  className="w-20 p-2 rounded-xl border border-slate-300 text-center tabular-nums text-base font-bold text-slate-800"
                 />
               </div>
 
@@ -589,17 +566,17 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Вашият състезателен бал
               </span>
-              <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+              <span className="text-xs tabular-nums font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                 {universityBal.percentage}% от макса
               </span>
             </div>
 
             <div className="text-center py-4 bg-emerald-50/60 rounded-2xl border border-emerald-200 space-y-1">
               <span className="text-xs text-emerald-900 font-medium">Изчислен състезателен бал:</span>
-              <div className="text-4xl sm:text-5xl font-black font-mono text-emerald-900">
+              <div className="text-4xl sm:text-5xl font-bold tabular-nums text-emerald-900">
                 {universityBal.bal.toFixed(2)}
               </div>
-              <span className="text-xs text-slate-500 font-mono">от максимален {universityBal.maxBal.toFixed(2)}</span>
+              <span className="text-xs text-slate-500 tabular-nums">от максимален {universityBal.maxBal.toFixed(2)}</span>
             </div>
 
             <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 space-y-1 leading-relaxed">
@@ -625,7 +602,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Държавен изпит за придобиване на Трета СПК (ДИППК)
               </span>
-              <span className="text-xs font-mono font-bold text-blue-700">
+              <span className="text-xs tabular-nums font-bold text-blue-700">
                 Наредба № 1 на МОН
               </span>
             </div>
@@ -647,7 +624,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                   max={100}
                   value={dippkTheoryPoints}
                   onChange={(e) => setDippkTheoryPoints(Math.min(100, Math.max(0, Number(e.target.value) || 0)))}
-                  className="w-20 p-2 rounded-xl border border-slate-300 bg-white text-center font-mono text-base font-bold text-blue-700"
+                  className="w-20 p-2 rounded-xl border border-slate-300 bg-white text-center tabular-nums text-base font-bold text-blue-700"
                 />
               </div>
               <input
@@ -677,7 +654,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                   max={100}
                   value={dippkPracticePoints}
                   onChange={(e) => setDippkPracticePoints(Math.min(100, Math.max(0, Number(e.target.value) || 0)))}
-                  className="w-20 p-2 rounded-xl border border-slate-300 bg-white text-center font-mono text-base font-bold text-emerald-700"
+                  className="w-20 p-2 rounded-xl border border-slate-300 bg-white text-center tabular-nums text-base font-bold text-emerald-700"
                 />
               </div>
               <input
@@ -707,7 +684,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                 step={0.05}
                 value={dippkSubjectsAvg}
                 onChange={(e) => setDippkSubjectsAvg(Math.min(6.00, Math.max(3.00, Number(e.target.value) || 3)))}
-                className="w-20 p-2 rounded-xl border border-slate-300 text-center font-mono text-base font-bold text-slate-900"
+                className="w-20 p-2 rounded-xl border border-slate-300 text-center tabular-nums text-base font-bold text-slate-900"
               />
             </div>
           </div>
@@ -731,7 +708,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               <span className="text-xs text-blue-900 font-medium">
                 Окончателна оценка в Свидетелството за СПК (EUROPASS):
               </span>
-              <div className="text-4xl sm:text-5xl font-black font-mono text-blue-950">
+              <div className="text-4xl sm:text-5xl font-bold tabular-nums text-blue-950">
                 {dippkResult.certificateFinalGrade.toFixed(2)}
               </div>
               <div className="text-sm font-bold text-blue-800">
@@ -742,25 +719,25 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
             <div className="space-y-2 text-xs">
               <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <span className="text-slate-600">Оценка от ДИППК (Теория + Практика):</span>
-                <strong className="font-mono text-slate-900">{dippkResult.dippkExamAvg.toFixed(2)}</strong>
+                <strong className="tabular-nums text-slate-900">{dippkResult.dippkExamAvg.toFixed(2)}</strong>
               </div>
               <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <span className="text-slate-600">Оценка по Теория ({dippkTheoryPoints} т.):</span>
-                <strong className="font-mono text-blue-700">{dippkResult.theoryGrade.toFixed(2)}</strong>
+                <strong className="tabular-nums text-blue-700">{dippkResult.theoryGrade.toFixed(2)}</strong>
               </div>
               <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <span className="text-slate-600">Оценка по Практика ({dippkPracticePoints} т.):</span>
-                <strong className="font-mono text-emerald-700">{dippkResult.practiceGrade.toFixed(2)}</strong>
+                <strong className="tabular-nums text-emerald-700">{dippkResult.practiceGrade.toFixed(2)}</strong>
               </div>
             </div>
 
             <button
               type="button"
               onClick={() => setShowSpkCertificateModal(true)}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-xs transition-all cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
             >
               <Award className="w-4 h-4" />
-              <span>📜 Издай Свидетелство за Трета СПК + EUROPASS (A4 PDF)</span>
+              <span>Издай Свидетелство за Трета СПК + EUROPASS (A4 PDF)</span>
             </button>
 
             {onNavigateTab && (
@@ -785,7 +762,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               Официална скала на МОН за оценяване на ДЗИ (Наредба № 11)
             </h4>
           </div>
-          <span className="text-xs text-slate-500 font-mono">
+          <span className="text-xs text-slate-500 tabular-nums">
             Държавен зрелостен изпит (100 точки)
           </span>
         </div>
@@ -802,8 +779,8 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans">
               <tr className="hover:bg-slate-50/60">
-                <td className="py-2.5 px-3 font-bold text-rose-600 font-mono">Слаб 2.00</td>
-                <td className="py-2.5 px-3 font-mono font-medium">0.00 – 29.50 т.</td>
+                <td className="py-2.5 px-3 font-bold text-rose-600 tabular-nums">Слаб 2.00</td>
+                <td className="py-2.5 px-3 tabular-nums font-medium">0.00 – 29.50 т.</td>
                 <td className="py-2.5 px-3 text-slate-600">Слаб (под прага)</td>
                 <td className="py-2.5 px-3">
                   <span className="inline-flex items-center gap-1 text-rose-700 font-semibold">
@@ -813,32 +790,32 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                 </td>
               </tr>
               <tr className="hover:bg-slate-50/60">
-                <td className="py-2.5 px-3 font-bold text-orange-600 font-mono">Среден (3.00 – 3.49)</td>
-                <td className="py-2.5 px-3 font-mono font-medium">30.00 – 41.50 т.</td>
+                <td className="py-2.5 px-3 font-bold text-orange-600 tabular-nums">Среден (3.00 – 3.49)</td>
+                <td className="py-2.5 px-3 tabular-nums font-medium">30.00 – 41.50 т.</td>
                 <td className="py-2.5 px-3 text-slate-600">Среден</td>
                 <td className="py-2.5 px-3 text-slate-700">
                   Успешно преминат минимален праг за средно образование (30 т. = 3.00)
                 </td>
               </tr>
               <tr className="hover:bg-slate-50/60">
-                <td className="py-2.5 px-3 font-bold text-amber-600 font-mono">Добър (3.50 – 4.49)</td>
-                <td className="py-2.5 px-3 font-mono font-medium">42.00 – 64.50 т.</td>
+                <td className="py-2.5 px-3 font-bold text-amber-600 tabular-nums">Добър (3.50 – 4.49)</td>
+                <td className="py-2.5 px-3 tabular-nums font-medium">42.00 – 64.50 т.</td>
                 <td className="py-2.5 px-3 text-slate-600">Добър</td>
                 <td className="py-2.5 px-3 text-slate-700">
                   Задоволителни знания по изпитната програма (53.5 т. = 4.00)
                 </td>
               </tr>
               <tr className="hover:bg-slate-50/60">
-                <td className="py-2.5 px-3 font-bold text-sky-600 font-mono">Много добър (4.50 – 5.49)</td>
-                <td className="py-2.5 px-3 font-mono font-medium">65.00 – 88.00 т.</td>
+                <td className="py-2.5 px-3 font-bold text-blue-600 tabular-nums">Много добър (4.50 – 5.49)</td>
+                <td className="py-2.5 px-3 tabular-nums font-medium">65.00 – 88.00 т.</td>
                 <td className="py-2.5 px-3 text-slate-600">Много добър</td>
                 <td className="py-2.5 px-3 text-slate-700">
                   Високо ниво на овладяване на материала и изворите (77 т. = 5.00)
                 </td>
               </tr>
               <tr className="bg-emerald-50/40 hover:bg-emerald-50/60">
-                <td className="py-2.5 px-3 font-bold text-emerald-700 font-mono">Отличен (5.50 – 6.00)</td>
-                <td className="py-2.5 px-3 font-mono font-bold text-emerald-900">88.50 – 100.00 т.</td>
+                <td className="py-2.5 px-3 font-bold text-emerald-700 tabular-nums">Отличен (5.50 – 6.00)</td>
+                <td className="py-2.5 px-3 tabular-nums font-bold text-emerald-900">88.50 – 100.00 т.</td>
                 <td className="py-2.5 px-3 font-semibold text-emerald-900">Отличен</td>
                 <td className="py-2.5 px-3 font-medium text-emerald-900">
                   <span className="inline-flex items-center gap-1">

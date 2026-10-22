@@ -92,7 +92,7 @@ export const ScienceBiologyTab: React.FC = () => {
               <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
                 Централна догма на молекулярната биология (ДЗИ Задача)
               </span>
-              <h3 className="text-base sm:text-lg font-extrabold text-slate-900">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900">
                 Жив Декодер: Матрична ДНК (3&apos;→5&apos;) ➔ иРНК (5&apos;→3&apos;) ➔ Белтък
               </h3>
             </div>
@@ -221,19 +221,19 @@ export const ScienceBiologyTab: React.FC = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
               <div className="text-[11px] text-slate-500">Общо нуклеотиди (1 верига)</div>
-              <div className="text-lg font-black text-slate-900 font-mono">{cleanedDna.length}</div>
+              <div className="text-lg font-bold text-slate-900 font-mono">{cleanedDna.length}</div>
             </div>
             <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-center">
               <div className="text-[11px] text-blue-700">Пълни кодони в иРНК</div>
-              <div className="text-lg font-black text-blue-900 font-mono">{codonsAnalysis.length}</div>
+              <div className="text-lg font-bold text-blue-900 font-mono">{codonsAnalysis.length}</div>
             </div>
             <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
               <div className="text-[11px] text-emerald-700">Включени аминокиселини</div>
-              <div className="text-lg font-black text-emerald-900 font-mono">{activeAminoAcidsCount}</div>
+              <div className="text-lg font-bold text-emerald-900 font-mono">{activeAminoAcidsCount}</div>
             </div>
             <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-center">
               <div className="text-[11px] text-amber-800">Пептидни връзки (= H₂O)</div>
-              <div className="text-lg font-black text-amber-950 font-mono">{peptideBondsCount}</div>
+              <div className="text-lg font-bold text-amber-950 font-mono">{peptideBondsCount}</div>
             </div>
           </div>
         </div>
@@ -244,7 +244,7 @@ export const ScienceBiologyTab: React.FC = () => {
             <span className="text-[11px] font-bold uppercase tracking-wider text-rose-700">
               Генетика за 10. и 12. клас • Множествен алелизъм и Кодоминиране
             </span>
-            <h3 className="text-base sm:text-lg font-extrabold text-slate-900">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900">
               Интерактивна Решетка на Пънет за Кръвни Групи (AB0 система)
             </h3>
           </div>
@@ -289,19 +289,19 @@ export const ScienceBiologyTab: React.FC = () => {
 
           {/* 2x2 Punnett Grid */}
           <div className="grid grid-cols-3 gap-2 max-w-lg mx-auto pt-2 text-center">
-            <div className="p-2.5 rounded-xl bg-slate-800 text-white text-xs font-bold flex items-center justify-center">
+            <div className="p-2.5 rounded-xl bg-slate-100 text-slate-800 text-xs font-bold flex items-center justify-center">
               ♀ \ ♂ Гамети
             </div>
-            <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-300 font-mono text-sm font-black text-slate-900">
+            <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-300 font-mono text-sm font-bold text-slate-900">
               ♂ {p2Alleles[0]}
             </div>
-            <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-300 font-mono text-sm font-black text-slate-900">
+            <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-300 font-mono text-sm font-bold text-slate-900">
               ♂ {p2Alleles[1]}
             </div>
 
             {p1Alleles.map((a1, rIdx) => (
               <React.Fragment key={rIdx}>
-                <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-300 font-mono text-sm font-black text-slate-900 flex items-center justify-center">
+                <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-300 font-mono text-sm font-bold text-slate-900 flex items-center justify-center">
                   ♀ {a1}
                 </div>
                 {p2Alleles.map((a2, cIdx) => {
@@ -311,7 +311,7 @@ export const ScienceBiologyTab: React.FC = () => {
                       key={cIdx}
                       className={`p-3 rounded-xl border ${res.color} space-y-0.5`}
                     >
-                      <div className="font-mono text-sm font-black">{res.genotype}</div>
+                      <div className="font-mono text-sm font-bold">{res.genotype}</div>
                       <div className="text-[11px] font-bold">{res.group}</div>
                       <div className="text-[10px] opacity-75">25% шанс</div>
                     </div>
@@ -323,27 +323,27 @@ export const ScienceBiologyTab: React.FC = () => {
         </div>
 
         {/* Module 1C: Bioenergetics (ATP Cellular Respiration) & PCR Exponential Amplifier */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-slate-900 text-white border border-slate-800 shadow-xs space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+        <div className="p-5 sm:p-6 rounded-2xl bg-blue-50/60 border border-blue-100 shadow-xs space-y-5">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
             <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
                 Кандидат-студентски модул МУ (София / Пловдив / Варна) • Биохимия и Молекулярна биология
               </span>
-              <h3 className="text-base sm:text-lg font-extrabold text-white mt-0.5">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-0.5">
                 Калкулатор за Клетъчно Дишане (Добив на АТФ) & PCR Амплификация на ДНК
               </h3>
             </div>
-            <span className="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold">
+            <span className="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-700 text-xs font-bold">
               C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + 38 АТФ
             </span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {/* Left: Cellular Respiration ATP Calculator */}
-            <div className="p-4 rounded-xl bg-slate-800/90 border border-slate-700 space-y-3.5">
+            <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3.5">
               <div className="flex items-center justify-between text-xs font-bold">
-                <span className="text-emerald-300 uppercase">1. Разграждане на глюкоза (n mol):</span>
-                <span className="font-mono text-base text-white bg-emerald-600/40 px-2.5 py-0.5 rounded-lg border border-emerald-400/40">
+                <span className="text-emerald-700 uppercase">1. Разграждане на глюкоза (n mol):</span>
+                <span className="font-mono text-base text-slate-900 bg-emerald-600/40 px-2.5 py-0.5 rounded-lg border border-emerald-400/40">
                   {glucoseMoles} mol глюкоза ({glucoseMoles * 180} g)
                 </span>
               </div>
@@ -357,49 +357,49 @@ export const ScienceBiologyTab: React.FC = () => {
               />
 
               <div className="grid grid-cols-2 gap-2.5 text-xs">
-                <div className="p-2.5 rounded-lg bg-slate-900/90 border border-slate-700">
-                  <span className="text-slate-400 block text-[10px]">Гликолиза (цитозол — субстратно)</span>
-                  <strong className="font-mono text-emerald-300 text-sm">
+                <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                  <span className="text-slate-500 block text-[10px]">Гликолиза (цитозол — субстратно)</span>
+                  <strong className="font-mono text-emerald-700 text-sm">
                     {glucoseMoles * 2} mol АТФ (+ {glucoseMoles * 2} NADH)
                   </strong>
                 </div>
-                <div className="p-2.5 rounded-lg bg-slate-900/90 border border-slate-700">
-                  <span className="text-slate-400 block text-[10px]">Цикъл на Кребс (митохондриен матрикс)</span>
-                  <strong className="font-mono text-cyan-300 text-sm">
+                <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                  <span className="text-slate-500 block text-[10px]">Цикъл на Кребс (митохондриен матрикс)</span>
+                  <strong className="font-mono text-brand-sapphire text-sm">
                     {glucoseMoles * 2} mol АТФ (+ {glucoseMoles * 8} NADH)
                   </strong>
                 </div>
-                <div className="p-2.5 rounded-lg bg-slate-900/90 border border-slate-700">
-                  <span className="text-slate-400 block text-[10px]">Окислително фосфорилиране (кристи)</span>
-                  <strong className="font-mono text-amber-300 text-sm">
+                <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                  <span className="text-slate-500 block text-[10px]">Окислително фосфорилиране (кристи)</span>
+                  <strong className="font-mono text-amber-700 text-sm">
                     {glucoseMoles * 34} mol АТФ (от 10 NADH + 2 FADH₂/mol)
                   </strong>
                 </div>
                 <div className="p-2.5 rounded-lg bg-emerald-950/80 border border-emerald-500/50">
-                  <span className="text-emerald-200 block text-[10px] font-bold">СУМАРЕН АЕРОБЕН ДОБИВ:</span>
-                  <strong className="font-mono text-white text-base">
+                  <span className="text-emerald-700 block text-[10px] font-bold">СУМАРЕН АЕРОБЕН ДОБИВ:</span>
+                  <strong className="font-mono text-slate-900 text-base">
                     {glucoseMoles * 36}–{glucoseMoles * 38} mol АТФ
                   </strong>
                 </div>
               </div>
-              <div className="text-[11px] text-slate-300 leading-relaxed">
+              <div className="text-[11px] text-slate-600 leading-relaxed">
                 <strong>Контраст за ДЗИ/МУ:</strong> При анаеробна гликолиза (млечнокисела или алкохолна ферментация) от{' '}
                 {glucoseMoles} mol глюкоза се получават само <strong>{glucoseMoles * 2} mol АТФ</strong> (19 пъти по-нисък добив).
               </div>
             </div>
 
             {/* Right: PCR DNA Exponential Amplification Calculator */}
-            <div className="p-4 rounded-xl bg-slate-800/90 border border-slate-700 space-y-3.5">
+            <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3.5">
               <div className="flex items-center justify-between text-xs font-bold">
-                <span className="text-cyan-300 uppercase">2. PCR Амплификация (N = N₀ · 2ⁿ):</span>
-                <span className="font-mono text-sm text-white bg-cyan-600/40 px-2.5 py-0.5 rounded-lg border border-cyan-400/40">
+                <span className="text-brand-sapphire uppercase">2. PCR Амплификация (N = N₀ · 2ⁿ):</span>
+                <span className="font-mono text-sm text-slate-900 bg-blue-600/40 px-2.5 py-0.5 rounded-lg border border-blue-400/40">
                   n = {pcrCycles} цикъла • N₀ = {pcrInitialCopies}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] text-slate-300 mb-1">
+                  <label className="block text-[11px] text-slate-600 mb-1">
                     Начални ДНК матрици (N₀): <strong>{pcrInitialCopies}</strong>
                   </label>
                   <input
@@ -408,11 +408,11 @@ export const ScienceBiologyTab: React.FC = () => {
                     max={10}
                     value={pcrInitialCopies}
                     onChange={(e) => setPcrInitialCopies(Number(e.target.value))}
-                    className="w-full accent-cyan-400"
+                    className="w-full accent-blue-400"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] text-slate-300 mb-1">
+                  <label className="block text-[11px] text-slate-600 mb-1">
                     Термални цикли (n): <strong>{pcrCycles}</strong>
                   </label>
                   <input
@@ -421,26 +421,26 @@ export const ScienceBiologyTab: React.FC = () => {
                     max={30}
                     value={pcrCycles}
                     onChange={(e) => setPcrCycles(Number(e.target.value))}
-                    className="w-full accent-cyan-400"
+                    className="w-full accent-blue-400"
                   />
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-900 border border-cyan-500/40 flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-white border border-slate-200 flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] uppercase text-cyan-300 font-bold block">
+                  <span className="text-[10px] uppercase text-brand-sapphire font-bold block">
                     Получени ДНК копия след {pcrCycles} цикъла:
                   </span>
-                  <span className="text-xs text-slate-300">
+                  <span className="text-xs text-slate-600">
                     N = {pcrInitialCopies} × 2^{pcrCycles}
                   </span>
                 </div>
-                <div className="font-mono text-lg font-black text-cyan-300">
+                <div className="font-mono text-lg font-bold text-brand-sapphire">
                   {(pcrInitialCopies * Math.pow(2, pcrCycles)).toLocaleString('bg-BG')} копия
                 </div>
               </div>
 
-              <div className="text-[11px] text-slate-300 leading-relaxed">
+              <div className="text-[11px] text-slate-600 leading-relaxed">
                 <strong>3 стъпки на всеки PCR цикъл:</strong> 1) Денатурация (94–96 °C — разкъсване на Н-връзките); 2) Анилинг / Хибридизация на праймерите (50–65 °C); 3) Елонгация с термостабилна <em>Taq</em> ДНК-полимераза (72 °C).
               </div>
             </div>

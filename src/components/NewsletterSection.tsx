@@ -66,22 +66,14 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({ onOpenPoli
   };
 
   return (
-    <section data-print-hide aria-labelledby="newsletter-heading" className="my-12">
-      <div className="rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 lg:p-10 shadow-xs relative overflow-hidden">
-        
-        {/* Subtle decorative background gradient accent */}
-        <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 bg-blue-50/70 rounded-full blur-2xl pointer-events-none" />
-
-        <div className="relative z-10 max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+    <section data-print-hide aria-labelledby="newsletter-heading" className="my-10">
+      <div className="rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 lg:p-10 shadow-xs">
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           
           {/* Left Column: Value Proposition */}
           <div className="space-y-3 max-w-xl text-center md:text-left">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-200">
-              <BellRing className="w-3.5 h-3.5" />
-              <span>Седмичен изпитен бюлетин</span>
-            </div>
-
-            <h3 id="newsletter-heading" className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+            <h3 id="newsletter-heading" className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center justify-center md:justify-start gap-2">
+              <BellRing className="w-5 h-5 text-brand-sapphire shrink-0" aria-hidden="true" />
               Подготвяй се редовно за НВО и ДЗИ без стрес
             </h3>
 
@@ -112,7 +104,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({ onOpenPoli
                   <span>Абониран си за седмичния бюлетин</span>
                 </div>
                 <div className="text-xs text-slate-600 space-y-1">
-                  <p>Получател: <strong className="font-mono text-slate-900">{currentSub.email}</strong></p>
+                  <p>Получател: <strong className="tabular-nums text-slate-900">{currentSub.email}</strong></p>
                   <p>Клас / Фокус: <strong>{currentSub.grade}</strong></p>
                   <p className="text-slate-400 text-[11px]">Следващият брой идва в неделя сутрин.</p>
                 </div>
@@ -189,7 +181,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({ onOpenPoli
                 >
                   {isLoading ? (
                     <>
-                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <div className="w-3.5 h-3.5 border border-white border-t-transparent rounded-full animate-spin" />
                       <span>Записване...</span>
                     </>
                   ) : (

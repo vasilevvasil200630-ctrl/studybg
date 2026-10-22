@@ -1,58 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <defs>
-    <linearGradient id="bookGrad" x1="8" y1="25" x2="56" y2="60" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#075985" />
-      <stop offset="50%" stop-color="#0284c7" />
-      <stop offset="100%" stop-color="#2563eb" />
-    </linearGradient>
-    <linearGradient id="starGrad" x1="18" y1="25" x2="46" y2="53" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#fbbf24" />
-      <stop offset="100%" stop-color="#d97706" />
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#10b981" />
     </linearGradient>
   </defs>
-
-  <!-- Crisp Rounded Frame for Browser Tab Visibility -->
-  <rect x="2" y="2" width="60" height="60" rx="14" fill="#ffffff" stroke="#0f172a" stroke-width="3.5" />
-
-  <!-- Outer Open Book Layer -->
-  <path
-    d="M9.5 30V51.5C17.5 51.5 25.5 53.5 32 58C38.5 53.5 46.5 51.5 54.5 51.5V30"
-    stroke="url(#bookGrad)"
-    stroke-width="2.8"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-
-  <!-- Inner Open Book Pages -->
-  <path
-    d="M26.5 28.5C22.5 26 18 25 14 25V47C20.5 47 26.8 49 32 53.5C37.2 49 43.5 47 50 47V25C46 25 41.5 26 37.5 28.5"
-    stroke="url(#bookGrad)"
-    stroke-width="3"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-
-  <!-- Golden Compass Spark Rays -->
-  <path
-    d="M25.5 32.5L23 30M38.5 32.5L41 30M25.5 44.5L23 47M38.5 44.5L41 47"
-    stroke="#f59e0b"
-    stroke-width="2"
-    stroke-linecap="round"
-  />
-
-  <!-- Golden 4-Point Compass Star in the Heart of the Book -->
-  <path
-    d="M32 24.5L34.7 35.8L45 38.5L34.7 41.2L32 51.5L29.3 41.2L19 38.5L29.3 35.8L32 24.5Z"
-    fill="url(#starGrad)"
-  />
-  <circle cx="32" cy="38.5" r="2.1" fill="#ffffff" />
-
-  <!-- Academic Mortarboard Cap (Navy) -->
-  <path d="M32 7.5L52 14.8L32 21.5L12 14.8L32 7.5Z" fill="#0f172a" />
-  <path d="M20.5 19.5V25.5C24.8 22.6 39.2 22.6 43.5 25.5V19.5L32 23.3L20.5 19.5Z" fill="#0f172a" />
-
-  <!-- Sky-Blue Tassel -->
-  <circle cx="32" cy="14.5" r="1.5" fill="#38bdf8" />
-  <path d="M32 14.5L46.5 17.2V23.5" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M44.8 28.5L45.7 23.5H47.3L48.2 28.5H44.8Z" fill="#2563eb" />
+  <rect width="100" height="100" rx="24" fill="#0b0f19" />
+  <circle cx="50" cy="50" r="38" stroke="url(#grad)" stroke-width="6" fill="none" opacity="0.8" />
+  <circle cx="50" cy="50" r="22" stroke="#6366f1" stroke-width="4" fill="#1e1b4b" />
+  <circle cx="50" cy="50" r="8" fill="#10b981" />
+  <!-- subtle Bulgarian flag accent dots -->
+  <circle cx="28" cy="80" r="3.5" fill="#ffffff" />
+  <circle cx="50" cy="80" r="3.5" fill="#10b981" />
+  <circle cx="72" cy="80" r="3.5" fill="#ef4444" />
 </svg>

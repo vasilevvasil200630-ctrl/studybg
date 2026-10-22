@@ -14,7 +14,7 @@ export const ExamModule1Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
               <span>
                 <strong>Модул 1:</strong> {questions.length} затворени въпроса с избираем отговор (А, Б, В, Г). Общ брой точки за Модул 1: <strong>40 точки</strong> (по {Number((40 / Math.max(1, questions.length)).toFixed(1))} т. на въпрос).
               </span>
-              <span className="font-mono font-medium text-slate-800">
+              <span className="tabular-nums font-medium text-slate-800">
                 Попълнени: {mod1CompletedCount} / {questions.length}
               </span>
             </div>
@@ -28,14 +28,14 @@ export const ExamModule1Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
                 <div key={q.id} className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200 space-y-3 shadow-2xs">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3">
-                      <span className="w-6 h-6 rounded bg-slate-100 border border-slate-200 text-slate-700 font-mono font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="w-6 h-6 rounded bg-slate-100 border border-slate-200 text-slate-700 tabular-nums font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
                         {qIdx + 1}
                       </span>
                       <div>
                         <h5 className="text-sm font-semibold text-slate-900 leading-snug">
                           {q.question}
                         </h5>
-                        <span className="text-[11px] text-slate-500 font-mono">{ptsPerQ} точки</span>
+                        <span className="text-[11px] text-slate-500 tabular-nums">{ptsPerQ} точки</span>
                       </div>
                     </div>
 
@@ -80,7 +80,7 @@ export const ExamModule1Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
                           onClick={() => handleSelectOption(q.id, oIdx)}
                           className={`flex items-center gap-3 p-3 rounded-lg border text-left text-xs transition-colors ${buttonStyles}`}
                         >
-                          <span className="w-5 h-5 rounded bg-white font-mono text-[11px] font-bold text-slate-700 flex items-center justify-center flex-shrink-0 border border-slate-200">
+                          <span className="w-5 h-5 rounded bg-white tabular-nums text-[11px] font-bold text-slate-700 flex items-center justify-center flex-shrink-0 border border-slate-200">
                             {letters[oIdx]}
                           </span>
                           <span className="flex-1">{opt}</span>

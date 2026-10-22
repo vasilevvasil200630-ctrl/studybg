@@ -7,7 +7,7 @@ const BAND_STYLES = [
   { box: 'bg-rose-50 border-rose-200', points: 'text-rose-900', label: 'text-rose-700' },
   { box: 'bg-orange-50 border-orange-200', points: 'text-orange-900', label: 'text-orange-700' },
   { box: 'bg-amber-50 border-amber-200', points: 'text-amber-900', label: 'text-amber-700' },
-  { box: 'bg-sky-50 border-sky-200', points: 'text-sky-900', label: 'text-sky-700' },
+  { box: 'bg-blue-50 border-blue-200', points: 'text-blue-900', label: 'text-blue-700' },
   { box: 'bg-emerald-50 border-emerald-200', points: 'text-emerald-900', label: 'text-emerald-700' }
 ];
 const BAND_LABELS = ['Слаб 2.00', 'Среден 3 (праг)', 'Добър 4', 'Мн. добър 5', 'Отличен 6'];
@@ -25,7 +25,7 @@ export const ExamStartScreen: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) 
               <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto border border-blue-200 shadow-2xs">
                 <ShieldAlert className="w-6 h-6" />
               </div>
-              <h4 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+              <h4 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                 Модел на изпита в симулатора (100 точки)
               </h4>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
@@ -40,7 +40,7 @@ export const ExamStartScreen: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) 
                   <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 bg-blue-100 px-2 py-0.5 rounded">
                     Модул 1
                   </span>
-                  <span className="text-xs font-mono font-bold text-slate-700">
+                  <span className="text-xs tabular-nums font-bold text-slate-700">
                     40 точки
                   </span>
                 </div>
@@ -57,7 +57,7 @@ export const ExamStartScreen: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) 
                   <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 bg-slate-100 px-2 py-0.5 rounded">
                     Модул 2
                   </span>
-                  <span className="text-xs font-mono font-bold text-slate-700">
+                  <span className="text-xs tabular-nums font-bold text-slate-700">
                     30 точки
                   </span>
                 </div>
@@ -74,7 +74,7 @@ export const ExamStartScreen: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) 
                   <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
                     Модул 3
                   </span>
-                  <span className="text-xs font-mono font-bold text-slate-700">
+                  <span className="text-xs tabular-nums font-bold text-slate-700">
                     30 точки
                   </span>
                 </div>
@@ -94,14 +94,14 @@ export const ExamStartScreen: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) 
                   <Scale className="w-3.5 h-3.5 text-blue-600" />
                   <span>{examScale.scale ? 'Скала за преобразуване на точките в оценка:' : 'Резултатът е само в точки:'}</span>
                 </span>
-                <span className="text-slate-500 font-mono text-[11px]">{examScale.label}</span>
+                <span className="text-slate-500 tabular-nums text-[11px]">{examScale.label}</span>
               </div>
 
               {examScale.scale ? (
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs">
                   {gradeBands(examScale.scale).map((band, i) => (
                     <div key={band.label} className={`p-2.5 rounded-lg border ${BAND_STYLES[i].box} ${i === 4 ? 'col-span-2 sm:col-span-1' : ''}`}>
-                      <span className={`block font-bold font-mono ${BAND_STYLES[i].points}`}>{band.from} – {band.to} т.</span>
+                      <span className={`block font-bold tabular-nums ${BAND_STYLES[i].points}`}>{band.from} – {band.to} т.</span>
                       <span className={`text-[11px] font-medium ${BAND_STYLES[i].label}`}>{BAND_LABELS[i]}</span>
                     </div>
                   ))}
@@ -117,7 +117,7 @@ export const ExamStartScreen: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) 
             </div>
 
             {/* Duration Selector & Launch Call-to-action */}
-            <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-50/50 via-white to-blue-50/50 border border-blue-200 text-center space-y-4 max-w-xl mx-auto">
+            <div className="p-6 rounded-2xl bg-blue-50/40 border border-blue-200 text-center space-y-4 max-w-xl mx-auto">
               <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                 Изберете времеви регламент за изпита:
               </span>

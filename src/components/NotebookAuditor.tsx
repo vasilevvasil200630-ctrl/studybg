@@ -144,7 +144,7 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({
             <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
               Степен на покритие
             </span>
-            <div className="text-3xl font-extrabold text-slate-900 my-1 font-mono">
+            <div className="text-3xl font-bold text-slate-900 my-1 tabular-nums">
               {coveragePercent}%
             </div>
             <span className="text-[11px] text-slate-500">
@@ -246,7 +246,7 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({
 
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                    <span className="text-xs font-mono font-medium text-slate-500">
+                    <span className="text-xs tabular-nums font-medium text-slate-500">
                       Точка {idx + 1}
                     </span>
                     {item.isEssentialForSix && (
@@ -279,7 +279,7 @@ export const NotebookAuditor: React.FC<NotebookAuditorProps> = ({
                       <PenTool className="w-3.5 h-3.5 text-blue-600 flex-shrink-0 mt-0.5" />
                       <div>
                         <span className="font-semibold text-slate-900">Формулировка за записките:</span>{' '}
-                        <span className="font-mono text-slate-800 text-[11px]">{item.suggestedNotes}</span>
+                        <span className="tabular-nums text-slate-800 text-[11px]">{item.suggestedNotes}</span>
                       </div>
                     </div>
 

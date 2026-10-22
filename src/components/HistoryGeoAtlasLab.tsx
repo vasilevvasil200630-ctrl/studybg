@@ -247,25 +247,13 @@ export const HistoryGeoAtlasLab: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Hero Header */}
-      <div className="rounded-2xl bg-gradient-to-br from-amber-950 via-slate-900 to-emerald-950 text-white p-6 sm:p-7 border border-amber-700/40 shadow-sm">
+      <div className="rounded-2xl bg-blue-50/60 border border-blue-100 p-6 sm:p-7 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-200 text-xs font-semibold">
-              <Globe className="w-3.5 h-3.5 text-amber-300" />
-              <span>Интерактивен Атлас & Хронологичен Тренажор • История и География</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-              Мирни Договори, Исторически Извори & Икономически Райони (NUTS 2)
-            </h2>
-            <p className="text-slate-300 text-sm leading-relaxed">
-              Интерактивна подготовка за ДЗИ и НВО по История и цивилизации и География и икономика — карти на териториалните промени (681–1940 г.), разпознаване на личности по анонимен извор и стопанска карта на 6-те района в България.
-            </p>
-          </div>
 
           <div className="flex items-center gap-3">
-            <div className="px-4 py-2.5 rounded-xl bg-white/10 border border-white/15 text-xs">
-              <div className="text-slate-300">Решени в тренажора</div>
-              <div className="text-base font-bold text-amber-300">
+            <div className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs">
+              <div className="text-slate-600">Решени в тренажора</div>
+              <div className="text-base font-bold text-emerald-700">
                 {quizStats.correctCount} / {HISTORY_GEO_QUIZ_QUESTIONS.length} верни
               </div>
             </div>
@@ -273,13 +261,13 @@ export const HistoryGeoAtlasLab: React.FC = () => {
         </div>
 
         {/* 4 Navigation Tabs */}
-        <div className="mt-6 pt-5 border-t border-white/10 flex flex-wrap gap-2">
+        <div className="mt-6 pt-5 border-t border-slate-200 flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('treaties')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'treaties'
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'bg-white/10 text-slate-200 hover:bg-white/20'
+                ? 'bg-brand-sapphire text-white shadow-sm'
+                : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
             }`}
           >
             <Map className="w-4 h-4 text-amber-600" />
@@ -290,8 +278,8 @@ export const HistoryGeoAtlasLab: React.FC = () => {
             onClick={() => setActiveTab('sources')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'sources'
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'bg-white/10 text-slate-200 hover:bg-white/20'
+                ? 'bg-brand-sapphire text-white shadow-sm'
+                : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
             }`}
           >
             <ScrollText className="w-4 h-4 text-blue-600" />
@@ -302,8 +290,8 @@ export const HistoryGeoAtlasLab: React.FC = () => {
             onClick={() => setActiveTab('geography')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'geography'
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'bg-white/10 text-slate-200 hover:bg-white/20'
+                ? 'bg-brand-sapphire text-white shadow-sm'
+                : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
             }`}
           >
             <Globe className="w-4 h-4 text-emerald-600" />
@@ -314,8 +302,8 @@ export const HistoryGeoAtlasLab: React.FC = () => {
             onClick={() => setActiveTab('quiz')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'quiz'
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'bg-white/10 text-slate-200 hover:bg-white/20'
+                ? 'bg-brand-sapphire text-white shadow-sm'
+                : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
             }`}
           >
             <Sparkles className="w-4 h-4 text-slate-600" />
@@ -343,7 +331,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                       : 'bg-white hover:bg-slate-50 border-slate-200'
                   }`}
                 >
-                  <div className="text-xs font-extrabold text-amber-800 mb-0.5">{t.year}</div>
+                  <div className="text-xs font-bold text-amber-800 mb-0.5">{t.year}</div>
                   <div className="text-xs font-bold text-slate-900 line-clamp-2 leading-snug">
                     {t.title}
                   </div>
@@ -477,7 +465,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                     </span>
                     <button
                       onClick={() => toggleRevealFigure(fig.id)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold cursor-pointer"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-sapphire hover:bg-brand-sapphire-light text-white text-xs font-bold cursor-pointer"
                     >
                       {isRevealed ? (
                         <>
@@ -517,7 +505,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                         <div className="text-xs font-bold uppercase text-blue-700">
                           Историческа личност и документ:
                         </div>
-                        <div className="text-base sm:text-lg font-extrabold text-slate-900">
+                        <div className="text-base sm:text-lg font-bold text-slate-900">
                           {fig.personName} — <span className="text-blue-900 font-semibold">{fig.sourceTitle}</span>
                         </div>
                         <div className="text-xs text-slate-600 font-medium">{fig.roleAndYears}</div>
@@ -548,12 +536,12 @@ export const HistoryGeoAtlasLab: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left Column: Interactive SVG Map of Bulgaria's 6 Regions */}
           <div className="lg:col-span-5 space-y-3">
-            <div className="rounded-2xl bg-slate-900 border border-slate-800 p-4 text-white space-y-3">
+            <div className="rounded-2xl bg-blue-50/60 border border-blue-100 p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
                   Интерактивна карта • NUTS 2 България
                 </span>
-                <span className="text-[11px] text-slate-400">Кликни върху район</span>
+                <span className="text-[11px] text-slate-500">Кликни върху район</span>
               </div>
 
               <svg viewBox="0 0 400 190" className="w-full h-56">
@@ -622,7 +610,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                       className={`px-2.5 py-2 rounded-lg text-left text-xs font-bold transition-all cursor-pointer ${
                         isSelected
                           ? 'bg-emerald-500 text-emerald-950'
-                          : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                          : 'bg-white text-slate-600 hover:bg-slate-700'
                       }`}
                     >
                       {reg.code}: {reg.name.replace(' район', '')}
@@ -717,18 +705,18 @@ export const HistoryGeoAtlasLab: React.FC = () => {
           </div>
 
           {/* Strategic Energy, Metallurgy & High-Tech Hubs of Bulgaria */}
-          <div className="mt-6 rounded-2xl bg-slate-900 text-white p-5 border border-slate-800 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+          <div className="mt-6 rounded-2xl bg-blue-50/60 border border-blue-100 p-5 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div>
-                <div className="text-xs uppercase font-bold tracking-wider text-amber-400 flex items-center gap-1.5">
+                <div className="text-xs uppercase font-bold tracking-wider text-amber-700 flex items-center gap-1.5">
                   <Factory className="w-4 h-4" />
                   <span>Индустриално-енергиен и технологичен атлас на България</span>
                 </div>
-                <h4 className="text-base sm:text-lg font-extrabold text-white mt-0.5">
+                <h4 className="text-base sm:text-lg font-bold text-slate-900 mt-0.5">
                   Стратегически енергийни, металургични и високотехнологични комплекси (ДЗИ & Трета СПК)
                 </h4>
               </div>
-              <span className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold">
+              <span className="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-700 text-xs font-bold">
                 {STRATEGIC_ENERGY_TECH_HUBS.length} стратегически центъра
               </span>
             </div>
@@ -737,37 +725,37 @@ export const HistoryGeoAtlasLab: React.FC = () => {
               {STRATEGIC_ENERGY_TECH_HUBS.map((hub) => (
                 <div
                   key={hub.id}
-                  className="rounded-xl bg-slate-800/90 border border-slate-700 p-4 flex flex-col justify-between space-y-3 hover:border-amber-400/60 transition-all"
+                  className="rounded-xl bg-white border border-slate-200 p-4 flex flex-col justify-between space-y-3 hover:border-amber-400/60 transition-all"
                 >
                   <div className="space-y-2">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[10px] font-bold">
+                      <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/30 text-emerald-700 text-[10px] font-bold">
                         {hub.regionCode}
                       </span>
-                      <span className="text-[10px] font-bold text-amber-300 uppercase tracking-wide">
+                      <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wide">
                         {hub.sector}
                       </span>
                     </div>
 
-                    <div className="font-extrabold text-sm text-white leading-snug">
+                    <div className="font-bold text-sm text-slate-900 leading-snug">
                       {hub.name}
                     </div>
 
-                    <div className="text-[11px] font-semibold text-sky-300 bg-sky-950/60 border border-sky-800/60 rounded-lg px-2.5 py-1.5">
-                      ⚡ Капацитет / Продукция: {hub.capacityOrOutput}
+                    <div className="text-[11px] font-semibold text-brand-sapphire bg-blue-950/60 border border-blue-800/60 rounded-lg px-2.5 py-1.5">
+                      Капацитет / Продукция: {hub.capacityOrOutput}
                     </div>
 
-                    <div className="text-[11px] text-slate-300">
+                    <div className="text-[11px] text-slate-600">
                       <strong className="text-slate-100">Локализация:</strong> {hub.location}
                     </div>
 
-                    <p className="text-[11px] text-slate-300 leading-relaxed">
+                    <p className="text-[11px] text-slate-600 leading-relaxed">
                       {hub.technicalProfile}
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-700/80 text-[11px] text-amber-200/90 leading-relaxed">
-                    <strong className="text-amber-400">Изпитен / ДИППК фокус:</strong>{' '}
+                  <div className="pt-2 border-t border-slate-200 text-[11px] text-amber-700 leading-relaxed">
+                    <strong className="text-amber-700">Изпитен / ДИППК фокус:</strong>{' '}
                     {hub.dippkAndExamRelevance}
                   </div>
                 </div>
@@ -788,7 +776,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                 onClick={() => setQuizSubjectFilter('all')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
                   quizSubjectFilter === 'all'
-                    ? 'bg-slate-900 text-white'
+                    ? 'bg-brand-sapphire text-white'
                     : 'bg-white border border-slate-300 text-slate-700'
                 }`}
               >
@@ -808,7 +796,7 @@ export const HistoryGeoAtlasLab: React.FC = () => {
                 onClick={() => setQuizSubjectFilter('География и икономика')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
                   quizSubjectFilter === 'География и икономика'
-                    ? 'bg-emerald-700 text-white'
+                    ? 'bg-brand-sapphire text-white'
                     : 'bg-white border border-slate-300 text-slate-700'
                 }`}
               >

@@ -25,7 +25,7 @@ export const ExamModule2Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
                   </p>
                 </div>
                 {examData.module2.citation && (
-                  <span className="text-xs text-slate-500 font-mono bg-white px-2.5 py-1 rounded border border-slate-200">
+                  <span className="text-xs text-slate-500 tabular-nums bg-white px-2.5 py-1 rounded border border-slate-200">
                     {examData.module2.citation}
                   </span>
                 )}
@@ -65,7 +65,7 @@ export const ExamModule2Panel: React.FC<{ sim: ExamSimulatorState }> = ({ sim })
                           </p>
                         )}
                       </div>
-                      <span className="text-xs font-mono font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 flex-shrink-0">
+                      <span className="text-xs tabular-nums font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 flex-shrink-0">
                         10 т.
                       </span>
                     </div>

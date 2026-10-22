@@ -91,9 +91,8 @@ export const PrimarySourceContextCard: React.FC<PrimarySourceContextCardProps> =
   const primarySource = matchedCase.primarySources[0];
 
   return (
-    <div className={`p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-amber-50/90 via-orange-50/30 to-slate-50/50 border-2 border-amber-300/80 shadow-xs relative overflow-hidden ${className}`}>
+    <div className={`p-5 sm:p-6 rounded-2xl bg-amber-50/40 border border-amber-200/80 shadow-xs relative overflow-hidden ${className}`}>
       {/* Background Accent */}
-      <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
 
       {/* Top Header Strip */}
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3 relative z-10">
@@ -112,7 +111,7 @@ export const PrimarySourceContextCard: React.FC<PrimarySourceContextCardProps> =
 
       {/* Case Dilemma & Title */}
       <div className="relative z-10 mb-4">
-        <h4 className="text-sm sm:text-base font-extrabold text-slate-900 leading-snug">
+        <h4 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
           {matchedCase.title}
         </h4>
         <p className="text-xs text-slate-600 mt-1 leading-relaxed">
@@ -138,7 +137,7 @@ export const PrimarySourceContextCard: React.FC<PrimarySourceContextCardProps> =
               : primarySource.originalExcerpt}
           </p>
           {primarySource.exactCitation && (
-            <div className="text-[10px] text-slate-500 font-mono pt-0.5">
+            <div className="text-[10px] text-slate-500 tabular-nums pt-0.5">
               Източник: {primarySource.exactCitation}
             </div>
           )}
@@ -158,7 +157,7 @@ export const PrimarySourceContextCard: React.FC<PrimarySourceContextCardProps> =
       <div className="flex flex-col sm:flex-row items-center gap-2.5 relative z-10">
         <button
           onClick={() => onNavigateTab('cases')}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 active:bg-amber-800 text-white font-bold text-xs shadow-xs transition-all hover:scale-[1.01]"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 active:bg-amber-800 text-white font-bold text-xs shadow-xs transition-all"
         >
           <Scale className="w-3.5 h-3.5" />
           <span>Разгледай пълния казус с двете тези</span>

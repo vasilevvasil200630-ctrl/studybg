@@ -295,7 +295,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
           )}
         </div>
 
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
           SmartScan: Съпоставка на записки с МОН
         </h2>
         <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
@@ -420,7 +420,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
               <label className="text-xs font-bold text-slate-700">
                 Текст за одит (редактируем)
               </label>
-              <span className="text-[11px] text-slate-500 font-mono">
+              <span className="text-[11px] text-slate-500 tabular-nums">
                 {ocrReviewText.trim().split(/\s+/).length} думи • {ocrReviewText.length} знака
               </span>
             </div>
@@ -660,7 +660,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
             {/* Word count & readiness meter */}
             <div className="mt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-xl border text-xs">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-slate-600">
+                <span className="tabular-nums text-slate-600">
                   {wordCount} {wordCount === 1 ? 'дума' : 'думи'} • {charCount} знака
                 </span>
               </div>
@@ -709,7 +709,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
               onChange={handleFileUpload}
             />
 
-            <div className="w-14 h-14 mx-auto mb-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center text-blue-600 group-hover:scale-105 transition-all">
+            <div className="w-14 h-14 mx-auto mb-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center text-blue-600 transition-all">
               <ImageIcon className="w-7 h-7" />
             </div>
 
@@ -752,14 +752,14 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
                   onClick={handleLoadDemoOcr}
                   className="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 font-semibold text-[11px] hover:bg-blue-100 transition-colors"
                 >
-                  ⚡ Тествай с примерен разчетен текст
+                  Тествай с примерен разчетен текст
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveMode('settings')}
                   className="px-3 py-1.5 rounded-lg bg-white text-slate-700 border border-slate-300 font-semibold text-[11px] hover:bg-slate-50 transition-colors"
                 >
-                  ⚙️ Конфигурирай API ключ
+                  Конфигурирай API ключ
                 </button>
               </div>
             )}
@@ -827,7 +827,7 @@ export const SmartScan: React.FC<SmartScanProps> = ({ onScanComplete, onClose, s
                 value={apiKeyInput}
                 onChange={(e) => setApiKeyInput(e.target.value)}
                 placeholder="AIzaSy..."
-                className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border border-slate-300 text-xs font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border border-slate-300 text-xs tabular-nums text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
               />
               <button
                 type="button"

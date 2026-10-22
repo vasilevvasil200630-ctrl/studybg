@@ -2,6 +2,7 @@ import { DZI_SCALE } from '../lib/monGradeScale';
 import type { ExamPaper } from '../lib/examPaperScoring';
 import { NVO10_MATH_2026 } from './officialPapers/nvo10Math2026';
 import { NVO10_MATH_2025 } from './officialPapers/nvo10Math2025';
+import { NVO10_MATH_2024 } from './officialPapers/nvo10Math2024';
 
 /**
  * Пълни изпитни варианти за симулатора.
@@ -15,6 +16,7 @@ export const EXAM_PAPERS: ExamPaper[] = [
   // Официални варианти на МОН (условия и ключ от официалния PDF) — най-отгоре
   NVO10_MATH_2026,
   NVO10_MATH_2025,
+  NVO10_MATH_2024,
 
   // -------------------------------------------------------------------------
   // БЕЛ — ДЗИ (12. клас)

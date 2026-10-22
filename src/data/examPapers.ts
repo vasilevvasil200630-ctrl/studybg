@@ -4,6 +4,8 @@ import { NVO10_MATH_2026 } from './officialPapers/nvo10Math2026';
 import { NVO10_MATH_2025 } from './officialPapers/nvo10Math2025';
 import { NVO10_MATH_2024 } from './officialPapers/nvo10Math2024';
 import { NVO10_MATH_2023 } from './officialPapers/nvo10Math2023';
+import { NVO10_MATH_2022 } from './officialPapers/nvo10Math2022';
+import { NVO10_MATH_2021 } from './officialPapers/nvo10Math2021';
 
 /**
  * Пълни изпитни варианти за симулатора.
@@ -19,6 +21,8 @@ export const EXAM_PAPERS: ExamPaper[] = [
   NVO10_MATH_2025,
   NVO10_MATH_2024,
   NVO10_MATH_2023,
+  NVO10_MATH_2022,
+  NVO10_MATH_2021,
 
   // -------------------------------------------------------------------------
   // БЕЛ — ДЗИ (12. клас)

@@ -255,12 +255,20 @@ describe('официални варианти на МОН', () => {
   });
 });
 
-describe('НВО 10, формат до 2025 (2023–2025)', () => {
-  it.each(['official-nvo10-math-2025', 'official-nvo10-math-2024', 'official-nvo10-math-2023'])('%s: 17 задачи, 90 мин, 15 × 4 т. + 2 × 20 т.', (id) => {
+describe('НВО 10, формат до 2025 (2021–2025)', () => {
+  it.each(['official-nvo10-math-2025', 'official-nvo10-math-2024', 'official-nvo10-math-2023', 'official-nvo10-math-2022'])('%s: 17 задачи, 90 мин, 15 × 4 т. + 2 × 20 т.', (id) => {
     const paper = EXAM_PAPERS.find((x) => x.id === id)!;
     expect(allQuestions(paper)).toHaveLength(17);
     expect(paper.durationMinutes).toBe(90);
     expect(paper.sections.map((sec) => sec.questions.reduce((n, q) => n + q.points, 0))).toEqual([60, 40]);
+  });
+
+  it('official-nvo10-math-2021: 17 задачи, 90 мин, 50 т. — 15 × 2 т. + 2 × 10 т.', () => {
+    const paper = EXAM_PAPERS.find((x) => x.id === 'official-nvo10-math-2021')!;
+    expect(allQuestions(paper)).toHaveLength(17);
+    expect(paper.durationMinutes).toBe(90);
+    expect(paper.maxPoints).toBe(50);
+    expect(paper.sections.map((sec) => sec.questions.reduce((n, q) => n + q.points, 0))).toEqual([30, 20]);
   });
 });
 

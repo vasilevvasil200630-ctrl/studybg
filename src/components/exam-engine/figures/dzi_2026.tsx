@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * Чертежи към ДЗИ по математика (профилирана подготовка), 22.05.2026 г.
+ * Чертежи към ДЗИ по математика (профилирана подготовка) — 2026 и 2025 г.
  * Пресъздадени като SVG по официалния вариант на МОН — същите означения.
  */
 
@@ -51,6 +51,22 @@ export const D26Q4Cube: React.FC = () => {
       {label(B1, 'B1', -24, -6)}
       {label(C1, 'C1', 6, -2)}
       {label(D1, 'D1', -8, -6)}
+    </svg>
+  );
+};
+
+/** ДЗИ 2025, задача 8 — вложени квадрати, всеки с половината от страната на предходния */
+export const D25Q8Squares: React.FC = () => {
+  const x0 = 20;
+  const y0 = 170;
+  const s0 = 150;
+  const squares = Array.from({ length: 5 }, (_, i) => s0 / 2 ** i);
+  return (
+    <svg viewBox="0 0 220 190" className="h-auto w-full max-w-[200px]" role="img" aria-label="Квадрат със страна 4 cm; в долния му ляв ъгъл са вписани квадрати, всеки с половината от страната на предходния.">
+      {squares.map((s, i) => (
+        <rect key={i} x={x0} y={y0 - s} width={s} height={s} fill={i === 0 ? '#fff' : i % 2 ? '#f1f5f9' : '#e2e8f0'} stroke={INK} strokeWidth={i === 0 ? 1.6 : 1.1} />
+      ))}
+      <text x={x0 + s0 + 6} y={y0 - s0 / 2 + 4} fontSize="12" style={font}>4 cm</text>
     </svg>
   );
 };

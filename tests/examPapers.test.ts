@@ -355,3 +355,15 @@ describe('другите предмети в НВО 10 — примерни за
     }
   });
 });
+
+describe('ДЗИ по математика — профилирана подготовка', () => {
+  it.each(['official-dzi-math-2026'])('%s: 18 задачи, 240 мин, част 1 — 55 т., част 2 — 3 × 15 т., без оценка', (id) => {
+    const paper = EXAM_PAPERS.find((x) => x.id === id)!;
+    expect(paper.exam).toBe('ДЗИ');
+    expect(allQuestions(paper)).toHaveLength(18);
+    expect(paper.durationMinutes).toBe(240);
+    expect(paper.gradeScale).toBeNull();
+    expect(paper.sections.map((sec) => sec.questions.reduce((n, q) => n + q.points, 0))).toEqual([55, 45]);
+    expect(paper.sections[1].questions.every((q) => q.kind === 'open' && q.points === 15)).toBe(true);
+  });
+});

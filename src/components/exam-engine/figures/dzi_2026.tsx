@@ -1,0 +1,56 @@
+import React from 'react';
+
+/**
+ * Чертежи към ДЗИ по математика (профилирана подготовка), 22.05.2026 г.
+ * Пресъздадени като SVG по официалния вариант на МОН — същите означения.
+ */
+
+const INK = '#334155';
+const font = { fontFamily: 'inherit', fill: INK } as const;
+
+/** Задача 4 — куб ABCDA₁B₁C₁D₁ с равнината (DBC₁) */
+export const D26Q4Cube: React.FC = () => {
+  const A = [36, 176];
+  const B = [146, 176];
+  const C = [188, 146];
+  const D = [78, 146];
+  const up = (p: number[]) => [p[0], p[1] - 110];
+  const [A1, B1, C1, D1] = [A, B, C, D].map(up);
+  const line = (p: number[], q: number[], dashed = false) => (
+    <line x1={p[0]} y1={p[1]} x2={q[0]} y2={q[1]} stroke={INK} strokeWidth={dashed ? 1.2 : 1.6} strokeDasharray={dashed ? '5 4' : undefined} />
+  );
+  const label = (p: number[], text: string, dx: number, dy: number) => (
+    <text x={p[0] + dx} y={p[1] + dy} fontSize="13" fontStyle="italic" style={font}>
+      {text[0]}
+      {text.length > 1 && <tspan fontSize="9" dy="3">{text.slice(1)}</tspan>}
+    </text>
+  );
+  return (
+    <svg viewBox="0 0 220 200" className="h-auto w-full max-w-[230px]" role="img" aria-label="Куб ABCDA1B1C1D1; равнината през върховете D, B и C1 е защрихована.">
+      <polygon points={`${D} ${B} ${C1}`} fill="#cbd5e1" fillOpacity="0.7" />
+      {line(A, B)}
+      {line(B, C)}
+      {line(A, A1)}
+      {line(B, B1)}
+      {line(C, C1)}
+      {line(A1, B1)}
+      {line(B1, C1)}
+      {line(C1, D1)}
+      {line(D1, A1)}
+      {line(A, D, true)}
+      {line(D, C, true)}
+      {line(D, D1, true)}
+      {line(D, B, true)}
+      {line(D, C1, true)}
+      {line(B, C1)}
+      {label(A, 'A', -12, 14)}
+      {label(B, 'B', -4, 16)}
+      {label(C, 'C', 6, 6)}
+      {label(D, 'D', -16, 2)}
+      {label(A1, 'A1', -16, -2)}
+      {label(B1, 'B1', -24, -6)}
+      {label(C1, 'C1', 6, -2)}
+      {label(D1, 'D1', -8, -6)}
+    </svg>
+  );
+};

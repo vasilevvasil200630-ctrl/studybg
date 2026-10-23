@@ -347,6 +347,11 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
           topics={topics}
           practiceTopics={practiceTopics}
           onPracticeTopic={onPracticeTopic}
+          pointsNote={
+            paper.exam === 'НВО 10'
+              ? 'НВО 10: резултатът се отчита в точки'
+              : 'Резултат в точки — скалата за оценка МОН определя за всяка сесия'
+          }
         />
       )}
 
@@ -422,7 +427,9 @@ const ResultPanel: React.FC<{
   topics: TopicScore[];
   practiceTopics: TopicKey[];
   onPracticeTopic?: (key: TopicKey) => void;
-}> = ({ result, unscored, onRestart, onExit, topics, practiceTopics, onPracticeTopic }) => {
+  /** Какво да пише под точките, когато няма превръщане в оценка */
+  pointsNote: string;
+}> = ({ result, unscored, onRestart, onExit, topics, practiceTopics, onPracticeTopic, pointsNote }) => {
   const percent = result.maxPoints > 0 ? Math.round((result.totalPoints / result.maxPoints) * 100) : 0;
   return (
     <section role="status" aria-live="polite" className="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8">
@@ -437,7 +444,7 @@ const ResultPanel: React.FC<{
               {fmt(result.totalPoints)} / {result.maxPoints} т. <span className="text-lg font-semibold text-slate-500">({percent}%)</span>
             </p>
             <p className="mt-0.5 text-sm font-semibold text-slate-700">
-              {result.grade ? formatGrade(result.grade) : 'НВО 10: резултатът се отчита в точки'}
+              {result.grade ? formatGrade(result.grade) : pointsNote}
             </p>
           </div>
         </div>
@@ -553,7 +560,7 @@ const StimulusView: React.FC<{ s: Stimulus }> = ({ s }) => {
             <tr>
               {s.head.map((h, i) => (
                 <th key={i} scope="col" className="border-b border-r border-slate-200 px-3 py-2 text-left font-semibold last:border-r-0">
-                  {h}
+                  <MathText text={h} />
                 </th>
               ))}
             </tr>
@@ -563,7 +570,7 @@ const StimulusView: React.FC<{ s: Stimulus }> = ({ s }) => {
               <tr key={ri} className="border-b border-slate-100 last:border-b-0">
                 {row.map((cell, ci) => (
                   <td key={ci} className="border-r border-slate-100 px-3 py-2 tabular-nums text-slate-800 last:border-r-0">
-                    {cell}
+                    <MathText text={cell} />
                   </td>
                 ))}
               </tr>

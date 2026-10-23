@@ -130,7 +130,7 @@ export interface ExamPaper {
   /** Кратка бележка под заглавието — напр. кое е официално (условия, ключ) и кое е добавено от StudyBG */
   note?: string;
   /** Лист с формули, който се отваря от лентата на изпита (както на истинския изпит) */
-  formulaSheet?: 'nvo10-math';
+  formulaSheet?: 'nvo10-math' | 'dzi-math' | 'dzi-math-2021';
   sections: PaperSection[];
 }
 

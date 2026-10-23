@@ -1,6 +1,6 @@
 import React, { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { ExternalLink, Search, Sigma, X } from 'lucide-react';
-import { FORMULA_CATEGORIES, filterFormulaSheet, type FormulaCategory, type FormulaSheet } from '../../data/formulaSheets/nvo10Math';
+import { filterFormulaSheet, type FormulaCategory, type FormulaSheet } from '../../data/formulaSheets/nvo10Math';
 import { FIGURES } from './figures';
 import { MathTex, MathText } from './MathText';
 
@@ -45,7 +45,7 @@ export const FormulaSheetBrowser: React.FC<FormulaSheetBrowserProps> = ({ sheet,
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Търси: Виет, медиана, конус, Херон…"
+            placeholder={sheet.id.startsWith('dzi') ? 'Търси: производна, Бейс, елипса, бином…' : 'Търси: Виет, медиана, конус, Херон…'}
             aria-label="Търси формула"
             className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-9 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-sapphire focus:outline-none focus:ring-2 focus:ring-brand-sapphire/15 [&::-webkit-search-cancel-button]:appearance-none"
           />
@@ -65,7 +65,7 @@ export const FormulaSheetBrowser: React.FC<FormulaSheetBrowserProps> = ({ sheet,
         </div>
 
         <div className="-mx-4 mt-3 flex gap-1.5 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:px-6" role="group" aria-label="Раздели">
-          {FORMULA_CATEGORIES.map((c) => {
+          {sheet.categories.map((c) => {
             const active = category === c.id;
             return (
               <button

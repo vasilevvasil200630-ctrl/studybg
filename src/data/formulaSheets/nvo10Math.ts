@@ -6,7 +6,8 @@
 
 const t = String.raw;
 
-export type FormulaCategory = 'algebra' | 'probability' | 'planimetry' | 'trigonometry' | 'stereometry';
+/** Раздел в листа (бутоните над формулите); всеки лист задава своите разделите в `categories` */
+export type FormulaCategory = string;
 
 export interface FormulaEntry {
   id: string;
@@ -39,6 +40,8 @@ export interface FormulaSheet {
   title: string;
   sourceLabel: string;
   sourceUrl: string;
+  /** Бутоните за раздели — първият е „Всички“ (id 'all') */
+  categories: { id: FormulaCategory | 'all'; label: string }[];
   groups: FormulaGroup[];
 }
 
@@ -56,6 +59,7 @@ export const NVO10_MATH_FORMULAS: FormulaSheet = {
   title: 'Формули — математика, X клас',
   sourceLabel: 'Официалният лист с формули на МОН за НВО в X клас',
   sourceUrl: 'https://www.mon.bg/nfs/2026/09/formuli-matematika-10-klas-nvo.pdf',
+  categories: FORMULA_CATEGORIES,
   groups: [
     {
       id: 'quadratic-equation',
@@ -256,8 +260,6 @@ export const NVO10_MATH_FORMULAS: FormulaSheet = {
   ],
 };
 
-export const FORMULA_SHEETS = { 'nvo10-math': NVO10_MATH_FORMULAS } as const;
-export type FormulaSheetId = keyof typeof FORMULA_SHEETS;
 
 const norm = (s: string) => s.toLocaleLowerCase('bg').replace(/\s+/g, ' ').trim();
 

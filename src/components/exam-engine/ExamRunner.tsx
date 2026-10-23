@@ -19,7 +19,7 @@ import { examHistoryService, type ExamAttemptRecord } from '../../services/examH
 import { ExamFocusBar } from './ExamFocusBar';
 import { FormulaSheetPanel } from './FormulaSheetPanel';
 import { topicBreakdown, topicPercent, type TopicKey, type TopicScore } from '../../data/examTopics';
-import { FORMULA_SHEETS } from '../../data/formulaSheets/nvo10Math';
+import { FORMULA_SHEETS } from '../../data/formulaSheets';
 import { FIGURES } from './figures';
 import { MathText } from './MathText';
 import { QuestionNavigator, type QuestionItemStatus } from './QuestionNavigator';

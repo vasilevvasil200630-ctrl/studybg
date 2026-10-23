@@ -52,7 +52,7 @@ function buildTopicPaper(key: TopicKey, exam: TopicExam): ExamPaper | null {
     untimed: true,
     maxPoints: sections.reduce((sum, s) => sum + s.questions.reduce((a, q) => a + q.points, 0), 0),
     gradeScale: null,
-    ...(isDzi ? {} : { formulaSheet: 'nvo10-math' as const }),
+    formulaSheet: isDzi ? 'dzi-math' : 'nvo10-math',
     note: isDzi
       ? `${info.scope}. Задачите са от официалните матури на МОН с техния ключ, точки и критерии (до 2021 г. ДЗИ е по друг формат, затова точките по години се различават). Обясненията към задачите с избираем отговор са на StudyBG.`
       : `${info.scope}. Задачите са от официалните варианти на МОН с техния ключ и точки (до 2025 г. изпитът е само по математика, затова точките по години се различават). Обясненията към задачите с избираем отговор са на StudyBG.`,

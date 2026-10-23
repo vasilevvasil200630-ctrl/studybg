@@ -6,6 +6,7 @@ import {
   SCIENCE_CONSTANTS
 } from '../data/monFormulaSheets';
 import { NVO10_MATH_FORMULAS } from '../data/formulaSheets/nvo10Math';
+import { DZI_MATH_FORMULAS } from '../data/formulaSheets/dziMath';
 import { FormulaSheetBrowser, FormulaSheetSource } from './exam-engine/FormulaSheetPanel';
 
 interface MonFormulaSheetsModalProps {
@@ -14,8 +15,10 @@ interface MonFormulaSheetsModalProps {
 
 export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ onClose }) => {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
-  const [activeTab, setActiveTab] = useState<'official' | 'math' | 'literature' | 'science' | 'posters'>('official');
-  const isOfficial = activeTab === 'official';
+  const [activeTab, setActiveTab] = useState<'official' | 'official-dzi' | 'math' | 'literature' | 'science' | 'posters'>('official');
+  // Официалните листове на МОН — същото съдържание като панела „Формули“ в изпитите
+  const officialSheet = activeTab === 'official' ? NVO10_MATH_FORMULAS : activeTab === 'official-dzi' ? DZI_MATH_FORMULAS : null;
+  const isOfficial = officialSheet !== null;
   const [selectedPoster, setSelectedPoster] = useState<'bel_dzi' | 'math_all' | 'history_dates' | 'civics_eu' | 'dippk_stem'>('bel_dzi');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedText, setCopiedText] = useState<string | null>(null);
@@ -107,7 +110,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
               Справочник с формули, матрици и A4 Табла за Стена
             </h2>
             <p className="text-xs text-slate-600 mt-0.5">
-              Официалният лист с формули на МОН за НВО в X клас и справочниците на StudyBG: формули, литературни матрици и A4 табла за печат.
+              Официалните листове с формули на МОН за НВО в X клас и за ДЗИ по математика и справочниците на StudyBG: формули, литературни матрици и A4 табла за печат.
             </p>
           </div>
 
@@ -136,18 +139,21 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
           
           {/* Segmented Controls */}
           <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg bg-white border border-slate-200 w-full sm:w-auto shadow-2xs">
-            <button
-              onClick={() => setActiveTab('official')}
-              aria-pressed={isOfficial}
-              className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
-                isOfficial
-                  ? 'bg-blue-600 text-white font-semibold shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Sigma className="w-3.5 h-3.5" />
-              <span>НВО 10 — лист на МОН</span>
-            </button>
+            {([['official', 'НВО 10 — лист на МОН'], ['official-dzi', 'ДЗИ — лист на МОН']] as const).map(([id, label]) => (
+              <button
+                key={id}
+                onClick={() => setActiveTab(id)}
+                aria-pressed={activeTab === id}
+                className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
+                  activeTab === id
+                    ? 'bg-blue-600 text-white font-semibold shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Sigma className="w-3.5 h-3.5" />
+                <span>{label}</span>
+              </button>
+            ))}
 
             <button
               onClick={() => setActiveTab('math')}
@@ -215,9 +221,9 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
         </div>
 
         {/* Официалният лист на МОН — същото съдържание като панела „Формули“ в изпита */}
-        {isOfficial && (
+        {officialSheet && (
           <div className="flex h-[70vh] min-h-0 flex-col bg-slate-50/60 pt-4">
-            <FormulaSheetBrowser sheet={NVO10_MATH_FORMULAS} padX="px-5 sm:px-6" />
+            <FormulaSheetBrowser key={officialSheet.id} sheet={officialSheet} padX="px-5 sm:px-6" />
           </div>
         )}
 
@@ -715,11 +721,11 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
         )}
 
         {/* Modal Footer */}
-        {isOfficial ? (
-          <FormulaSheetSource sheet={NVO10_MATH_FORMULAS} className="p-4 border-t border-slate-200 bg-slate-50 flex-shrink-0" />
+        {officialSheet ? (
+          <FormulaSheetSource sheet={officialSheet} className="p-4 border-t border-slate-200 bg-slate-50 flex-shrink-0" />
         ) : (
           <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between gap-3 text-xs text-slate-500 flex-shrink-0">
-            <span>Справочник на StudyBG за НВО и ДЗИ. Официалният лист на МОН е в първия раздел.</span>
+            <span>Справочник на StudyBG за НВО и ДЗИ. Официалните листове на МОН са в първите два раздела.</span>
             <span className="hidden sm:inline">Esc или клик извън прозореца — затваряне</span>
           </div>
         )}

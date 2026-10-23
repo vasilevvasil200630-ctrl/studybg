@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * Чертежи към ДЗИ по математика (профилирана подготовка) — 2024, 2025 и 2026 г.
+ * Чертежи към ДЗИ по математика — 2021–2026 г.
  * Пресъздадени като SVG по официалния вариант на МОН — същите означения.
  */
 
@@ -107,6 +107,84 @@ export const D24Q9Prism: React.FC = () => {
       {label(C1, 'C1', -18, 0)}
       {label(B1, 'B1', 6, 0)}
       {label(A1, 'A1', -6, -8)}
+    </svg>
+  );
+};
+
+/**
+ * ДЗИ 2022, задача 1 — четири куба с отбелязани многоъгълници (отговорите А–Г).
+ * Върховете са в координати на единичния куб (x — надясно, y — в дълбочина, z — нагоре),
+ * както на чертежите на МОН; само Г е равнинно сечение (−x + y − z/2 = −1/2).
+ */
+const CUBE_SECTIONS: { label: string; pts: [number, number, number][]; midTicks?: boolean }[] = [
+  { label: 'А)', pts: [[0, 0, 1], [1, 0.5, 1], [1, 1, 0], [0, 1, 0]] },
+  { label: 'Б)', pts: [[0, 0, 1], [1, 1, 1], [1, 0, 0], [0, 1, 0]] },
+  { label: 'В)', pts: [[0, 1, 1], [1, 1, 1], [1, 0, 0], [0, 1, 0]] },
+  { label: 'Г)', pts: [[0, 0, 1], [1, 1, 1], [1, 0.5, 0], [0.5, 0, 0]], midTicks: true },
+];
+
+export const D22Q1CubeSections: React.FC = () => {
+  const s = 74;
+  const dx = 30;
+  const dy = 27;
+  const cell = (ox: number, oy: number) => (p: [number, number, number]) => [ox + p[0] * s + p[1] * dx, oy + s + dy - p[2] * s - p[1] * dy];
+  const cubeEdges: [[number, number, number], [number, number, number], boolean][] = [
+    [[0, 0, 0], [1, 0, 0], false], [[1, 0, 0], [1, 0, 1], false], [[1, 0, 1], [0, 0, 1], false], [[0, 0, 1], [0, 0, 0], false],
+    [[0, 1, 1], [1, 1, 1], false], [[1, 1, 1], [1, 1, 0], false], [[1, 0, 1], [1, 1, 1], false], [[0, 0, 1], [0, 1, 1], false],
+    [[1, 0, 0], [1, 1, 0], false],
+    [[0, 0, 0], [0, 1, 0], true], [[0, 1, 0], [1, 1, 0], true], [[0, 1, 0], [0, 1, 1], true],
+  ];
+  return (
+    <svg viewBox="0 0 330 300" className="h-auto w-full max-w-[400px]" role="img" aria-label="Четири куба с отбелязани многоъгълници, означени А), Б), В) и Г). На Г) многоъгълникът минава през два върха на горната стена и през средите на два ръба на долната стена.">
+      {CUBE_SECTIONS.map((c, i) => {
+        const P = cell(20 + (i % 2) * 160, 8 + Math.floor(i / 2) * 140);
+        const poly = c.pts.map(P).map((q) => q.join(',')).join(' ');
+        const labelAt = P([0, 0, 0]);
+        return (
+          <g key={c.label}>
+            <polygon points={poly} fill="#94a3b8" fillOpacity="0.55" stroke={INK} strokeWidth="1" />
+            {cubeEdges.map(([a, b, hidden], ei) => {
+              const [x1, y1] = P(a);
+              const [x2, y2] = P(b);
+              return <line key={ei} x1={x1} y1={y1} x2={x2} y2={y2} stroke={INK} strokeWidth="1.2" strokeDasharray={hidden ? '4 3' : undefined} />;
+            })}
+            {c.midTicks &&
+              ([[0.25, 0, 0], [0.75, 0, 0], [1, 0.25, 0], [1, 0.75, 0]] as [number, number, number][]).map((m, mi) => {
+                const [x, y] = P(m);
+                return <line key={mi} x1={x} y1={y - 4} x2={x} y2={y + 4} stroke={INK} strokeWidth="1.2" />;
+              })}
+            <text x={labelAt[0] + 48} y={labelAt[1] + 18} fontSize="13" fontWeight="600" textAnchor="middle" style={font}>{c.label}</text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+};
+
+/** ДЗИ 2021, задача 9 — равнобедрен △ABC (AC = BC) с вписана окръжност; лъчът AO пресича BC в L */
+export const D21Q9Isosceles: React.FC = () => {
+  const s = 15; // 1 cm
+  const A = [40, 175];
+  const B = [A[0] + 4.8 * s, 175];
+  const h = Math.sqrt(64 - 2.4 * 2.4) * s;
+  const C = [(A[0] + B[0]) / 2, 175 - h];
+  const L = [C[0] + (5 / 8) * (B[0] - C[0]), C[1] + (5 / 8) * (B[1] - C[1])];
+  const r = ((4.8 * Math.sqrt(64 - 5.76)) / 2 / 10.4) * s;
+  const O = [C[0], 175 - r];
+  return (
+    <svg viewBox="0 0 160 195" className="h-auto w-full max-w-[160px]" role="img" aria-label="Равнобедрен триъгълник ABC с AC = BC и вписана окръжност с център O; лъчът AO пресича BC в точка L, като LC = 5 и LB = 3.">
+      <polygon points={`${A} ${B} ${C}`} fill="none" stroke={INK} strokeWidth="1.5" />
+      <circle cx={O[0]} cy={O[1]} r={r} fill="none" stroke={INK} strokeDasharray="4 3" />
+      <line x1={A[0]} y1={A[1]} x2={L[0]} y2={L[1]} stroke={INK} strokeWidth="1.2" />
+      <circle cx={O[0]} cy={O[1]} r="2" fill={INK} />
+      <circle cx={L[0]} cy={L[1]} r="2" fill={INK} />
+      <text x={A[0] - 12} y={A[1] + 6} fontSize="12" fontStyle="italic" style={font}>A</text>
+      <text x={B[0] + 4} y={B[1] + 6} fontSize="12" fontStyle="italic" style={font}>B</text>
+      <text x={C[0] - 4} y={C[1] - 6} fontSize="12" fontStyle="italic" style={font}>C</text>
+      <text x={L[0] + 5} y={L[1] + 2} fontSize="12" fontStyle="italic" style={font}>L</text>
+      <text x={O[0] - 4} y={O[1] - 5} fontSize="11" fontStyle="italic" style={font}>O</text>
+      <text x={(C[0] + L[0]) / 2 + 6} y={(C[1] + L[1]) / 2} fontSize="11" style={font}>5</text>
+      <text x={(L[0] + B[0]) / 2 + 6} y={(L[1] + B[1]) / 2 + 2} fontSize="11" style={font}>3</text>
     </svg>
   );
 };

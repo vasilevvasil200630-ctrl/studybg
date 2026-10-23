@@ -357,7 +357,7 @@ describe('другите предмети в НВО 10 — примерни за
 });
 
 describe('ДЗИ по математика — профилирана подготовка', () => {
-  it.each(['official-dzi-math-2026', 'official-dzi-math-2025', 'official-dzi-math-2024'])('%s: 18 задачи, 240 мин, част 1 — 55 т., част 2 — 3 × 15 т., без оценка', (id) => {
+  it.each(['official-dzi-math-2026', 'official-dzi-math-2025', 'official-dzi-math-2024', 'official-dzi-math-2023', 'official-dzi-math-2022'])('%s: 18 задачи, 240 мин, част 1 — 55 т., част 2 — 3 × 15 т., без оценка', (id) => {
     const paper = EXAM_PAPERS.find((x) => x.id === id)!;
     expect(paper.exam).toBe('ДЗИ');
     expect(allQuestions(paper)).toHaveLength(18);
@@ -365,5 +365,15 @@ describe('ДЗИ по математика — профилирана подго
     expect(paper.gradeScale).toBeNull();
     expect(paper.sections.map((sec) => sec.questions.reduce((n, q) => n + q.points, 0))).toEqual([55, 45]);
     expect(paper.sections[1].questions.every((q) => q.kind === 'open' && q.points === 15)).toBe(true);
+  });
+});
+
+describe('ДЗИ по математика — формат до 2021 г.', () => {
+  it('official-dzi-math-2021: 28 задачи в два модула — 50 + 20 + 30 т., без оценка', () => {
+    const paper = EXAM_PAPERS.find((x) => x.id === 'official-dzi-math-2021')!;
+    expect(allQuestions(paper)).toHaveLength(28);
+    expect(paper.durationMinutes).toBe(240);
+    expect(paper.gradeScale).toBeNull();
+    expect(paper.sections.map((sec) => sec.questions.reduce((n, q) => n + q.points, 0))).toEqual([50, 20, 30]);
   });
 });

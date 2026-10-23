@@ -500,7 +500,7 @@ const TopicAnalysis: React.FC<{ topics: TopicScore[]; practiceTopics: TopicKey[]
           const isWeakest = weakest?.key === t.key;
           const canPractice = !!onPracticeTopic && practiceTopics.includes(t.key);
           return (
-            <li key={t.key} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 sm:grid-cols-[13rem_minmax(0,1fr)_auto]">
+            <li key={t.key} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 sm:grid-cols-[17rem_minmax(0,1fr)_auto]">
               <span className="flex min-w-0 items-center gap-2 text-sm text-slate-700">
                 <span className="truncate">{t.label}</span>
                 {isWeakest && <span className="shrink-0 rounded bg-amber-50 px-1.5 py-0.5 text-[11px] font-semibold text-amber-800 ring-1 ring-inset ring-amber-200">най-слаба</span>}

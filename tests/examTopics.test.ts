@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { EXAM_PAPERS } from '../src/data/examPapers';
-import { MATH_TOPIC_BY_QUESTION, TOPICS, topicBreakdown, topicOf } from '../src/data/examTopics';
+import { DZI_TOPIC_BY_QUESTION, MATH_TOPIC_BY_QUESTION, TOPICS, topicBreakdown, topicOf } from '../src/data/examTopics';
 import { TOPIC_PAPERS, topicPaperId } from '../src/data/topicPapers';
 import { partKey, scorePaper, validateExamPaper, type ExamPaper, type PaperAnswers } from '../src/lib/examPaperScoring';
 import { topicStatsFromAttempts } from '../src/lib/topicProgress';
@@ -45,6 +45,8 @@ describe('теми на задачите', () => {
   it('в разпределението няма id на несъществуващи задачи', () => {
     const ids = new Set(officialNvo10.flatMap((p) => all(p).map((q) => q.id)));
     for (const id of Object.keys(MATH_TOPIC_BY_QUESTION)) expect(ids.has(id), id).toBe(true);
+    const dziIds = new Set(EXAM_PAPERS.filter((p) => p.exam === 'ДЗИ' && p.kind === 'official').flatMap((p) => all(p).map((q) => q.id)));
+    for (const id of Object.keys(DZI_TOPIC_BY_QUESTION)) expect(dziIds.has(id), id).toBe(true);
   });
 
   it('по темите се разпределят всички точки на варианта', () => {
@@ -57,12 +59,17 @@ describe('теми на задачите', () => {
   });
 });
 
-describe('тренировка по тема', () => {
-  const mathTopics = TOPICS.filter((t) => t.area === 'math');
+describe.each([
+  { exam: 'НВО 10', area: 'math' },
+  { exam: 'ДЗИ', area: 'dzi' },
+] as const)('тренировка по тема — $exam', ({ exam, area }) => {
+  const topics = TOPICS.filter((t) => t.area === area);
+  const sets = TOPIC_PAPERS.filter((p) => p.exam === exam);
+  const officialPapers = EXAM_PAPERS.filter((p) => p.kind === 'official' && p.exam === exam && p.subject === 'Математика');
 
-  it('по един набор за всяка тема по математика; всеки минава валидацията и е без таймер', () => {
-    expect(TOPIC_PAPERS.map((p) => p.id)).toEqual(mathTopics.map((t) => topicPaperId(t.key)));
-    for (const p of TOPIC_PAPERS) {
+  it('по един набор за всяка тема; всеки минава валидацията и е без таймер', () => {
+    expect(sets.map((p) => p.id)).toEqual(topics.map((t) => topicPaperId(t.key)));
+    for (const p of sets) {
       expect(validateExamPaper(p), p.id).toEqual([]);
       expect(p.untimed).toBe(true);
       expect(p.kind).toBe('topic');
@@ -70,11 +77,23 @@ describe('тренировка по тема', () => {
   });
 
   it('наборите покриват всяка задача по математика точно веднъж, непроменена', () => {
-    const fromTopics = TOPIC_PAPERS.flatMap((p) => all(p));
-    const official = officialNvo10.flatMap((p) => all(p)).filter((q) => !q.topic);
+    const fromTopics = sets.flatMap((p) => all(p));
+    const official = officialPapers.flatMap((p) => all(p)).filter((q) => !q.topic);
     expect(fromTopics.map((q) => q.id).sort()).toEqual(official.map((q) => q.id).sort());
     const byId = new Map(official.map((q) => [q.id, q]));
     for (const q of fromTopics) expect({ ...q, number: byId.get(q.id)!.number }).toEqual(byId.get(q.id));
+  });
+
+  it('всяка задача има тема от своя изпит и точките по теми дават сбора на варианта', () => {
+    for (const p of officialPapers) {
+      for (const q of all(p)) {
+        const key = topicOf(q);
+        expect(key, q.id).not.toBeNull();
+        if (!q.topic) expect(TOPICS.find((t) => t.key === key)?.area, q.id).toBe(area);
+      }
+      const result = scorePaper(p, keyAnswers(p), fullOpen(p));
+      expect(topicBreakdown(p, result).reduce((n, t) => n + t.maxPoints, 0), p.id).toBe(p.maxPoints);
+    }
   });
 
   it('целият ключ дава максимума и в наборите по тема', () => {

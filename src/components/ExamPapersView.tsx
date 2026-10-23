@@ -28,7 +28,8 @@ const ALL_PAPERS: ExamPaper[] = [...EXAM_PAPERS, ...TOPIC_PAPERS];
 /** Къде се упражнява всяка тема: по математика — набор по тема, за другите предмети — примерните задачи на МОН */
 const SUBJECT_SETS: Partial<Record<TopicKey, string>> = { bio: 'sample-nvo10-bio', chem: 'sample-nvo10-chem', phys: 'sample-nvo10-phys', geo: 'sample-nvo10-geo' };
 const practicePaperFor = (key: TopicKey): string | null => {
-  const id = TOPIC_BY_KEY[key].area === 'math' ? topicPaperId(key) : SUBJECT_SETS[key];
+  const area = TOPIC_BY_KEY[key].area;
+  const id = area === 'math' || area === 'dzi' ? topicPaperId(key) : SUBJECT_SETS[key];
   return id && ALL_PAPERS.some((p) => p.id === id) ? id : null;
 };
 
@@ -96,19 +97,21 @@ export const ExamPapersView: React.FC = () => {
       {shown.map((exam) => {
         const papers = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind !== 'sample').sort(byRelevance);
         const samples = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind === 'sample');
+        const topicArea = exam === 'НВО 10' ? 'math' : exam === 'ДЗИ' ? 'dzi' : null;
+        const hasTopics = topicArea !== null && TOPIC_PAPERS.some((p) => p.exam === exam);
         return (
           <section key={exam} aria-labelledby={`papers-${exam}`} className="space-y-3">
             <h4 id={`papers-${exam}`} className="text-sm font-bold uppercase tracking-wide text-slate-500">
               {exam}
             </h4>
             {exam === 'НВО 10' && <Nvo10FormatCard />}
-            {samples.length > 0 && <h5 className="pt-2 text-base font-bold text-slate-900">Пълни варианти</h5>}
+            {(samples.length > 0 || hasTopics) && <h5 className="pt-2 text-base font-bold text-slate-900">Пълни варианти</h5>}
             <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
               {papers.map((p) => (
                 <PaperCard key={p.id} paper={p} onStart={() => setPaperId(p.id)} />
               ))}
             </ul>
-            {exam === 'НВО 10' && TOPIC_PAPERS.length > 0 && <TopicPractice onStart={setPaperId} />}
+            {hasTopics && topicArea && <TopicPractice area={topicArea} onStart={setPaperId} />}
             {samples.length > 0 && (
               <div className="space-y-3 pt-4">
                 <div>
@@ -275,9 +278,9 @@ const Nvo10FormatCard: React.FC = () => {
 };
 
 /** Тренировка по тема: всички официални задачи по една тема, с последния резултат по нея */
-const TopicPractice: React.FC<{ onStart: (paperId: string) => void }> = ({ onStart }) => {
+const TopicPractice: React.FC<{ area: 'math' | 'dzi'; onStart: (paperId: string) => void }> = ({ area, onStart }) => {
   const stats = loadTopicStats();
-  const mathTopics = TOPICS.filter((t) => t.area === 'math');
+  const mathTopics = TOPICS.filter((t) => t.area === area);
   const scored = mathTopics.filter((t) => (stats[t.key]?.maxPoints ?? 0) > 0);
   const weakest = scored
     .map((t) => ({ key: t.key, pct: topicPercent(stats[t.key] as TopicStat), max: (stats[t.key] as TopicStat).maxPoints }))
@@ -289,7 +292,7 @@ const TopicPractice: React.FC<{ onStart: (paperId: string) => void }> = ({ onSta
       <div>
         <h5 className="text-base font-bold text-slate-900">Тренировка по тема</h5>
         <p className="mt-1 max-w-3xl text-sm leading-relaxed text-slate-600">
-          Всички задачи по една тема от официалните варианти 2021–2026, с ключа на МОН и без таймер.
+          Всички задачи по една тема от официалните {area === 'dzi' ? 'матури' : 'варианти'} 2021–2026, с ключа на МОН и без таймер.
           {scored.length > 0
             ? ' Процентите са от последния ти опит на всеки вариант или набор.'
             : ' След като решиш вариант, тук ще виждаш резултата си по всяка тема.'}

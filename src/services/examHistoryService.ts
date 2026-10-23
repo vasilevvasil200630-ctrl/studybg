@@ -20,6 +20,11 @@ export interface ExamAttemptRecord {
   gradeNumeric: number | null;
   passed: boolean;
   hasAiEvaluation?: boolean;
+  /**
+   * Точки по теми в опит по изпитен вариант (за анализа по теми). Пазят се в историята и в
+   * user_profiles.exam_history; таблицата exam_attempts няма такава колона и не ги носи.
+   */
+  topicScores?: { key: string; points: number; maxPoints: number }[];
 }
 
 export interface ExamAnalyticsSummary {

@@ -1,9 +1,11 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { EXAM_PAPERS } from '../src/data/examPapers';
 import { MATH_TOPIC_BY_QUESTION, TOPICS, topicBreakdown, topicOf } from '../src/data/examTopics';
 import { TOPIC_PAPERS, topicPaperId } from '../src/data/topicPapers';
 import { partKey, scorePaper, validateExamPaper, type ExamPaper, type PaperAnswers } from '../src/lib/examPaperScoring';
-import { loadTopicStats, saveTopicAttempt } from '../src/lib/topicProgress';
+import { topicStatsFromAttempts } from '../src/lib/topicProgress';
+import type { ExamAttemptRecord } from '../src/services/examHistoryService';
+import { mergeExamHistoryRecords } from '../src/services/authService';
 
 const all = (p: ExamPaper) => p.sections.flatMap((s) => s.questions);
 const officialNvo10 = EXAM_PAPERS.filter((p) => p.kind === 'official' && p.exam === 'НВО 10');
@@ -87,35 +89,42 @@ describe('тренировка по тема', () => {
   });
 });
 
-describe('резултати по теми в браузъра', () => {
-  let store: Record<string, string> = {};
-  beforeEach(() => {
-    store = {};
-    vi.stubGlobal('window', {
-      localStorage: {
-        getItem: (k: string) => (k in store ? store[k] : null),
-        setItem: (k: string, v: string) => {
-          store[k] = v;
-        },
-        removeItem: (k: string) => {
-          delete store[k];
-        },
-      },
-    });
+describe('резултати по теми от историята на изпитите', () => {
+  const attempt = (id: string, preset: string, ts: string, topicScores?: ExamAttemptRecord['topicScores']): ExamAttemptRecord => ({
+    id, timestamp: ts, formattedDate: '', lessonId: preset, lessonTitle: '', subject: 'Математика', grade: 'НВО 10',
+    examPreset: preset, durationMinutes: 90, timeSpentSeconds: 60, module1Points: 0, module2Points: 0, module3Points: 0,
+    totalPoints: 0, gradeEquivalent: '', gradeNumeric: null, passed: false, topicScores,
   });
 
-  it('сумира последните опити по варианти; повторният опит заменя предишния', () => {
-    saveTopicAttempt('a', [{ key: 'plane', label: 'Планиметрия', points: 4, maxPoints: 8, questions: 2 }], 1);
-    saveTopicAttempt('b', [{ key: 'plane', label: 'Планиметрия', points: 8, maxPoints: 8, questions: 2 }], 2);
-    expect(loadTopicStats().plane).toEqual({ points: 12, maxPoints: 16, papers: 2, lastAt: 2 });
-    saveTopicAttempt('a', [{ key: 'plane', label: 'Планиметрия', points: 8, maxPoints: 8, questions: 2 }], 3);
-    expect(loadTopicStats().plane).toEqual({ points: 16, maxPoints: 16, papers: 2, lastAt: 3 });
+  it('сумира последния опит на всеки вариант; повторният опит заменя предишния', () => {
+    const stats = topicStatsFromAttempts([
+      attempt('1', 'paper:a', '2026-10-20T10:00:00Z', [{ key: 'plane', points: 4, maxPoints: 8 }]),
+      attempt('2', 'paper:b', '2026-10-21T10:00:00Z', [{ key: 'plane', points: 8, maxPoints: 8 }]),
+      attempt('3', 'paper:a', '2026-10-22T10:00:00Z', [{ key: 'plane', points: 8, maxPoints: 8 }]),
+    ]);
+    expect(stats.plane).toEqual({ points: 16, maxPoints: 16, papers: 2, lastAt: Date.parse('2026-10-22T10:00:00Z') });
   });
 
-  it('повредени данни не чупят анализа', () => {
-    store['sbg:topic-progress:v1'] = '{нечетимо';
-    expect(loadTopicStats()).toEqual({});
-    store['sbg:topic-progress:v1'] = JSON.stringify({ x: { at: 1, topics: [{ key: 'plane', points: 'a', maxPoints: 4 }] } });
-    expect(loadTopicStats()).toEqual({});
+  it('пропуска опити без точки по теми (стари записи, изпити по урок, редове от exam_attempts) и повредени данни', () => {
+    const stats = topicStatsFromAttempts([
+      attempt('1', 'lesson', '2026-10-20T10:00:00Z', [{ key: 'plane', points: 4, maxPoints: 8 }]),
+      attempt('2', 'paper:a', '2026-10-21T10:00:00Z'),
+      attempt('3', 'paper:b', '2026-10-21T10:00:00Z', [{ key: 'plane', points: 'x' as unknown as number, maxPoints: 4 }]),
+    ]);
+    expect(stats).toEqual({});
+  });
+
+  it('сливането с облачната история (ново устройство) пази точките по теми', () => {
+    const cloud = [attempt('c1', 'paper:a', '2026-10-20T10:00:00Z', [{ key: 'solid', points: 4, maxPoints: 4 }])];
+    const merged = mergeExamHistoryRecords([], cloud);
+    expect(topicStatsFromAttempts(merged).solid).toEqual({ points: 4, maxPoints: 4, papers: 1, lastAt: Date.parse('2026-10-20T10:00:00Z') });
+  });
+
+  it('по-нов запис без теми не скрива по-стар с теми за друг вариант', () => {
+    const stats = topicStatsFromAttempts([
+      attempt('1', 'paper:a', '2026-10-20T10:00:00Z', [{ key: 'trig', points: 2, maxPoints: 4 }]),
+      attempt('2', 'paper:b', '2026-10-22T10:00:00Z'),
+    ]);
+    expect(stats.trig?.points).toBe(2);
   });
 });

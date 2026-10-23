@@ -19,7 +19,6 @@ import { examHistoryService, type ExamAttemptRecord } from '../../services/examH
 import { ExamFocusBar } from './ExamFocusBar';
 import { FormulaSheetPanel } from './FormulaSheetPanel';
 import { topicBreakdown, topicPercent, type TopicKey, type TopicScore } from '../../data/examTopics';
-import { saveTopicAttempt } from '../../lib/topicProgress';
 import { FORMULA_SHEETS } from '../../data/formulaSheets/nvo10Math';
 import { FIGURES } from './figures';
 import { MathText } from './MathText';
@@ -120,7 +119,12 @@ function playChime(): void {
   }
 }
 
-function buildAttempt(paper: ExamPaper, result: PaperResult, timeSpentSeconds: number): Omit<ExamAttemptRecord, 'id' | 'timestamp' | 'formattedDate'> {
+function buildAttempt(
+  paper: ExamPaper,
+  result: PaperResult,
+  timeSpentSeconds: number,
+  topics: TopicScore[]
+): Omit<ExamAttemptRecord, 'id' | 'timestamp' | 'formattedDate'> {
   const [s1, s2, ...rest] = result.sections;
   return {
     lessonId: paper.id,
@@ -136,7 +140,8 @@ function buildAttempt(paper: ExamPaper, result: PaperResult, timeSpentSeconds: n
     totalPoints: result.totalPoints,
     gradeEquivalent: result.grade ? formatGrade(result.grade) : `${fmt(result.totalPoints)} / ${result.maxPoints} точки`,
     gradeNumeric: result.grade?.numeric ?? null,
-    passed: result.grade?.passed ?? false
+    passed: result.grade?.passed ?? false,
+    topicScores: topics.map(({ key, points, maxPoints }) => ({ key, points, maxPoints }))
   };
 }
 
@@ -199,11 +204,6 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
   const unscored = countUnscored(questions, openScores);
   const topics = useMemo(() => topicBreakdown(paper, result), [paper, result]);
 
-  // Резултатът по теми се пази след предаване и се обновява при самооценката
-  useEffect(() => {
-    if (submitted) saveTopicAttempt(paper.id, topics);
-  }, [submitted, topics, paper.id]);
-
   const submit = useCallback(() => {
     spentRef.current = Math.round((Date.now() - startedAtRef.current) / 1000);
     setSubmitted(true);
@@ -238,7 +238,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
   // Запис в историята: веднъж при предаване, после обновяване при самооценката
   useEffect(() => {
     if (!submitted) return;
-    const data = buildAttempt(paper, result, Math.max(1, timed ? fullSeconds - secondsLeft : spentRef.current));
+    const data = buildAttempt(paper, result, Math.max(1, timed ? fullSeconds - secondsLeft : spentRef.current), topics);
     if (attemptIdRef.current === null) {
       attemptIdRef.current = 'pending';
       void examHistoryService.recordAttempt(data).then((rec) => {
@@ -253,7 +253,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
       examHistoryService.saveAttempts(all.map((r) => (r.id === id ? { ...r, ...data } : r)));
     }, 800);
     return () => window.clearTimeout(handle);
-    // secondsLeft е замразен след предаване; result се променя само от самооценката
+    // secondsLeft е замразен след предаване; result (и topics) се променят само от самооценката
   }, [submitted, result]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const reset = () => {

@@ -389,5 +389,24 @@ describe('НВО 10 по БЕЛ — официални варианти', () => 
     const external = paper.sections.filter((s) => s.externalText).map((s) => s.externalText!);
     expect(external).toHaveLength(2);
     for (const e of external) expect(e.url).toBe(paper.officialSourceUrl);
+    const all = JSON.stringify(paper);
+    for (const fragment of ['В ерата на дигиталната трансформация', 'Парламентът прие на първо четене']) expect(all.includes(fragment), fragment).toBe(false);
+  });
+});
+
+describe('ДЗИ по БЕЛ — официални варианти', () => {
+  it('official-dzi-bel-2026: 41 задачи в три части, 240 мин, 100 т.; защитените текстове сочат PDF-а на МОН', () => {
+    const paper = EXAM_PAPERS.find((x) => x.id === 'official-dzi-bel-2026')!;
+    expect(allQuestions(paper)).toHaveLength(41);
+    expect(paper.durationMinutes).toBe(240);
+    expect(paper.maxPoints).toBe(100);
+    const external = paper.sections.filter((s) => s.externalText).map((s) => s.externalText!);
+    expect(external.map((e) => e.pages)).toEqual(['2–3', '6', '8']);
+    for (const e of external) expect(e.url).toBe(paper.officialSourceUrl);
+    // Защитените текстове не са копирани
+    const all = JSON.stringify(paper);
+    for (const fragment of ['Ние двамата!', 'Внезапно я обхвана ненавист', 'От всяко свое пътуване', 'Ела! Ще измием', 'Над 80% от младите хора']) {
+      expect(all.includes(fragment), fragment).toBe(false);
+    }
   });
 });

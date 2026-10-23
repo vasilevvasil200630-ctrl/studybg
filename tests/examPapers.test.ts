@@ -377,3 +377,17 @@ describe('ДЗИ по математика — формат до 2021 г.', () =
     expect(paper.sections.map((sec) => sec.questions.reduce((n, q) => n + q.points, 0))).toEqual([50, 20, 30]);
   });
 });
+
+describe('НВО 10 по БЕЛ — официални варианти', () => {
+  it('official-nvo10-bel-2026: 21 задачи (13 с избираем отговор), 90 мин, 100 т.; Текст 1 и 2 сочат PDF-а на МОН', () => {
+    const paper = EXAM_PAPERS.find((x) => x.id === 'official-nvo10-bel-2026')!;
+    const qs = allQuestions(paper);
+    expect(qs).toHaveLength(21);
+    expect(qs.filter((q) => q.kind === 'choice')).toHaveLength(13);
+    expect(paper.durationMinutes).toBe(90);
+    expect(paper.maxPoints).toBe(100);
+    const external = paper.sections.filter((s) => s.externalText).map((s) => s.externalText!);
+    expect(external).toHaveLength(2);
+    for (const e of external) expect(e.url).toBe(paper.officialSourceUrl);
+  });
+});

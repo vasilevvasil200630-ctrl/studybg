@@ -11,6 +11,7 @@ import { NVO10_CHEM_SAMPLES } from './integratedSamples/chemistry';
 import { NVO10_PHYS_SAMPLES } from './integratedSamples/physics';
 import { NVO10_GEO_SAMPLES } from './integratedSamples/geography';
 import { DZI_MATH_2026 } from './officialPapers/dziMath2026';
+import { NVO10_BEL_2026 } from './officialPapers/nvo10Bel2026';
 import { DZI_MATH_2025 } from './officialPapers/dziMath2025';
 import { DZI_MATH_2024 } from './officialPapers/dziMath2024';
 import { DZI_MATH_2023 } from './officialPapers/dziMath2023';
@@ -37,6 +38,7 @@ export const EXAM_PAPERS: ExamPaper[] = [
   NVO10_CHEM_SAMPLES,
   NVO10_PHYS_SAMPLES,
   NVO10_GEO_SAMPLES,
+  NVO10_BEL_2026,
   DZI_MATH_2026,
   DZI_MATH_2025,
   DZI_MATH_2024,

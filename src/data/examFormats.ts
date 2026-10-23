@@ -34,7 +34,8 @@ export type FormatTone = 'current' | 'legacy';
  * включва и други предмети (120 мин).
  */
 export function nvo10FormatTag(paper: ExamPaper): { label: string; tone: FormatTone } | null {
-  if (paper.exam !== 'НВО 10' || paper.kind === 'sample' || paper.kind === 'topic') return null;
+  // Етикетите са за формата на изпита по математика (от 2026 г. — с интегрирани предмети)
+  if (paper.exam !== 'НВО 10' || paper.subject !== 'Математика' || paper.kind === 'sample' || paper.kind === 'topic') return null;
   if (paper.kind === 'practice') return { label: `Тренировъчен: ${paper.durationMinutes} мин — не следва формата на МОН`, tone: 'legacy' };
   if ((paper.year ?? 0) >= 2026) return { label: 'С интегрирани предмети — най-близо до изпита през 2027', tone: 'current' };
   return { label: `Стар формат: само математика, ${paper.durationMinutes} мин`, tone: 'legacy' };

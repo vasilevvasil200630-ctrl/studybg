@@ -8,7 +8,7 @@ import type { ExamAttemptRecord } from '../src/services/examHistoryService';
 import { mergeExamHistoryRecords } from '../src/services/authService';
 
 const all = (p: ExamPaper) => p.sections.flatMap((s) => s.questions);
-const officialNvo10 = EXAM_PAPERS.filter((p) => p.kind === 'official' && p.exam === 'НВО 10');
+const officialNvo10 = EXAM_PAPERS.filter((p) => p.kind === 'official' && p.exam === 'НВО 10' && p.subject === 'Математика');
 
 const keyAnswers = (paper: ExamPaper): PaperAnswers => {
   const out: PaperAnswers = {};
@@ -36,8 +36,8 @@ const fullOpen = (paper: ExamPaper): Record<string, number> => {
 };
 
 describe('теми на задачите', () => {
-  it('всяка задача от официалните варианти на НВО 10 и от примерните набори има тема', () => {
-    for (const p of EXAM_PAPERS.filter((x) => x.exam === 'НВО 10' && x.kind !== 'practice')) {
+  it('всяка задача от официалните варианти на НВО 10 по математика и от примерните набори има тема', () => {
+    for (const p of EXAM_PAPERS.filter((x) => x.exam === 'НВО 10' && x.kind !== 'practice' && (x.subject === 'Математика' || x.kind === 'sample'))) {
       for (const q of all(p)) expect(topicOf(q), `${p.id} / ${q.id}`).not.toBeNull();
     }
   });

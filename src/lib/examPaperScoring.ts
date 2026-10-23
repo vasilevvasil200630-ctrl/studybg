@@ -104,6 +104,11 @@ export interface PaperSection {
   title: string;
   instructions?: string;
   sourceText?: { title: string; text: string; attribution: string };
+  /**
+   * Изходен текст, който не се копира в StudyBG (защитен с авторско право или неясен статут):
+   * ученикът го чете в официалния PDF на МОН на посочената страница.
+   */
+  externalText?: { title: string; url: string; pages: string; note?: string };
   questions: PaperQuestion[];
 }
 
@@ -150,6 +155,12 @@ export function validateExamPaper(paper: ExamPaper): string[] {
     }
   } else if (paper.officialSourceUrl) {
     errors.push(`${paper.id}: тренировъчен вариант не бива да има officialSourceUrl`);
+  }
+
+  for (const s of paper.sections) {
+    if (s.externalText && !/^https:\/\/www\.mon\.bg\/.+\.pdf$/.test(s.externalText.url)) {
+      errors.push(`${paper.id} / ${s.id}: външният текст трябва да сочи PDF на МОН`);
+    }
   }
 
   const all = paper.sections.flatMap((s) => s.questions);

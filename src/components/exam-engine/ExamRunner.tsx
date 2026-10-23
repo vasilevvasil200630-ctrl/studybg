@@ -361,6 +361,25 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
             <section key={section.id} className="mb-10">
               <h3 className="mb-1 text-lg font-bold text-slate-900">{section.title}</h3>
               {section.instructions && <p className="mb-4 max-w-3xl text-sm text-slate-600">{section.instructions}</p>}
+              {section.externalText && (
+                <article className="mb-5 flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50/60 p-5 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0">
+                    <h4 className="text-base font-bold text-slate-900">{section.externalText.title}</h4>
+                    <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                      {section.externalText.note ?? 'Текстът не е копиран в StudyBG заради авторските права. Прочетете го в официалния вариант на МОН.'}
+                    </p>
+                  </div>
+                  <a
+                    href={`${section.externalText.url}#page=${section.externalText.pages.split(/[–-]/)[0]}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-lg border border-brand-sapphire/30 bg-white px-3.5 py-2 text-sm font-semibold text-brand-ink hover:bg-brand-sapphire-soft sm:self-center"
+                  >
+                    Отвори текста (стр. {section.externalText.pages})
+                    <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                  </a>
+                </article>
+              )}
               {section.sourceText && (
                 <article className="mb-5 rounded-xl border border-slate-200 bg-slate-50/60 p-5">
                   <h4 className="text-base font-bold text-slate-900">{section.sourceText.title}</h4>

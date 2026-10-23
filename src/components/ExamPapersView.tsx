@@ -25,6 +25,9 @@ const byRelevance = (a: ExamPaper, b: ExamPaper) =>
 
 const ALL_PAPERS: ExamPaper[] = [...EXAM_PAPERS, ...TOPIC_PAPERS];
 
+/** Реда на предметите в списъка: математиката (с тренировката по тема под нея) е първа */
+const SUBJECT_ORDER = ['Математика', 'Български език и литература'];
+
 /** Къде се упражнява всяка тема: по математика — набор по тема, за другите предмети — примерните задачи на МОН */
 const SUBJECT_SETS: Partial<Record<TopicKey, string>> = { bio: 'sample-nvo10-bio', chem: 'sample-nvo10-chem', phys: 'sample-nvo10-phys', geo: 'sample-nvo10-geo' };
 const practicePaperFor = (key: TopicKey): string | null => {
@@ -96,6 +99,7 @@ export const ExamPapersView: React.FC = () => {
 
       {shown.map((exam) => {
         const papers = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind !== 'sample').sort(byRelevance);
+        const subjects = [...new Set(papers.map((p) => p.subject))].sort((a, b) => SUBJECT_ORDER.indexOf(a) - SUBJECT_ORDER.indexOf(b));
         const samples = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind === 'sample');
         const topicArea = exam === 'НВО 10' ? 'math' : exam === 'ДЗИ' ? 'dzi' : null;
         const hasTopics = topicArea !== null && TOPIC_PAPERS.some((p) => p.exam === exam);
@@ -105,12 +109,22 @@ export const ExamPapersView: React.FC = () => {
               {exam}
             </h4>
             {exam === 'НВО 10' && <Nvo10FormatCard />}
-            {(samples.length > 0 || hasTopics) && <h5 className="pt-2 text-base font-bold text-slate-900">Пълни варианти</h5>}
-            <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              {papers.map((p) => (
-                <PaperCard key={p.id} paper={p} onStart={() => setPaperId(p.id)} />
-              ))}
-            </ul>
+            {subjects.map((subject) => (
+              <div key={subject} className="space-y-3">
+                {(subjects.length > 1 || samples.length > 0 || hasTopics) && (
+                  <h5 className="pt-2 text-base font-bold text-slate-900">
+                    {subjects.length > 1 ? `${subject} — пълни варианти` : 'Пълни варианти'}
+                  </h5>
+                )}
+                <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  {papers
+                    .filter((p) => p.subject === subject)
+                    .map((p) => (
+                      <PaperCard key={p.id} paper={p} onStart={() => setPaperId(p.id)} />
+                    ))}
+                </ul>
+              </div>
+            ))}
             {hasTopics && topicArea && <TopicPractice area={topicArea} onStart={setPaperId} />}
             {samples.length > 0 && (
               <div className="space-y-3 pt-4">

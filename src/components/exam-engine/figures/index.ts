@@ -5,7 +5,7 @@ import { Q11ObtuseTriangle, Q12Shadows, Q13Platform, Q14Triangle120, Q15Pyramid 
 import { Q10Triangle120 as Q10Triangle120y23, Q11RightTriangle, Q12Slide, Q15Cone, Q17Isosceles, Q9TangentSecant } from './nvo10_2023';
 import { Q11RightTriangle2022, Q12TrapezoidDiagonals, Q13Triangle135, Q15Cylinder, Q17Triangle2022, Q5Line2022, Q9InscribedAngle } from './nvo10_2022';
 import { IntBioDrugs, IntBioFoodChain, IntBioHypertension, IntBioInvasive, IntBioPopulation, IntBioPunnett, IntChemFluoride, IntChemOxygen, IntGeoDayNight, IntGeoHydrograph, IntGeoVolcano, IntGeoWhittaker, IntPhysForces, IntPhysLightning, IntPhysRefraction, IntPhysVelocity, IntPhysWave } from './integrated';
-import { D25Q8Squares, D26Q4Cube } from './dzi_2026';
+import { D24Q9Prism, D25Q8Squares, D26Q4Cube } from './dzi_2026';
 import { FormulaCircleAngles, FormulaCircleChords, FormulaCircleSecants, FormulaCircleTangent } from './formulaCircle';
 import { Q12River, Q13Chords, Q14RightTriangle2021, Q15Parallelogram, Q6FourGraphs, Q7Parabola2021 } from './nvo10_2021';
 
@@ -62,6 +62,7 @@ export const FIGURES: Readonly<Record<string, React.FC>> = {
   'formula-circle-tangent': FormulaCircleTangent,
   'dzi-2026-q4-cube': D26Q4Cube,
   'dzi-2025-q8-squares': D25Q8Squares,
+  'dzi-2024-q9-prism': D24Q9Prism,
   'int-bio-population': IntBioPopulation,
   'int-bio-punnett': IntBioPunnett,
   'int-bio-drugs': IntBioDrugs,

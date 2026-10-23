@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * Чертежи към ДЗИ по математика (профилирана подготовка) — 2026 и 2025 г.
+ * Чертежи към ДЗИ по математика (профилирана подготовка) — 2024, 2025 и 2026 г.
  * Пресъздадени като SVG по официалния вариант на МОН — същите означения.
  */
 
@@ -67,6 +67,46 @@ export const D25Q8Squares: React.FC = () => {
         <rect key={i} x={x0} y={y0 - s} width={s} height={s} fill={i === 0 ? '#fff' : i % 2 ? '#f1f5f9' : '#e2e8f0'} stroke={INK} strokeWidth={i === 0 ? 1.6 : 1.1} />
       ))}
       <text x={x0 + s0 + 6} y={y0 - s0 / 2 + 4} fontSize="12" style={font}>4 cm</text>
+    </svg>
+  );
+};
+
+/** ДЗИ 2024, задача 9 — правилна триъгълна призма и равнината (ACB₁) */
+export const D24Q9Prism: React.FC = () => {
+  const C = [30, 140];
+  const B = [200, 140];
+  const A = [108, 172];
+  const up = (p: number[]) => [p[0], p[1] - 120];
+  const [C1, B1, A1] = [C, B, A].map(up);
+  const seg = (p: number[], q: number[], dashed = false) => (
+    <line x1={p[0]} y1={p[1]} x2={q[0]} y2={q[1]} stroke={INK} strokeWidth={dashed ? 1.2 : 1.6} strokeDasharray={dashed ? '5 4' : undefined} />
+  );
+  const label = (p: number[], text: string, dx: number, dy: number) => (
+    <text x={p[0] + dx} y={p[1] + dy} fontSize="13" fontStyle="italic" style={font}>
+      {text[0]}
+      {text.length > 1 && <tspan fontSize="9" dy="3">{text.slice(1)}</tspan>}
+    </text>
+  );
+  return (
+    <svg viewBox="0 0 230 195" className="h-auto w-full max-w-[230px]" role="img" aria-label="Правилна триъгълна призма ABCA1B1C1 с отсечките AB1 и CB1 от равнината ACB1.">
+      <polygon points={`${A} ${C} ${B1}`} fill="#cbd5e1" fillOpacity="0.45" />
+      {seg(C, A)}
+      {seg(A, B)}
+      {seg(C, B, true)}
+      {seg(C, C1)}
+      {seg(A, A1)}
+      {seg(B, B1)}
+      {seg(C1, A1)}
+      {seg(A1, B1)}
+      {seg(C1, B1)}
+      {seg(A, B1)}
+      {seg(C, B1, true)}
+      {label(C, 'C', -14, 4)}
+      {label(B, 'B', 6, 4)}
+      {label(A, 'A', -4, 17)}
+      {label(C1, 'C1', -18, 0)}
+      {label(B1, 'B1', 6, 0)}
+      {label(A1, 'A1', -6, -8)}
     </svg>
   );
 };

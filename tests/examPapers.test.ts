@@ -357,7 +357,7 @@ describe('другите предмети в НВО 10 — примерни за
 });
 
 describe('ДЗИ по математика — профилирана подготовка', () => {
-  it.each(['official-dzi-math-2026', 'official-dzi-math-2025'])('%s: 18 задачи, 240 мин, част 1 — 55 т., част 2 — 3 × 15 т., без оценка', (id) => {
+  it.each(['official-dzi-math-2026', 'official-dzi-math-2025', 'official-dzi-math-2024'])('%s: 18 задачи, 240 мин, част 1 — 55 т., част 2 — 3 × 15 т., без оценка', (id) => {
     const paper = EXAM_PAPERS.find((x) => x.id === id)!;
     expect(paper.exam).toBe('ДЗИ');
     expect(allQuestions(paper)).toHaveLength(18);

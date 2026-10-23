@@ -12,6 +12,7 @@ import { NVO10_PHYS_SAMPLES } from './integratedSamples/physics';
 import { NVO10_GEO_SAMPLES } from './integratedSamples/geography';
 import { DZI_MATH_2026 } from './officialPapers/dziMath2026';
 import { DZI_MATH_2025 } from './officialPapers/dziMath2025';
+import { DZI_MATH_2024 } from './officialPapers/dziMath2024';
 
 /**
  * Пълни изпитни варианти за симулатора.
@@ -35,6 +36,7 @@ export const EXAM_PAPERS: ExamPaper[] = [
   NVO10_GEO_SAMPLES,
   DZI_MATH_2026,
   DZI_MATH_2025,
+  DZI_MATH_2024,
 
   // -------------------------------------------------------------------------
   // БЕЛ — ДЗИ (12. клас)

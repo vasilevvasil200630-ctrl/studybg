@@ -392,6 +392,28 @@ describe('НВО 10 по БЕЛ — официални варианти', () => 
     const all = JSON.stringify(paper);
     for (const fragment of ['В ерата на дигиталната трансформация', 'Парламентът прие на първо четене']) expect(all.includes(fragment), fragment).toBe(false);
   });
+
+  // id, задачи, с избираем отговор, максимум, страници на външните текстове, откъси, които не бива да са копирани
+  it.each([
+    ['official-nvo10-bel-2025', 21, 13, 100, ['1', '2–3'], ['Кибертормозът е форма на насилие']],
+    ['official-nvo10-bel-2024', 21, 13, 100, ['1', '2–3'], ['Науката е категорична, че слънцеизлагането']],
+    ['official-nvo10-bel-2023', 23, 14, 100, ['1', '2–3'], ['Знаеш ли какво означава думата', 'На международния път Е-87']],
+    ['official-nvo10-bel-2022', 23, 14, 100, ['1–2', '3', '4'], ['президентът на община Неца', 'Удивителната българска пещера', 'Питаш ме как се казвам']],
+    ['official-nvo10-bel-2021', 23, 14, 50, ['2–3', '3–4'], ['Макар корените от маниока', 'Ако нямаше преводачи, щяхме']],
+  ] as const)('%s: %i задачи (%i с избираем отговор), 90 мин, %i т.; защитените текстове сочат PDF-а на МОН', (id, count, choice, max, pages, fragments) => {
+    const paper = EXAM_PAPERS.find((x) => x.id === id)!;
+    const qs = allQuestions(paper);
+    expect(qs).toHaveLength(count);
+    expect(qs.map((q) => q.number)).toEqual(Array.from({ length: count }, (_, i) => i + 1));
+    expect(qs.filter((q) => q.kind === 'choice')).toHaveLength(choice);
+    expect(paper.durationMinutes).toBe(90);
+    expect(paper.maxPoints).toBe(max);
+    const external = paper.sections.filter((s) => s.externalText).map((s) => s.externalText!);
+    expect(external.map((e) => e.pages)).toEqual(pages);
+    for (const e of external) expect(e.url).toBe(paper.officialSourceUrl);
+    const all = JSON.stringify(paper);
+    for (const fragment of fragments) expect(all.includes(fragment), fragment).toBe(false);
+  });
 });
 
 describe('ДЗИ по БЕЛ — официални варианти', () => {

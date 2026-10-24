@@ -12,6 +12,11 @@ import { NVO10_PHYS_SAMPLES } from './integratedSamples/physics';
 import { NVO10_GEO_SAMPLES } from './integratedSamples/geography';
 import { DZI_MATH_2026 } from './officialPapers/dziMath2026';
 import { NVO10_BEL_2026 } from './officialPapers/nvo10Bel2026';
+import { NVO10_BEL_2025 } from './officialPapers/nvo10Bel2025';
+import { NVO10_BEL_2024 } from './officialPapers/nvo10Bel2024';
+import { NVO10_BEL_2023 } from './officialPapers/nvo10Bel2023';
+import { NVO10_BEL_2022 } from './officialPapers/nvo10Bel2022';
+import { NVO10_BEL_2021 } from './officialPapers/nvo10Bel2021';
 import { DZI_BEL_2026 } from './officialPapers/dziBel2026';
 import { DZI_MATH_2025 } from './officialPapers/dziMath2025';
 import { DZI_MATH_2024 } from './officialPapers/dziMath2024';
@@ -40,6 +45,11 @@ export const EXAM_PAPERS: ExamPaper[] = [
   NVO10_PHYS_SAMPLES,
   NVO10_GEO_SAMPLES,
   NVO10_BEL_2026,
+  NVO10_BEL_2025,
+  NVO10_BEL_2024,
+  NVO10_BEL_2023,
+  NVO10_BEL_2022,
+  NVO10_BEL_2021,
   DZI_MATH_2026,
   DZI_MATH_2025,
   DZI_MATH_2024,

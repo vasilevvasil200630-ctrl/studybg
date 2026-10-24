@@ -3,7 +3,6 @@ import {
   Award,
   TrendingUp,
   Target,
-  CheckCircle2,
   AlertCircle,
   ArrowRight,
   School,
@@ -11,11 +10,28 @@ import {
 } from 'lucide-react';
 import type { AppNavTab } from './Navbar';
 import { ExcellenceCertificateModal } from './ExcellenceCertificateModal';
-import { DZI_SCALE, DIPPK_SCALE, formatGrade, gradeToPoints, pointsToGrade, verbalGrade, type VerbalGrade } from '../lib/monGradeScale';
+import { DZI_SCALE, DZI_SCALE_SOURCES, DIPPK_SCALE, formatGrade, gradeBands, gradeToPoints, pointsToGrade, verbalGrade, type VerbalGrade } from '../lib/monGradeScale';
 
 interface MonGradeCalculatorViewProps {
   onNavigateTab?: (tab: AppNavTab) => void;
 }
+
+/** Точки с до две цифри след запетаята: 40,75 */
+const fmtPts = (p: number): string => (Number.isInteger(p) ? String(p) : p.toFixed(2).replace(/0$/, '').replace('.', ','));
+
+/** Редовете на таблицата със скалата за ДЗИ — от DZI_SCALE */
+const DZI_TABLE = (() => {
+  const b = gradeBands(DZI_SCALE);
+  const span = (from: number, to: number) => `${fmtPts(from)} – ${fmtPts(to)} т.`;
+  return [
+    { grade: 'Слаб 2', label: 'Слаб' as VerbalGrade, range: `под ${DZI_SCALE.passPoints} т.`, note: '' },
+    { grade: 'Среден 3,00 – 3,49', label: 'Среден' as VerbalGrade, range: span(b[1].from, b[1].to), note: 'Изпитът е издържан' },
+    { grade: 'Добър 3,50 – 4,49', label: 'Добър' as VerbalGrade, range: span(b[2].from, b[2].to), note: '' },
+    { grade: 'Много добър 4,50 – 5,49', label: 'Много добър' as VerbalGrade, range: span(b[3].from, b[3].to), note: '' },
+    { grade: 'Отличен 5,50 – 5,99', label: 'Отличен' as VerbalGrade, range: span(b[4].from, gradeToPoints(6) - 0.25), note: '' },
+    { grade: 'Отличен 6,00', label: 'Отличен' as VerbalGrade, range: span(gradeToPoints(6), DZI_SCALE.maxPoints), note: 'Най-високата оценка — от 95 точки' },
+  ];
+})();
 
 export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
   onNavigateTab
@@ -58,16 +74,16 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
     'Среден': {
       badge: 'bg-orange-50 text-orange-800 border-orange-200',
       color: 'text-orange-700',
-      status: `Покрит минимален праг за успешно завършване на ДЗИ (${DZI_SCALE.passPoints} точки). За кандидатстване в университет се препоръчва повишаване.`
+      status: `Изпитът е издържан: от ${DZI_SCALE.passPoints} точки оценката е поне Среден 3,00. За кандидатстване в университет се препоръчва повишаване.`
     },
     'Слаб': {
       badge: 'bg-rose-50 text-rose-800 border-rose-200',
       color: 'text-rose-600',
-      status: `Под прага за издържан изпит (под ${DZI_SCALE.passPoints} от ${DZI_SCALE.maxPoints} точки). Не се издава диплома за средно образование.`
+      status: `Под ${DZI_SCALE.passPoints} от ${DZI_SCALE.maxPoints} точки изпитът не е издържан (Слаб 2). Може да се положи отново в следващата сесия.`
     }
   };
 
-  // Единна монотонна скала (src/lib/monGradeScale.ts)
+  // Скалата на МОН за ДЗИ (src/lib/monGradeScale.ts)
   const calculateMonGrade = (pts: number) => {
     const result = pointsToGrade(pts, DZI_SCALE);
     return {
@@ -84,11 +100,11 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
 
   // Strategy breakdown for required points
   const strategyBreakdown = useMemo(() => {
+    // Пропорционално на точките на трите части на ДЗИ по БЕЛ (2022–2026): 37 + 33 + 30
     const total = reqPoints;
-    const m1 = Math.min(40, Math.round(total * 0.40));
-    const remaining = Math.max(0, total - m1);
-    const m2 = Math.min(30, Math.round(remaining * 0.50));
-    const m3 = Number((total - m1 - m2).toFixed(1));
+    const m1 = Math.round(total * 0.37 * 2) / 2;
+    const m2 = Math.round(total * 0.33 * 2) / 2;
+    const m3 = Math.max(0, Number((total - m1 - m2).toFixed(2)));
     return { m1, m2, m3 };
   }, [reqPoints]);
 
@@ -129,7 +145,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
       
       {/* Как се смята: праговете по двете наредби */}
       <p className="text-sm text-slate-600 max-w-3xl leading-relaxed">
-        Изчислете ориентировъчната си оценка по линейна скала (Наредба № 11 за ДЗИ — праг <strong>30 т.</strong>) или по Наредба № 1 за <strong>ДИППК / Трета СПК</strong> (Теория + Практика на професията — праг <strong>50 т.</strong>).
+        Изчислете оценката си по скалата на МОН за ДЗИ (от 2022/23 г.: <strong>30 т.</strong> — Среден 3,00, <strong>95 т.</strong> — Отличен 6,00, стъпка 0,25 т.) или по Наредба № 1 за <strong>ДИППК / Трета СПК</strong> (Теория + Практика на професията — праг <strong>50 т.</strong>).
       </p>
 
       {/* Mode Switcher Tabs */}
@@ -211,7 +227,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                     type="number"
                     min={0}
                     max={100}
-                    step={1}
+                    step={0.25}
                     value={points}
                     onChange={(e) => setPoints(Math.min(100, Math.max(0, Number(e.target.value) || 0)))}
                     className="w-20 p-2 rounded-xl border border-slate-300 text-center tabular-nums text-lg font-bold text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
@@ -226,7 +242,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                   type="range"
                   min={0}
                   max={100}
-                  step={0.5}
+                  step={0.25}
                   value={points}
                   onChange={(e) => setPoints(Number(e.target.value))}
                   className="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
@@ -235,11 +251,11 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                 {/* Scale markers */}
                 <div className="flex justify-between text-[10px] tabular-nums text-slate-500">
                   <span>0т.</span>
-                  <span className="text-rose-600 font-bold">30т. (Тройка)</span>
-                  <span className="text-amber-600 font-bold">42т. (Добър)</span>
-                  <span className="text-blue-600 font-bold">65т. (Мн. добър)</span>
-                  <span className="text-emerald-700 font-bold">89т. (Отличен)</span>
-                  <span>100т. (6.00)</span>
+                  <span className="text-rose-600 font-bold">30т. (Среден)</span>
+                  <span className="text-amber-600 font-bold">{fmtPts(gradeToPoints(3.5))}т. (Добър)</span>
+                  <span className="text-blue-600 font-bold">{fmtPts(gradeToPoints(4.5))}т. (Мн. добър)</span>
+                  <span className="text-emerald-700 font-bold">{fmtPts(gradeToPoints(5.5))}т. (Отличен)</span>
+                  <span>{fmtPts(gradeToPoints(6))}т. (6.00)</span>
                 </div>
               </div>
             </div>
@@ -252,10 +268,10 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               <div className="flex flex-wrap gap-2">
                 {[
                   { label: `${DZI_SCALE.passPoints} т. (Минимум)`, val: DZI_SCALE.passPoints },
-                  { label: `${Math.ceil(gradeToPoints(3.5))} т. (Добър)`, val: Math.ceil(gradeToPoints(3.5)) },
-                  { label: `${Math.ceil(gradeToPoints(4.5))} т. (Мн. добър)`, val: Math.ceil(gradeToPoints(4.5)) },
-                  { label: `${Math.ceil(gradeToPoints(5.5))} т. (Отличен)`, val: Math.ceil(gradeToPoints(5.5)) },
-                  { label: `${DZI_SCALE.maxPoints} т. (Пълен)`, val: DZI_SCALE.maxPoints }
+                  { label: `${fmtPts(gradeToPoints(3.5))} т. (Добър)`, val: gradeToPoints(3.5) },
+                  { label: `${fmtPts(gradeToPoints(4.5))} т. (Мн. добър)`, val: gradeToPoints(4.5) },
+                  { label: `${fmtPts(gradeToPoints(5.5))} т. (Отличен)`, val: gradeToPoints(5.5) },
+                  { label: `${fmtPts(gradeToPoints(6))} т. (Отличен 6,00)`, val: gradeToPoints(6) }
                 ].map((preset) => (
                   <button
                     key={preset.val}
@@ -278,7 +294,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
           <div className="lg:col-span-5 p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-5">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Официален резултат по МОН
+                Оценка по скалата на МОН
               </span>
               <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${currentResult.badge}`}>
                 {currentResult.passed ? 'Издържан ДЗИ' : 'Неиздържан'}
@@ -305,14 +321,14 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
             </div>
 
             {/* Progress to next milestone */}
-            {points < 100 && (
+            {points < gradeToPoints(6) && (
               <div className="flex items-center justify-between p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">
                 <span className="flex items-center gap-1.5 font-medium">
                   <TrendingUp className="w-4 h-4 text-amber-600" />
-                  <span>{points < 88.5 ? 'До Отличен (5.50):' : 'До Пълен Отличен (6.00):'}</span>
+                  <span>{points < gradeToPoints(5.5) ? 'До Отличен (5.50):' : 'До Отличен 6,00:'}</span>
                 </span>
                 <span className="font-bold tabular-nums">
-                  още +{(points < 88.5 ? 88.5 - points : 100 - points).toFixed(1)} точки
+                  още +{fmtPts(Math.max(0, (points < gradeToPoints(5.5) ? gradeToPoints(5.5) : gradeToPoints(6)) - points))} точки
                 </span>
               </div>
             )}
@@ -428,36 +444,36 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
             {/* Module Breakdown Plan */}
             <div className="space-y-2 pt-1">
               <span className="text-xs font-bold text-slate-800 block">
-                Препоръчително разпределение по 3-те модула:
+                Примерно разпределение по частите на ДЗИ по БЕЛ (37 + 33 + 30 т.):
               </span>
 
               <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
                 <div>
-                  <span className="font-bold text-slate-900 block">Модул 1: Тест със затворени въпроси</span>
-                  <span className="text-[11px] text-slate-500">40 въпроса • Езикови норми и факти</span>
+                  <span className="font-bold text-slate-900 block">Част 1: езикови задачи и информационен текст</span>
+                  <span className="text-[11px] text-slate-500">Задачи 1.–21. • 60 минути</span>
                 </div>
                 <span className="tabular-nums font-bold text-blue-700 text-sm">
-                  {strategyBreakdown.m1} / 40 т.
+                  {fmtPts(strategyBreakdown.m1)} / 37 т.
                 </span>
               </div>
 
               <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
                 <div>
-                  <span className="font-bold text-slate-900 block">Модул 2: Анализ на извори и отворени въпроси</span>
-                  <span className="text-[11px] text-slate-500">Работа с първични документи и цитати</span>
+                  <span className="font-bold text-slate-900 block">Част 2: литература</span>
+                  <span className="text-[11px] text-slate-500">Задачи 22.–40. • 60 минути</span>
                 </div>
                 <span className="tabular-nums font-bold text-amber-700 text-sm">
-                  {strategyBreakdown.m2} / 30 т.
+                  {fmtPts(strategyBreakdown.m2)} / 33 т.
                 </span>
               </div>
 
               <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
                 <div>
-                  <span className="font-bold text-slate-900 block">Модул 3: Есе или ЛИС (Задача 41)</span>
-                  <span className="text-[11px] text-slate-500">4-критерийна рубрика на МОН</span>
+                  <span className="font-bold text-slate-900 block">Част 3: есе или интерпретативно съчинение</span>
+                  <span className="text-[11px] text-slate-500">Задача 41. • 120 минути • по критериите на МОН</span>
                 </div>
                 <span className="tabular-nums font-bold text-slate-700 text-sm">
-                  {strategyBreakdown.m3} / 30 т.
+                  {fmtPts(strategyBreakdown.m3)} / 30 т.
                 </span>
               </div>
             </div>
@@ -759,7 +775,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
           <div className="flex items-center gap-2">
             <Award className="w-4 h-4 text-blue-600" />
             <h4 className="text-sm font-bold text-slate-900">
-              Официална скала на МОН за оценяване на ДЗИ (Наредба № 11)
+              Скала на МОН за оценяване на ДЗИ (от 2022/23 г.)
             </h4>
           </div>
           <span className="text-xs text-slate-500 tabular-nums">
@@ -778,55 +794,38 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans">
-              <tr className="hover:bg-slate-50/60">
-                <td className="py-2.5 px-3 font-bold text-rose-600 tabular-nums">Слаб 2.00</td>
-                <td className="py-2.5 px-3 tabular-nums font-medium">0.00 – 29.50 т.</td>
-                <td className="py-2.5 px-3 text-slate-600">Слаб (под прага)</td>
-                <td className="py-2.5 px-3">
-                  <span className="inline-flex items-center gap-1 text-rose-700 font-semibold">
-                    <AlertCircle className="w-3.5 h-3.5 text-rose-500" />
-                    Не се издава диплома (поправителна сесия)
-                  </span>
-                </td>
-              </tr>
-              <tr className="hover:bg-slate-50/60">
-                <td className="py-2.5 px-3 font-bold text-orange-600 tabular-nums">Среден (3.00 – 3.49)</td>
-                <td className="py-2.5 px-3 tabular-nums font-medium">30.00 – 41.50 т.</td>
-                <td className="py-2.5 px-3 text-slate-600">Среден</td>
-                <td className="py-2.5 px-3 text-slate-700">
-                  Успешно преминат минимален праг за средно образование (30 т. = 3.00)
-                </td>
-              </tr>
-              <tr className="hover:bg-slate-50/60">
-                <td className="py-2.5 px-3 font-bold text-amber-600 tabular-nums">Добър (3.50 – 4.49)</td>
-                <td className="py-2.5 px-3 tabular-nums font-medium">42.00 – 64.50 т.</td>
-                <td className="py-2.5 px-3 text-slate-600">Добър</td>
-                <td className="py-2.5 px-3 text-slate-700">
-                  Задоволителни знания по изпитната програма (53.5 т. = 4.00)
-                </td>
-              </tr>
-              <tr className="hover:bg-slate-50/60">
-                <td className="py-2.5 px-3 font-bold text-blue-600 tabular-nums">Много добър (4.50 – 5.49)</td>
-                <td className="py-2.5 px-3 tabular-nums font-medium">65.00 – 88.00 т.</td>
-                <td className="py-2.5 px-3 text-slate-600">Много добър</td>
-                <td className="py-2.5 px-3 text-slate-700">
-                  Високо ниво на овладяване на материала и изворите (77 т. = 5.00)
-                </td>
-              </tr>
-              <tr className="bg-emerald-50/40 hover:bg-emerald-50/60">
-                <td className="py-2.5 px-3 font-bold text-emerald-700 tabular-nums">Отличен (5.50 – 6.00)</td>
-                <td className="py-2.5 px-3 tabular-nums font-bold text-emerald-900">88.50 – 100.00 т.</td>
-                <td className="py-2.5 px-3 font-semibold text-emerald-900">Отличен</td>
-                <td className="py-2.5 px-3 font-medium text-emerald-900">
-                  <span className="inline-flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    Отличен успех (88.5 т. = 5.50; 100 т. = Пълен 6.00)
-                  </span>
-                </td>
-              </tr>
+              {DZI_TABLE.map((row) => (
+                <tr key={row.grade} className={row.label === 'Отличен' ? 'bg-emerald-50/40 hover:bg-emerald-50/60' : 'hover:bg-slate-50/60'}>
+                  <td className={`py-2.5 px-3 font-bold tabular-nums ${GRADE_STYLES[row.label].color}`}>{row.grade}</td>
+                  <td className="py-2.5 px-3 tabular-nums font-medium">{row.range}</td>
+                  <td className="py-2.5 px-3 text-slate-600">{row.label}</td>
+                  <td className="py-2.5 px-3 text-slate-700">
+                    {row.label === 'Слаб' ? (
+                      <span className="inline-flex items-center gap-1 text-rose-700 font-semibold">
+                        <AlertCircle className="w-3.5 h-3.5 text-rose-500" />
+                        Изпитът не е издържан — полага се отново в следваща сесия
+                      </span>
+                    ) : (
+                      row.note
+                    )}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
+        <p className="text-[11px] leading-relaxed text-slate-500">
+          Оценката е с точност до 0,01: от 30 т. всеки 0,25 т. дават следващата стотна в границите на интервала. Източници:{' '}
+          {DZI_SCALE_SOURCES.map((src, i) => (
+            <React.Fragment key={src.url}>
+              {i > 0 && '; '}
+              <a href={src.url} target="_blank" rel="noopener noreferrer" className="underline decoration-slate-300 underline-offset-2 hover:text-slate-700">
+                {src.title}
+              </a>
+            </React.Fragment>
+          ))}
+          .
+        </p>
       </div>
 
       <ExcellenceCertificateModal

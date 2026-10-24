@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { EXAM_PAPERS } from '../src/data/examPapers';
 import katex from 'katex';
 import { FIGURES } from '../src/components/exam-engine/figures';
+import { DZI_SCALE } from '../src/lib/monGradeScale';
 import {
   isPartCorrect,
   isShortAnswerCorrect,
@@ -367,23 +368,23 @@ describe('другите предмети в НВО 10 — примерни за
 });
 
 describe('ДЗИ по математика — профилирана подготовка', () => {
-  it.each(['official-dzi-math-2026', 'official-dzi-math-2025', 'official-dzi-math-2024', 'official-dzi-math-2023', 'official-dzi-math-2022'])('%s: 18 задачи, 240 мин, част 1 — 55 т., част 2 — 3 × 15 т., без оценка', (id) => {
+  it.each(['official-dzi-math-2026', 'official-dzi-math-2025', 'official-dzi-math-2024', 'official-dzi-math-2023', 'official-dzi-math-2022'])('%s: 18 задачи, 240 мин, част 1 — 55 т., част 2 — 3 × 15 т., оценка по скалата на МОН', (id) => {
     const paper = EXAM_PAPERS.find((x) => x.id === id)!;
     expect(paper.exam).toBe('ДЗИ');
     expect(allQuestions(paper)).toHaveLength(18);
     expect(paper.durationMinutes).toBe(240);
-    expect(paper.gradeScale).toBeNull();
+    expect(paper.gradeScale).toBe(DZI_SCALE);
     expect(paper.sections.map((sec) => sec.questions.reduce((n, q) => n + q.points, 0))).toEqual([55, 45]);
     expect(paper.sections[1].questions.every((q) => q.kind === 'open' && q.points === 15)).toBe(true);
   });
 });
 
 describe('ДЗИ по математика — формат до 2021 г.', () => {
-  it('official-dzi-math-2021: 28 задачи в два модула — 50 + 20 + 30 т., без оценка', () => {
+  it('official-dzi-math-2021: 28 задачи в два модула — 50 + 20 + 30 т., оценка по скалата на МОН', () => {
     const paper = EXAM_PAPERS.find((x) => x.id === 'official-dzi-math-2021')!;
     expect(allQuestions(paper)).toHaveLength(28);
     expect(paper.durationMinutes).toBe(240);
-    expect(paper.gradeScale).toBeNull();
+    expect(paper.gradeScale).toBe(DZI_SCALE);
     expect(paper.sections.map((sec) => sec.questions.reduce((n, q) => n + q.points, 0))).toEqual([50, 20, 30]);
   });
 });
@@ -486,5 +487,14 @@ describe('НВО 10 по БЕЛ през 2027 г. — примерни зада�
     expect(choice('bel27-s4')).toBe('секуларизацията');
     const s8 = q('bel27-s8');
     expect(s8.kind === 'multi' && s8.parts[0].answer.type === 'text' && s8.parts[0].answer.acceptedAnswers[0]).toBe('Априлското въстание');
+  });
+});
+
+describe('ДЗИ — оценка по единната скала на МОН', () => {
+  it('всички официални варианти на ДЗИ дават оценка; НВО — само точки', () => {
+    for (const p of EXAM_PAPERS.filter((x) => x.kind === 'official')) expect(p.gradeScale, p.id).toBe(p.exam === 'ДЗИ' ? DZI_SCALE : null);
+    const p = EXAM_PAPERS.find((x) => x.id === 'official-dzi-bel-2025')!;
+    const r = scorePaper(p, keyAnswers(p), fullOpenScores(p));
+    expect(r.grade?.numeric).toBe(6);
   });
 });

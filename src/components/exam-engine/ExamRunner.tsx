@@ -382,7 +382,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
           pointsNote={
             paper.exam === 'НВО 10'
               ? 'НВО 10: резултатът се отчита в точки'
-              : 'Резултат в точки — скалата за оценка МОН определя за всяка сесия'
+              : 'Резултат в точки'
           }
         />
       )}

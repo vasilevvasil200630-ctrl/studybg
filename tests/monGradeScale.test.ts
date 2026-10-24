@@ -11,6 +11,31 @@ describe('monGradeScale', () => {
     }
   });
 
+  it('ДЗИ — таблицата на МОН (от 2022/23 г.): граници на оценките и стъпка 0,25 т.', () => {
+    const g = (p: number) => pointsToGrade(p, DZI_SCALE).numeric;
+    expect(g(29.75)).toBe(2);
+    expect([g(30), g(30.25), g(30.5)]).toEqual([3, 3.01, 3.02]);
+    expect(g(40.5)).toBeLessThanOrEqual(3.49);
+    expect(g(40.75)).toBe(3.5);
+    expect(g(62.25)).toBeLessThanOrEqual(4.49);
+    expect(g(62.5)).toBe(4.5);
+    expect(g(83.75)).toBeLessThanOrEqual(5.49);
+    expect(g(84)).toBe(5.5);
+    expect(g(94.75)).toBe(5.99);
+    expect([g(95), g(99), g(100)]).toEqual([6, 6, 6]);
+    expect(gradeToPoints(3.5)).toBe(40.75);
+    expect(gradeToPoints(5.5)).toBe(84);
+    expect(gradeToPoints(6)).toBe(95);
+    // всеки 0,25 т. е най-много една стотна нагоре и оценката не прескача
+    let prev = g(30);
+    for (let p = 30.25; p <= 95; p += 0.25) {
+      const cur = g(p);
+      expect(cur - prev).toBeGreaterThanOrEqual(0);
+      expect(cur - prev).toBeLessThanOrEqual(0.02 + 1e-9);
+      prev = cur;
+    }
+  });
+
   it('ДЗИ: 29 т. → 2.00, 30 т. → 3.00, 100 т. → 6.00', () => {
     expect(pointsToGrade(29).numeric).toBe(2);
     expect(pointsToGrade(30).numeric).toBe(3);
@@ -47,7 +72,7 @@ describe('examScaleForLesson и gradeBands', () => {
     expect(examScaleForLesson({ id: 'literature-botev-dzi', grade: '12. клас (ДЗИ / Матура)', subject: 'Български език и литература' }).scale).toBe(DZI_SCALE);
   });
 
-  it('праговете в цели точки съвпадат с pointsToGrade', () => {
+  it('праговете съвпадат с pointsToGrade (ДЗИ — през 0,25 т., ДИППК — в цели точки)', () => {
     for (const scale of [DZI_SCALE, DIPPK_SCALE]) {
       const bands = gradeBands(scale);
       expect(bands[0].from).toBe(0);
@@ -56,7 +81,8 @@ describe('examScaleForLesson и gradeBands', () => {
         expect(pointsToGrade(band.from, scale).label).toBe(band.label);
         expect(pointsToGrade(band.to, scale).label).toBe(band.label);
       }
-      bands.slice(1).forEach((band, i) => expect(band.from).toBe(bands[i].to + 1));
+      const step = scale.bands ? 0.25 : 1;
+      bands.slice(1).forEach((band, i) => expect(band.from).toBe(bands[i].to + step));
     }
   });
 });

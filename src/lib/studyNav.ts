@@ -130,7 +130,7 @@ export function getStudyPageMeta(tab: AppNavTab, totalLessons: number): PageMeta
     case 'cases':
       return { title: 'Исторически казуси', description: 'Задачи с архивни извори за ДЗИ по история, 11.–12. клас.' };
     case 'calculator':
-      return { title: 'Оценка и бал', description: 'От точки към оценка по Наредба № 11 на МОН и състезателен бал.' };
+      return { title: 'Оценка и бал', description: 'От точки към оценка по скалата на МОН за ДЗИ и състезателен бал.' };
     case 'errorbank':
       return { title: 'Банка с грешки', description: 'Въпросите, на които си сгрешил, събрани за повторение.' };
     case 'catalog':

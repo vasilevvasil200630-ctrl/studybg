@@ -27,8 +27,8 @@ describe('графикът на МОН за 2026/2027 (Заповед № РД09
     expect(next.official).toBe(false);
   });
 
-  it('НВО 10 няма праг за успех; за ДЗИ скалата е на МОН за сесията', () => {
+  it('НВО 10 няма праг за успех; за ДЗИ — единната скала на МОН', () => {
     expect(exam('nvo_10').resultText).toMatch(/няма праг/);
-    for (const id of ['dzi_bel', 'dzi_history', 'dzi_stem']) expect(exam(id).resultText).toMatch(/скалата на МОН/);
+    for (const id of ['dzi_bel', 'dzi_history', 'dzi_stem']) expect(exam(id).resultText).toMatch(/скалата на МОН за ДЗИ: 30 т/);
   });
 });

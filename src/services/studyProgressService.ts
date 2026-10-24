@@ -76,7 +76,7 @@ export const MON_EXAM_CALENDAR = {
   url: 'https://www.mon.bg/dyasno-menyu/vakantsii/'
 } as const;
 
-const DZI_RESULT = 'Резултат в точки; оценката се определя по скалата на МОН за сесията';
+const DZI_RESULT = 'Оценка по скалата на МОН за ДЗИ: 30 т. — Среден 3,00, 95 т. — Отличен 6,00';
 
 export const MON_OFFICIAL_EXAMS: MonOfficialExamDate[] = [
   {

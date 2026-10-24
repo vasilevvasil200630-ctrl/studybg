@@ -112,7 +112,7 @@ export const ExamStartScreen: React.FC<{ sim: ExamSimulatorState }> = ({ sim }) 
                 </p>
               )}
               {examScale.scale && (
-                <p className="text-[11px] text-slate-500">Праговете са ориентировъчни — сверете ги с актуалната заповед на МОН за сесията.</p>
+                <p className="text-[11px] text-slate-500">{examScale.kind === 'dzi' ? 'Оценката е по единната скала на МОН за ДЗИ (от 2022/23 г.): 30 т. — Среден 3,00, 95 т. — Отличен 6,00.' : 'Праговете са ориентировъчни — сверете ги с изискванията на МОН за изпита.'}</p>
               )}
             </div>
 

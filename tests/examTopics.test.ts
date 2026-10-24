@@ -37,7 +37,8 @@ const fullOpen = (paper: ExamPaper): Record<string, number> => {
 
 describe('теми на задачите', () => {
   it('всяка задача от официалните варианти на НВО 10 по математика и от примерните набори има тема', () => {
-    for (const p of EXAM_PAPERS.filter((x) => x.exam === 'НВО 10' && x.kind !== 'practice' && (x.subject === 'Математика' || x.kind === 'sample'))) {
+    // Наборът по БЕЛ за 2027 г. е с примерни задачи без тема (история и философия нямат тренировка по тема)
+    for (const p of EXAM_PAPERS.filter((x) => x.exam === 'НВО 10' && x.kind !== 'practice' && (x.subject === 'Математика' || (x.kind === 'sample' && x.subject !== 'Български език и литература')))) {
       for (const q of all(p)) expect(topicOf(q), `${p.id} / ${q.id}`).not.toBeNull();
     }
   });

@@ -338,7 +338,7 @@ describe('задачи с подточки', () => {
 });
 
 describe('другите предмети в НВО 10 — примерни задачи на МОН', () => {
-  const samples = EXAM_PAPERS.filter((p) => p.kind === 'sample');
+  const samples = EXAM_PAPERS.filter((p) => p.kind === 'sample' && p.subject !== 'Български език и литература');
 
   it('по един набор за всеки от четирите предмета, без таймер', () => {
     expect(samples.map((p) => p.subject).sort()).toEqual(
@@ -461,5 +461,30 @@ describe('ДЗИ по БЕЛ — официални варианти', () => {
     for (const e of external) expect(e.url).toBe(paper.officialSourceUrl);
     const all = JSON.stringify(paper);
     for (const fragment of fragments) expect(all.includes(fragment), fragment).toBe(false);
+  });
+});
+
+describe('НВО 10 по БЕЛ през 2027 г. — примерни задачи от модела на МОН', () => {
+  const p = EXAM_PAPERS.find((x) => x.id === 'sample-nvo10-bel-2027')!;
+
+  it('набор без таймер, сочи модела на МОН; задачите са по БЕЛ, литература, история и философия', () => {
+    expect(p.kind).toBe('sample');
+    expect(p.untimed).toBe(true);
+    expect(p.officialSourceUrl).toBe('https://www.mon.bg/nfs/2026/09/10.-klas-bel-model-nvo-2027.pdf');
+    const qs = allQuestions(p);
+    expect(qs.map((q) => q.number)).toEqual(Array.from({ length: qs.length }, (_, i) => i + 1));
+    expect(new Set(qs.map((q) => q.topic))).toEqual(new Set(['Български език', 'Литература', 'История и цивилизации', 'Философия']));
+    expect(p.sections[0].externalText?.pages).toBe('5');
+  });
+
+  it('ключът на StudyBG: „Под игото“, Паисий — националното самосъзнание, секуларизацията, Априлското въстание', () => {
+    const q = (id: string) => allQuestions(p).find((x) => x.id === id)!;
+    const choice = (id: string) => { const x = q(id); return x.kind === 'choice' ? x.options[x.correctIndex] : null; };
+    expect(choice('bel27-s1')).toBe('рецептори – визуални рецептори');
+    expect(choice('bel27-s2')).toBe('„Под игото“ (Иван Вазов)');
+    expect(choice('bel27-s3')).toBe('националното самосъзнание');
+    expect(choice('bel27-s4')).toBe('секуларизацията');
+    const s8 = q('bel27-s8');
+    expect(s8.kind === 'multi' && s8.parts[0].answer.type === 'text' && s8.parts[0].answer.acceptedAnswers[0]).toBe('Априлското въстание');
   });
 });

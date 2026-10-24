@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, Clock, ExternalLink, FileText, ListChecks, Target } from 'lucide-react';
 import { EXAM_PAPERS } from '../data/examPapers';
-import { NVO10_FORMAT_2027, nvo10FormatTag } from '../data/examFormats';
+import { NVO10_BEL_FORMAT_2027, NVO10_FORMAT_2027, NVO10_ORDER_2027_URL, nvo10FormatTag } from '../data/examFormats';
 import { TOPICS, TOPIC_BY_KEY, topicPercent, type TopicArea, type TopicKey } from '../data/examTopics';
 import { AREA_SOURCES, TOPIC_PAPERS, topicPaperId, topicSectionYear } from '../data/topicPapers';
 import { sourcePaperTitle } from '../data/mistakesPaper';
@@ -108,7 +108,9 @@ export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onO
       {shown.map((exam) => {
         const papers = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind !== 'sample').sort(byRelevance);
         const subjects = [...new Set(papers.map((p) => p.subject))].sort((a, b) => SUBJECT_ORDER.indexOf(a) - SUBJECT_ORDER.indexOf(b));
-        const samples = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind === 'sample');
+        const allSamples = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind === 'sample');
+        // Примерните набори по предмет с варианти (БЕЛ) са под вариантите му; другите — в „Другите предмети“
+        const samples = allSamples.filter((p) => !subjects.includes(p.subject));
         const hasTopics = subjects.some((s) => topicAreaFor(exam, s) !== null);
         return (
           <section key={exam} aria-labelledby={`papers-${exam}`} className="space-y-3">
@@ -132,6 +134,24 @@ export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onO
                       <PaperCard key={p.id} paper={p} onStart={() => setPaperId(p.id)} />
                     ))}
                 </ul>
+                {allSamples.some((p) => p.subject === subject) && (
+                  <div className="space-y-3 pt-2">
+                    <div>
+                      <h5 className="text-base font-bold text-slate-900">{subject} — примерни задачи за 2027 г.</h5>
+                      <p className="mt-1 max-w-3xl text-sm leading-relaxed text-slate-600">
+                        Задачите от модела на МОН за изпита през 2027 г., включително по история и цивилизации и по философия. МОН не е публикувал
+                        отговори към тях — ключът и обясненията са на StudyBG. Решаваш без таймер.
+                      </p>
+                    </div>
+                    <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                      {allSamples
+                        .filter((p) => p.subject === subject)
+                        .map((p) => (
+                          <PaperCard key={p.id} paper={p} onStart={() => setPaperId(p.id)} />
+                        ))}
+                    </ul>
+                  </div>
+                )}
                 {topicArea && <TopicPractice area={topicArea} subject={subjects.length > 1 ? subject : null} onStart={setPaperId} />}
               </div>
               );
@@ -201,30 +221,57 @@ const PaperCard: React.FC<{ paper: ExamPaper; onStart: () => void }> = ({ paper:
   );
 };
 
+/** Двата изпита в НВО 10 през 2027 г. — превключвател между математика и БЕЛ */
 const Nvo10FormatCard: React.FC = () => {
-  const f = NVO10_FORMAT_2027;
-  const total = (r: (typeof f.distribution)[number]) => r.choice + r.short + r.open;
-  const sum = (pick: (r: (typeof f.distribution)[number]) => number) => f.distribution.reduce((n, r) => n + pick(r), 0);
+  const [which, setWhich] = useState<'math' | 'bel'>('math');
+  const f = which === 'math' ? NVO10_FORMAT_2027 : NVO10_BEL_FORMAT_2027;
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="max-w-2xl">
+          <div className="mb-2 inline-flex rounded-lg border border-slate-200 bg-slate-50 p-0.5" role="group" aria-label="Изпит в НВО 10 през 2027 г.">
+            {(['math', 'bel'] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                aria-pressed={which === k}
+                onClick={() => setWhich(k)}
+                className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors ${which === k ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+              >
+                {k === 'math' ? 'Математика' : 'БЕЛ'}
+              </button>
+            ))}
+          </div>
           <p className="text-base font-bold text-slate-900">{f.title}</p>
           <p className="mt-1 text-sm leading-relaxed text-slate-600">
-            Най-близо до този формат е вариантът от 2026 г. Вариантите до 2025 г. са само по математика — с тях тренираш математическата част.
+            {which === 'math'
+              ? 'Най-близо до този формат е вариантът от 2026 г. Вариантите до 2025 г. са само по математика — с тях тренираш математическата част.'
+              : 'Вариантите по БЕЛ досега са без история и философия — с тях тренираш частта по БЕЛ (18 от 22-те задачи). Задачите по история и философия от модела са в набора с примерни задачи по-долу.'}
           </p>
         </div>
-        <a
-          href={f.sourceUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-brand-sapphire hover:underline"
-        >
-          Модел на МОН
-          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-        </a>
+        <div className="flex shrink-0 flex-col items-start gap-1">
+          <a href={f.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-brand-sapphire hover:underline">
+            Модел на МОН
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
+          <a href={NVO10_ORDER_2027_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-brand-sapphire hover:underline">
+            Заповед за предметите
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
+        </div>
       </div>
 
+      {which === 'math' ? <MathFormatBody /> : <BelFormatBody />}
+    </div>
+  );
+};
+
+const MathFormatBody: React.FC = () => {
+  const f = NVO10_FORMAT_2027;
+  const total = (r: (typeof f.distribution)[number]) => r.choice + r.short + r.open;
+  const sum = (pick: (r: (typeof f.distribution)[number]) => number) => f.distribution.reduce((n, r) => n + pick(r), 0);
+  return (
+    <>
       <dl className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 sm:grid-cols-4">
         {f.facts.map((x) => (
           <div key={x.label} className="bg-white px-4 py-3">
@@ -297,7 +344,70 @@ const Nvo10FormatCard: React.FC = () => {
           ))}
         </ul>
       </details>
-    </div>
+    </>
+  );
+};
+
+const BelFormatBody: React.FC = () => {
+  const f = NVO10_BEL_FORMAT_2027;
+  return (
+    <>
+      <dl className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 sm:grid-cols-4">
+        {f.facts.map((x) => (
+          <div key={x.label} className="bg-white px-4 py-3">
+            <dt className="text-xs font-medium text-slate-500">{x.label}</dt>
+            <dd className="mt-0.5 text-lg font-bold text-slate-900 tabular-nums">{x.value}</dd>
+            {'hint' in x && <dd className="text-xs text-slate-500">{x.hint}</dd>}
+          </div>
+        ))}
+      </dl>
+
+      <details className="group mt-3">
+        <summary className="inline-flex cursor-pointer list-none items-center gap-1 rounded-md py-1 text-sm font-semibold text-slate-700 hover:text-slate-900 [&::-webkit-details-marker]:hidden">
+          <ChevronDown className="h-4 w-4 text-slate-400 transition-transform group-open:rotate-180" aria-hidden="true" />
+          Как са разпределени задачите
+        </summary>
+        <div className="mt-2 grid gap-3 sm:grid-cols-2">
+          <div>
+            <p className="mb-1.5 text-xs font-semibold text-slate-500">По предмети</p>
+            <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200">
+              {f.bySubject.map((r) => (
+                <li key={r.subject} className="flex items-baseline justify-between gap-3 px-3 py-2 text-sm">
+                  <span>
+                    <span className="font-medium text-slate-800">{r.subject}</span>
+                    <span className="block text-xs text-slate-500">{r.hint}</span>
+                  </span>
+                  <span className="shrink-0 font-semibold text-slate-900 tabular-nums">{r.tasks}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="mb-1.5 text-xs font-semibold text-slate-500">По вид задача</p>
+            <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200">
+              {f.byType.map((r) => (
+                <li key={r.type} className="flex items-baseline justify-between gap-3 px-3 py-2 text-sm">
+                  <span className="text-slate-800">{r.type}</span>
+                  <span className="shrink-0 font-semibold text-slate-900 tabular-nums">{r.tasks}</span>
+                </li>
+              ))}
+              <li className="flex justify-between bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-900">
+                <span>Общо</span>
+                <span className="tabular-nums">{f.byType.reduce((n, r) => n + r.tasks, 0)}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <ul className="mt-3 space-y-1 text-sm text-slate-600">
+          {f.notes.map((n) => (
+            <li key={n} className="flex gap-2">
+              <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-slate-400" aria-hidden="true" />
+              {n}
+            </li>
+          ))}
+        </ul>
+      </details>
+    </>
   );
 };
 

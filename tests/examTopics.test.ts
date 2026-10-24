@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { EXAM_PAPERS } from '../src/data/examPapers';
-import { DZI_TOPIC_BY_QUESTION, MATH_TOPIC_BY_QUESTION, TOPICS, topicBreakdown, topicOf } from '../src/data/examTopics';
-import { TOPIC_PAPERS, topicPaperId } from '../src/data/topicPapers';
+import { BEL_TOPIC_BY_QUESTION, DZI_TOPIC_BY_QUESTION, MATH_TOPIC_BY_QUESTION, TOPICS, topicBreakdown, topicOf } from '../src/data/examTopics';
+import { TOPIC_PAPERS, topicPaperId, topicSectionYear } from '../src/data/topicPapers';
 import { partKey, scorePaper, validateExamPaper, type ExamPaper, type PaperAnswers } from '../src/lib/examPaperScoring';
 import { topicStatsFromAttempts } from '../src/lib/topicProgress';
 import type { ExamAttemptRecord } from '../src/services/examHistoryService';
@@ -47,6 +47,8 @@ describe('теми на задачите', () => {
     for (const id of Object.keys(MATH_TOPIC_BY_QUESTION)) expect(ids.has(id), id).toBe(true);
     const dziIds = new Set(EXAM_PAPERS.filter((p) => p.exam === 'ДЗИ' && p.kind === 'official').flatMap((p) => all(p).map((q) => q.id)));
     for (const id of Object.keys(DZI_TOPIC_BY_QUESTION)) expect(dziIds.has(id), id).toBe(true);
+    const belIds = new Set(EXAM_PAPERS.filter((p) => p.subject === 'Български език и литература' && p.kind === 'official').flatMap((p) => all(p).map((q) => q.id)));
+    for (const id of Object.keys(BEL_TOPIC_BY_QUESTION)) expect(belIds.has(id), id).toBe(true);
   });
 
   it('по темите се разпределят всички точки на варианта', () => {
@@ -60,12 +62,14 @@ describe('теми на задачите', () => {
 });
 
 describe.each([
-  { exam: 'НВО 10', area: 'math' },
-  { exam: 'ДЗИ', area: 'dzi' },
-] as const)('тренировка по тема — $exam', ({ exam, area }) => {
+  { exam: 'НВО 10', subject: 'Математика', area: 'math' },
+  { exam: 'ДЗИ', subject: 'Математика', area: 'dzi' },
+  { exam: 'НВО 10', subject: 'Български език и литература', area: 'bel' },
+  { exam: 'ДЗИ', subject: 'Български език и литература', area: 'dzi-bel' },
+] as const)('тренировка по тема — $exam, $subject', ({ exam, subject, area }) => {
   const topics = TOPICS.filter((t) => t.area === area);
-  const sets = TOPIC_PAPERS.filter((p) => p.exam === exam);
-  const officialPapers = EXAM_PAPERS.filter((p) => p.kind === 'official' && p.exam === exam && p.subject === 'Математика');
+  const sets = TOPIC_PAPERS.filter((p) => p.exam === exam && p.subject === subject);
+  const officialPapers = EXAM_PAPERS.filter((p) => p.kind === 'official' && p.exam === exam && p.subject === subject);
 
   it('по един набор за всяка тема; всеки минава валидацията и е без таймер', () => {
     expect(sets.map((p) => p.id)).toEqual(topics.map((t) => topicPaperId(t.key)));
@@ -76,7 +80,7 @@ describe.each([
     }
   });
 
-  it('наборите покриват всяка задача по математика точно веднъж, непроменена', () => {
+  it('наборите покриват всяка задача от вариантите точно веднъж, непроменена', () => {
     const fromTopics = sets.flatMap((p) => all(p));
     const official = officialPapers.flatMap((p) => all(p)).filter((q) => !q.topic);
     expect(fromTopics.map((q) => q.id).sort()).toEqual(official.map((q) => q.id).sort());
@@ -101,9 +105,16 @@ describe.each([
   });
 
   it('задачите са по години — най-новите първи', () => {
+    expect(TOPIC_PAPERS.flatMap((p) => p.sections.map(topicSectionYear)).every((y) => y >= 2021 && y <= 2026)).toBe(true);
     for (const p of TOPIC_PAPERS) {
-      const years = p.sections.map((s) => Number(s.id.slice(1)));
+      const years = p.sections.map(topicSectionYear);
       expect([...years].sort((a, b) => b - a), p.id).toEqual(years);
+    }
+  });
+  it('задачите към текст остават с текста си', () => {
+    const ctx = new Map(officialPapers.flatMap((p) => p.sections.flatMap((sec) => sec.questions.map((q) => [q.id, sec.sourceText ?? sec.externalText ?? null] as const))));
+    for (const p of sets) {
+      for (const sec of p.sections) for (const q of sec.questions) expect(sec.sourceText ?? sec.externalText ?? null, q.id).toEqual(ctx.get(q.id));
     }
   });
 });

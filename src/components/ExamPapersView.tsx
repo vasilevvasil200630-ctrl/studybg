@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { ChevronDown, Clock, ExternalLink, FileText, ListChecks, Target } from 'lucide-react';
 import { EXAM_PAPERS } from '../data/examPapers';
 import { NVO10_FORMAT_2027, nvo10FormatTag } from '../data/examFormats';
-import { TOPICS, TOPIC_BY_KEY, topicPercent, type TopicKey } from '../data/examTopics';
-import { TOPIC_PAPERS, topicPaperId } from '../data/topicPapers';
+import { TOPICS, TOPIC_BY_KEY, topicPercent, type TopicArea, type TopicKey } from '../data/examTopics';
+import { AREA_SOURCES, TOPIC_PAPERS, topicPaperId, topicSectionYear } from '../data/topicPapers';
 import type { ExamPaper } from '../lib/examPaperScoring';
 import { loadTopicStats, type TopicStat } from '../lib/topicProgress';
 import { ExamRunner, PaperBadge } from './exam-engine/ExamRunner';
@@ -31,9 +31,14 @@ const SUBJECT_ORDER = ['Математика', 'Български език и �
 /** Къде се упражнява всяка тема: по математика — набор по тема, за другите предмети — примерните задачи на МОН */
 const SUBJECT_SETS: Partial<Record<TopicKey, string>> = { bio: 'sample-nvo10-bio', chem: 'sample-nvo10-chem', phys: 'sample-nvo10-phys', geo: 'sample-nvo10-geo' };
 const practicePaperFor = (key: TopicKey): string | null => {
-  const area = TOPIC_BY_KEY[key].area;
-  const id = area === 'math' || area === 'dzi' ? topicPaperId(key) : SUBJECT_SETS[key];
+  const id = AREA_SOURCES[TOPIC_BY_KEY[key].area] ? topicPaperId(key) : SUBJECT_SETS[key];
   return id && ALL_PAPERS.some((p) => p.id === id) ? id : null;
+};
+
+/** Областта с тренировка по тема за изпит и предмет: НВО 10 + Математика → 'math' и т.н. */
+const topicAreaFor = (exam: ExamPaper['exam'], subject: string): TopicArea | null => {
+  const entry = Object.entries(AREA_SOURCES).find(([, src]) => src.exam === exam && src.subject === subject);
+  return entry && TOPIC_PAPERS.some((p) => p.exam === exam && p.subject === subject) ? (entry[0] as TopicArea) : null;
 };
 
 export const ExamPapersView: React.FC = () => {
@@ -101,15 +106,16 @@ export const ExamPapersView: React.FC = () => {
         const papers = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind !== 'sample').sort(byRelevance);
         const subjects = [...new Set(papers.map((p) => p.subject))].sort((a, b) => SUBJECT_ORDER.indexOf(a) - SUBJECT_ORDER.indexOf(b));
         const samples = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind === 'sample');
-        const topicArea = exam === 'НВО 10' ? 'math' : exam === 'ДЗИ' ? 'dzi' : null;
-        const hasTopics = topicArea !== null && TOPIC_PAPERS.some((p) => p.exam === exam);
+        const hasTopics = subjects.some((s) => topicAreaFor(exam, s) !== null);
         return (
           <section key={exam} aria-labelledby={`papers-${exam}`} className="space-y-3">
             <h4 id={`papers-${exam}`} className="text-sm font-bold uppercase tracking-wide text-slate-500">
               {exam}
             </h4>
             {exam === 'НВО 10' && <Nvo10FormatCard />}
-            {subjects.map((subject) => (
+            {subjects.map((subject) => {
+              const topicArea = topicAreaFor(exam, subject);
+              return (
               <div key={subject} className="space-y-3">
                 {(subjects.length > 1 || samples.length > 0 || hasTopics) && (
                   <h5 className="pt-2 text-base font-bold text-slate-900">
@@ -123,9 +129,10 @@ export const ExamPapersView: React.FC = () => {
                       <PaperCard key={p.id} paper={p} onStart={() => setPaperId(p.id)} />
                     ))}
                 </ul>
+                {topicArea && <TopicPractice area={topicArea} subject={subjects.length > 1 ? subject : null} onStart={setPaperId} />}
               </div>
-            ))}
-            {hasTopics && topicArea && <TopicPractice area={topicArea} onStart={setPaperId} />}
+              );
+            })}
             {samples.length > 0 && (
               <div className="space-y-3 pt-4">
                 <div>
@@ -292,10 +299,11 @@ const Nvo10FormatCard: React.FC = () => {
 };
 
 /** Тренировка по тема: всички официални задачи по една тема, с последния резултат по нея */
-const TopicPractice: React.FC<{ area: 'math' | 'dzi'; onStart: (paperId: string) => void }> = ({ area, onStart }) => {
+const TopicPractice: React.FC<{ area: TopicArea; subject: string | null; onStart: (paperId: string) => void }> = ({ area, subject, onStart }) => {
   const stats = loadTopicStats();
-  const mathTopics = TOPICS.filter((t) => t.area === area);
-  const scored = mathTopics.filter((t) => (stats[t.key]?.maxPoints ?? 0) > 0);
+  const areaTopics = TOPICS.filter((t) => t.area === area);
+  const isDzi = AREA_SOURCES[area]?.exam === 'ДЗИ';
+  const scored = areaTopics.filter((t) => (stats[t.key]?.maxPoints ?? 0) > 0);
   const weakest = scored
     .map((t) => ({ key: t.key, pct: topicPercent(stats[t.key] as TopicStat), max: (stats[t.key] as TopicStat).maxPoints }))
     .filter((x) => x.pct < 100)
@@ -304,19 +312,20 @@ const TopicPractice: React.FC<{ area: 'math' | 'dzi'; onStart: (paperId: string)
   return (
     <div className="space-y-3 pt-4">
       <div>
-        <h5 className="text-base font-bold text-slate-900">Тренировка по тема</h5>
+        <h5 className="text-base font-bold text-slate-900">{subject ? `${subject} — тренировка по тема` : 'Тренировка по тема'}</h5>
         <p className="mt-1 max-w-3xl text-sm leading-relaxed text-slate-600">
-          Всички задачи по една тема от официалните {area === 'dzi' ? 'матури' : 'варианти'} 2021–2026, с ключа на МОН и без таймер.
+          Всички задачи по една тема от официалните {isDzi ? 'матури' : 'варианти'} 2021–2026, с ключа на МОН и без таймер.
           {scored.length > 0
             ? ' Процентите са от последния ти опит на всеки вариант или набор.'
             : ' След като решиш вариант, тук ще виждаш резултата си по всяка тема.'}
         </p>
       </div>
       <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {mathTopics.map((t) => {
+        {areaTopics.map((t) => {
           const p = TOPIC_PAPERS.find((x) => x.id === topicPaperId(t.key));
           if (!p) return null;
           const count = p.sections.reduce((n, sec) => n + sec.questions.length, 0);
+          const years = new Set(p.sections.map(topicSectionYear)).size;
           const stat = stats[t.key];
           const pct = stat && stat.maxPoints > 0 ? topicPercent(stat) : null;
           const isWeakest = weakest === t.key;
@@ -330,7 +339,7 @@ const TopicPractice: React.FC<{ area: 'math' | 'dzi'; onStart: (paperId: string)
                 {isWeakest && <span className="shrink-0 rounded bg-amber-50 px-1.5 py-0.5 text-[11px] font-semibold text-amber-800 ring-1 ring-inset ring-amber-200">най-слаба</span>}
               </div>
               <p className="text-xs leading-relaxed text-slate-500">{t.scope}</p>
-              <p className="text-xs font-medium text-slate-600 tabular-nums">{count} задачи · {p.sections.length} години</p>
+              <p className="text-xs font-medium text-slate-600 tabular-nums">{count} задачи · {years} години</p>
               {pct !== null ? (
                 <div className="space-y-1">
                   <div className="h-1.5 overflow-hidden rounded-full bg-slate-100" aria-hidden="true">

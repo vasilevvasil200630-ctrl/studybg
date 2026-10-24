@@ -3,7 +3,8 @@ import type { ExamPaper, PaperQuestion, PaperResult } from '../lib/examPaperScor
 /**
  * Теми за анализ на резултата и тренировка по тема — за НВО 10 групирани по учебното съдържание
  * в модела на МОН за НВО в X клас (т. 2.1), плюс четирите интегрирани предмета; за ДЗИ по
- * математика — по големите дялове от учебната програма за XI–XII клас.
+ * математика — по големите дялове от учебната програма за XI–XII клас; за БЕЛ — по видовете задачи
+ * в изпитните програми на МОН (езикови, с информационен текст, по литература, за създаване на текст).
  * Разпределението на задачите е на StudyBG; при задачи с подточки по няколко теми
  * задачата е към темата, по която е по-голямата част от точките.
  */
@@ -29,15 +30,31 @@ export type TopicKey =
   | 'dzi-analytic'
   | 'dzi-plane'
   | 'dzi-solid'
-  | 'dzi-probability';
+  | 'dzi-probability'
+  | 'bel-reading'
+  | 'bel-language'
+  | 'bel-literature'
+  | 'bel-writing'
+  | 'dzi-bel-spelling'
+  | 'dzi-bel-grammar'
+  | 'dzi-bel-punctuation'
+  | 'dzi-bel-lexis'
+  | 'dzi-bel-reading'
+  | 'dzi-bel-literature'
+  | 'dzi-bel-writing';
+
+export type TopicArea = 'math' | 'other' | 'dzi' | 'bel' | 'dzi-bel';
 
 export interface TopicInfo {
   key: TopicKey;
   label: string;
   /** Какво включва — по учебното съдържание в модела на МОН */
   scope: string;
-  /** 'math' — НВО 10, математика; 'other' — интегрираните предмети в НВО 10; 'dzi' — ДЗИ по математика */
-  area: 'math' | 'other' | 'dzi';
+  /**
+   * 'math' — НВО 10, математика; 'other' — интегрираните предмети в НВО 10; 'dzi' — ДЗИ по математика;
+   * 'bel' — НВО 10, БЕЛ; 'dzi-bel' — ДЗИ по БЕЛ
+   */
+  area: TopicArea;
 }
 
 export const TOPICS: TopicInfo[] = [
@@ -62,6 +79,17 @@ export const TOPICS: TopicInfo[] = [
   { key: 'dzi-plane', label: 'Планиметрия', scope: 'Триъгълник, четириъгълници, окръжност; метрични зависимости', area: 'dzi' },
   { key: 'dzi-solid', label: 'Стереометрия', scope: 'Многостени и ротационни тела; ъгли и разстояния в пространството', area: 'dzi' },
   { key: 'dzi-probability', label: 'Комбинаторика, вероятности и статистика', scope: 'Комбинаторни съединения; условна и пълна вероятност; случайни величини; статистика', area: 'dzi' },
+  { key: 'bel-reading', label: 'Четене с разбиране', scope: 'Информационни текстове, таблици и диаграми; значения на думи; функционални стилове', area: 'bel' },
+  { key: 'bel-language', label: 'Езикови задачи', scope: 'Редактиране на текст — правопис, граматика, пунктуация; преобразуване на изречения', area: 'bel' },
+  { key: 'bel-literature', label: 'Литература', scope: 'Художествен текст: тема, мотиви, образи, опозиции, изразни средства', area: 'bel' },
+  { key: 'bel-writing', label: 'Създаване на текст', scope: 'Теза, аргументи и резюме', area: 'bel' },
+  { key: 'dzi-bel-spelling', label: 'Правопис', scope: 'Правопис на думи; главни и малки букви; слято, полуслято и разделно писане', area: 'dzi-bel' },
+  { key: 'dzi-bel-grammar', label: 'Граматика', scope: 'Членуване, съгласуване, местоимения, бройна и учтива форма', area: 'dzi-bel' },
+  { key: 'dzi-bel-punctuation', label: 'Пунктуация', scope: 'Запетая в простото и в сложното изречение; пропуснати препинателни знаци', area: 'dzi-bel' },
+  { key: 'dzi-bel-lexis', label: 'Лексика', scope: 'Пароними, уместна употреба на думи, фразеологизми', area: 'dzi-bel' },
+  { key: 'dzi-bel-reading', label: 'Информационен текст и диаграма', scope: 'Разбиране на нехудожествен текст и на данни от диаграма; кратък текст по тях', area: 'dzi-bel' },
+  { key: 'dzi-bel-literature', label: 'Литература', scope: 'Творби и автори от учебната програма; тълкуване на откъси; съпоставка на два текста', area: 'dzi-bel' },
+  { key: 'dzi-bel-writing', label: 'Аргументативен текст', scope: 'Есе и интерпретативно съчинение (през 2021 г. — и теза и резюме)', area: 'dzi-bel' },
 ];
 
 export const TOPIC_BY_KEY = Object.fromEntries(TOPICS.map((t) => [t.key, t])) as Record<TopicKey, TopicInfo>;
@@ -142,9 +170,42 @@ export const DZI_TOPIC_BY_QUESTION: Readonly<Record<string, TopicKey>> = {
   'd21-q26': 'dzi-algebra', 'd21-q27': 'dzi-trig', 'd21-q28': 'dzi-plane',
 };
 
+type TopicRanges = ReadonlyArray<readonly [from: number, to: number, key: TopicKey]>;
+
+/** „b25“ + [[1, 4, 'bel-reading'], …] → { 'b25-q1': 'bel-reading', … } */
+const byRanges = (prefix: string, ranges: TopicRanges): Record<string, TopicKey> =>
+  Object.fromEntries(ranges.flatMap(([from, to, key]) => Array.from({ length: to - from + 1 }, (_, i) => [`${prefix}-q${from + i}`, key] as const)));
+
+const DZI_BEL_FORMAT: TopicRanges = [
+  [1, 3, 'dzi-bel-spelling'], [4, 5, 'dzi-bel-grammar'], [6, 7, 'dzi-bel-punctuation'], [8, 8, 'dzi-bel-grammar'],
+  [9, 9, 'dzi-bel-spelling'], [10, 12, 'dzi-bel-grammar'], [13, 13, 'dzi-bel-punctuation'], [14, 21, 'dzi-bel-reading'],
+  [22, 23, 'dzi-bel-lexis'], [24, 40, 'dzi-bel-literature'], [41, 41, 'dzi-bel-writing'],
+];
+
+/** Темата на всяка задача от официалните варианти по БЕЛ — НВО 10 и ДЗИ (2021–2026) */
+export const BEL_TOPIC_BY_QUESTION: Readonly<Record<string, TopicKey>> = {
+  ...byRanges('b26', [[1, 9, 'bel-reading'], [10, 11, 'bel-language'], [12, 19, 'bel-literature'], [20, 21, 'bel-writing']]),
+  ...byRanges('b25', [[1, 4, 'bel-reading'], [5, 5, 'bel-language'], [6, 10, 'bel-reading'], [11, 11, 'bel-language'], [12, 19, 'bel-literature'], [20, 21, 'bel-writing']]),
+  ...byRanges('b24', [[1, 10, 'bel-reading'], [11, 11, 'bel-language'], [12, 19, 'bel-literature'], [20, 21, 'bel-writing']]),
+  ...byRanges('b23', [[1, 10, 'bel-reading'], [11, 11, 'bel-language'], [12, 19, 'bel-literature'], [20, 21, 'bel-writing'], [22, 22, 'bel-language'], [23, 23, 'bel-writing']]),
+  ...byRanges('b22', [[1, 11, 'bel-reading'], [12, 20, 'bel-literature'], [21, 21, 'bel-writing'], [22, 22, 'bel-language'], [23, 23, 'bel-writing']]),
+  ...byRanges('b21', [[1, 3, 'bel-reading'], [4, 4, 'bel-language'], [5, 11, 'bel-reading'], [12, 20, 'bel-literature'], [21, 21, 'bel-writing'], [22, 22, 'bel-language'], [23, 23, 'bel-writing']]),
+  ...byRanges('db26', DZI_BEL_FORMAT),
+  ...byRanges('db25', DZI_BEL_FORMAT),
+  ...byRanges('db24', DZI_BEL_FORMAT),
+  ...byRanges('db23', DZI_BEL_FORMAT),
+  ...byRanges('db22', DZI_BEL_FORMAT),
+  // 2021 — форматът с три модула
+  ...byRanges('db21', [
+    [1, 5, 'dzi-bel-spelling'], [6, 8, 'dzi-bel-grammar'], [9, 10, 'dzi-bel-punctuation'], [11, 12, 'dzi-bel-lexis'],
+    [13, 22, 'dzi-bel-literature'], [23, 32, 'dzi-bel-reading'], [33, 34, 'dzi-bel-writing'], [35, 35, 'dzi-bel-lexis'],
+    [36, 36, 'dzi-bel-grammar'], [37, 37, 'dzi-bel-punctuation'], [38, 40, 'dzi-bel-literature'], [41, 41, 'dzi-bel-writing'],
+  ]),
+};
+
 export function topicOf(q: PaperQuestion): TopicKey | null {
   if (q.topic && SUBJECT_TOPIC[q.topic]) return SUBJECT_TOPIC[q.topic];
-  return MATH_TOPIC_BY_QUESTION[q.id] ?? DZI_TOPIC_BY_QUESTION[q.id] ?? null;
+  return MATH_TOPIC_BY_QUESTION[q.id] ?? DZI_TOPIC_BY_QUESTION[q.id] ?? BEL_TOPIC_BY_QUESTION[q.id] ?? null;
 }
 
 export interface TopicScore {

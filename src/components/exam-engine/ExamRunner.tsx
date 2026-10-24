@@ -202,6 +202,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
   const resultById = useMemo(() => new Map(result.questions.map((q) => [q.id, q])), [result]);
   const answeredCount = questions.filter((q) => isAnswered(q, { answers, drafts, openScores })).length;
   const unscored = countUnscored(questions, openScores);
+  const isLanguagePaper = paper.subject === 'Български език и литература';
   const topics = useMemo(() => topicBreakdown(paper, result), [paper, result]);
 
   const submit = useCallback(() => {
@@ -402,6 +403,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
                     onScore={setScore}
                     onDraft={setDraft}
                     onFlag={toggleFlag}
+                    language={isLanguagePaper}
                   />
                 ))}
               </ol>
@@ -800,9 +802,11 @@ interface QuestionCardProps {
   onScore: (key: string, v: number) => void;
   onDraft: (key: string, v: string) => void;
   onFlag: (key: string) => void;
+  /** Задача по БЕЛ: без математическите символи в полето за отговор */
+  language: boolean;
 }
 
-const QuestionCard = memo(function QuestionCard({ q, answers, scores, draft, flagged, submitted, correct, onAnswer, onScore, onDraft, onFlag }: QuestionCardProps) {
+const QuestionCard = memo(function QuestionCard({ q, answers, scores, draft, flagged, submitted, correct, onAnswer, onScore, onDraft, onFlag, language }: QuestionCardProps) {
   const promptId = `${q.id}-prompt`;
   const answer = answers[q.id];
   return (
@@ -905,7 +909,14 @@ const QuestionCard = memo(function QuestionCard({ q, answers, scores, draft, fla
       )}
 
       {(q.kind === 'choice' || q.kind === 'short' || q.kind === 'multi') && (
-        <Scratchpad id={`${q.id}-scratch`} value={draft} onChange={(v) => onDraft(q.id, v)} disabled={submitted} />
+        <Scratchpad
+          id={`${q.id}-scratch`}
+          value={draft}
+          onChange={(v) => onDraft(q.id, v)}
+          disabled={submitted}
+          symbols={!language}
+          placeholder={language ? 'Бележки — не се оценяват.' : undefined}
+        />
       )}
 
       {q.kind === 'open' && (
@@ -915,8 +926,13 @@ const QuestionCard = memo(function QuestionCard({ q, answers, scores, draft, fla
           onChange={(v) => onDraft(q.id, v)}
           disabled={submitted}
           defaultOpen
-          label="Твоето решение"
-          placeholder="Запиши решението си стъпка по стъпка. След предаване ще го сравниш с примерното решение и критериите."
+          label={language ? 'Твоят отговор' : 'Твоето решение'}
+          placeholder={
+            language
+              ? 'Напиши отговора си. След предаване ще го сравниш с критериите и примерния отговор на МОН.'
+              : 'Запиши решението си стъпка по стъпка. След предаване ще го сравниш с примерното решение и критериите.'
+          }
+          symbols={!language}
         />
       )}
 

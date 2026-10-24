@@ -5,6 +5,7 @@ import { ChevronDown, PenLine } from 'lucide-react';
  * Чернова към задача (по модела на MathScratchpad в Матура Плюс): сгъваемо поле
  * с лента математически символи, които се вмъкват там, където е курсорът.
  * Символите са Unicode, не LaTeX — така не се зарежда библиотека за формули.
+ * По БЕЛ (symbols={false}) лентата не се показва — там се пише текст.
  */
 
 const SYMBOLS: { s: string; t: string }[] = [
@@ -40,6 +41,8 @@ interface ScratchpadProps {
   defaultOpen?: boolean;
   label?: string;
   placeholder?: string;
+  /** Лента с математически символи — за всички предмети освен БЕЛ */
+  symbols?: boolean;
 }
 
 export const Scratchpad: React.FC<ScratchpadProps> = memo(function Scratchpad({
@@ -50,6 +53,7 @@ export const Scratchpad: React.FC<ScratchpadProps> = memo(function Scratchpad({
   defaultOpen = false,
   label = 'Чернова',
   placeholder = 'Сметки и бележки — не се оценяват.',
+  symbols = true,
 }) {
   const [open, setOpen] = useState(defaultOpen || value.trim() !== '');
   const ref = useRef<HTMLTextAreaElement>(null);
@@ -87,7 +91,7 @@ export const Scratchpad: React.FC<ScratchpadProps> = memo(function Scratchpad({
 
       {open && (
         <div id={`${id}-pad`} className="mt-2 rounded-xl border border-slate-200 bg-slate-50/60 p-2">
-          {!disabled && (
+          {!disabled && symbols && (
             <div className="mb-2 flex flex-wrap gap-1" role="toolbar" aria-label="Математически символи">
               {SYMBOLS.map(({ s, t }) => (
                 <button

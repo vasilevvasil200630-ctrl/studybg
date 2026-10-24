@@ -19,6 +19,8 @@ import {
 import {
   studyProgressService,
   MON_OFFICIAL_EXAMS,
+  MON_EXAM_CALENDAR,
+  nextExamSession,
   computeUserXpAndLevel,
   evaluateUserAchievements,
   type TargetExamTrack,
@@ -31,6 +33,7 @@ import { GRAMMAR_QUESTIONS } from '../data/grammarDatabase';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import { ExcellenceCertificateModal } from './ExcellenceCertificateModal';
+import { PlannerExamResults } from './PlannerExamResults';
 
 interface StudyPlannerDashboardProps {
   lessons: LessonData[];
@@ -83,7 +86,8 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
 
   const activeExam =
     MON_OFFICIAL_EXAMS.find(e => e.id === progress.targetExam) || MON_OFFICIAL_EXAMS[0];
-  const examDate = studyProgressService.getNextExamTimestamp(activeExam);
+  const nextSession = nextExamSession(activeExam, now);
+  const examDate = nextSession.date;
   const diffMs = Math.max(0, examDate.getTime() - now.getTime());
 
   const countdownDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
@@ -413,7 +417,14 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
               </p>
               <p className="flex items-center gap-1.5 text-xs font-semibold text-slate-600">
                 <Calendar className="w-3.5 h-3.5 text-emerald-700 shrink-0" aria-hidden="true" />
-                <span>Официален изпитен календар на МОН • План за Отличен 6.00</span>
+                <span>
+                  Дати по графика на МОН за {MON_EXAM_CALENDAR.schoolYear}:{' '}
+                  {activeExam.sessions.map((s) => `${new Date(s.date).toLocaleDateString('bg-BG')} — ${s.label}`).join('; ')} (
+                  <a href={MON_EXAM_CALENDAR.url} target="_blank" rel="noopener noreferrer" className="underline decoration-slate-300 underline-offset-2 hover:text-slate-900">
+                    {MON_EXAM_CALENDAR.source}
+                  </a>
+                  )
+                </span>
               </p>
             </div>
 
@@ -445,7 +456,10 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
             <div className="lg:col-span-7 space-y-4">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-700">
                 <Clock className="w-4 h-4" />
-                <span>Оставащо време до изпитното утро ({examDate.toLocaleDateString('bg-BG')} г., 08:30 ч.):</span>
+                <span>
+                  Оставащо време до {nextSession.label} ({examDate.toLocaleDateString('bg-BG')}
+                  {nextSession.official ? '' : ' — ориентировъчно, МОН още не е обявил графика'}):
+                </span>
               </div>
 
               <div className="grid grid-cols-4 gap-2.5 sm:gap-4">
@@ -488,13 +502,13 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
 
               <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-600 pt-1">
                 <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 tabular-nums">
-                  Времетраене: {activeExam.durationMinutes} мин
+                  Времетраене: {activeExam.durationText}
                 </span>
                 <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 tabular-nums">
                   Максимум: {activeExam.maxPoints} т.
                 </span>
-                <span className="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-700 border border-emerald-400/30 tabular-nums font-bold">
-                  Праг за успех: {activeExam.passPoints} т. (Среден 3.00)
+                <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200">
+                  {activeExam.resultText}
                 </span>
               </div>
             </div>
@@ -745,6 +759,9 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
         </div>
 
       </div>
+
+      {/* 2.5. РЕАЛНИТЕ РЕЗУЛТАТИ ОТ ИЗПИТНИТЕ ВАРИАНТИ ЗА ИЗБРАНИЯ ИЗПИТ */}
+      <PlannerExamResults track={activeExam.id} onOpenSimulator={() => onNavigateTab('simulator')} onOpenErrorBank={() => onNavigateTab('errorbank')} />
 
       {/* ========================================================================= */}
       {/* 3. INTERACTIVE WEEKLY SCHEDULE GENERATOR ("МОЯТ СЕДМИЧЕН ГРАФИК ЗА 6.00") */}

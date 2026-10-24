@@ -44,69 +44,111 @@ export interface StudyAchievementBadge {
   progressPercent: number;
 }
 
+/** Един изпитен ден по графика на МОН */
+export interface MonExamSession {
+  /** Какво се изпитва в този ден */
+  label: string;
+  /** YYYY-MM-DD; часът не е в графика, затова не се показва */
+  date: string;
+}
+
 export interface MonOfficialExamDate {
   id: TargetExamTrack;
   title: string;
   shortTitle: string;
   grade: string;
-  monthDay: { month: number; day: number; hour: number; minute: number }; // 0-indexed month
-  durationMinutes: number;
+  /** Датите от графика на МОН за учебната година (MON_EXAM_CALENDAR) */
+  sessions: MonExamSession[];
+  /** Ориентир за следващата година, докато МОН не обяви графика (месецът е от 0) */
+  usualMonthDay: { month: number; day: number };
+  durationText: string;
   maxPoints: number;
-  passPoints: number;
+  /** Как се отчита резултатът — без измислени прагове */
+  resultText: string;
   modulesText: string;
   officialNote: string;
 }
 
+/** Откъде са датите на изпитите */
+export const MON_EXAM_CALENDAR = {
+  schoolYear: '2026/2027',
+  source: 'Заповед № РД09-3345/31.08.2026 г. на министъра на образованието и науката',
+  url: 'https://www.mon.bg/dyasno-menyu/vakantsii/'
+} as const;
+
+const DZI_RESULT = 'Резултат в точки; оценката се определя по скалата на МОН за сесията';
+
 export const MON_OFFICIAL_EXAMS: MonOfficialExamDate[] = [
   {
     id: 'dzi_bel',
-    title: 'ДЗИ по Български език и литература (Задължителна матура)',
+    title: 'ДЗИ по български език и литература (задължителна матура)',
     shortTitle: 'ДЗИ БЕЛ (12. клас)',
     grade: '12. клас',
-    monthDay: { month: 4, day: 20, hour: 8, minute: 30 }, // 20 май, 08:30
-    durationMinutes: 240,
+    sessions: [{ label: 'ДЗИ по български език и литература', date: '2027-05-19' }],
+    usualMonthDay: { month: 4, day: 19 },
+    durationText: '240 мин (60 + 60 + 120)',
     maxPoints: 100,
-    passPoints: 30,
-    modulesText: 'Модул 1 (60 мин) + Модул 2 (60 мин) + Модул 3: Есе/ЛИС (120 мин)',
-    officialNote: 'Задължителен държавен зрелостен изпит за всички ученици в 12. клас по програмата за 11.–12. клас.'
+    resultText: DZI_RESULT,
+    modulesText: 'Част 1 (60 мин) + Част 2 (60 мин) + Част 3: есе или интерпретативно съчинение (120 мин)',
+    officialNote: 'Задължителен държавен зрелостен изпит за всички ученици в 12. клас.'
   },
   {
     id: 'dzi_history',
-    title: 'Втори задължителен ДЗИ по профилиращ предмет (История / Профил)',
+    title: 'Втори задължителен ДЗИ по избран предмет',
     shortTitle: 'Втора матура (12. клас)',
     grade: '12. клас',
-    monthDay: { month: 4, day: 22, hour: 8, minute: 30 }, // 22 май, 08:30
-    durationMinutes: 240,
+    sessions: [{ label: 'Втори задължителен ДЗИ', date: '2027-05-21' }],
+    usualMonthDay: { month: 4, day: 21 },
+    durationText: 'според предмета',
     maxPoints: 100,
-    passPoints: 30,
-    modulesText: 'Три модула: Тест (затворени въпроси) + Извори и карта + Историческо есе/теза',
-    officialNote: 'Втори задължителен държавен зрелостен изпит по избран профилиращ предмет от 11.–12. клас.'
+    resultText: DZI_RESULT,
+    modulesText: 'Форматът зависи от избрания предмет — по изпитната програма на МОН.',
+    officialNote: 'Вторият задължителен държавен зрелостен изпит е по предмет, избран от ученика.'
   },
   {
     id: 'nvo_10',
-    title: 'Национално външно оценяване (НВО) по БЕЛ и Математика',
+    title: 'Национално външно оценяване (НВО) в края на X клас',
     shortTitle: 'НВО 10. клас',
     grade: '10. клас',
-    monthDay: { month: 5, day: 12, hour: 8, minute: 0 }, // 12 юни, 08:00
-    durationMinutes: 90,
+    sessions: [
+      { label: 'НВО по БЕЛ (с интегриране на други учебни предмети)', date: '2027-06-18' },
+      { label: 'НВО по математика (с интегриране на други учебни предмети)', date: '2027-06-21' }
+    ],
+    usualMonthDay: { month: 5, day: 18 },
+    durationText: 'през 2026 г.: БЕЛ — 90 мин, математика — 120 мин',
     maxPoints: 100,
-    passPoints: 30,
-    modulesText: 'Единен изпитен модул (90 мин): Езикови задачи, четене с разбиране и създаване на резюме/текст',
-    officialNote: 'Задължителен изпит в края на първия гимназиален етап (8.–10. клас) за удостоверение по МОН.'
+    resultText: 'Резултат в точки — НВО няма праг за успех',
+    modulesText: 'Два изпита в различни дни: по БЕЛ и по математика, и двата с интегриране на други учебни предмети.',
+    officialNote: 'Националното външно оценяване в края на X клас е по български език и литература и по математика.'
   },
   {
     id: 'dzi_stem',
-    title: 'Профилиран ДЗИ по Математика, Биология, Химия или Физика',
+    title: 'ДЗИ по математика, биология, химия или физика (втори задължителен или допълнителен)',
     shortTitle: 'ДЗИ STEM & Природни науки',
     grade: '12. клас',
-    monthDay: { month: 4, day: 22, hour: 8, minute: 30 }, // 22 май, 08:30
-    durationMinutes: 240,
+    sessions: [{ label: 'Втори задължителен ДЗИ', date: '2027-05-21' }],
+    usualMonthDay: { month: 4, day: 21 },
+    durationText: '240 мин (ДЗИ по математика)',
     maxPoints: 100,
-    passPoints: 30,
-    modulesText: 'Тестови модул + Задачи със свободен отговор + Пълно разписване на доказателства/процеси',
-    officialNote: 'Изпит с висок коефициент (x3 / x4) за кандидатстване в МУ, СУ, ТУ и водещите университети.'
+    resultText: DZI_RESULT,
+    modulesText: 'По изпитната програма на МОН за избрания предмет.',
+    officialNote: 'Като втори задължителен ДЗИ — на датата на втория изпит; допълнителните ДЗИ са по отделен график на МОН.'
   }
 ];
+
+/** Следващият изпитен ден: първата неминала дата от графика или (ако графикът е изтекъл) ориентир за следващата година */
+export function nextExamSession(exam: MonOfficialExamDate, now: Date = new Date()): { date: Date; label: string; official: boolean } {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  for (const s of exam.sessions) {
+    const [y, m, d] = s.date.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    if (date.getTime() >= today) return { date, label: s.label, official: true };
+  }
+  const { month, day } = exam.usualMonthDay;
+  let year = now.getFullYear();
+  if (new Date(year, month, day).getTime() < today) year += 1;
+  return { date: new Date(year, month, day), label: exam.sessions[0]?.label ?? exam.shortTitle, official: false };
+}
 
 const PROGRESS_STORAGE_KEY = 'studybg_user_progress_v1';
 const LEGACY_MASTERED_LESSONS_KEY = 'studybg_planner_mastered_lessons_v1';
@@ -616,28 +658,4 @@ export const studyProgressService = {
     this.saveProgress(updated);
     return updated;
   },
-
-  getNextExamTimestamp(exam: MonOfficialExamDate): Date {
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const candidate = new Date(
-      currentYear,
-      exam.monthDay.month,
-      exam.monthDay.day,
-      exam.monthDay.hour,
-      exam.monthDay.minute,
-      0
-    );
-    if (candidate.getTime() <= now.getTime()) {
-      return new Date(
-        currentYear + 1,
-        exam.monthDay.month,
-        exam.monthDay.day,
-        exam.monthDay.hour,
-        exam.monthDay.minute,
-        0
-      );
-    }
-    return candidate;
-  }
 };

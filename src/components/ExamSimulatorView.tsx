@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { examHistoryService } from '../services/examHistoryService';
 import { ExcellenceCertificateModal } from './ExcellenceCertificateModal';
 import { useExamSimulator, type ExamSimulatorScreenProps, type ExamSimulatorViewProps } from './exam-simulator/useExamSimulator';
+import { clearSimulatorMode, peekSimulatorMode, type SimulatorMode } from '../lib/simulatorMode';
 import { ExamCountdownStrip } from './exam-simulator/ExamCountdownStrip';
 import { ExamPresetBar } from './exam-simulator/ExamPresetBar';
 import { ExamHeaderBar } from './exam-simulator/ExamHeaderBar';
@@ -32,14 +33,14 @@ const loadExamModules = (): Promise<ExamModulesModule> => {
 
 const ExamPapersView = lazy(() => import('./ExamPapersView').then((m) => ({ default: m.ExamPapersView })));
 
-type SimulatorMode = 'lesson' | 'papers';
 
 /**
  * Обвивка на симулатора: избор на режим (по урок / пълни изпитни варианти) и
  * динамично зареждане на данните за модулите само за режима „по урок“.
  */
 export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = (props) => {
-  const [mode, setMode] = useState<SimulatorMode>('lesson');
+  const [mode, setMode] = useState<SimulatorMode>(() => peekSimulatorMode('lesson'));
+  useEffect(() => clearSimulatorMode(), []);
   const [examModules, setExamModules] = useState<ExamModulesModule | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loadAttempt, setLoadAttempt] = useState(0);

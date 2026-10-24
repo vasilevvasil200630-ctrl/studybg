@@ -18,6 +18,11 @@ import { NVO10_BEL_2023 } from './officialPapers/nvo10Bel2023';
 import { NVO10_BEL_2022 } from './officialPapers/nvo10Bel2022';
 import { NVO10_BEL_2021 } from './officialPapers/nvo10Bel2021';
 import { DZI_BEL_2026 } from './officialPapers/dziBel2026';
+import { DZI_BEL_2025 } from './officialPapers/dziBel2025';
+import { DZI_BEL_2024 } from './officialPapers/dziBel2024';
+import { DZI_BEL_2023 } from './officialPapers/dziBel2023';
+import { DZI_BEL_2022 } from './officialPapers/dziBel2022';
+import { DZI_BEL_2021 } from './officialPapers/dziBel2021';
 import { DZI_MATH_2025 } from './officialPapers/dziMath2025';
 import { DZI_MATH_2024 } from './officialPapers/dziMath2024';
 import { DZI_MATH_2023 } from './officialPapers/dziMath2023';
@@ -57,6 +62,11 @@ export const EXAM_PAPERS: ExamPaper[] = [
   DZI_MATH_2022,
   DZI_MATH_2021,
   DZI_BEL_2026,
+  DZI_BEL_2025,
+  DZI_BEL_2024,
+  DZI_BEL_2023,
+  DZI_BEL_2022,
+  DZI_BEL_2021,
 
   // -------------------------------------------------------------------------
   // БЕЛ — ДЗИ (12. клас)

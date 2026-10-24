@@ -43,6 +43,8 @@ export interface ShortAnswerQuestion extends QuestionBase {
   /** 'number' сравнява числено („12 000“ = „12000“); 'text' — без значение на главни букви и кавички */
   answerType: 'number' | 'text';
   acceptedAnswers: string[];
+  /** Главните букви се проверяват — когато грешката в условието е именно в главна/малка буква */
+  caseSensitive?: boolean;
   explanation: string;
 }
 
@@ -279,16 +281,15 @@ export function parseNumberAnswer(raw: string): number | null {
   return readings.length > 0 ? readings[0] : null;
 }
 
-export function normalizeTextAnswer(raw: string): string {
-  return raw
-    .toLowerCase()
+export function normalizeTextAnswer(raw: string, keepCase = false): string {
+  return (keepCase ? raw : raw.toLowerCase())
     .replace(/[„“"'«»]/g, '')
     .replace(/[.!?]+$/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-function matchesAccepted(answerType: 'number' | 'text', acceptedAnswers: string[], answer: string): boolean {
+function matchesAccepted(answerType: 'number' | 'text', acceptedAnswers: string[], answer: string, caseSensitive = false): boolean {
   if (!answer.trim()) return false;
   if (answerType === 'number') {
     const readings = numberReadings(answer);
@@ -296,12 +297,12 @@ function matchesAccepted(answerType: 'number' | 'text', acceptedAnswers: string[
       return true;
     }
   }
-  const normalized = normalizeTextAnswer(answer);
-  return acceptedAnswers.some((a) => normalizeTextAnswer(a) === normalized);
+  const normalized = normalizeTextAnswer(answer, caseSensitive);
+  return acceptedAnswers.some((a) => normalizeTextAnswer(a, caseSensitive) === normalized);
 }
 
 export function isShortAnswerCorrect(q: ShortAnswerQuestion, answer: string): boolean {
-  return matchesAccepted(q.answerType, q.acceptedAnswers, answer);
+  return matchesAccepted(q.answerType, q.acceptedAnswers, answer, q.caseSensitive);
 }
 
 export type PartValue = number | string | boolean | number[] | undefined;

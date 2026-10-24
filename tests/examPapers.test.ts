@@ -162,6 +162,16 @@ describe('кратки отговори', () => {
     expect(isShortAnswerCorrect(q('10'), 'десетте')).toBe(true);
   });
 
+  it('caseSensitive проверява главната буква, когато грешката е в нея', () => {
+    const q: ShortAnswerQuestion = {
+      id: 'c', number: 1, kind: 'short', answerType: 'text', prompt: 'p', acceptedAnswers: ['Възраждането'], caseSensitive: true, points: 2, explanation: 'e'
+    };
+    expect(isShortAnswerCorrect(q, 'Възраждането')).toBe(true);
+    expect(isShortAnswerCorrect(q, '„Възраждането“.')).toBe(true);
+    expect(isShortAnswerCorrect(q, 'възраждането')).toBe(false);
+    expect(isShortAnswerCorrect({ ...q, caseSensitive: undefined }, 'възраждането')).toBe(true);
+  });
+
   it('десетична запетая по българската норма; „1,500“ се приема и като 1.5, и като 1500', () => {
     const q = (key: string): ShortAnswerQuestion => ({
       id: 'd', number: 1, kind: 'short', answerType: 'number', prompt: 'p', acceptedAnswers: [key], points: 1, explanation: 'e'
@@ -430,5 +440,26 @@ describe('ДЗИ по БЕЛ — официални варианти', () => {
     for (const fragment of ['Ние двамата!', 'Внезапно я обхвана ненавист', 'От всяко свое пътуване', 'Ела! Ще измием', 'Над 80% от младите хора']) {
       expect(all.includes(fragment), fragment).toBe(false);
     }
+  });
+
+  // id, страници на външните текстове, откъси, които не бива да са копирани
+  it.each([
+    ['official-dzi-bel-2025', ['2–3', '6', '7', '8', '9–10'], ['Спортните занимания са важен фактор', 'Нищо че ни вразумява Санчо', 'Постепенно липата бе станала', 'Каквото съм изпял дотук', 'Не беше той на никого известен', 'Върху светлия, рязко изрязан фон']],
+    ['official-dzi-bel-2024', ['2–3', '7', '8'], ['Рекламата е навлязла дълбоко', 'Толкова радост извика', 'На 23 животът ме е хванал', 'С живота под вежди']],
+    ['official-dzi-bel-2023', ['2–3', '6', '7', '8', '9'], ['Ян Вацлав Мърквичка е чешки художник', 'Не съм аз за свещеник', 'Тежко живееше въшкарчето', 'Затъкава му дъжд', 'Мъглата като балтон', 'В студените нощи, когато пиян']],
+    ['official-dzi-bel-2022', ['2–3', '5', '6', '7', '8'], ['Как можем да мотивираме децата', 'Вместо да бъдат първенци на народа си', 'Към края на седмицата задуха', 'Изнизва се, изнизва броеницата', 'Ако някой протестира, ако е опасен']],
+    ['official-dzi-bel-2021', ['4–5', '7–8', '9–10'], ['В гористите местности на Западен', 'Дългогодишната работа на природозащитниците', 'Стресни се, племе закъсняло']],
+  ] as const)('%s: 41 задачи, 240 мин, 100 т.; защитените текстове сочат PDF-а на МОН', (id, pages, fragments) => {
+    const paper = EXAM_PAPERS.find((x) => x.id === id)!;
+    const qs = allQuestions(paper);
+    expect(qs.map((q) => q.number)).toEqual(Array.from({ length: 41 }, (_, i) => i + 1));
+    expect(paper.durationMinutes).toBe(240);
+    expect(paper.maxPoints).toBe(100);
+    expect(qs.find((q) => q.number === 41)!.points).toBe(30);
+    const external = paper.sections.filter((s) => s.externalText).map((s) => s.externalText!);
+    expect(external.map((e) => e.pages)).toEqual(pages);
+    for (const e of external) expect(e.url).toBe(paper.officialSourceUrl);
+    const all = JSON.stringify(paper);
+    for (const fragment of fragments) expect(all.includes(fragment), fragment).toBe(false);
   });
 });

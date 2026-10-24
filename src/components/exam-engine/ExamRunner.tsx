@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Bookmark, CheckCircle2, ExternalLink, Lightbulb, RotateCcw, Send, Trophy, X, XCircle } from 'lucide-react';
+import { AlertCircle, Bookmark, CheckCircle2, ExternalLink, Lightbulb, RotateCcw, Send, Trophy, X, XCircle } from 'lucide-react';
 import {
   PRACTICE_PAPER_LABEL,
   isPartCorrect,
@@ -16,6 +16,8 @@ import {
 import { formatGrade } from '../../lib/monGradeScale';
 import { clearTestProgress, loadTestProgress, useTestProgressAutosave } from '../../lib/testProgress';
 import { examHistoryService, type ExamAttemptRecord } from '../../services/examHistoryService';
+import { errorBankService } from '../../services/errorBankService';
+import { reviewAnswers } from '../../lib/examMistakes';
 import { ExamFocusBar } from './ExamFocusBar';
 import { FormulaSheetPanel } from './FormulaSheetPanel';
 import { topicBreakdown, topicPercent, type TopicKey, type TopicScore } from '../../data/examTopics';
@@ -31,6 +33,7 @@ import { Scratchpad } from './Scratchpad';
  *
  * Поток: решаване с таймер → предаване (ръчно или при изтичане на времето) → проверка по ключа,
  * обяснения, самооценка на задачите със свободен отговор по критериите → запис в историята на изпитите.
+ * Сгрешените задачи с проверка по ключа отиват в Банката с грешки, а вярно решените там се отбелязват като усвоени.
  * Незавършеният изпит се пази в sessionStorage до 30 минути отсъствие (lib/testProgress).
  */
 
@@ -51,7 +54,11 @@ type Snapshot = {
 const fmt = (n: number): string => (Number.isInteger(n) ? String(n) : n.toFixed(1).replace('.', ','));
 
 export const PaperBadge: React.FC<{ paper: ExamPaper }> = ({ paper }) =>
-  paper.kind === 'topic' ? (
+  paper.kind === 'review' ? (
+    <span className="inline-block rounded-md border border-rose-200 bg-rose-50 px-2 py-0.5 text-xs font-semibold text-rose-800">
+      Задачи от Банката с грешки · ключ на МОН
+    </span>
+  ) : paper.kind === 'topic' ? (
     <span className="inline-block rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-800">
       Официални задачи по тема · ключ на МОН
     </span>
@@ -153,9 +160,20 @@ interface ExamRunnerProps {
   onPracticeTopic?: (key: TopicKey) => void;
   /** Темите, за които има тренировка, различна от текущия набор */
   practiceTopics?: TopicKey[];
+  /** Запис в историята на изпитите (и в резултатите по теми); повторението на грешките не се записва там */
+  recordHistory?: boolean;
+  /** Отваря Банката с грешки (връзката в резултата) */
+  onOpenErrorBank?: () => void;
+  /** Надписът на бутона за връщане в резултата */
+  exitLabel?: string;
+  /** Вариантът, от който е задачата — за реда в Банката с грешки (в набор по тема е различен от текущия) */
+  sourceTitleOf?: (questionId: string) => string | null;
 }
 
-export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPracticeTopic, practiceTopics = [] }) => {
+/** Какво е записано в Банката с грешки при предаването */
+type BankNote = { recorded: number; resolved: number };
+
+export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPracticeTopic, practiceTopics = [], recordHistory = true, onOpenErrorBank, exitLabel = 'Всички варианти', sourceTitleOf }) => {
   const progressKey = `paper:${paper.id}`;
   const timed = !paper.untimed;
   const fullSeconds = paper.durationMinutes * 60;
@@ -176,6 +194,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
   const [hydrated, setHydrated] = useState(false);
   const warnedRef = useRef(false);
   const attemptIdRef = useRef<string | null>(null);
+  const [bankNote, setBankNote] = useState<BankNote | null>(null);
 
   // Възстановяване на незавършен изпит (само в браузъра, след монтиране)
   useEffect(() => {
@@ -239,6 +258,14 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
   // Запис в историята: веднъж при предаване, после обновяване при самооценката
   useEffect(() => {
     if (!submitted) return;
+    if (attemptIdRef.current === null) {
+      // Банката с грешки — веднъж при предаване (самооценката не я засяга)
+      setBankNote(errorBankService.recordExamReview(paper, reviewAnswers(paper, answers), (id) => sourceTitleOf?.(id) ?? paper.title));
+    }
+    if (!recordHistory) {
+      attemptIdRef.current = 'off';
+      return;
+    }
     const data = buildAttempt(paper, result, Math.max(1, timed ? fullSeconds - secondsLeft : spentRef.current), topics);
     if (attemptIdRef.current === null) {
       attemptIdRef.current = 'pending';
@@ -269,6 +296,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
     setRestored(false);
     warnedRef.current = false;
     attemptIdRef.current = null;
+    setBankNote(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -348,6 +376,9 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
           topics={topics}
           practiceTopics={practiceTopics}
           onPracticeTopic={onPracticeTopic}
+          bankNote={bankNote}
+          onOpenErrorBank={onOpenErrorBank}
+          exitLabel={exitLabel}
           pointsNote={
             paper.exam === 'НВО 10'
               ? 'НВО 10: резултатът се отчита в точки'
@@ -450,7 +481,10 @@ const ResultPanel: React.FC<{
   onPracticeTopic?: (key: TopicKey) => void;
   /** Какво да пише под точките, когато няма превръщане в оценка */
   pointsNote: string;
-}> = ({ result, unscored, onRestart, onExit, topics, practiceTopics, onPracticeTopic, pointsNote }) => {
+  bankNote: BankNote | null;
+  onOpenErrorBank?: () => void;
+  exitLabel: string;
+}> = ({ result, unscored, onRestart, onExit, topics, practiceTopics, onPracticeTopic, pointsNote, bankNote, onOpenErrorBank, exitLabel }) => {
   const percent = result.maxPoints > 0 ? Math.round((result.totalPoints / result.maxPoints) * 100) : 0;
   return (
     <section role="status" aria-live="polite" className="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8">
@@ -475,7 +509,7 @@ const ResultPanel: React.FC<{
             Реши отново
           </button>
           <button type="button" onClick={onExit} className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-            Всички варианти
+            {exitLabel}
           </button>
         </div>
       </div>
@@ -497,10 +531,41 @@ const ResultPanel: React.FC<{
         {unscored > 0 && ` — оцени още ${unscored} ${unscored === 1 ? 'отговор' : 'отговора'} по еталона по-долу; резултатът ще се обнови.`}
       </p>
 
+      {bankNote && (bankNote.recorded > 0 || bankNote.resolved > 0) && <BankNoteLine note={bankNote} onOpenErrorBank={onOpenErrorBank} />}
+
       {topics.length > 1 && <TopicAnalysis topics={topics} practiceTopics={practiceTopics} onPracticeTopic={onPracticeTopic} />}
     </section>
   );
 };
+
+const tasks = (n: number) => `${n} ${n === 1 ? 'задача' : 'задачи'}`;
+
+/** Какво отиде в Банката с грешки: сгрешените задачи с проверка по ключа и вече усвоените */
+const BankNoteLine: React.FC<{ note: BankNote; onOpenErrorBank?: () => void }> = ({ note, onOpenErrorBank }) => (
+  <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-rose-100 bg-rose-50/60 px-3.5 py-2.5 text-sm text-slate-700">
+    <p className="flex items-start gap-2">
+      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-600" aria-hidden="true" />
+      <span>
+        {note.recorded > 0 && (
+          <>
+            В Банката с грешки {note.recorded === 1 ? 'е записана' : 'са записани'} <strong>{tasks(note.recorded)}</strong> с грешен отговор.
+          </>
+        )}
+        {note.recorded > 0 && note.resolved > 0 && ' '}
+        {note.resolved > 0 && (
+          <>
+            {note.resolved === 1 ? 'Отбелязана като усвоена' : 'Отбелязани като усвоени'}: <strong>{tasks(note.resolved)}</strong>, {note.resolved === 1 ? 'решена' : 'решени'} вярно този път.
+          </>
+        )}
+      </span>
+    </p>
+    {onOpenErrorBank && note.recorded > 0 && (
+      <button type="button" onClick={onOpenErrorBank} className="rounded-md border border-rose-200 bg-white px-2.5 py-1 text-xs font-semibold text-rose-800 hover:bg-rose-50">
+        Към Банката с грешки
+      </button>
+    )}
+  </div>
+);
 
 /** Резултатът по теми: най-слабата тема е отбелязана и води към тренировка по нея */
 const TopicAnalysis: React.FC<{ topics: TopicScore[]; practiceTopics: TopicKey[]; onPracticeTopic?: (key: TopicKey) => void }> = ({

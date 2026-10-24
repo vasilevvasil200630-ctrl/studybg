@@ -82,7 +82,7 @@ export const ExamSimulatorView: React.FC<ExamSimulatorViewProps> = (props) => {
 
       {mode === 'papers' ? (
         <Suspense fallback={<div className="p-8 text-center text-xs text-slate-500">Зареждане на изпитните варианти…</div>}>
-          <ExamPapersView />
+          <ExamPapersView onOpenErrorBank={props.onOpenErrorBank} />
         </Suspense>
       ) : examData ? (
         <ExamSimulatorScreen {...props} examData={examData} />

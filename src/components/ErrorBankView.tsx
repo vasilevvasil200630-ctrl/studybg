@@ -1,8 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { AlertCircle, CheckCircle2, RotateCcw, Trash2, Check, BookOpen, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
 import { errorBankService, type SavedErrorItem } from '../services/errorBankService';
 import { analyzeErrorBankWithGemini, type ErrorBankAiDiagnosis, AI_EXAMINER_LABEL } from '../services/geminiService';
 import type { QuizQuestion, LessonData } from '../types';
+
+// Задачите от изпитите ползват изпитния двигател (KaTeX, вариантите) — зареждат се само при нужда
+const ExamTaskText = lazy(() => import('./exam-engine/MathText').then((m) => ({ default: m.MathText })));
+const MistakesReview = lazy(() => import('./ErrorBankReview').then((m) => ({ default: m.MistakesReview })));
+
+/** Докато се зарежда KaTeX: текстът без знаците за формула */
+const PlainTaskText: React.FC<{ text: string }> = ({ text }) => <span className="whitespace-pre-line">{text.replace(/\$/g, '')}</span>;
+const TaskText: React.FC<{ text: string }> = ({ text }) => (
+  <Suspense fallback={<PlainTaskText text={text} />}>
+    <ExamTaskText text={text} />
+  </Suspense>
+);
 
 interface ErrorBankViewProps {
   onStartCustomQuiz?: (questions: QuizQuestion[]) => void;
@@ -16,7 +28,8 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
   onSelectLesson
 }) => {
   const [errors, setErrors] = useState<SavedErrorItem[]>([]);
-  const [filter, setFilter] = useState<'all' | 'quiz' | 'audit'>('all');
+  const [filter, setFilter] = useState<'all' | 'quiz' | 'exam' | 'audit'>('all');
+  const [reviewIds, setReviewIds] = useState<string[] | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [aiDiagnosis, setAiDiagnosis] = useState<ErrorBankAiDiagnosis | null>(null);
   const [isAiDiagnosing, setIsAiDiagnosing] = useState<boolean>(false);
@@ -64,11 +77,29 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
   const filteredErrors = errors.filter(e => {
     if (filter === 'quiz') return e.type === 'quiz_question';
     if (filter === 'audit') return e.type === 'notebook_missing_point';
+    if (filter === 'exam') return e.type === 'exam_task';
     return true;
   });
 
   const unresolvedCount = errors.filter(e => !e.resolved).length;
   const resolvedCount = errors.filter(e => e.resolved).length;
+
+  const examReviewIds = errors.filter((e) => e.type === 'exam_task' && !e.resolved && e.examQuestionId).map((e) => e.examQuestionId as string);
+
+  if (reviewIds) {
+    return (
+      <Suspense fallback={<div className="p-8 text-center text-xs text-slate-500">Зареждане на задачите…</div>}>
+        <MistakesReview
+          questionIds={reviewIds}
+          onExit={() => {
+            setReviewIds(null);
+            loadErrors();
+            window.scrollTo({ top: 0 });
+          }}
+        />
+      </Suspense>
+    );
+  }
 
   const quizErrorsWithData = errors
     .filter(e => e.type === 'quiz_question' && e.rawQuestionData)
@@ -116,6 +147,20 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
             >
               {isAiDiagnosing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
               <span>{isAiDiagnosing ? 'Анализирам пропуските...' : `AI диагностика на грешките (${AI_EXAMINER_LABEL})`}</span>
+            </button>
+          )}
+
+          {examReviewIds.length > 0 && (
+            <button
+              type="button"
+              onClick={() => {
+                setReviewIds(examReviewIds);
+                window.scrollTo({ top: 0 });
+              }}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors whitespace-nowrap cursor-pointer"
+            >
+              <RotateCcw className="w-4 h-4" />
+              <span>Реши отново задачите от изпитите ({examReviewIds.length})</span>
             </button>
           )}
 
@@ -191,6 +236,16 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
             Сгрешени въпроси ({errors.filter(e => e.type === 'quiz_question').length})
           </button>
           <button
+            onClick={() => setFilter('exam')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              filter === 'exam'
+                ? 'bg-blue-600 text-white font-semibold shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200'
+            }`}
+          >
+            От изпитните варианти ({errors.filter(e => e.type === 'exam_task').length})
+          </button>
+          <button
             onClick={() => setFilter('audit')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               filter === 'audit'
@@ -225,13 +280,14 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
             Нямате нерешени грешки в този раздел!
           </h4>
           <p className="text-xs text-slate-600 mt-1 max-w-md mx-auto">
-            Когато решавате тестове или правите одит на тетрадката си, проблемните въпроси ще се записват автоматично тук.
+            Когато решавате тестове, изпитни варианти или правите одит на тетрадката си, проблемните въпроси ще се записват автоматично тук.
           </p>
         </div>
       ) : (
         <div className="space-y-3">
           {filteredErrors.map((err) => {
             const isCopied = copiedId === err.id;
+            const isExam = err.type === 'exam_task';
 
             return (
               <div
@@ -252,47 +308,51 @@ export const ErrorBankView: React.FC<ErrorBankViewProps> = ({
                         {err.grade}
                       </span>
                       
-                      {/* Active Lesson Link */}
-                      <button
-                        onClick={() => handleOpenLesson(err)}
-                        className="text-xs text-blue-700 hover:text-blue-800 hover:underline flex items-center gap-1 font-semibold transition-colors"
-                        title="Отвори пълния урок в конспекта"
-                      >
-                        <BookOpen className="w-3 h-3 text-blue-600" />
-                        <span>„{err.lessonTitle}“</span>
-                      </button>
+                      {/* Active Lesson Link; за задача от изпит — вариантът, от който е */}
+                      {isExam ? (
+                        <span className="text-xs font-semibold text-slate-700">{err.lessonTitle}</span>
+                      ) : (
+                        <button
+                          onClick={() => handleOpenLesson(err)}
+                          className="text-xs text-blue-700 hover:text-blue-800 hover:underline flex items-center gap-1 font-semibold transition-colors"
+                          title="Отвори пълния урок в конспекта"
+                        >
+                          <BookOpen className="w-3 h-3 text-blue-600" />
+                          <span>„{err.lessonTitle}“</span>
+                        </button>
+                      )}
 
                       <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${
-                        err.type === 'quiz_question'
-                          ? 'bg-rose-50 text-rose-700 border-rose-200'
-                          : 'bg-amber-50 text-amber-800 border-amber-200'
+                        err.type === 'notebook_missing_point'
+                          ? 'bg-amber-50 text-amber-800 border-amber-200'
+                          : 'bg-rose-50 text-rose-700 border-rose-200'
                       }`}>
-                        {err.type === 'quiz_question' ? 'Сгрешен въпрос' : 'Липсва в тетрадката'}
+                        {err.type === 'quiz_question' ? 'Сгрешен въпрос' : isExam ? 'Задача от изпит' : 'Липсва в тетрадката'}
                       </span>
                     </div>
 
                     <h4 className="text-sm font-semibold text-slate-900 leading-snug">
-                      {err.questionOrRequirement}
+                      {isExam ? <TaskText text={err.questionOrRequirement} /> : err.questionOrRequirement}
                     </h4>
 
                     {err.userAnswer && (
                       <div className="mt-1.5 text-xs text-rose-700">
-                        Посочен отговор: <span className="line-through">{err.userAnswer}</span>
+                        Посочен отговор: <span className="line-through">{isExam ? <TaskText text={err.userAnswer} /> : err.userAnswer}</span>
                       </div>
                     )}
 
                     <div className="mt-2.5 p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1 text-xs">
                       <div className="text-emerald-800 font-semibold">
-                        Верен отговор / записка: <span>{err.correctAnswerOrNote}</span>
+                        Верен отговор / записка: <span>{isExam ? <TaskText text={err.correctAnswerOrNote} /> : err.correctAnswerOrNote}</span>
                       </div>
                       <div className="text-slate-600 text-[11px] leading-relaxed">
-                        Обяснение: {err.explanationOrReason}
+                        Обяснение: {isExam ? <TaskText text={err.explanationOrReason} /> : err.explanationOrReason}
                       </div>
                     </div>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2 sm:self-start">
-                    {onSelectLesson && (
+                    {onSelectLesson && !isExam && (
                       <button
                         onClick={() => handleOpenLesson(err)}
                         className="px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs border border-blue-200 transition-colors flex items-center gap-1 font-medium"

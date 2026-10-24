@@ -56,23 +56,29 @@ export const topicPaperId = (key: TopicKey): string => (key.startsWith('dzi-') ?
 /** Годината на раздел от набор по тема: „y2025“ или „y2025-text1“ → 2025 */
 export const topicSectionYear = (section: PaperSection): number => Number.parseInt(section.id.slice(1), 10);
 
-function buildTopicPaper(key: TopicKey, src: AreaSource): ExamPaper | null {
-  const info = TOPIC_BY_KEY[key];
+/**
+ * Подбраните задачи от няколко варианта, номерирани наново от 1. Поредните задачи без текст от един
+ * вариант са в общ раздел; задачите към текст — в раздел с текста си (откъс или връзка към PDF-а на МОН).
+ */
+export function collectSections(
+  papers: ExamPaper[],
+  keep: (q: PaperQuestion) => boolean,
+  label: (paper: ExamPaper) => { id: string; title: string }
+): PaperSection[] {
   let n = 0;
   const sections: PaperSection[] = [];
-  for (const paper of officialPapers(src)) {
-    const yearTitle = `${src.yearLabel} ${paper.year}`;
-    const instructions = `От официалния вариант „${paper.title}“. Ключът и точките са на МОН.`;
-    // Поредни задачи без текст от една година са в общ раздел; задачите към текст — в раздел с текста си
+  for (const paper of papers) {
+    const { id: baseId, title } = label(paper);
+    const instructions = `От ${paper.kind === 'official' ? 'официалния вариант' : 'варианта'} „${paper.title}“.${paper.kind === 'official' ? ' Ключът и точките са на МОН.' : ''}`;
     let plain: PaperSection | null = null;
     for (const sec of paper.sections) {
-      const questions = sec.questions.filter((q) => topicOf(q) === key).map((q) => ({ ...q, number: ++n }) as PaperQuestion);
+      const questions = sec.questions.filter(keep).map((q) => ({ ...q, number: ++n }) as PaperQuestion);
       if (questions.length === 0) continue;
       const context = sec.sourceText ?? sec.externalText;
       if (context) {
         sections.push({
-          id: `y${paper.year}-${sec.id}`,
-          title: `${yearTitle} — ${context.title}`,
+          id: `${baseId}-${sec.id}`,
+          title: `${title} — ${context.title}`,
           instructions,
           ...(sec.sourceText && { sourceText: sec.sourceText }),
           ...(sec.externalText && { externalText: sec.externalText }),
@@ -82,13 +88,23 @@ function buildTopicPaper(key: TopicKey, src: AreaSource): ExamPaper | null {
       } else if (plain) {
         plain.questions.push(...questions);
       } else {
-        const id = sections.some((s) => s.id === `y${paper.year}`) ? `y${paper.year}-${sec.id}` : `y${paper.year}`;
-        plain = { id, title: yearTitle, instructions, questions };
+        const id = sections.some((s) => s.id === baseId) ? `${baseId}-${sec.id}` : baseId;
+        plain = { id, title, instructions, questions };
         sections.push(plain);
       }
     }
   }
-  if (n === 0) return null;
+  return sections;
+}
+
+function buildTopicPaper(key: TopicKey, src: AreaSource): ExamPaper | null {
+  const info = TOPIC_BY_KEY[key];
+  const sections = collectSections(
+    officialPapers(src),
+    (q) => topicOf(q) === key,
+    (paper) => ({ id: `y${paper.year}`, title: `${src.yearLabel} ${paper.year}` })
+  );
+  if (sections.length === 0) return null;
   const years = sections.map(topicSectionYear);
   const span = Math.min(...years) === Math.max(...years) ? `${years[0]}` : `${Math.min(...years)}–${Math.max(...years)}`;
   return {

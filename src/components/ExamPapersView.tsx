@@ -4,6 +4,7 @@ import { EXAM_PAPERS } from '../data/examPapers';
 import { NVO10_FORMAT_2027, nvo10FormatTag } from '../data/examFormats';
 import { TOPICS, TOPIC_BY_KEY, topicPercent, type TopicArea, type TopicKey } from '../data/examTopics';
 import { AREA_SOURCES, TOPIC_PAPERS, topicPaperId, topicSectionYear } from '../data/topicPapers';
+import { sourcePaperTitle } from '../data/mistakesPaper';
 import type { ExamPaper } from '../lib/examPaperScoring';
 import { loadTopicStats, type TopicStat } from '../lib/topicProgress';
 import { ExamRunner, PaperBadge } from './exam-engine/ExamRunner';
@@ -41,7 +42,7 @@ const topicAreaFor = (exam: ExamPaper['exam'], subject: string): TopicArea | nul
   return entry && TOPIC_PAPERS.some((p) => p.exam === exam && p.subject === subject) ? (entry[0] as TopicArea) : null;
 };
 
-export const ExamPapersView: React.FC = () => {
+export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onOpenErrorBank }) => {
   const [paperId, setPaperId] = useState<string | null>(null);
   const [filter, setFilter] = useState<ExamFilter>('all');
   const paper = ALL_PAPERS.find((p) => p.id === paperId) ?? null;
@@ -57,6 +58,8 @@ export const ExamPapersView: React.FC = () => {
         paper={paper}
         onExit={() => setPaperId(null)}
         practiceTopics={practiceTopics}
+        onOpenErrorBank={onOpenErrorBank}
+        sourceTitleOf={sourcePaperTitle}
         onPracticeTopic={(k) => {
           const id = practicePaperFor(k);
           if (!id) return;

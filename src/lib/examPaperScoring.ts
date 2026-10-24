@@ -122,9 +122,10 @@ export interface ExamPaper {
   /**
    * 'practice' = тренировъчен вариант на StudyBG; 'official' = преписан официален вариант на МОН;
    * 'sample' = примерни задачи, публикувани от МОН (без ключ — отговорите са изчислени от StudyBG);
-   * 'topic' = официални задачи от няколко варианта, събрани по тема (ключът е на МОН)
+   * 'topic' = официални задачи от няколко варианта, събрани по тема (ключът е на МОН);
+   * 'review' = сгрешените задачи от Банката с грешки, събрани от вариантите си
    */
-  kind: 'practice' | 'official' | 'sample' | 'topic';
+  kind: 'practice' | 'official' | 'sample' | 'topic' | 'review';
   /** Задължителен за kind === 'official' и 'sample' (https връзка към PDF на МОН) */
   officialSourceUrl?: string;
   year?: number;

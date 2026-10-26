@@ -14,6 +14,7 @@ import {
 } from '../../lib/studentProfile';
 import { loadDiagnosticRuns } from '../../lib/diagnostic';
 import { MASTERY_LABELS, loadTopicMastery, masteryLevel, type MasteryLevel, type TopicMasteryRecord } from '../../lib/topicMastery';
+import { PlanSection } from './PlanSection';
 import { ProfileForm } from './ProfileForm';
 
 // Тестът зарежда KaTeX — само когато ученикът отвори тест
@@ -214,6 +215,15 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = ({ profile, catalog, les
           {diagnosticDone === testable.length && testable.length > 0 ? 'Виж резултатите' : diagnosticStarted ? 'Продължи входния тест' : 'Направи входния тест'}
         </button>
       </section>
+
+      <PlanSection
+        profile={profile}
+        subjects={included}
+        mastery={mastery}
+        lessons={lessons}
+        onStartQuiz={openQuiz}
+        onChangeProfile={onChangeProfile}
+      />
 
       {plan.missing.length === 0 ? (
         <p className="flex items-start gap-2.5 rounded-xl border border-emerald-200 bg-brand-emerald-soft p-4 text-sm text-emerald-900">

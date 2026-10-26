@@ -8,6 +8,7 @@ import {
   SCHOOL_TYPES,
   STUDENT_GRADES,
   STUDENT_LANGUAGES,
+  WEEKDAY_SHORT,
   type LanguageChoice,
   type StudentProfile,
 } from '../../lib/studentProfile';
@@ -261,6 +262,26 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ initial, catalog, onSa
                 ))}
               </select>
             </label>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-1.5" role="group" aria-label="Дни за учене">
+            <span className="mr-1 text-sm text-slate-700">Дни:</span>
+            {WEEKDAY_SHORT.map((label, day) => {
+              const on = draft.studyDays.includes(day);
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => {
+                    const days = on ? draft.studyDays.filter((d) => d !== day) : [...draft.studyDays, day].sort((a, b) => a - b);
+                    if (days.length) set({ studyDays: days });
+                  }}
+                  className={`h-10 w-12 rounded-md border text-sm font-semibold transition-colors cursor-pointer ${on ? SEG_ON : SEG_OFF}`}
+                >
+                  {label}
+                </button>
+              );
+            })}
           </div>
         </Question>
 

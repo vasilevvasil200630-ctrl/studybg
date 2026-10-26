@@ -25,7 +25,8 @@ const sentenceCase = (s) => {
   const letters = s.replace(/[^\p{L}]/gu, '');
   if (letters.length < 4 || letters !== letters.toUpperCase()) return s;
   const lower = s.toLowerCase();
-  return lower.charAt(0).toUpperCase() + lower.slice(1);
+  const first = lower.search(/\p{L}/u);
+  return lower.slice(0, first) + lower.charAt(first).toUpperCase() + lower.slice(first + 1);
 };
 
 const LOWER_VERB = /\s(знае|умее|разбира|обяснява|изследва|описва|прилага|използва|познава|различава|решава|определя|намира|представя)\s.*$/;
@@ -33,14 +34,17 @@ const LOWER_VERB = /\s(знае|умее|разбира|обяснява|изс�
 const OUTCOME_START = /\s(Класифицира|Интерпретира|Наименува|Съставя|Планира|Предлага|Дава|Дискутира|Изработва|Проучва|Локализира|Разработва|Изказва|Защитава|Експериментира|Осъзнава|Може|Има|Диференцира|Притежава|Запознава|Систематизира|Избира|Изследва|Изчислява|Означава|Разграничава|Прогнозира|Описва|Разпознава|Тълкува|Сравнява|Дефинира|Представя|Различава|Изразява|Назовава|Обяснява|Познава|Разбира|Използва|Прилага|Анализира|Знае|Умее|Определя|Оценява|Характеризира|Идентифицира|Посочва|Съпоставя|Изброява|Проследява|Аргументира|Коментира|Създава|Моделира|Знания:|Умения:|Нагласи:|Брой часове|Общ брой часове|Препоръчително|Акцент в|Учебната програма|Модулът се)(\s|,|$).*$/;
 
 function cleanTitle(raw, num) {
-  let t = raw.replace(/[-]/g, ' ');
+  let t = raw.replace(/[\uE000-\uF8FF]/g, ' ');
   t = t.slice(t.indexOf(num) === 0 ? num.length : 0).trim();
   t = t
     .replace(OUTCOME_START, '')
     .replace(/ХОРАРИУМ.*$/i, '')
-    .replace(/Ученикът:?/g, '')
+    // Само служебното „Ученикът:“ от колоната с резултатите — темата „Ученикът и училището…“ остава
+    .replace(/\s*Ученикът:\s*/g, ' ').replace(/\s+Ученикът$/, '')
     .replace(LOWER_VERB, '')
     .replace(/^(Тема|ТЕМА|тема)\s*:?\s*/, '')
+    // „ТЕМА 1. ОБРАБОТКА…“: номерът остава в заглавието, когато думата „Тема“ е с главни букви
+    .replace(/^\d{1,2}\.\s*/, '')
     .replace(/\s+([,.;:])/g, '$1')
     .replace(/\(\s+/g, '(').replace(/\s+\)/g, ')')
     .replace(/(\p{L})\s?-\s(\p{Ll})/gu, (m, a, b) => (a === a.toLowerCase() ? a + b : m))
@@ -143,7 +147,10 @@ for (const p of programs) {
     const ins = inserts[multi ? `${key}@${mi}` : key] || [];
     const insertAfter = (i) => ins.filter((x) => x.after === i).forEach((x) => add(x.num, x.title, depthOf(x.num), [], []));
     insertAfter(-1);
-    m.topics.forEach((t, ti) => {
+    m.topics.forEach((raw, ti) => {
+      // „ІІІ. 1. „Дядо Горио“…“: номерът на подтемата е с интервал след римската цифра
+      const split = raw.title.match(/^([IVXІ]{1,4})\.\s+(\d{1,2})\.\s*/);
+      const t = split ? { ...raw, num: `${split[1]}.${split[2]}.`, title: raw.title.slice(split[0].length) } : raw;
       const okey = `${key}#${multi ? mi + ':' : ''}${ti}`;
       const ov = overrides[okey];
       if (ov !== null) {

@@ -80,6 +80,8 @@ export interface StudentProfile {
   targetGrade: 4 | 5 | 6;
   /** Колко минути на ден може да учи */
   minutesPerDay: number;
+  /** Дните за учене: 0 = понеделник … 6 = неделя */
+  studyDays: number[];
   updatedAt: string;
 }
 
@@ -99,8 +101,18 @@ export function emptyProfile(grade: StudentGrade = 8): StudentProfile {
     addedProgramIds: [],
     targetGrade: 6,
     minutesPerDay: 45,
+    studyDays: [0, 1, 2, 3, 4],
     updatedAt: new Date(0).toISOString(),
   };
+}
+
+export const WEEKDAY_SHORT = ['Пон', 'Вто', 'Сря', 'Чет', 'Пет', 'Съб', 'Нед'];
+
+/** Профилите отпреди учебните дни нямат това поле — тогава понеделник–петък */
+function parseStudyDays(v: unknown): number[] {
+  if (!Array.isArray(v)) return [0, 1, 2, 3, 4];
+  const days = [...new Set(v.filter((d): d is number => Number.isInteger(d) && d >= 0 && d <= 6))].sort((a, b) => a - b);
+  return days.length ? days : [0, 1, 2, 3, 4];
 }
 
 const isStringArray = (v: unknown): v is string[] => Array.isArray(v) && v.every((x) => typeof x === 'string');
@@ -128,6 +140,7 @@ export function parseStudentProfile(raw: unknown): StudentProfile | null {
     addedProgramIds: raw.addedProgramIds,
     targetGrade: raw.targetGrade === 4 || raw.targetGrade === 5 ? raw.targetGrade : 6,
     minutesPerDay: typeof raw.minutesPerDay === 'number' && raw.minutesPerDay > 0 ? Math.min(raw.minutesPerDay, 600) : 45,
+    studyDays: parseStudyDays(raw.studyDays),
     updatedAt: typeof raw.updatedAt === 'string' ? raw.updatedAt : new Date(0).toISOString(),
   };
 }

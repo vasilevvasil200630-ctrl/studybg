@@ -46,7 +46,9 @@ describe('каталог на учебните програми на МОН', ()
         expect(t.title.length, t.id).toBeGreaterThan(2);
         // Няма текст от колоната с резултатите и недовършени заглавия
         expect(t.title, t.id).not.toMatch(/\s(Разпознава|Обяснява|Описва|Знае|Умее|Ученикът)\s|ХОРАРИУМ|Брой часове/);
-        expect(t.title, t.id).not.toMatch(/(\s(на|във|в|и|с|от|за|при|по|до|към)|[-–])$/);
+        expect(t.title, t.id).not.toMatch(/(\s(на|във|в|и|или|с|от|за|при|по|до|към)|[-–])$/);
+        // Номерът е в полето num, а заглавието започва с главна буква или кавички
+        expect(t.title, t.id).not.toMatch(/^(\d{1,2}\.|\p{Ll})/u);
       }
     }
     expect(programs.filter((p) => p.subject === 'pe').every((p) => !p.testable)).toBe(true);

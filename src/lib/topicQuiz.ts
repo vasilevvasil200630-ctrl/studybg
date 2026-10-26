@@ -129,7 +129,7 @@ export function pickBalanced(questions: TopicQuizQuestion[], avoid: string[] = [
 }
 
 /** Разбърква отговорите така, че верният да е на различни места в теста, а не все на едно */
-export function shuffleOptions(questions: TopicQuizQuestion[], random: () => number = Math.random): TopicQuizQuestion[] {
+export function shuffleOptions<T extends TopicQuizQuestion>(questions: T[], random: () => number = Math.random): T[] {
   const slots = questions.map((_, i) => i % 4);
   for (let i = slots.length - 1; i > 0; i--) {
     const j = Math.floor(random() * (i + 1));

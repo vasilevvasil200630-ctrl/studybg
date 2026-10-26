@@ -140,7 +140,7 @@ const SourceNote: React.FC<{ quiz: TopicQuizResult }> = ({ quiz }) =>
     </p>
   );
 
-const QuestionCard: React.FC<{
+export const QuestionCard: React.FC<{
   question: TopicQuizQuestion;
   index: number;
   total: number;

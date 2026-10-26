@@ -12,11 +12,13 @@ import {
   saveStudentProfile,
   type StudentProfile,
 } from '../../lib/studentProfile';
+import { loadDiagnosticRuns } from '../../lib/diagnostic';
 import { MASTERY_LABELS, loadTopicMastery, masteryLevel, type MasteryLevel, type TopicMasteryRecord } from '../../lib/topicMastery';
 import { ProfileForm } from './ProfileForm';
 
 // Тестът зарежда KaTeX — само когато ученикът отвори тест
 const TopicQuizPanel = lazy(() => import('./TopicQuizPanel').then((m) => ({ default: m.TopicQuizPanel })));
+const DiagnosticPanel = lazy(() => import('./DiagnosticPanel').then((m) => ({ default: m.DiagnosticPanel })));
 
 const MASTERY_STYLE: Record<MasteryLevel, string> = {
   unknown: '',
@@ -126,6 +128,7 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = ({ profile, catalog, les
   const plan = useMemo(() => buildStudentPlan(profile, catalog), [profile, catalog]);
   const mastery = useTopicMastery();
   const [quiz, setQuiz] = useState<{ program: MonProgram; topic: TopicInProgram; lessons: LessonData[] } | null>(null);
+  const [diagnosticOpen, setDiagnosticOpen] = useState(false);
   const included = plan.subjects.filter((s) => s.included);
   const left = plan.subjects.filter((s) => !s.included);
   const lessonById = useMemo(() => new Map(lessons.map((l) => [l.id, l])), [lessons]);
@@ -155,10 +158,23 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = ({ profile, catalog, les
     );
   }
 
+  if (diagnosticOpen) {
+    return (
+      <Suspense fallback={<p className="text-sm text-slate-500">Зарежда се входният тест…</p>}>
+        <DiagnosticPanel subjects={included} onBack={() => setDiagnosticOpen(false)} />
+      </Suspense>
+    );
+  }
+
   const openQuiz = (program: MonProgram, topic: TopicInProgram, topicLessons: LessonData[]) => {
     setQuiz({ program, topic, lessons: topicLessons });
     window.scrollTo({ top: 0 });
   };
+
+  const diagnosticRuns = loadDiagnosticRuns();
+  const testable = included.filter((s) => s.program.testable && s.topicCount > 0);
+  const diagnosticDone = testable.filter((s) => diagnosticRuns[s.program.id]?.finishedAt).length;
+  const diagnosticStarted = testable.some((s) => diagnosticRuns[s.program.id]);
 
   return (
     <div className="space-y-6">
@@ -175,6 +191,27 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = ({ profile, catalog, les
           className="inline-flex h-11 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer"
         >
           <Pencil className="h-4 w-4" /> Промени профила
+        </button>
+      </section>
+
+      <section className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-blue-100 bg-brand-sapphire-soft p-5">
+        <div className="min-w-0 max-w-prose">
+          <h2 className="text-base font-bold text-slate-900">Входен тест</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            {diagnosticDone === testable.length && testable.length > 0
+              ? 'Готов е за всички предмети. Слабите теми са отбелязани по-долу.'
+              : `По 10 въпроса за предмет по цялата програма — показва какво знаеш и можеш. Готови: ${diagnosticDone} от ${testable.length}.`}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            setDiagnosticOpen(true);
+            window.scrollTo({ top: 0 });
+          }}
+          className="inline-flex h-11 items-center rounded-lg bg-brand-sapphire px-5 text-sm font-semibold text-white hover:bg-brand-sapphire-dark cursor-pointer"
+        >
+          {diagnosticDone === testable.length && testable.length > 0 ? 'Виж резултатите' : diagnosticStarted ? 'Продължи входния тест' : 'Направи входния тест'}
         </button>
       </section>
 

@@ -254,6 +254,15 @@ export function App() {
     setIsPolicyModalOpen(true);
   };
 
+  // Броят в менюто се обновява и когато грешка се запише извън App (тест по тема, входен тест)
+  const [, setErrorBankVersion] = useState(0);
+  useEffect(() => {
+    const onMutated = (e: Event) => {
+      if ((e as CustomEvent<{ source?: string }>).detail?.source === 'error_bank') setErrorBankVersion((v) => v + 1);
+    };
+    window.addEventListener('studybg:local-data-mutated', onMutated);
+    return () => window.removeEventListener('studybg:local-data-mutated', onMutated);
+  }, []);
   const unresolvedErrorCount = errorBankService.getUnresolvedCount();
 
   const handleSelectPortalMode = (mode: 'study' | 'culture') => {

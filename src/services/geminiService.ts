@@ -897,3 +897,38 @@ export const generateQuizQuestionsWithGemini = async (params: { system: string; 
   });
   return Array.isArray(parsed.questions) ? parsed.questions : [];
 };
+
+// Входният тест: всеки въпрос носи кода на темата (T1…) и вида — знание или приложение
+const DIAGNOSTIC_SCHEMA = {
+  type: 'OBJECT',
+  required: ['questions'],
+  properties: {
+    questions: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        required: ['topic', 'kind', 'question', 'solution', 'options', 'correctIndex'],
+        propertyOrdering: ['topic', 'kind', 'question', 'solution', 'options', 'correctIndex'],
+        properties: {
+          topic: STRING,
+          kind: { type: 'STRING', enum: ['knows', 'can'] },
+          question: STRING,
+          solution: STRING,
+          options: STRING_ARRAY,
+          correctIndex: { type: 'INTEGER' }
+        }
+      }
+    }
+  }
+} as const;
+
+export const generateDiagnosticQuestionsWithGemini = async (params: { system: string; user: string }): Promise<unknown[]> => {
+  const parsed = await callGeminiJson({
+    system: params.system,
+    user: params.user,
+    schema: DIAGNOSTIC_SCHEMA,
+    temperature: 0.8,
+    extraConfig: { thinkingConfig: { thinkingLevel: 'low' } }
+  });
+  return Array.isArray(parsed.questions) ? parsed.questions : [];
+};

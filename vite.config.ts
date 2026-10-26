@@ -90,6 +90,16 @@ export default defineConfig({
           if (id.includes('src/data/examModulesData')) {
             return 'data-exam-modules';
           }
+          // Изпитните варианти: отделно математика, БЕЛ и чертежите — свалят се паралелно и се кешират поотделно
+          if (id.includes('src/components/exam-engine/figures')) {
+            return 'exam-figures';
+          }
+          if (id.includes('src/data/officialPapers/') && /Bel20\d\d/.test(id)) {
+            return 'data-exam-bel';
+          }
+          if (id.includes('src/data/officialPapers/') || id.includes('src/data/integratedSamples/')) {
+            return 'data-exam-math';
+          }
         }
       }
     }

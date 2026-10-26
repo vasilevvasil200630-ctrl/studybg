@@ -102,6 +102,20 @@ describe('каталог на учебните програми на МОН', ()
   });
 });
 
+describe('уроци, написани по темите на МОН', () => {
+  it('всеки урок сочи към съществуваща тема, а математиката за 8. клас е покрита изцяло', async () => {
+    const { MON_LESSONS } = await import('../src/data/monLessons');
+    const programs = await loadMonCatalog();
+    const topicIds = new Set(programs.flatMap((p) => p.modules.flatMap((m) => m.topics.map((t) => t.id))));
+    for (const lesson of MON_LESSONS) {
+      expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
+      for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
+    }
+    const report = programCoverage(byId(programs, '8-math'), MON_LESSONS);
+    expect(report.covered).toBe(report.total);
+  });
+});
+
 describe('покритие с уроци от сайта', () => {
   it('класовете на уроците', () => {
     expect(lessonGradeNumbers('8.–10. клас')).toEqual([8, 9, 10]);

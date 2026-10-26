@@ -65,9 +65,11 @@ export function programCoverage(program: MonProgram, lessons: LessonData[]): Pro
   const candidates = lessonSubject
     ? lessons.filter((l) => l.subject === lessonSubject && lessonGradeNumbers(l.grade).some((g) => grades.includes(g)))
     : [];
-  const topics = practiceTopics(program).map((t) => ({
-    topicId: t.id,
-    lessonIds: candidates.filter((l) => titlesMatch(t.title, l.title)).map((l) => l.id),
-  }));
+  const topics = practiceTopics(program).map((t) => {
+    // Урок, написан по темата от каталога, се връзва точно; останалите — по заглавие
+    const exact = lessons.filter((l) => l.monTopicIds?.includes(t.id)).map((l) => l.id);
+    const similar = candidates.filter((l) => !l.monTopicIds && titlesMatch(t.title, l.title)).map((l) => l.id);
+    return { topicId: t.id, lessonIds: [...exact, ...similar] };
+  });
   return { programId: program.id, topics, covered: topics.filter((t) => t.lessonIds.length).length, total: topics.length };
 }

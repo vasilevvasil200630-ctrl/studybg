@@ -56,6 +56,8 @@ export interface LessonData {
   flashcards: Flashcard[];
   quiz: QuizQuestion[];
   quickQuestions: string[];
+  /** Темите от каталога на МОН, които урокът покрива (src/data/monCurriculum) — точна връзка, без сравняване на заглавия */
+  monTopicIds?: string[];
 }
 
 export type GradeLevel =

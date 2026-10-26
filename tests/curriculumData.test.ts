@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { loadFullCurriculumLessons } from '../src/data/curriculumDatabase';
+import { loadFullCurriculumLessons, TOTAL_CURRICULUM_LESSONS_COUNT } from '../src/data/curriculumDatabase';
 import { BULGARIAN_CURRICULUM_TREE } from '../src/data/bulgarianCurriculumTree';
 import { classifyAndDiagnoseNotebook } from '../src/services/curriculumClassifier';
 import { generateLessonFromInput } from '../src/services/aiGenerator';
@@ -15,7 +15,7 @@ import { validateLessons } from '../scripts/lib/validateLessons.mjs';
 describe('данни за уроците', () => {
   it('всички уроци минават валидацията и имат балансирани верни отговори', async () => {
     const lessons = await loadFullCurriculumLessons();
-    expect(lessons.length).toBe(108);
+    expect(lessons.length).toBe(TOTAL_CURRICULUM_LESSONS_COUNT);
     expect(validateLessons(lessons, { subjects: LESSON_SUBJECTS, grades: LESSON_GRADES })).toEqual([]);
 
     const dist = [0, 0, 0, 0];

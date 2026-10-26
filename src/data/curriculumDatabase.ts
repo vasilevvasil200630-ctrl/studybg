@@ -1131,7 +1131,8 @@ function buildInterleavedCurriculum(allLessons: LessonData[]): LessonData[] {
   return [...interleaved, ...otherBucket];
 }
 
-export const TOTAL_CURRICULUM_LESSONS_COUNT = 108;
+// 108 урока + уроците по темите от каталога на МОН (src/data/monLessons)
+export const TOTAL_CURRICULUM_LESSONS_COUNT = 116;
 
 export const CURRICULUM_LESSONS: LessonData[] = buildInterleavedCurriculum(
   CORE_CURRICULUM_LESSONS.map(ensureNotebookChecklist)
@@ -1156,9 +1157,11 @@ export async function loadFullCurriculumLessons(): Promise<LessonData[]> {
     import('./curriculumExpansionLessons'),
     import('./curriculumExpansionLessonsPart1B'),
     import('./curriculumExpansionLessonsPart2'),
-    import('./curriculumExpansionLessonsPart3')
-  ]).then(([corePack, part1A, part1B, part2, part3]) => {
+    import('./curriculumExpansionLessonsPart3'),
+    import('./monLessons')
+  ]).then(([corePack, part1A, part1B, part2, part3, monLessons]) => {
     const fullRaw: LessonData[] = [
+      ...monLessons.MON_LESSONS,
       ...part1A.EXTRA_CURRICULUM_LESSONS,
       ...part1B.EXTRA_CURRICULUM_LESSONS_PART1B,
       ...part2.EXTRA_CURRICULUM_LESSONS_PART2,

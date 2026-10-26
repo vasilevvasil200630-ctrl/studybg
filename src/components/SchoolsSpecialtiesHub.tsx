@@ -1270,19 +1270,19 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                   ? (secondExamTheoryGrade + dippkPracticeGrade) / 2
                   : secondExamTheoryGrade;
               const examsAverage = (dziBelGrade + dippkCombined) / 2;
+              // Приближение: официалният успех е средноаритметично от всички оценки в дипломата, а тук се въвеждат
+              // само средни оценки по групи, затова групите са с примерни тегла (50% / 25% / 25%)
               const finalDiplomaGrade = (oopAverage * 0.5) + (specAverage * 0.25) + (examsAverage * 0.25);
-              // За Свидетелство за Трета СПК: средноаритметично от успеха по специалните предмети и оценките от ДИППК (Теория и Практика)
-              const spkCertificateGrade = (specAverage + secondExamTheoryGrade + dippkPracticeGrade) / 3;
 
               return (
                 <>
                   <div className="space-y-1 border-b border-slate-200 pb-4">
                     <div className="text-xs font-bold uppercase tracking-wider text-brand-sapphire">
-                      Официална симулация на дипломиране (12. клас)
+                      Ориентировъчна симулация на дипломиране (12. клас)
                     </div>
                     <div className="text-sm text-slate-600">
                       {calcSchoolMode === 'vocational'
-                        ? 'Диплома за средно образование + Свидетелство за Трета СПК (Европас)'
+                        ? 'Диплома за средно образование + изпит за трета степен на професионална квалификация'
                         : 'Диплома за средно образование (Профилирана подготовка)'}
                     </div>
                   </div>
@@ -1307,25 +1307,25 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                     {calcSchoolMode === 'vocational' ? (
                       <div className="p-4 rounded-2xl bg-slate-50 border border-amber-200">
                         <div className="text-[11px] font-bold uppercase text-amber-700">
-                          Трета СПК (ДИППК)
+                          Изпит за трета СПК
                         </div>
                         <div className="text-3xl font-bold text-amber-700 mt-1">
-                          {spkCertificateGrade.toFixed(2)}
+                          {dippkCombined.toFixed(2)}
                         </div>
                         <div className="text-[11px] text-slate-600 mt-1">
-                          Европейско ниво EQF 4
+                          0,5 × теория + 0,5 × практика (Наредба № 1)
                         </div>
                       </div>
                     ) : (
                       <div className="p-4 rounded-2xl bg-slate-50 border border-emerald-200">
                         <div className="text-[11px] font-bold uppercase text-emerald-700">
-                          Средно от 2-те матури ДЗИ
+                          Средно от двата ДЗИ
                         </div>
                         <div className="text-3xl font-bold text-emerald-700 mt-1">
                           {examsAverage.toFixed(2)}
                         </div>
                         <div className="text-[11px] text-slate-600 mt-1">
-                          Конкурсен бал за ВУЗ
+                          Балът за ВУЗ — по правилата на университета
                         </div>
                       </div>
                     )}
@@ -1333,6 +1333,10 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
 
                   <div className="rounded-2xl bg-slate-50 border border-slate-200 p-4 space-y-2 text-xs text-slate-600">
                     <div className="font-bold text-slate-900">Разбивка по компоненти:</div>
+                    <p className="text-[11px] leading-relaxed text-slate-500">
+                      Официално успехът в дипломата е средноаритметично от всички оценки в нея. Тук въвеждаш средни оценки по групи,
+                      затова резултатът е приближение с примерни тегла: 50% общообразователна подготовка, 25% профил или специалност, 25% ДЗИ.
+                    </p>
                     <div className="flex justify-between">
                       <span>• Раздел А (ООП 8.–12. клас):</span>
                       <strong className="text-brand-sapphire">{oopAverage.toFixed(2)}</strong>

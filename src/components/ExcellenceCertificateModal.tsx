@@ -308,16 +308,16 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
   <div class="cert-outer">
     <div class="cert-inner">
       <div class="badge-top">
-        ${isSpk ? 'РЕПУБЛИКА БЪЛГАРИЯ • МОН • СВИДЕТЕЛСТВО ЗА ТРЕТА СПК + EUROPASS (EQF LEVEL 4)' : 'StudyBG • Национална дигитална академия за НВО 10 & ДЗИ 12'}
+        ${isSpk ? 'StudyBG • Симулация на ДИППК • НЕ Е ОФИЦИАЛЕН ДОКУМЕНТ' : 'StudyBG • Национална дигитална академия за НВО 10 & ДЗИ 12'}
       </div>
-      <h1>${isSpk ? 'Свидетелство за Професионална Квалификация' : 'Удостоверение за Академично Отличие'}</h1>
+      <h1>${isSpk ? 'Резултат от симулация на ДИППК' : 'Удостоверение за Академично Отличие'}</h1>
       <div class="subtitle">
         ${isSpk
-          ? `Издадено след успешно положен Държавен изпит по теория и практика (ДИППК) по Наредба № 1 на МОН • ${selectedSpk.eqfLevel}`
+          ? 'Тренировъчен резултат в StudyBG по формулата на Наредба № 1 на МОН (трета степен: 0,5 × теория + 0,5 × практика; оценка = точки × 0,06). Не удостоверява професионална квалификация.'
           : 'Сертификат за систематична подготовка по държавните образователни стандарти на МОН'}
       </div>
 
-      <div class="presented-to">${isSpk ? 'Присъжда се Трета степен на професионална квалификация на:' : 'Настоящата грамота се връчва на:'}</div>
+      <div class="presented-to">${isSpk ? 'Резултат на:' : 'Настоящата грамота се връчва на:'}</div>
       <div class="student-name">${studentName || 'Отличник на StudyBG'}</div>
       <div class="school-line">${schoolAndGrade || '12. клас • Гимназиален етап'}</div>
 
@@ -336,12 +336,12 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
 
       <div class="footer-row">
         <div style="text-align: left;">
-          <div><strong>Дата на издаване:</strong> ${formattedDate}</div>
-          <div><strong>Рег. № / Код:</strong> <span style="font-family: monospace;">${certificateCode}</span></div>
+          <div><strong>Дата:</strong> ${formattedDate}</div>
+          <div><strong>Код на разпечатката:</strong> <span style="font-family: monospace;">${certificateCode}</span></div>
         </div>
-        <div class="seal">${isSpk ? '★ ТРЕТА СПК • EQF НИВО 4 ★' : '★ Стандарт Отличен 6.00 ★'}</div>
+        <div class="seal">${isSpk ? '★ Симулация • StudyBG ★' : '★ Стандарт Отличен 6.00 ★'}</div>
         <div style="text-align: right;">
-          <div><strong>${isSpk ? 'Държавна изпитна комисия (ДИППК)' : 'Академичен съвет на StudyBG'}</strong></div>
+          <div><strong>${isSpk ? 'StudyBG — тренировъчна платформа' : 'Академичен съвет на StudyBG'}</strong></div>
           <div>studybg.vercel.app</div>
         </div>
       </div>
@@ -364,7 +364,7 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
   const handleCopySummary = () => {
     const text =
       docMode === 'spk_europass'
-        ? `Свидетелство за Трета СПК + EUROPASS (StudyBG)\nДипломант: ${studentName} (${schoolAndGrade})\nПрофесия: ${selectedSpk.code} ${selectedSpk.profession} (${selectedSpk.specialty})\nРезултат ДИППК: ${scoreText} | ${gradeLabel}\nРег. код: ${certificateCode} • studybg.vercel.app`
+        ? `Резултат от симулация на ДИППК (StudyBG — не е официален документ)\nУченик: ${studentName} (${schoolAndGrade})\nПрофесия: ${selectedSpk.code} ${selectedSpk.profession} (${selectedSpk.specialty})\nРезултат: ${scoreText} | ${gradeLabel}\nКод: ${certificateCode} • studybg.vercel.app`
         : `Удостоверение за Академично Отличие (StudyBG)\nУченик: ${studentName} (${schoolAndGrade})\nПостижение: ${achievementTitle} — ${examOrTrackLabel}\nРезултат: ${scoreText} | ${gradeLabel}\nКод: ${certificateCode} • studybg.vercel.app`;
     navigator.clipboard?.writeText(text);
     setCopied(true);
@@ -383,7 +383,7 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
             </div>
             <div>
               <h2 id="cert-modal-title" className="text-base sm:text-lg font-bold text-slate-900">
-                Генератор на Грамота за 6.00 & Свидетелство за Трета СПК (EUROPASS)
+                Грамота за 6.00 и разпечатка от симулация на ДИППК
               </h2>
               <p className="text-xs text-slate-500">
                 Персонализирай и разпечатай като А4 документ своето удостоверение от StudyBG (не е официален документ)
@@ -428,9 +428,9 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
                   : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'
               }`}
             >
-              <div className="text-xs font-bold">2. Свидетелство за Трета СПК + EUROPASS</div>
+              <div className="text-xs font-bold">2. Резултат от симулация на ДИППК</div>
               <div className={`text-[11px] mt-0.5 ${docMode === 'spk_europass' ? 'text-emerald-100' : 'text-slate-500'}`}>
-                Професионална квалификация (EQF Ниво 4 по Наредба № 1 на МОН)
+                Разпечатка за упражнение — не е свидетелство за професионална квалификация
               </div>
             </button>
           </div>
@@ -492,7 +492,7 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
                 <GraduationCap className="w-3.5 h-3.5 text-blue-600" />
                 <span>
                   {docMode === 'spk_europass'
-                    ? 'МОН • Наредба № 1 за ДИППК • EUROPASS Приложение (EQF Ниво 4)'
+                    ? 'StudyBG • Симулация на ДИППК • не е официален документ'
                     : 'StudyBG • Национална дигитална академия'}
                 </span>
               </div>
@@ -500,12 +500,12 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
               <div className="space-y-1">
                 <h3 className="text-lg sm:text-2xl font-bold uppercase tracking-wide text-slate-900 font-serif">
                   {docMode === 'spk_europass'
-                    ? 'Свидетелство за Професионална Квалификация (Трета СПК)'
+                    ? 'Резултат от симулация на ДИППК'
                     : 'Удостоверение за Академично Отличие'}
                 </h3>
                 <p className="text-xs text-slate-500">
                   {docMode === 'spk_europass'
-                    ? 'Удостоверява успешно положен Държавен изпит по теория и практика на професията на:'
+                    ? 'Тренировъчен резултат в StudyBG по формулата на Наредба № 1 на МОН (трета степен: 0,5 × теория + 0,5 × практика; оценка = точки × 0,06). Не удостоверява професионална квалификация.'
                     : 'Връчва се за систематична подготовка по държавните образователни стандарти на МОН на:'}
                 </p>
               </div>
@@ -561,17 +561,17 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
               <div className="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
                 <div className="text-center sm:text-left">
                   <div>Дата: <strong className="text-slate-700">{formattedDate}</strong></div>
-                  <div>Рег. код: <strong className="tabular-nums text-slate-700">{certificateCode}</strong></div>
+                  <div>Код на разпечатката: <strong className="tabular-nums text-slate-700">{certificateCode}</strong></div>
                 </div>
 
                 <div className="px-3.5 py-1 rounded-full bg-amber-50 border border-amber-300 text-amber-800 font-bold uppercase tracking-wider text-[10px] flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
-                  <span>{docMode === 'spk_europass' ? 'Трета СПК • EQF Level 4' : 'Верифициран Стандарт 6.00'}</span>
+                  <span>{docMode === 'spk_europass' ? 'Симулация • StudyBG' : 'StudyBG • Отличен 6.00'}</span>
                 </div>
 
                 <div className="text-center sm:text-right">
                   <div className="font-bold text-slate-700">
-                    {docMode === 'spk_europass' ? 'Държавна изпитна комисия (ДИППК)' : 'Академичен съвет на StudyBG'}
+                    {docMode === 'spk_europass' ? 'StudyBG — тренировъчна платформа' : 'Академичен съвет на StudyBG'}
                   </div>
                   <div>studybg.vercel.app</div>
                 </div>

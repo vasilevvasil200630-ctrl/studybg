@@ -657,9 +657,9 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
               </div>
               <span className="text-sm font-bold tabular-nums text-slate-700">{authorsPercent}%</span>
             </div>
-            <h3 className="text-sm font-bold text-slate-900">Литературен канон (41. в-с)</h3>
+            <h3 className="text-sm font-bold text-slate-900">Литературен канон</h3>
             <p className="text-xs text-slate-500">
-              Преговорени <strong>{masteredAuthorsCount}</strong> от общо <strong>{totalAuthors}</strong> задължителни автори за ДЗИ.
+              Преговорени <strong>{masteredAuthorsCount}</strong> от общо <strong>{totalAuthors}</strong> автори в литературния канон на StudyBG.
             </p>
             <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
               <div className="h-full bg-slate-600 rounded-full transition-all" style={{ width: `${authorsPercent}%` }} />
@@ -1065,7 +1065,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-brand-sapphire hover:bg-brand-sapphire-dark text-white font-bold text-xs transition-all cursor-pointer shrink-0"
           >
             <Award className="w-4 h-4" />
-            <span>Издай Грамота / Свидетелство Трета СПК + EUROPASS</span>
+            <span>Грамота за 6.00 / разпечатка от симулация на ДИППК</span>
           </button>
         </div>
 

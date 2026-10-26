@@ -42,6 +42,10 @@ describe('monGradeScale', () => {
     expect(pointsToGrade(100).numeric).toBe(6);
   });
 
+  it('ДИППК — Наредба № 1, чл. 13, ал. 3: оценка = точки × 0,06 (от 50 т., чл. 17, ал. 2)', () => {
+    for (const p of [50, 62.5, 75, 84, 91.5, 100]) expect(pointsToGrade(p, DIPPK_SCALE).numeric).toBeCloseTo(Math.round(p * 0.06 * 100) / 100, 2);
+  });
+
   it('ДИППК: 49 т. → 2.00, 50 т. → 3.00, 100 т. → 6.00', () => {
     expect(pointsToGrade(49, DIPPK_SCALE).numeric).toBe(2);
     expect(pointsToGrade(50, DIPPK_SCALE).numeric).toBe(3);

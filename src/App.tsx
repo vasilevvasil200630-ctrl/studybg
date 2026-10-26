@@ -224,7 +224,7 @@ export function App() {
       blitz: 'Speed Blitz 6.00 (45 въпроса & Отборен Дуел за 2 играчи) | StudyBG',
       simulator: '100-точков Изпитен Симулатор за ДЗИ, НВО и Трета СПК | StudyBG',
       generator: 'Генератор на Тестове (Група А/Б) & Държавни изпитни билети за ДИППК | StudyBG',
-      calculator: 'МОН Калкулатор за Оценка, ВУЗ Бал и Свидетелство Трета СПК (EUROPASS) | StudyBG',
+      calculator: 'Калкулатор: оценка от ДЗИ, бал и изпит за трета СПК | StudyBG',
       catalog: `Пълен Учебен Каталог (${totalLessonsDisplayCount} теми за 5.–12. клас) | StudyBG`,
       cases: 'Академични Казуси с Архивни Извори (11.–12. клас) | StudyBG',
       errorbank: 'Интерактивна Банка с Грешки и Персонален Тест | StudyBG',

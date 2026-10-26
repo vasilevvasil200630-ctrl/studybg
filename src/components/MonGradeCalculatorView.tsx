@@ -53,7 +53,6 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
   // Mode 4: ДИППК (Трета СПК - Теория + Практика + ЗПП успех)
   const [dippkTheoryPoints, setDippkTheoryPoints] = useState<number>(84);
   const [dippkPracticePoints, setDippkPracticePoints] = useState<number>(92);
-  const [dippkSubjectsAvg, setDippkSubjectsAvg] = useState<number>(5.65);
 
   const GRADE_STYLES: Record<VerbalGrade, { badge: string; color: string; status: string }> = {
     'Отличен': {
@@ -117,16 +116,15 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
     return { bal: Number(bal.toFixed(2)), maxBal, percentage };
   }, [diplomaGrade, examGrade, examMultiplier]);
 
-  // ДИППК (Трета СПК) Calculation according to Наредба № 1 на МОН
+  // ДИППК (трета степен) по Наредба № 1 на МОН: всяка част се издържа с 50 от 100 т. (чл. 17, ал. 2)
   const dippkResult = useMemo(() => {
     const pointsToSpkGrade = (pts: number) => pointsToGrade(pts, DIPPK_SCALE).numeric;
     const theoryGrade = pointsToSpkGrade(dippkTheoryPoints);
     const practiceGrade = pointsToSpkGrade(dippkPracticePoints);
     const bothPassed = dippkTheoryPoints >= DIPPK_SCALE.passPoints && dippkPracticePoints >= DIPPK_SCALE.passPoints;
     const dippkExamAvg = bothPassed ? Number(((theoryGrade + practiceGrade) / 2).toFixed(2)) : 2.00;
-    const certificateFinalGrade = bothPassed
-      ? Number(((dippkSubjectsAvg + theoryGrade + practiceGrade) / 3).toFixed(2))
-      : 2.00;
+    // Наредба № 1, чл. 13: трета степен — 0,5 × теория + 0,5 × практика; оценка = точки × 0,06
+    const certificateFinalGrade = dippkExamAvg;
 
     const verbal = verbalGrade(certificateFinalGrade);
 
@@ -138,7 +136,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
       certificateFinalGrade,
       verbal,
     };
-  }, [dippkTheoryPoints, dippkPracticePoints, dippkSubjectsAvg]);
+  }, [dippkTheoryPoints, dippkPracticePoints]);
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -528,12 +526,12 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
                 </span>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {[
-                    { mult: 3, label: 'x3 (СУ, УНСС, ТУ)', desc: 'Стандартен прием' },
-                    { mult: 4, label: 'x4 (Право / МУ / Мед.)', desc: 'Максимална тежест' },
-                    { mult: 3.5, label: 'x3.5 (УАСГ / Архит.)', desc: 'Математика + Физика' },
-                    { mult: 2.5, label: 'x2.5 (Икономика / ИТ)', desc: 'Смесен бал' },
-                    { mult: 2, label: 'x2 (ВВМУ / ВВВУ)', desc: 'Инженерен прием' },
-                    { mult: 1.5, label: 'x1.5 (НСА / Академии)', desc: 'Практически прием' }
+                    { mult: 1.5, label: '× 1,5', desc: 'коефициент на матурата' },
+                    { mult: 2, label: '× 2', desc: 'коефициент на матурата' },
+                    { mult: 2.5, label: '× 2,5', desc: 'коефициент на матурата' },
+                    { mult: 3, label: '× 3', desc: 'коефициент на матурата' },
+                    { mult: 3.5, label: '× 3,5', desc: 'коефициент на матурата' },
+                    { mult: 4, label: '× 4', desc: 'коефициент на матурата' }
                   ].map((m) => (
                     <button
                       key={m.mult}
@@ -599,6 +597,9 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               <span className="font-bold text-slate-800 block">Формула:</span>
               <span>
                 (Диплома {diplomaGrade.toFixed(2)} × 1) + (ДЗИ {examGrade.toFixed(2)} × {examMultiplier}) = <strong>{universityBal.bal.toFixed(2)}</strong>
+              </span>
+              <span className="block text-[11px] text-slate-500">
+                Това е примерна формула. Всеки университет определя своята — кои оценки участват и с какви коефициенти — в правилника си за прием за съответната година.
               </span>
             </div>
 
@@ -683,46 +684,26 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               />
             </div>
 
-            {/* Part 3: Average from Vocational Subjects (ЗПП) */}
-            <div className="flex items-center justify-between gap-4 pt-2 border-t border-slate-100">
-              <div>
-                <span className="text-xs font-bold text-slate-800 block">
-                  3. Среден успех от специалните предмети в гимназията (ЗПП):
-                </span>
-                <span className="text-[11px] text-slate-500">
-                  Участва при формиране на окончателната оценка в Свидетелството за СПК
-                </span>
-              </div>
-              <input
-                type="number"
-                min={3.00}
-                max={6.00}
-                step={0.05}
-                value={dippkSubjectsAvg}
-                onChange={(e) => setDippkSubjectsAvg(Math.min(6.00, Math.max(3.00, Number(e.target.value) || 3)))}
-                className="w-20 p-2 rounded-xl border border-slate-300 text-center tabular-nums text-base font-bold text-slate-900"
-              />
-            </div>
           </div>
 
           {/* Right Column: Calculated SPK Certificate Grade */}
           <div className="lg:col-span-5 p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-5">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Свидетелство за Трета СПК
+                Резултат от изпита (трета степен)
               </span>
               <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
                 dippkResult.bothPassed
                   ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                   : 'bg-rose-50 text-rose-800 border-rose-200'
               }`}>
-                {dippkResult.bothPassed ? 'Придобита III СПК' : 'Под прага от 50 т.'}
+                {dippkResult.bothPassed ? 'И двете части са издържани' : 'Под прага от 50 т.'}
               </span>
             </div>
 
             <div className="text-center py-4 bg-blue-50/60 rounded-2xl border border-blue-200 space-y-1">
               <span className="text-xs text-blue-900 font-medium">
-                Окончателна оценка в Свидетелството за СПК (EUROPASS):
+                Окончателна оценка от изпита (Наредба № 1, чл. 13):
               </span>
               <div className="text-4xl sm:text-5xl font-bold tabular-nums text-blue-950">
                 {dippkResult.certificateFinalGrade.toFixed(2)}
@@ -753,7 +734,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
               className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
             >
               <Award className="w-4 h-4" />
-              <span>Издай Свидетелство за Трета СПК + EUROPASS (A4 PDF)</span>
+              <span>Разпечатай резултата от симулацията (A4)</span>
             </button>
 
             {onNavigateTab && (
@@ -836,9 +817,7 @@ export const MonGradeCalculatorView: React.FC<MonGradeCalculatorViewProps> = ({
         scoreText={`Теория: ${dippkResult.theoryGrade.toFixed(2)} | Практика: ${dippkResult.practiceGrade.toFixed(2)}`}
         gradeLabel={`${dippkResult.verbal} (${dippkResult.certificateFinalGrade.toFixed(2)})`}
         highlights={[
-          `ДИППК Средна: ${dippkResult.dippkExamAvg.toFixed(2)}`,
-          `ЗПП Среден успех: ${dippkSubjectsAvg.toFixed(2)}`,
-          'EUROPASS EQF Level 4'
+          `Оценка от изпита: ${dippkResult.dippkExamAvg.toFixed(2)}`
         ]}
         initialDocMode="spk_europass"
       />

@@ -2,13 +2,15 @@
 // Превръща извлечените програми в типизиран модул за StudyBG: чисти заглавия, дълбочина, идентификатори.
 // overrides.json: "<етап>/<slug>#[<модул>:]<индекс>" → ново заглавие или null (премахва темата);
 // "__insert": { "<етап>/<slug>[@<модул>]": [{ after, num, title }] } — теми, които извличането е изпуснало;
-// "__replace": { "<етап>/<slug>": [заглавия] } — програми с ненадеждна първа колона (без номерация).
+// "__replace": { "<етап>/<slug>": [заглавия] } — програми с ненадеждна първа колона (без номерация);
+// "__outcomes": { "<етап>/<slug>#<индекс>": [резултати] } — когато редовете в таблицата на МОН са разместени.
 const fs = require('fs');
 const [inFile, overridesFile, outFile, flag] = process.argv.slice(2);
 const programs = JSON.parse(fs.readFileSync(inFile, 'utf8'));
 const overrides = JSON.parse(fs.readFileSync(overridesFile, 'utf8'));
 const inserts = overrides.__insert || {};
 const replaces = overrides.__replace || {};
+const outcomeFixes = overrides.__outcomes || {};
 
 const SUBJECT = {
   bge: 'bel', be: 'bel', bel: 'bel', lit: 'lit', math: 'math', informatika: 'informatika', it: 'it',
@@ -155,7 +157,8 @@ for (const p of programs) {
       const ov = overrides[okey];
       if (ov !== null) {
         const title = typeof ov === 'string' ? ov : cleanTitle(t.title, t.num);
-        if (title) add(t.num, title, depthOf(t.num), t.outcomes.filter((o) => !/^Ученикът:?$/.test(o)), t.concepts, typeof ov === 'string' ? null : okey);
+        const outcomes = outcomeFixes[okey] ?? t.outcomes.filter((o) => !/^Ученикът:?$/.test(o));
+        if (title) add(t.num, title, depthOf(t.num), outcomes, t.concepts, typeof ov === 'string' ? null : okey);
       }
       insertAfter(ti);
     });

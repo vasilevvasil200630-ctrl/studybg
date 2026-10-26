@@ -898,6 +898,43 @@ export const generateQuizQuestionsWithGemini = async (params: { system: string; 
   return Array.isArray(parsed.questions) ? parsed.questions : [];
 };
 
+// Урок по тема от програмата: конспект, решени примери, грешки, формули и флашкарти
+const LESSON_SCHEMA = {
+  type: 'OBJECT',
+  required: ['overview', 'keyPoints', 'examples', 'commonTraps', 'formulas', 'flashcards'],
+  propertyOrdering: ['overview', 'keyPoints', 'examples', 'commonTraps', 'formulas', 'flashcards'],
+  properties: {
+    overview: STRING,
+    keyPoints: STRING_ARRAY,
+    examples: {
+      type: 'ARRAY',
+      items: { type: 'OBJECT', required: ['problem', 'solution'], propertyOrdering: ['problem', 'solution'], properties: { problem: STRING, solution: STRING } }
+    },
+    commonTraps: STRING_ARRAY,
+    formulas: {
+      type: 'ARRAY',
+      items: { type: 'OBJECT', required: ['label', 'value'], properties: { label: STRING, value: STRING } }
+    },
+    flashcards: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        required: ['category', 'front', 'back'],
+        properties: { category: STRING, front: STRING, back: STRING }
+      }
+    }
+  }
+} as const;
+
+export const generateTopicLessonWithGemini = async (params: { system: string; user: string }): Promise<Record<string, unknown>> =>
+  callGeminiJson({
+    system: params.system,
+    user: params.user,
+    schema: LESSON_SCHEMA,
+    temperature: 0.4,
+    extraConfig: { thinkingConfig: { thinkingLevel: 'low' } }
+  });
+
 // Входният тест: всеки въпрос носи кода на темата (T1…) и вида — знание или приложение
 const DIAGNOSTIC_SCHEMA = {
   type: 'OBJECT',

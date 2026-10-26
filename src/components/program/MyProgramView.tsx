@@ -19,6 +19,7 @@ import { ProfileForm } from './ProfileForm';
 
 // Тестът зарежда KaTeX — само когато ученикът отвори тест
 const TopicQuizPanel = lazy(() => import('./TopicQuizPanel').then((m) => ({ default: m.TopicQuizPanel })));
+const TopicLessonPanel = lazy(() => import('./TopicLessonPanel').then((m) => ({ default: m.TopicLessonPanel })));
 const DiagnosticPanel = lazy(() => import('./DiagnosticPanel').then((m) => ({ default: m.DiagnosticPanel })));
 
 const MASTERY_STYLE: Record<MasteryLevel, string> = {
@@ -129,6 +130,7 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = ({ profile, catalog, les
   const plan = useMemo(() => buildStudentPlan(profile, catalog), [profile, catalog]);
   const mastery = useTopicMastery();
   const [quiz, setQuiz] = useState<{ program: MonProgram; topic: TopicInProgram; lessons: LessonData[] } | null>(null);
+  const [aiLesson, setAiLesson] = useState<{ program: MonProgram; topic: TopicInProgram; lessons: LessonData[] } | null>(null);
   const [diagnosticOpen, setDiagnosticOpen] = useState(false);
   const included = plan.subjects.filter((s) => s.included);
   const left = plan.subjects.filter((s) => !s.included);
@@ -154,6 +156,23 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = ({ profile, catalog, les
           topic={quiz.topic}
           lessons={quiz.lessons}
           onBack={() => setQuiz(null)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (aiLesson) {
+    return (
+      <Suspense fallback={<p className="text-sm text-slate-500">Зарежда се урокът…</p>}>
+        <TopicLessonPanel
+          program={aiLesson.program}
+          topic={aiLesson.topic}
+          onBack={() => setAiLesson(null)}
+          onStartQuiz={() => {
+            setQuiz(aiLesson);
+            setAiLesson(null);
+            window.scrollTo({ top: 0 });
+          }}
         />
       </Suspense>
     );
@@ -263,6 +282,10 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = ({ profile, catalog, les
                 onRemove={() => setIncluded(s.program.id, false)}
                 onSelectLesson={onSelectLesson}
                 onStartQuiz={openQuiz}
+                onOpenAiLesson={(program, topic, topicLessons) => {
+                  setAiLesson({ program, topic, lessons: topicLessons });
+                  window.scrollTo({ top: 0 });
+                }}
               />
             ))}
           </ul>
@@ -298,9 +321,10 @@ interface SubjectRowProps {
   onRemove: () => void;
   onSelectLesson: (lesson: LessonData) => void;
   onStartQuiz: (program: MonProgram, topic: TopicInProgram, lessons: LessonData[]) => void;
+  onOpenAiLesson: (program: MonProgram, topic: TopicInProgram, lessons: LessonData[]) => void;
 }
 
-const SubjectRow: React.FC<SubjectRowProps> = ({ subject, lessons, lessonById, mastery, onRemove, onSelectLesson, onStartQuiz }) => {
+const SubjectRow: React.FC<SubjectRowProps> = ({ subject, lessons, lessonById, mastery, onRemove, onSelectLesson, onStartQuiz, onOpenAiLesson }) => {
   const [open, setOpen] = useState(false);
   const { program } = subject;
   const coverage = useMemo(() => programCoverage(program, lessons), [program, lessons]);
@@ -354,6 +378,7 @@ const SubjectRow: React.FC<SubjectRowProps> = ({ subject, lessons, lessonById, m
               mastery={mastery}
               onSelectLesson={onSelectLesson}
               onStartQuiz={(topic, topicLessons) => onStartQuiz(program, topic, topicLessons)}
+              onOpenAiLesson={(topic) => onOpenAiLesson(program, topic, [])}
             />
           ) : (
             <p className="text-sm text-slate-600">Темите на тази програма не се упражняват с тестове.</p>
@@ -371,7 +396,8 @@ const TopicList: React.FC<{
   mastery: Record<string, TopicMasteryRecord>;
   onSelectLesson: (lesson: LessonData) => void;
   onStartQuiz: (topic: TopicInProgram, lessons: LessonData[]) => void;
-}> = ({ program, lessonsFor, lessonById, mastery, onSelectLesson, onStartQuiz }) => {
+  onOpenAiLesson: (topic: TopicInProgram) => void;
+}> = ({ program, lessonsFor, lessonById, mastery, onSelectLesson, onStartQuiz, onOpenAiLesson }) => {
   const topics = programTopics(program);
   let lastModule: string | null = null;
   return (
@@ -394,6 +420,15 @@ const TopicList: React.FC<{
                 const level = masteryLevel(mastery[t.id]);
                 return (
                   <>
+                    {linked.length === 0 && (
+                      <button
+                        type="button"
+                        onClick={() => onOpenAiLesson(t)}
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-brand-sapphire hover:underline cursor-pointer"
+                      >
+                        <BookOpen className="h-3 w-3" /> урок от AI
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => onStartQuiz(t, linked)}

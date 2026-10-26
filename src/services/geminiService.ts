@@ -148,6 +148,10 @@ async function callGeminiViaProxy(body: GeminiRequest): Promise<GeminiResponse> 
       throw new GeminiError('AI оценяването е временно изчерпано за днес за всички потребители. Опитайте отново утре.', 429);
     }
 
+    if (detail?.error === 'upstream_timeout') {
+      // Повторът би чакал още толкова и би изхарчил още една заявка от дневния лимит
+      throw new GeminiError('AI не отговори навреме. Опитайте отново.', status, false);
+    }
     const retryable = status === undefined || status === 429 || status >= 500;
     if (!retryable || attempt >= MAX_RETRIES) {
       throw new GeminiError(`AI сървърът върна грешка${status ? ` (${status})` : ''}.`, status, retryable);
@@ -287,6 +291,8 @@ async function callGeminiJson(params: {
   user: string;
   schema: Record<string, unknown>;
   temperature: number;
+  /** Допълнителни настройки, напр. по-кратко мислене за бързите задачи */
+  extraConfig?: Record<string, unknown>;
 }): Promise<Record<string, unknown>> {
   const data = await callGeminiContent({
     systemInstruction: { parts: [{ text: params.system }] },
@@ -296,7 +302,8 @@ async function callGeminiJson(params: {
       // Резерв за thinking токените, които се броят в лимита
       maxOutputTokens: 8192,
       responseMimeType: 'application/json',
-      responseSchema: params.schema
+      responseSchema: params.schema,
+      ...params.extraConfig
     }
   });
   return asRecord(parseModelJson(extractText(data)));
@@ -849,4 +856,44 @@ export const analyzeErrorBankWithGemini = async (params: {
     threeDayActionPlan: strArr(parsed.threeDayActionPlan, 3),
     goldenRuleReminder: str(parsed.goldenRuleReminder)
   };
+};
+
+// ---------------------------------------------------------------------------
+// Тест по тема от учебната програма — суровите въпроси; проверката е в lib/topicQuiz
+// ---------------------------------------------------------------------------
+
+const QUIZ_SCHEMA = {
+  type: 'OBJECT',
+  required: ['questions'],
+  properties: {
+    questions: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        required: ['question', 'difficulty', 'solution', 'options', 'correctIndex'],
+        // Решението се пише ПРЕДИ отговорите: моделът първо решава, после съставя вариантите и избира верния
+        propertyOrdering: ['question', 'difficulty', 'solution', 'options', 'correctIndex'],
+        properties: {
+          question: STRING,
+          difficulty: { type: 'STRING', enum: ['easy', 'medium', 'hard'] },
+          solution: STRING,
+          options: STRING_ARRAY,
+          correctIndex: { type: 'INTEGER' }
+        }
+      }
+    }
+  }
+} as const;
+
+export const generateQuizQuestionsWithGemini = async (params: { system: string; user: string }): Promise<unknown[]> => {
+  // Висока температура: всеки нов тест по темата трябва да е различен.
+  // Кратко мислене (като в Матура Плюс): иначе 10 въпроса не се събират в 28-секундния лимит на proxy-то.
+  const parsed = await callGeminiJson({
+    system: params.system,
+    user: params.user,
+    schema: QUIZ_SCHEMA,
+    temperature: 1,
+    extraConfig: { thinkingConfig: { thinkingLevel: 'low' } }
+  });
+  return Array.isArray(parsed.questions) ? parsed.questions : [];
 };

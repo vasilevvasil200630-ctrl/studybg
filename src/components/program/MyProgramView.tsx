@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { BookOpen, CheckCircle2, ChevronDown, ExternalLink, Pencil, TriangleAlert } from 'lucide-react';
+import React, { Suspense, lazy, useEffect, useMemo, useState } from 'react';
+import { BookOpen, CheckCircle2, ChevronDown, ExternalLink, ListChecks, Pencil, TriangleAlert } from 'lucide-react';
 import type { LessonData } from '../../types';
-import { loadMonCatalog, programTopics, type MonProgram } from '../../data/monCurriculum';
+import { loadMonCatalog, programTopics, type MonProgram, type TopicInProgram } from '../../data/monCurriculum';
 import { programCoverage } from '../../data/monCurriculum/lessonCoverage';
 import { buildStudentPlan, type PlannedSubject } from '../../data/monCurriculum/studentPrograms';
 import {
@@ -12,7 +12,33 @@ import {
   saveStudentProfile,
   type StudentProfile,
 } from '../../lib/studentProfile';
+import { MASTERY_LABELS, loadTopicMastery, masteryLevel, type MasteryLevel, type TopicMasteryRecord } from '../../lib/topicMastery';
 import { ProfileForm } from './ProfileForm';
+
+// Тестът зарежда KaTeX — само когато ученикът отвори тест
+const TopicQuizPanel = lazy(() => import('./TopicQuizPanel').then((m) => ({ default: m.TopicQuizPanel })));
+
+const MASTERY_STYLE: Record<MasteryLevel, string> = {
+  unknown: '',
+  weak: 'bg-rose-50 text-rose-700',
+  learning: 'bg-amber-50 text-amber-800',
+  mastered: 'bg-brand-emerald-soft text-emerald-800',
+};
+
+/** Резултатите по теми; обновява се след всеки тест */
+function useTopicMastery(): Record<string, TopicMasteryRecord> {
+  const [mastery, setMastery] = useState(loadTopicMastery);
+  useEffect(() => {
+    const refresh = () => setMastery(loadTopicMastery());
+    window.addEventListener('studybg:topic-mastery-changed', refresh);
+    window.addEventListener('storage', refresh);
+    return () => {
+      window.removeEventListener('studybg:topic-mastery-changed', refresh);
+      window.removeEventListener('storage', refresh);
+    };
+  }, []);
+  return mastery;
+}
 
 interface MyProgramViewProps {
   lessons: LessonData[];
@@ -98,6 +124,8 @@ interface ProgramOverviewProps {
 
 const ProgramOverview: React.FC<ProgramOverviewProps> = ({ profile, catalog, lessons, onEdit, onChangeProfile, onSelectLesson }) => {
   const plan = useMemo(() => buildStudentPlan(profile, catalog), [profile, catalog]);
+  const mastery = useTopicMastery();
+  const [quiz, setQuiz] = useState<{ program: MonProgram; topic: TopicInProgram; lessons: LessonData[] } | null>(null);
   const included = plan.subjects.filter((s) => s.included);
   const left = plan.subjects.filter((s) => !s.included);
   const lessonById = useMemo(() => new Map(lessons.map((l) => [l.id, l])), [lessons]);
@@ -113,6 +141,24 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = ({ profile, catalog, les
   const groups = (['general', 'profile', 'language'] as const)
     .map((role) => ({ role, subjects: included.filter((s) => s.role === role) }))
     .filter((g) => g.subjects.length);
+
+  if (quiz) {
+    return (
+      <Suspense fallback={<p className="text-sm text-slate-500">Зарежда се тестът…</p>}>
+        <TopicQuizPanel
+          program={quiz.program}
+          topic={quiz.topic}
+          lessons={quiz.lessons}
+          onBack={() => setQuiz(null)}
+        />
+      </Suspense>
+    );
+  }
+
+  const openQuiz = (program: MonProgram, topic: TopicInProgram, topicLessons: LessonData[]) => {
+    setQuiz({ program, topic, lessons: topicLessons });
+    window.scrollTo({ top: 0 });
+  };
 
   return (
     <div className="space-y-6">
@@ -166,8 +212,10 @@ const ProgramOverview: React.FC<ProgramOverviewProps> = ({ profile, catalog, les
                 subject={s}
                 lessons={lessons}
                 lessonById={lessonById}
+                mastery={mastery}
                 onRemove={() => setIncluded(s.program.id, false)}
                 onSelectLesson={onSelectLesson}
+                onStartQuiz={openQuiz}
               />
             ))}
           </ul>
@@ -199,11 +247,13 @@ interface SubjectRowProps {
   subject: PlannedSubject;
   lessons: LessonData[];
   lessonById: Map<string, LessonData>;
+  mastery: Record<string, TopicMasteryRecord>;
   onRemove: () => void;
   onSelectLesson: (lesson: LessonData) => void;
+  onStartQuiz: (program: MonProgram, topic: TopicInProgram, lessons: LessonData[]) => void;
 }
 
-const SubjectRow: React.FC<SubjectRowProps> = ({ subject, lessons, lessonById, onRemove, onSelectLesson }) => {
+const SubjectRow: React.FC<SubjectRowProps> = ({ subject, lessons, lessonById, mastery, onRemove, onSelectLesson, onStartQuiz }) => {
   const [open, setOpen] = useState(false);
   const { program } = subject;
   const coverage = useMemo(() => programCoverage(program, lessons), [program, lessons]);
@@ -250,7 +300,14 @@ const SubjectRow: React.FC<SubjectRowProps> = ({ subject, lessons, lessonById, o
       {open && (
         <div id={panelId} className="border-t border-slate-100 bg-slate-50/60 px-4 py-3">
           {program.testable ? (
-            <TopicList program={program} lessonsFor={lessonsFor} lessonById={lessonById} onSelectLesson={onSelectLesson} />
+            <TopicList
+              program={program}
+              lessonsFor={lessonsFor}
+              lessonById={lessonById}
+              mastery={mastery}
+              onSelectLesson={onSelectLesson}
+              onStartQuiz={(topic, topicLessons) => onStartQuiz(program, topic, topicLessons)}
+            />
           ) : (
             <p className="text-sm text-slate-600">Темите на тази програма не се упражняват с тестове.</p>
           )}
@@ -264,8 +321,10 @@ const TopicList: React.FC<{
   program: MonProgram;
   lessonsFor: Map<string, string[]>;
   lessonById: Map<string, LessonData>;
+  mastery: Record<string, TopicMasteryRecord>;
   onSelectLesson: (lesson: LessonData) => void;
-}> = ({ program, lessonsFor, lessonById, onSelectLesson }) => {
+  onStartQuiz: (topic: TopicInProgram, lessons: LessonData[]) => void;
+}> = ({ program, lessonsFor, lessonById, mastery, onSelectLesson, onStartQuiz }) => {
   const topics = programTopics(program);
   let lastModule: string | null = null;
   return (
@@ -284,6 +343,23 @@ const TopicList: React.FC<{
             >
               {t.num && <span className="tabular-nums text-slate-400">{t.num}</span>}
               <span className="min-w-0">{t.title}</span>
+              {!isSection && (() => {
+                const level = masteryLevel(mastery[t.id]);
+                return (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => onStartQuiz(t, linked)}
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-brand-sapphire hover:underline cursor-pointer"
+                    >
+                      <ListChecks className="h-3 w-3" /> тест
+                    </button>
+                    {level !== 'unknown' && (
+                      <span className={`rounded-full px-2 py-px text-[11px] font-semibold ${MASTERY_STYLE[level]}`}>{MASTERY_LABELS[level]}</span>
+                    )}
+                  </>
+                );
+              })()}
               {linked.map((l) => (
                 <button
                   key={l.id}

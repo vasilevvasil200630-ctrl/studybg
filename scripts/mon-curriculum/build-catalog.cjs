@@ -11,6 +11,7 @@ const overrides = JSON.parse(fs.readFileSync(overridesFile, 'utf8'));
 const inserts = overrides.__insert || {};
 const replaces = overrides.__replace || {};
 const outcomeFixes = overrides.__outcomes || {};
+const conceptFixes = overrides.__concepts || {};
 
 const SUBJECT = {
   bge: 'bel', be: 'bel', bel: 'bel', lit: 'lit', math: 'math', informatika: 'informatika', it: 'it',
@@ -158,7 +159,7 @@ for (const p of programs) {
       if (ov !== null) {
         const title = typeof ov === 'string' ? ov : cleanTitle(t.title, t.num);
         const outcomes = outcomeFixes[okey] ?? t.outcomes.filter((o) => !/^Ученикът:?$/.test(o));
-        if (title) add(t.num, title, depthOf(t.num), outcomes, t.concepts, typeof ov === 'string' ? null : okey);
+        if (title) add(t.num, title, depthOf(t.num), outcomes, conceptFixes[okey] ?? t.concepts, typeof ov === 'string' ? null : okey);
       }
       insertAfter(ti);
     });

@@ -103,7 +103,7 @@ describe('каталог на учебните програми на МОН', ()
 });
 
 describe('уроци, написани по темите на МОН', () => {
-  it('всеки урок сочи към съществуваща тема, а математиката за 8. клас е покрита изцяло', async () => {
+  it('всеки урок сочи към съществуваща тема, а математиката и БЕЛ за 8. клас са покрити изцяло', async () => {
     const { MON_LESSONS } = await import('../src/data/monLessons');
     const programs = await loadMonCatalog();
     const topicIds = new Set(programs.flatMap((p) => p.modules.flatMap((m) => m.topics.map((t) => t.id))));
@@ -111,8 +111,22 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    const report = programCoverage(byId(programs, '8-math'), MON_LESSONS);
-    expect(report.covered).toBe(report.total);
+    for (const programId of ['8-math', '8-bge', '8-lit']) {
+      const report = programCoverage(byId(programs, programId), MON_LESSONS);
+      expect(report.covered, programId).toBe(report.total);
+    }
+  });
+
+  it('очакваните резултати на БЕЛ за 8. клас са при правилните теми', async () => {
+    const voice = await loadTopicDetails('8-bge:7');
+    expect(voice.outcomes.join(' ')).toMatch(/страдателен залог/);
+    expect(voice.concepts).toContain('деятелен залог');
+    const aspect = await loadTopicDetails('8-bge:8');
+    expect(aspect.outcomes.join(' ')).toMatch(/вида на глагола/);
+    expect(aspect.outcomes.join(' ')).not.toMatch(/страдателен/);
+    const antigone = await loadTopicDetails('8-lit:I.4');
+    expect(antigone.concepts).toEqual(['драма', 'трагедия', 'трагически конфликт', 'трагически герой', 'катарзис']);
+    expect(antigone.outcomes.every((o) => !/Средновековието|Библията/.test(o))).toBe(true);
   });
 });
 

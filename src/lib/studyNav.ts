@@ -21,6 +21,7 @@ import {
   Scale,
   Library,
   GraduationCap,
+  Route,
   type LucideIcon,
 } from 'lucide-react';
 import type { AppNavTab } from '../components/Navbar';
@@ -55,6 +56,10 @@ export const STUDY_NAV_GROUPS: StudyNavGroup[] = [
       { tab: 'oralexam', label: 'Устно изпитване', icon: Mic },
       { tab: 'audit', label: 'Проверка на тетрадка', icon: CheckSquare },
     ],
+  },
+  {
+    title: 'Моето обучение',
+    items: [{ tab: 'program', label: 'Моята програма', icon: Route }],
   },
   {
     title: 'Изпити',
@@ -95,7 +100,7 @@ export const MOBILE_PRIMARY_TABS: StudyNavItem[] = [
   { tab: 'summary', label: 'Урок', icon: BookOpen },
   { tab: 'quiz', label: 'Тест', icon: ListChecks },
   { tab: 'simulator', label: 'Симулатор', icon: Clock },
-  { tab: 'catalog', label: 'Програма', icon: Library },
+  { tab: 'program', label: 'Програма', icon: Route },
 ];
 
 type PageMeta = { title: string; description: string };
@@ -105,6 +110,8 @@ export function getStudyPageMeta(tab: AppNavTab, totalLessons: number): PageMeta
   switch (tab) {
     case 'specialties':
       return { title: 'Училища и специалности', description: 'Предметите и профилите по видове гимназии и техникуми, от 8. до 12. клас.' };
+    case 'program':
+      return { title: 'Моята програма', description: 'Предметите и темите по учебните програми на МОН за твоя клас, училище и профил.' };
     case 'planner':
       return { title: 'Моят план', description: 'Колко време остава до изпита, седмичен график и готовност по теми.' };
     case 'grammar':

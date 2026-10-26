@@ -63,6 +63,7 @@ import type { CultureSubTab } from './CultureHero';
 export type AppNavTab =
   | 'home'
   | 'planner'
+  | 'program'
   | 'scan'
   | 'audit'
   | 'summary'

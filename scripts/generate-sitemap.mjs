@@ -22,6 +22,7 @@ const STUDY_PATHS = [
   ['specialties', 0.7],
   ['generator', 0.6],
   ['planner', 0.6],
+  ['program', 0.7],
   ['blitz', 0.6]
 ];
 // 'cases' в културния портал е същият изглед като /cases — не го дублираме

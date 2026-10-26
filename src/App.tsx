@@ -44,6 +44,7 @@ const SpeedBlitzLab = lazy(() => import('./components/SpeedBlitzLab').then(m => 
 const ScienceDziLab = lazy(() => import('./components/ScienceDziLab').then(m => ({ default: m.ScienceDziLab })));
 const OralExamSimulatorLab = lazy(() => import('./components/OralExamSimulatorLab').then(m => ({ default: m.OralExamSimulatorLab })));
 const SchoolsSpecialtiesHub = lazy(() => import('./components/SchoolsSpecialtiesHub').then(m => ({ default: m.SchoolsSpecialtiesHub })));
+const MyProgramView = lazy(() => import('./components/program/MyProgramView').then(m => ({ default: m.MyProgramView })));
 const AuthProfileModal = lazy(() => import('./components/AuthProfileModal').then(m => ({ default: m.AuthProfileModal })));
 import { errorBankService } from './services/errorBankService';
 import { hasOAuthCallbackErrorInUrl } from './services/authService';
@@ -63,20 +64,21 @@ import {
 import './App.css';
 
 const STUDY_TABS: AppNavTab[] = [
-  'home', 'specialties', 'planner', 'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
+  'home', 'specialties', 'planner', 'program', 'scan', 'audit', 'summary', 'cases', 'flashcards', 'quiz',
   'simulator', 'errorbank', 'generator', 'catalog', 'calculator',
   'grammar', 'moduletwo', 'literature', 'mathlab', 'sciencelab', 'oralexam', 'atlas', 'english', 'civics', 'blitz'
 ];
 
 // Изгледи, които показват или търсят във всички уроци
 const FULL_CURRICULUM_TABS: ReadonlySet<AppNavTab> = new Set<AppNavTab>([
-  'catalog', 'quiz', 'simulator', 'generator', 'blitz', 'specialties', 'errorbank', 'oralexam', 'planner', 'scan'
+  'catalog', 'quiz', 'simulator', 'generator', 'blitz', 'specialties', 'errorbank', 'oralexam', 'planner', 'program', 'scan'
 ]);
 
 function prefetchStudyTabChunk(tab: AppNavTab): void {
   switch (tab) {
     case 'specialties': void import('./components/SchoolsSpecialtiesHub'); break;
     case 'planner': void import('./components/StudyPlannerDashboard'); break;
+    case 'program': void import('./components/program/MyProgramView'); break;
     case 'summary': void import('./components/SummaryView'); break;
     case 'oralexam': void import('./components/OralExamSimulatorLab'); break;
     case 'simulator': void import('./components/ExamSimulatorView'); break;
@@ -212,6 +214,7 @@ export function App() {
       home: 'StudyBG — Национална дигитална академия за НВО, ДЗИ и Трета СПК (5.–12. клас)',
       specialties: 'Училища, 64+ Специалности, ДИППК & Калкулатор за Бал (7. и 12. кл.) | StudyBG',
       planner: 'Моят План за Отличен 6.00, Стратегия & Седмичен График | StudyBG',
+      program: 'Моята програма: предметите и темите по МОН за твоя клас и училище | StudyBG',
       oralexam: 'Гласов Симулатор: Устен изпит, Защита на Дипломен проект (ДИППК) & ВУЗ | StudyBG',
       sciencelab: 'STEM Лаборатория: Биология (ДНК/PCR), Химия (pH/ОХ) и Физика (Карно/3Ф) | StudyBG',
       mathlab: 'Математика & STEM Лаборатория за НВО 10 и ДЗИ 12 | StudyBG',
@@ -759,6 +762,10 @@ export function App() {
 
                     {activeTab === 'blitz' && (
                       <SpeedBlitzLab />
+                    )}
+
+                    {activeTab === 'program' && (
+                      <MyProgramView lessons={lessons} onSelectLesson={(l) => handleLessonSelected(l)} />
                     )}
 
                     {activeTab === 'planner' && (

@@ -255,6 +255,24 @@ describe('уроци, написани по темите на МОН', () => {
     expect(programTopics(history).find((t) => t.id === '10-history:8.2.1')?.title).toBe('Икономически промени в селото и града');
   });
 
+  it('информатика и ИТ: резултатите са разпределени по темите, а изпуснатата тема 6 в 8. клас ИТ е добавена', async () => {
+    const programs = await loadMonCatalog();
+    for (const [programId, count] of [['8-informatika', 18], ['8-it', 6], ['9-it', 6], ['10-it', 3]] as const) {
+      const practice = practiceTopics(byId(programs, programId));
+      expect(practice, programId).toHaveLength(count);
+      for (const t of practice) expect((await loadTopicDetails(t.id)).outcomes.length, t.id).toBeGreaterThan(0);
+    }
+    expect((await loadTopicDetails('8-informatika:1.1')).outcomes.join(' ')).toMatch(/двоична бройна система/);
+    expect((await loadTopicDetails('8-informatika:3.1.2')).outcomes.join(' ')).toMatch(/целочислен тип/);
+    expect((await loadTopicDetails('8-informatika:3.1.2')).outcomes.join(' ')).not.toMatch(/тип низ/);
+    expect((await loadTopicDetails('8-informatika:3.4.1')).concepts).toContain('оператор за цикъл с предусловие');
+    expect((await loadTopicDetails('8-it:2')).outcomes.join(' ')).toMatch(/операционна система/);
+    expect((await loadTopicDetails('8-it:6')).outcomes.join(' ')).toMatch(/уеб сайт в екип/);
+    expect((await loadTopicDetails('9-it:2')).concepts).toContain('маршрутизатор (router)');
+    expect((await loadTopicDetails('10-it:1')).outcomes.join(' ')).toMatch(/дезинформация/);
+    expect((await loadTopicDetails('10-it:1')).concepts).toEqual([]);
+  });
+
   it('гражданското образование: резултатите и понятията са разпределени по подтемите', async () => {
     const programs = await loadMonCatalog();
     for (const [programId, count] of [['11-go', 9], ['12-go', 7]] as const) {

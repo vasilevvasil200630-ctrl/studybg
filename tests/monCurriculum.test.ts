@@ -255,6 +255,23 @@ describe('уроци, написани по темите на МОН', () => {
     expect(programTopics(history).find((t) => t.id === '10-history:8.2.1')?.title).toBe('Икономически промени в селото и града');
   });
 
+  it('гражданското образование: резултатите и понятията са разпределени по подтемите', async () => {
+    const programs = await loadMonCatalog();
+    for (const [programId, count] of [['11-go', 9], ['12-go', 7]] as const) {
+      const practice = practiceTopics(byId(programs, programId));
+      expect(practice, programId).toHaveLength(count);
+      for (const t of practice) expect((await loadTopicDetails(t.id)).outcomes.length, t.id).toBeGreaterThan(0);
+    }
+    expect((await loadTopicDetails('11-go:1')).outcomes).toEqual([]);
+    expect((await loadTopicDetails('11-go:1.2')).outcomes.join(' ')).toMatch(/избирателни системи/);
+    expect((await loadTopicDetails('11-go:2.1')).outcomes.join(' ')).toMatch(/Всеобща декларация за правата на човека/);
+    expect((await loadTopicDetails('11-go:3.3')).outcomes.join(' ')).toMatch(/патриотизъм от национализъм/);
+    expect((await loadTopicDetails('12-go:1.2')).concepts).toContain('разделение на властите');
+    expect((await loadTopicDetails('12-go:2.2')).outcomes.join(' ')).toMatch(/публичния бюджет/);
+    expect((await loadTopicDetails('12-go:2.1')).outcomes.join(' ')).not.toMatch(/хуманитарно право/);
+    expect(programTopics(byId(programs, '11-go')).find((t) => t.id === '11-go:3.1')?.title).toBe('Възникване и разгръщане на идентичностите');
+  });
+
   it('очакваните резултати по природни науки за 10. клас са при правилните теми', async () => {
     const ecosystem = await loadTopicDetails('10-bio:2.1');
     expect(ecosystem.outcomes[0]).toMatch(/^Дефинира и илюстрира с примери популация/);

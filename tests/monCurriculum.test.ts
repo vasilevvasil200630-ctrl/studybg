@@ -111,7 +111,7 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil', '8-history']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil', '8-history', '9-history-72', '9-history-144']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
@@ -237,6 +237,19 @@ describe('уроци, написани по темите на МОН', () => {
     expect((await loadTopicDetails('9-history-144:4.2.3')).outcomes).toEqual((await loadTopicDetails('8-history:4.2.3')).outcomes);
     const h144 = programTopics(byId(await loadMonCatalog(), '9-history-144'));
     expect(h144.find((t) => t.id === '9-history-144:3.2.2')?.title).toBe('Балканското възраждане през XVIII век');
+  });
+
+  it('историята за 9. клас: 72 ч. и втората част на 144 ч. имат едни и същи подтеми и резултати', async () => {
+    const catalog = await loadMonCatalog();
+    const p72 = practiceTopics(byId(catalog, '9-history-72'));
+    const p144 = practiceTopics(byId(catalog, '9-history-144')).filter((t) => /^[567]/.test(t.num));
+    expect(p72).toHaveLength(35);
+    expect(p144.map((t) => t.title)).toEqual(p72.map((t) => t.title));
+    expect(p144.find((t) => t.num === '6.3.2')?.title).toBe('Масовата култура');
+    expect((await loadTopicDetails('9-history-72:2.1.15')).outcomes.join(' ')).toMatch(/спасяването на българските евреи/);
+    expect((await loadTopicDetails('9-history-144:6.1.15')).outcomes).toEqual((await loadTopicDetails('9-history-72:2.1.15')).outcomes);
+    expect((await loadTopicDetails('9-history-72:3.1.7')).outcomes.join(' ')).toMatch(/Европейския съюз/);
+    expect((await loadTopicDetails('9-history-72:2')).outcomes).toEqual([]);
   });
 
   it('очакваните резултати по природни науки за 10. клас са при правилните теми', async () => {

@@ -103,7 +103,7 @@ describe('каталог на учебните програми на МОН', ()
 });
 
 describe('уроци, написани по темите на МОН', () => {
-  it('всеки урок сочи към съществуваща тема, а математиката и БЕЛ за 8. и 9. клас са покрити изцяло', async () => {
+  it('всеки урок сочи към съществуваща тема, а математиката и БЕЛ за 8.–10. клас са покрити изцяло', async () => {
     const { MON_LESSONS } = await import('../src/data/monLessons');
     const programs = await loadMonCatalog();
     const topicIds = new Set(programs.flatMap((p) => p.modules.flatMap((m) => m.topics.map((t) => t.id))));
@@ -111,7 +111,7 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
@@ -144,6 +144,23 @@ describe('уроци, написани по темите на МОН', () => {
     const bovary = await loadTopicDetails('9-lit:III.2');
     expect(bovary.outcomes.join(' ')).toMatch(/сценарий за филм/);
     expect(bovary.outcomes.join(' ')).not.toMatch(/модернизма/);
+  });
+
+  it('очакваните резултати за 10. клас са при правилните теми', async () => {
+    const irrational = await loadTopicDetails('10-math:1');
+    expect(irrational.outcomes.join(' ')).toMatch(/ирационални уравнения/);
+    expect(irrational.outcomes.join(' ')).not.toMatch(/прогресия/);
+    const triangle = await loadTopicDetails('10-math:4');
+    expect(triangle.outcomes.join(' ')).toMatch(/синусова и косинусова теорема/);
+    expect(triangle.outcomes.join(' ')).not.toMatch(/равнина/);
+    const spelling = await loadTopicDetails('10-bge:2');
+    expect(spelling.outcomes.join(' ')).toMatch(/правописна/);
+    expect(spelling.concepts).toEqual(['правописна норма']);
+    const geratsite = await loadTopicDetails('10-lit:I.7');
+    expect(geratsite.outcomes.join(' ')).toMatch(/повестта, проявени в „Гераците“/);
+    const september = await loadTopicDetails('10-lit:II.1');
+    expect(september.outcomes.join(' ')).not.toMatch(/Гераците/);
+    expect(september.concepts).toEqual(['следвоенен модернизъм', 'експресионизъм']);
   });
 });
 

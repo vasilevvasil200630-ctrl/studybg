@@ -111,7 +111,7 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
@@ -212,6 +212,19 @@ describe('уроци, написани по темите на МОН', () => {
     expect((await loadTopicDetails('10-geo:6')).outcomes.join(' ')).toMatch(/демографската ситуация/);
     expect((await loadTopicDetails('10-geo:8')).outcomes.join(' ')).toMatch(/държавното устройство/);
     expect((await loadTopicDetails('10-geo:8')).outcomes.join(' ')).not.toMatch(/селища/);
+  });
+
+  it('очакваните резултати по философия са при правилните подтеми', async () => {
+    expect((await loadTopicDetails('8-phil:1.1')).outcomes.join(' ')).toMatch(/мит и логос/);
+    expect((await loadTopicDetails('8-phil:2.3')).outcomes.join(' ')).toMatch(/Маслоу/);
+    expect((await loadTopicDetails('8-phil:2.2')).outcomes.join(' ')).not.toMatch(/Маслоу/);
+    expect((await loadTopicDetails('9-phil:2.1')).outcomes.join(' ')).toMatch(/Августин, Кант/);
+    expect((await loadTopicDetails('9-phil:2.3')).outcomes.join(' ')).toMatch(/Аристотел за добродетелта/);
+    expect((await loadTopicDetails('9-phil:3.2')).concepts).toContain('катарзис');
+    expect((await loadTopicDetails('10-phil:1')).outcomes.join(' ')).toMatch(/удивлението и съмнението/);
+    expect((await loadTopicDetails('10-phil:3.1')).outcomes.join(' ')).not.toMatch(/Тома от Аквино/);
+    expect((await loadTopicDetails('10-phil:3.2')).outcomes.join(' ')).toMatch(/Тома от Аквино/);
+    expect((await loadTopicDetails('10-phil:4.1')).outcomes.join(' ')).toMatch(/Джон Ролс/);
   });
 
   it('очакваните резултати по природни науки за 10. клас са при правилните теми', async () => {

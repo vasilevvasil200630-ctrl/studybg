@@ -25,6 +25,9 @@ import { MON_LESSONS_MATH_11 } from './math11';
 import { MON_LESSONS_MATH_12 } from './math12';
 import { MON_LESSONS_PHYS_8 } from './phys8';
 import { MON_LESSONS_PHYS_9 } from './phys9';
+import { MON_LESSONS_PHIL_8 } from './phil8';
+import { MON_LESSONS_PHIL_9 } from './phil9';
+import { MON_LESSONS_PHIL_10 } from './phil10';
 import { MON_LESSONS_PHYS_10 } from './phys10';
 
 // Уроци, написани по темите от каталога на МОН (monTopicIds) — пълнят се по класове и предмети
@@ -56,4 +59,7 @@ export const MON_LESSONS: LessonData[] = [
   ...MON_LESSONS_GEO_8,
   ...MON_LESSONS_GEO_9,
   ...MON_LESSONS_GEO_10,
+  ...MON_LESSONS_PHIL_8,
+  ...MON_LESSONS_PHIL_9,
+  ...MON_LESSONS_PHIL_10,
 ];

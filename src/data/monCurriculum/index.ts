@@ -46,10 +46,22 @@ export function programTopics(program: MonProgram): TopicInProgram[] {
   return out;
 }
 
-const hasChildren = (topics: MonTopic[], topic: MonTopic) =>
-  topic.num !== '' && topics.some((t) => t !== topic && t.num.startsWith(topic.num + '.'));
+// Програмите без номерация (географията) задават разделите чрез дълбочината: раздел с дълбочина 1, темите в него — 2
+const hasChildren = (topics: MonTopic[], topic: MonTopic) => {
+  if (topic.num === '') {
+    const next = topics[topics.indexOf(topic) + 1];
+    return Boolean(next && next.num === '' && next.depth > topic.depth);
+  }
+  return topics.some((t) => t !== topic && t.num.startsWith(topic.num + '.'));
+};
 
 function parentTopic(topics: MonTopic[], topic: MonTopic): MonTopic | null {
+  if (topic.num === '') {
+    for (let i = topics.indexOf(topic) - 1; i >= 0 && topic.depth > 1; i--) {
+      if (topics[i].num === '' && topics[i].depth < topic.depth) return topics[i];
+    }
+    return null;
+  }
   if (!topic.num.includes('.')) return null;
   let best: MonTopic | null = null;
   for (const t of topics) {

@@ -205,7 +205,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/geo-bulgaria-relief-climate-waters</loc>
+    <loc>https://studybg.vercel.app/lesson/mon8-geo-earth-shape</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -277,7 +277,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/geo-bulgaria-climate-waters-dzi</loc>
+    <loc>https://studybg.vercel.app/lesson/mon8-geo-earth-motions</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -349,7 +349,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/geo-bulgaria-population-settlements-tertiary-dzi</loc>
+    <loc>https://studybg.vercel.app/lesson/mon8-geo-earth-system</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -415,7 +415,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/geo-8-9-earth-spheres-world-economy-regions</loc>
+    <loc>https://studybg.vercel.app/lesson/mon8-geo-atmosphere</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -469,7 +469,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/geo-11-12-globalization-international-organizations-climate-demography</loc>
+    <loc>https://studybg.vercel.app/lesson/mon8-geo-hydrosphere</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -511,7 +511,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/geography-danubian-plain</loc>
+    <loc>https://studybg.vercel.app/lesson/mon8-geo-lithosphere</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -553,7 +553,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/geo-5-great-discoveries-continents</loc>
+    <loc>https://studybg.vercel.app/lesson/mon8-geo-soils-biosphere</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -595,6 +595,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon8-geo-natural-complexes</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/history-asparukh-681</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
@@ -626,6 +632,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon9-chem-natural-organic</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon8-geo-natural-zones</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -667,6 +679,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon8-geo-natural-resources</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/history-tarnovo-constitution-1879</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
@@ -698,6 +716,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon10-chem-solutions</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon8-geo-global-problems</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -739,6 +763,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/geo-bulgaria-relief-climate-waters</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/hist-6-khan-krum-laws-811</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
@@ -770,6 +800,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon10-chem-materials</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/geo-bulgaria-climate-waters-dzi</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -811,6 +847,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/geo-bulgaria-population-settlements-tertiary-dzi</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-lit-life-of-constantine</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
@@ -836,6 +878,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/chem-periodic-law-chemical-bonds</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/geo-8-9-earth-spheres-world-economy-regions</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -871,6 +919,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/geo-11-12-globalization-international-organizations-climate-demography</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-lit-decameron</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
@@ -901,6 +955,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/geography-danubian-plain</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-lit-don-quixote</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
@@ -926,6 +986,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/chem-redox-electrochemistry-dzi</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/geo-5-great-discoveries-continents</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

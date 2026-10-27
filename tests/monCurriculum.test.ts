@@ -111,7 +111,7 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
@@ -172,6 +172,18 @@ describe('уроци, написани по темите на МОН', () => {
     const september = await loadTopicDetails('10-lit:II.1');
     expect(september.outcomes.join(' ')).not.toMatch(/Гераците/);
     expect(september.concepts).toEqual(['следвоенен модернизъм', 'експресионизъм']);
+  });
+
+  it('географията за 8. клас: „География на природата“ е раздел, резултатите са при правилните теми', async () => {
+    const geo = byId(await loadMonCatalog(), '8-geo');
+    const practice = practiceTopics(geo).map((t) => t.id);
+    expect(practice).not.toContain('8-geo:3');
+    expect(practice).toHaveLength(11);
+    expect(programTopics(geo).find((t) => t.id === '8-geo:5')?.section).toBe('География на природата');
+    expect((await loadTopicDetails('8-geo:2')).outcomes.join(' ')).toMatch(/наклона на земната ос/);
+    expect((await loadTopicDetails('8-geo:6')).outcomes.join(' ')).not.toMatch(/земната кора/);
+    expect((await loadTopicDetails('8-geo:7')).outcomes[0]).toMatch(/вътрешния строеж на Земята/);
+    expect((await loadTopicDetails('8-geo:11')).outcomes.join(' ')).toMatch(/Създава карта/);
   });
 
   it('очакваните резултати по природни науки за 10. клас са при правилните теми', async () => {

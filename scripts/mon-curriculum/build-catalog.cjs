@@ -1,9 +1,12 @@
 // node build-catalog.cjs programs.json overrides.json <src/data/monCurriculum> [--flag за списък със съмнителни заглавия]
 // Превръща извлечените програми в типизиран модул за StudyBG: чисти заглавия, дълбочина, идентификатори.
 // overrides.json: "<етап>/<slug>#[<модул>:]<индекс>" → ново заглавие или null (премахва темата);
-// "__insert": { "<етап>/<slug>[@<модул>]": [{ after, num, title, outcomes?, concepts? }] } — теми, които извличането е изпуснало;
+// "__insert": { "<етап>/<slug>[@<модул>]": [{ after, num, title, outcomes?, concepts?, depth?, localId? }] } — теми, които извличането е изпуснало;
 // "__replace": { "<етап>/<slug>": [заглавия] } — програми с ненадеждна първа колона (без номерация);
 // "__outcomes": { "<етап>/<slug>#<индекс>": [резултати] } — когато редовете в таблицата на МОН са разместени.
+// "__depth": { "<етап>/<slug>#<индекс>": дълбочина } — раздел без номерация (1) и темите в него (2).
+// Темите без номерация се номерират поред; вмъкната тема с localId не мести номерата на следващите,
+// защото по тях се пазят напредъкът и кешираните уроци на ученика.
 const fs = require('fs');
 const [inFile, overridesFile, outFile, flag] = process.argv.slice(2);
 const programs = JSON.parse(fs.readFileSync(inFile, 'utf8'));
@@ -12,6 +15,7 @@ const inserts = overrides.__insert || {};
 const replaces = overrides.__replace || {};
 const outcomeFixes = overrides.__outcomes || {};
 const conceptFixes = overrides.__concepts || {};
+const depthFixes = overrides.__depth || {};
 
 const SUBJECT = {
   bge: 'bel', be: 'bel', bel: 'bel', lit: 'lit', math: 'math', informatika: 'informatika', it: 'it',
@@ -138,8 +142,10 @@ for (const p of programs) {
     const seen = new Set();
     const topics = [];
     const multi = p.modules.length > 1;
-    const add = (num, title, depth, outcomes, concepts, okey) => {
-      let local = normNum(num) || String(topics.length + 1);
+    let position = 0;
+    const add = (num, title, depth, outcomes, concepts, okey, localId) => {
+      if (!localId) position++;
+      let local = localId || normNum(num) || String(position);
       while (seen.has(local)) local += '+';
       seen.add(local);
       topics.push({ id: `${programId}${multi ? ':m' + (mi + 1) : ''}:${local}`, num: normNum(num), title, depth, outcomes, concepts });
@@ -149,7 +155,7 @@ for (const p of programs) {
     };
     const ins = inserts[multi ? `${key}@${mi}` : key] || [];
     const insertAfter = (i) =>
-      ins.filter((x) => x.after === i).forEach((x) => add(x.num, x.title, depthOf(x.num), x.outcomes ?? [], x.concepts ?? []));
+      ins.filter((x) => x.after === i).forEach((x) => add(x.num, x.title, x.depth ?? depthOf(x.num), x.outcomes ?? [], x.concepts ?? [], null, x.localId));
     insertAfter(-1);
     m.topics.forEach((raw, ti) => {
       // „ІІІ. 1. „Дядо Горио“…“: номерът на подтемата е с интервал след римската цифра
@@ -160,7 +166,7 @@ for (const p of programs) {
       if (ov !== null) {
         const title = typeof ov === 'string' ? ov : cleanTitle(t.title, t.num);
         const outcomes = outcomeFixes[okey] ?? t.outcomes.filter((o) => !/^Ученикът:?$/.test(o));
-        if (title) add(t.num, title, depthOf(t.num), outcomes, conceptFixes[okey] ?? t.concepts, typeof ov === 'string' ? null : okey);
+        if (title) add(t.num, title, depthFixes[okey] ?? depthOf(t.num), outcomes, conceptFixes[okey] ?? t.concepts, typeof ov === 'string' ? null : okey);
       }
       insertAfter(ti);
     });

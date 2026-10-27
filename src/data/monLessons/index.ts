@@ -17,6 +17,7 @@ import { MON_LESSONS_HIST_8 } from './hist8';
 import { MON_LESSONS_HIST_9 } from './hist9';
 import { MON_LESSONS_HIST_10A } from './hist10a';
 import { MON_LESSONS_HIST_10B } from './hist10b';
+import { MON_LESSONS_HIST_10C } from './hist10c';
 import { MON_LESSONS_LIT_8 } from './lit8';
 import { MON_LESSONS_LIT_9 } from './lit9';
 import { MON_LESSONS_LIT_10 } from './lit10';
@@ -70,4 +71,5 @@ export const MON_LESSONS: LessonData[] = [
   ...MON_LESSONS_HIST_9,
   ...MON_LESSONS_HIST_10A,
   ...MON_LESSONS_HIST_10B,
+  ...MON_LESSONS_HIST_10C,
 ];

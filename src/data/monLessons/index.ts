@@ -5,7 +5,9 @@ import { MON_LESSONS_BEL_10 } from './bel10';
 import { MON_LESSONS_BEL_11 } from './bel11';
 import { MON_LESSONS_BEL_12 } from './bel12';
 import { MON_LESSONS_BIO_8 } from './bio8';
+import { MON_LESSONS_BIO_9 } from './bio9';
 import { MON_LESSONS_CHEM_8 } from './chem8';
+import { MON_LESSONS_CHEM_9 } from './chem9';
 import { MON_LESSONS_LIT_8 } from './lit8';
 import { MON_LESSONS_LIT_9 } from './lit9';
 import { MON_LESSONS_LIT_10 } from './lit10';
@@ -17,6 +19,7 @@ import { MON_LESSONS_MATH_10 } from './math10';
 import { MON_LESSONS_MATH_11 } from './math11';
 import { MON_LESSONS_MATH_12 } from './math12';
 import { MON_LESSONS_PHYS_8 } from './phys8';
+import { MON_LESSONS_PHYS_9 } from './phys9';
 
 // Уроци, написани по темите от каталога на МОН (monTopicIds) — пълнят се по класове и предмети
 export const MON_LESSONS: LessonData[] = [
@@ -38,4 +41,7 @@ export const MON_LESSONS: LessonData[] = [
   ...MON_LESSONS_BIO_8,
   ...MON_LESSONS_CHEM_8,
   ...MON_LESSONS_PHYS_8,
+  ...MON_LESSONS_BIO_9,
+  ...MON_LESSONS_CHEM_9,
+  ...MON_LESSONS_PHYS_9,
 ];

@@ -10,7 +10,7 @@ export const MON_LESSONS_PHYS_8: LessonData[] = [
   {
     ...base,
     id: 'mon8-phys-motion',
-    monTopicIds: ['8-fa:1.1'],
+    monTopicIds: ['8-fa:1.1', '9-fa-90:1.1'],
     title: 'Неравномерно движение: средна и моментна скорост, ускорение',
     originalNoteExcerpt: 'Отправно тяло — движението е относително. Средна скорост v = s/t. Ускорение a = Δv/Δt. Равноускорително движение: v = v₀ + at, s = v₀t + at²/2. Свободно падане: g ≈ 10 m/s². Графиката v(t) е наклонена права.',
     summary: {
@@ -57,7 +57,7 @@ export const MON_LESSONS_PHYS_8: LessonData[] = [
   {
     ...base,
     id: 'mon8-phys-newton',
-    monTopicIds: ['8-fa:1.2'],
+    monTopicIds: ['8-fa:1.2', '9-fa-90:1.2'],
     title: 'Принципи на механиката. Сили',
     originalNoteExcerpt: 'I принцип — инерция. II принцип: F = ma. III принцип — действие и противодействие (реактивно движение). G = mg; тегло P — силата, с която тялото действа на опората; N — реакция на опората; триене f = kN. Равнодействаща сила.',
     summary: {
@@ -103,7 +103,7 @@ export const MON_LESSONS_PHYS_8: LessonData[] = [
   {
     ...base,
     id: 'mon8-phys-equilibrium',
-    monTopicIds: ['8-fa:1.3'],
+    monTopicIds: ['8-fa:1.3', '9-fa-90:1.3'],
     title: 'Равновесие на телата. Център на тежестта',
     originalNoteExcerpt: 'Устойчиво равновесие — при отклонение тялото се връща; неустойчиво — отдалечава се. Тяло на опора е в равновесие, ако вертикалата през центъра на тежестта минава през опорната площ. Нисък център на тежестта и широка опора → по-устойчиво.',
     summary: {
@@ -148,7 +148,7 @@ export const MON_LESSONS_PHYS_8: LessonData[] = [
   {
     ...base,
     id: 'mon8-phys-work-energy',
-    monTopicIds: ['8-fa:1.4'],
+    monTopicIds: ['8-fa:1.4', '9-fa-90:1.4'],
     title: 'Механична работа, мощност и енергия',
     originalNoteExcerpt: 'A = F · s (сила по посоката на движението), J. P = A/t, W. Eₖ = mv²/2. Eₚ = mgh. Закон за запазване: Eₖ + Eₚ = const (без триене). Тяло, паднало от 5 m, има скорост 10 m/s.',
     summary: {
@@ -195,7 +195,7 @@ export const MON_LESSONS_PHYS_8: LessonData[] = [
   {
     ...base,
     id: 'mon8-phys-fluids',
-    monTopicIds: ['8-fa:1.5'],
+    monTopicIds: ['8-fa:1.5', '9-fa-90:1.5'],
     title: 'Механика на течности и газове: налягане, Паскал, Архимед',
     originalNoteExcerpt: 'p = F/S (Pa). Хидростатично налягане p = ρgh. Закон на Паскал — налягането се предава еднакво във всички посоки → хидравлична преса F₂/F₁ = S₂/S₁. Закон на Архимед: Fₐ = ρ_теч · g · V. Тялото плава, ако плътността му е по-малка от тази на течността. Атмосферно налягане ≈ 101 kPa (760 mm Hg).',
     summary: {
@@ -242,7 +242,7 @@ export const MON_LESSONS_PHYS_8: LessonData[] = [
   {
     ...base,
     id: 'mon8-phys-thermal-motion',
-    monTopicIds: ['8-fa:2.1'],
+    monTopicIds: ['8-fa:2.1', '9-fa-90:2.1'],
     title: 'Топлинно движение. Температура и вътрешна енергия',
     originalNoteExcerpt: 'Топлинното движение на частиците е хаотично, масово и непрекъснато. Температурата характеризира топлинното равновесие и средната кинетична енергия на частиците. Вътрешна енергия. T = t + 273 (K); 0 K = −273 °C.',
     summary: {
@@ -287,7 +287,7 @@ export const MON_LESSONS_PHYS_8: LessonData[] = [
   {
     ...base,
     id: 'mon8-phys-heat-exchange',
-    monTopicIds: ['8-fa:2.2'],
+    monTopicIds: ['8-fa:2.2', '9-fa-90:2.2'],
     title: 'Топлообмен. Преходи между състоянията на веществата',
     originalNoteExcerpt: 'Q = mcΔt (c на водата 4200 J/(kg·°C)). Топене: Q = λm (за лед λ ≈ 3,3 · 10⁵ J/kg). Изпарение: Q = rm (за вода r ≈ 2,3 · 10⁶ J/kg). По време на топене и кипене температурата е постоянна. Преходи: топене, втвърдяване, изпарение, кондензация, сублимация.',
     summary: {
@@ -334,7 +334,7 @@ export const MON_LESSONS_PHYS_8: LessonData[] = [
   {
     ...base,
     id: 'mon8-phys-first-law',
-    monTopicIds: ['8-fa:2.3'],
+    monTopicIds: ['8-fa:2.3', '9-fa-90:2.3'],
     title: 'Първи принцип на термодинамиката',
     originalNoteExcerpt: 'Вътрешната енергия се изменя чрез работа и чрез топлообмен. Q = ΔU + A′ (A′ — работата на газа). Работа на газа при постоянно налягане: A′ = pΔV. Вечен двигател от първи род е невъзможен.',
     summary: {
@@ -379,7 +379,7 @@ export const MON_LESSONS_PHYS_8: LessonData[] = [
   {
     ...base,
     id: 'mon8-phys-ideal-gas',
-    monTopicIds: ['8-fa:2.4'],
+    monTopicIds: ['8-fa:2.4', '9-fa-90:2.4'],
     title: 'Процеси с идеален газ',
     originalNoteExcerpt: 'Модел идеален газ. Изотермен (T = const): pV = const. Изобарен (p = const): V/T = const. Изохорен (V = const): p/T = const; работа няма — Q = ΔU. Адиабатен — без топлообмен.',
     summary: {
@@ -425,7 +425,7 @@ export const MON_LESSONS_PHYS_8: LessonData[] = [
   {
     ...base,
     id: 'mon8-phys-heat-engines',
-    monTopicIds: ['8-fa:2.5'],
+    monTopicIds: ['8-fa:2.5', '9-fa-90:2.5'],
     title: 'Топлинни машини. КПД',
     originalNoteExcerpt: 'Нагревател (Q₁) → работно тяло → охладител (Q₂). A = Q₁ − Q₂; КПД η = A/Q₁ < 100%. Двигател на Ото: 4 такта — всмукване, сгъстяване, работен ход, изпускане. Екология: изгорели газове, топлинно замърсяване.',
     summary: {

@@ -10,7 +10,7 @@ export const MON_LESSONS_CHEM_8: LessonData[] = [
   {
     ...base,
     id: 'mon8-chem-structure',
-    monTopicIds: ['8-himia:1'],
+    monTopicIds: ['8-himia:1', '9-himia-90:1'],
     title: 'Строеж на веществото: електронна обвивка, химична връзка, кристални решетки',
     originalNoteExcerpt: 'Брой електронни слоеве = номер на периода; брой електрони във външния слой = номер на A група. Na 2, 8, 1; Cl 2, 8, 7. Йонна връзка (NaCl), ковалентна неполярна (H₂, Cl₂), полярна (H₂O, HCl), метална. Проста (H₂), двойна (O₂), тройна (N₂). Решетки: йонна, атомна, молекулна, метална. Водородна връзка между молекулите на водата.',
     summary: {
@@ -56,7 +56,7 @@ export const MON_LESSONS_CHEM_8: LessonData[] = [
   {
     ...base,
     id: 'mon8-chem-metals',
-    monTopicIds: ['8-himia:2'],
+    monTopicIds: ['8-himia:2', '9-himia-90:2'],
     title: 'Свойства на металите и на техни съединения',
     originalNoteExcerpt: '2Mg + O₂ → 2MgO; Mg + Cl₂ → MgCl₂; Ca + 2HCl → CaCl₂ + H₂; 2Al + 6HCl → 2AlCl₃ + 3H₂. CaO + H₂O → Ca(OH)₂; Ca(OH)₂ + CO₂ → CaCO₃ + H₂O; CaO + 2HCl → CaCl₂ + H₂O. Амфотерни: Al₂O₃, Al(OH)₃. Негасена вар CaO, гасена вар Ca(OH)₂, варовик CaCO₃, гипс CaSO₄·2H₂O.',
     summary: {
@@ -102,7 +102,7 @@ export const MON_LESSONS_CHEM_8: LessonData[] = [
   {
     ...base,
     id: 'mon8-chem-nonmetals',
-    monTopicIds: ['8-himia:3'],
+    monTopicIds: ['8-himia:3', '9-himia-90:3'],
     title: 'Свойства на неметалите и на техни съединения',
     originalNoteExcerpt: 'Алотропия: O₂ и O₃; ромбична и моноклинна сяра; бял и червен фосфор. S + O₂ → SO₂; H₂ + S → H₂S; Fe + S → FeS; N₂ + 3H₂ ⇄ 2NH₃. 2SO₂ + O₂ ⇄ 2SO₃; SO₃ + H₂O → H₂SO₄. H₂SO₄ → 2H⁺ + SO₄²⁻; Zn + H₂SO₄ → ZnSO₄ + H₂; 2NaOH + H₂SO₄ → Na₂SO₄ + 2H₂O. Киселината се налива във водата, а не обратно.',
     summary: {
@@ -148,7 +148,7 @@ export const MON_LESSONS_CHEM_8: LessonData[] = [
   {
     ...base,
     id: 'mon8-chem-environment',
-    monTopicIds: ['8-himia:4'],
+    monTopicIds: ['8-himia:4', '9-himia-90:4'],
     title: 'Опазване на околната среда',
     originalNoteExcerpt: 'Киселинни дъждове: SO₂ и азотните оксиди (от ТЕЦ на въглища, транспорт) + вода → киселини; увреждат гори, водоеми, сгради от варовик и мрамор, метали. Мерки: сероочистващи инсталации, катализатори в автомобилите, възобновяеми източници. Рециклирането на металите пести суровини и енергия.',
     summary: {

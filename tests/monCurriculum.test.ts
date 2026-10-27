@@ -103,7 +103,7 @@ describe('каталог на учебните програми на МОН', ()
 });
 
 describe('уроци, написани по темите на МОН', () => {
-  it('всеки урок сочи към съществуваща тема, а математиката и БЕЛ за 8. клас са покрити изцяло', async () => {
+  it('всеки урок сочи към съществуваща тема, а математиката и БЕЛ за 8. и 9. клас са покрити изцяло', async () => {
     const { MON_LESSONS } = await import('../src/data/monLessons');
     const programs = await loadMonCatalog();
     const topicIds = new Set(programs.flatMap((p) => p.modules.flatMap((m) => m.topics.map((t) => t.id))));
@@ -111,7 +111,7 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
@@ -127,6 +127,23 @@ describe('уроци, написани по темите на МОН', () => {
     const antigone = await loadTopicDetails('8-lit:I.4');
     expect(antigone.concepts).toEqual(['драма', 'трагедия', 'трагически конфликт', 'трагически герой', 'катарзис']);
     expect(antigone.outcomes.every((o) => !/Средновековието|Библията/.test(o))).toBe(true);
+  });
+
+  it('очакваните резултати за 9. клас са при правилните теми', async () => {
+    const probability = await loadTopicDetails('9-math:1');
+    expect(probability.outcomes.join(' ')).toMatch(/вероятност на допълнително събитие/);
+    expect(probability.outcomes.join(' ')).not.toMatch(/функция/);
+    expect(probability.concepts).toContain('несъвместими събития');
+    const linear = await loadTopicDetails('9-math:3');
+    expect(linear.outcomes.join(' ')).toMatch(/чрез заместване и събиране/);
+    const inequalities = await loadTopicDetails('9-math:6');
+    expect(inequalities.outcomes.join(' ')).toMatch(/квадратно неравенство/);
+    expect(inequalities.outcomes.join(' ')).not.toMatch(/Талес/);
+    const lexis = await loadTopicDetails('9-bge:5');
+    expect(lexis.concepts).toEqual(['историзми', 'архаизми', 'неологизми', 'вулгаризми', 'евфемизми', 'пароними']);
+    const bovary = await loadTopicDetails('9-lit:III.2');
+    expect(bovary.outcomes.join(' ')).toMatch(/сценарий за филм/);
+    expect(bovary.outcomes.join(' ')).not.toMatch(/модернизма/);
   });
 });
 

@@ -111,7 +111,7 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
@@ -184,6 +184,21 @@ describe('уроци, написани по темите на МОН', () => {
     expect((await loadTopicDetails('8-geo:6')).outcomes.join(' ')).not.toMatch(/земната кора/);
     expect((await loadTopicDetails('8-geo:7')).outcomes[0]).toMatch(/вътрешния строеж на Земята/);
     expect((await loadTopicDetails('8-geo:11')).outcomes.join(' ')).toMatch(/Създава карта/);
+  });
+
+  it('географията за 9. клас: изпуснатите теми са добавени, без да се местят номерата на останалите', async () => {
+    const catalog = await loadMonCatalog();
+    const title = (program: string, id: string) => programTopics(byId(catalog, program)).find((t) => t.id === id)?.title;
+    expect(title('9-geo-36', '9-geo-36:0a')).toBe('Политическа организация на обществото');
+    expect(title('9-geo-36', '9-geo-36:1')).toBe('Брой, разпределение и движение на населението в света');
+    expect(title('9-geo-36', '9-geo-36:16')).toBe('География на континентите и страните');
+    expect(title('9-geo-72', '9-geo-72:0a')).toBe('Форма и размери на Земята');
+    expect(title('9-geo-72', '9-geo-72:1')).toBe('Движения на Земята');
+    expect(title('9-geo-72', '9-geo-72:19a')).toBe('Вторичен сектор');
+    expect(title('9-geo-72', '9-geo-72:26')).toBe('География на континентите и страните');
+    expect(practiceTopics(byId(catalog, '9-geo-72')).map((t) => t.id)).not.toContain('9-geo-72:11');
+    expect((await loadTopicDetails('9-geo-36:9')).outcomes.join(' ')).toMatch(/енергетиката/);
+    expect((await loadTopicDetails('9-geo-36:9')).outcomes.join(' ')).not.toMatch(/металургия/);
   });
 
   it('очакваните резултати по природни науки за 10. клас са при правилните теми', async () => {

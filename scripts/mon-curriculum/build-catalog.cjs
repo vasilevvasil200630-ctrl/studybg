@@ -1,7 +1,7 @@
 // node build-catalog.cjs programs.json overrides.json <src/data/monCurriculum> [--flag за списък със съмнителни заглавия]
 // Превръща извлечените програми в типизиран модул за StudyBG: чисти заглавия, дълбочина, идентификатори.
 // overrides.json: "<етап>/<slug>#[<модул>:]<индекс>" → ново заглавие или null (премахва темата);
-// "__insert": { "<етап>/<slug>[@<модул>]": [{ after, num, title }] } — теми, които извличането е изпуснало;
+// "__insert": { "<етап>/<slug>[@<модул>]": [{ after, num, title, outcomes?, concepts? }] } — теми, които извличането е изпуснало;
 // "__replace": { "<етап>/<slug>": [заглавия] } — програми с ненадеждна първа колона (без номерация);
 // "__outcomes": { "<етап>/<slug>#<индекс>": [резултати] } — когато редовете в таблицата на МОН са разместени.
 const fs = require('fs');
@@ -148,7 +148,8 @@ for (const p of programs) {
       if (suspicious && okey) flagged.push(`${okey}\t${title}`);
     };
     const ins = inserts[multi ? `${key}@${mi}` : key] || [];
-    const insertAfter = (i) => ins.filter((x) => x.after === i).forEach((x) => add(x.num, x.title, depthOf(x.num), [], []));
+    const insertAfter = (i) =>
+      ins.filter((x) => x.after === i).forEach((x) => add(x.num, x.title, depthOf(x.num), x.outcomes ?? [], x.concepts ?? []));
     insertAfter(-1);
     m.topics.forEach((raw, ti) => {
       // „ІІІ. 1. „Дядо Горио“…“: номерът на подтемата е с интервал след римската цифра

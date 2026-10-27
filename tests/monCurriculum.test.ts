@@ -111,10 +111,13 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
+    // „Балкански синдром“ и „Ноев ковчег“ още нямат проверен написан урок
+    const lit11 = programCoverage(byId(programs, '11-lit'), MON_LESSONS);
+    expect(lit11.topics.filter((t) => t.lessonIds.length === 0).map((t) => t.topicId).sort()).toEqual(['11-lit:I.3', '11-lit:II.3']);
   });
 
   it('очакваните резултати на БЕЛ за 8. клас са при правилните теми', async () => {
@@ -161,6 +164,21 @@ describe('уроци, написани по темите на МОН', () => {
     const september = await loadTopicDetails('10-lit:II.1');
     expect(september.outcomes.join(' ')).not.toMatch(/Гераците/);
     expect(september.concepts).toEqual(['следвоенен модернизъм', 'експресионизъм']);
+  });
+
+  it('очакваните резултати за 11. клас са разпределени по подтеми', async () => {
+    const log = await loadTopicDetails('11-math:1.8');
+    expect(log.outcomes.join(' ')).toMatch(/понятието логаритъм/);
+    expect(log.concepts).toContain('логаритъм');
+    const geometric = await loadTopicDetails('11-math:4.5');
+    expect(geometric.outcomes.join(' ')).toMatch(/отношение на лица/);
+    const grammar = await loadTopicDetails('11-be:4');
+    expect(grammar.outcomes).toEqual(['Разпознава граматични грешки и ги редактира.']);
+    const borba = await loadTopicDetails('11-lit:III.1');
+    expect(borba.concepts).toEqual(['оксиморон']);
+    expect(borba.outcomes.join(' ')).not.toMatch(/Андрешко/);
+    const lake = await loadTopicDetails('11-lit:V.3');
+    expect(lake.concepts).toEqual(['лирическа миниатюра']);
   });
 });
 

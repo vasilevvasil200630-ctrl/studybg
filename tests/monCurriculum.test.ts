@@ -252,6 +252,20 @@ describe('уроци, написани по темите на МОН', () => {
     expect((await loadTopicDetails('9-history-72:2')).outcomes).toEqual([]);
   });
 
+  it('историята за 10. клас: всяка от 84-те подтеми има резултати, разпределени по смисъл', async () => {
+    const history = byId(await loadMonCatalog(), '10-history');
+    const practice = practiceTopics(history);
+    expect(practice).toHaveLength(84);
+    for (const t of practice) expect((await loadTopicDetails(t.id)).outcomes.length, t.id).toBeGreaterThan(0);
+    expect(practice.map((t) => t.id)).toContain('10-history:4.3');
+    expect((await loadTopicDetails('10-history:3.1.2')).outcomes.join(' ')).toMatch(/Кубрат, Аспарух и Тервел/);
+    expect((await loadTopicDetails('10-history:3.1.5')).outcomes.join(' ')).toMatch(/Симеон Велики/);
+    expect((await loadTopicDetails('10-history:6.1.6')).outcomes.join(' ')).toMatch(/Васил Левски/);
+    expect((await loadTopicDetails('10-history:7.1.11.1')).outcomes.join(' ')).toMatch(/БЗНС/);
+    expect((await loadTopicDetails('10-history:8.1.5')).concepts).toContain('„Възродителен процес“');
+    expect(programTopics(history).find((t) => t.id === '10-history:8.2.1')?.title).toBe('Икономически промени в селото и града');
+  });
+
   it('очакваните резултати по природни науки за 10. клас са при правилните теми', async () => {
     const ecosystem = await loadTopicDetails('10-bio:2.1');
     expect(ecosystem.outcomes[0]).toMatch(/^Дефинира и илюстрира с примери популация/);

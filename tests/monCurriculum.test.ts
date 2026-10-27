@@ -111,21 +111,10 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil', '8-history', '9-history-72', '9-history-144', '10-history']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil', '8-history', '9-history-72', '9-history-144', '10-history', '11-lit', '12-lit']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
-    // „Балкански синдром“ и „Ноев ковчег“ още нямат проверен написан урок
-    const lit11 = programCoverage(byId(programs, '11-lit'), MON_LESSONS);
-    expect(lit11.topics.filter((t) => t.lessonIds.length === 0).map((t) => t.topicId).sort()).toEqual(['11-lit:I.3', '11-lit:II.3']);
-    // „Колко си хубава!“, „Посвещение“, „Молитва“ и „Честен кръст“ — също
-    const lit12 = programCoverage(byId(programs, '12-lit'), MON_LESSONS);
-    expect(lit12.topics.filter((t) => t.lessonIds.length === 0).map((t) => t.topicId).sort()).toEqual([
-      '12-lit:I.2',
-      '12-lit:I.3',
-      '12-lit:II.2',
-      '12-lit:IV.3',
-    ]);
   });
 
   it('очакваните резултати на БЕЛ за 8. клас са при правилните теми', async () => {

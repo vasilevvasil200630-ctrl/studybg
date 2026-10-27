@@ -111,7 +111,7 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
@@ -172,6 +172,21 @@ describe('уроци, написани по темите на МОН', () => {
     const september = await loadTopicDetails('10-lit:II.1');
     expect(september.outcomes.join(' ')).not.toMatch(/Гераците/);
     expect(september.concepts).toEqual(['следвоенен модернизъм', 'експресионизъм']);
+  });
+
+  it('очакваните резултати по природни науки за 10. клас са при правилните теми', async () => {
+    const ecosystem = await loadTopicDetails('10-bio:2.1');
+    expect(ecosystem.outcomes[0]).toMatch(/^Дефинира и илюстрира с примери популация/);
+    expect((await loadTopicDetails('10-bio:2.2')).outcomes.join(' ')).not.toMatch(/екологична пирамида/);
+    expect((await loadTopicDetails('10-himia:1')).outcomes.join(' ')).toMatch(/синтез на амоняк/);
+    expect((await loadTopicDetails('10-himia:3')).outcomes.join(' ')).toMatch(/окислител и редуктор/);
+    expect((await loadTopicDetails('10-himia:4')).outcomes.join(' ')).toMatch(/вулканизация/);
+    const emWaves = await loadTopicDetails('10-fa:1.5');
+    expect(emWaves.outcomes.join(' ')).toMatch(/диапазони от електромагнитния спектър/);
+    expect((await loadTopicDetails('10-fa:2.1')).outcomes.join(' ')).not.toMatch(/радиовълни|микровълните/);
+    expect((await loadTopicDetails('10-fa:2.3')).outcomes.join(' ')).toMatch(/фотоефекта/);
+    expect((await loadTopicDetails('10-fa:3.3')).outcomes.join(' ')).toMatch(/ядрения реактор/);
+    expect((await loadTopicDetails('10-fa:3.4')).concepts).toContain('кварки');
   });
 
   it('очакваните резултати за 11. клас са разпределени по подтеми', async () => {

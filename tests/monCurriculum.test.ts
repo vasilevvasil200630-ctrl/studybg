@@ -111,13 +111,21 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
     // „Балкански синдром“ и „Ноев ковчег“ още нямат проверен написан урок
     const lit11 = programCoverage(byId(programs, '11-lit'), MON_LESSONS);
     expect(lit11.topics.filter((t) => t.lessonIds.length === 0).map((t) => t.topicId).sort()).toEqual(['11-lit:I.3', '11-lit:II.3']);
+    // „Колко си хубава!“, „Посвещение“, „Молитва“ и „Честен кръст“ — също
+    const lit12 = programCoverage(byId(programs, '12-lit'), MON_LESSONS);
+    expect(lit12.topics.filter((t) => t.lessonIds.length === 0).map((t) => t.topicId).sort()).toEqual([
+      '12-lit:I.2',
+      '12-lit:I.3',
+      '12-lit:II.2',
+      '12-lit:IV.3',
+    ]);
   });
 
   it('очакваните резултати на БЕЛ за 8. клас са при правилните теми', async () => {
@@ -179,6 +187,18 @@ describe('уроци, написани по темите на МОН', () => {
     expect(borba.outcomes.join(' ')).not.toMatch(/Андрешко/);
     const lake = await loadTopicDetails('11-lit:V.3');
     expect(lake.concepts).toEqual(['лирическа миниатюра']);
+  });
+
+  it('очакваните резултати за 12. клас са разпределени по подтеми', async () => {
+    const means = await loadTopicDetails('12-math:4.2');
+    expect(means.concepts).toEqual(['средно хармонично', 'средно квадратично']);
+    const logEq = await loadTopicDetails('12-math:2.4');
+    expect(logEq.outcomes).toEqual(['Умее да решава основни логаритмични уравнения.']);
+    const style = await loadTopicDetails('12-be:3');
+    expect(style.concepts).toEqual(['стилистична грешка', 'стилистичен ефект']);
+    const spasova = await loadTopicDetails('12-lit:II.1');
+    expect(spasova.outcomes.join(' ')).toMatch(/дебат за вярата/);
+    expect(spasova.outcomes.join(' ')).not.toMatch(/Посвещение/);
   });
 });
 

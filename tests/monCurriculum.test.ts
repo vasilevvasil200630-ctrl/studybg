@@ -111,7 +111,7 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil', '8-history']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
@@ -225,6 +225,18 @@ describe('уроци, написани по темите на МОН', () => {
     expect((await loadTopicDetails('10-phil:3.1')).outcomes.join(' ')).not.toMatch(/Тома от Аквино/);
     expect((await loadTopicDetails('10-phil:3.2')).outcomes.join(' ')).toMatch(/Тома от Аквино/);
     expect((await loadTopicDetails('10-phil:4.1')).outcomes.join(' ')).toMatch(/Джон Ролс/);
+  });
+
+  it('историята за 8. клас: резултатите са разпределени по подтеми и важат и за 9. клас (144 ч.)', async () => {
+    expect((await loadTopicDetails('8-history:2.1.1')).outcomes.join(' ')).toMatch(/Великите географски открития/);
+    expect((await loadTopicDetails('8-history:2.2.1')).outcomes.join(' ')).toMatch(/Мартин Лутер/);
+    expect((await loadTopicDetails('8-history:3.2.2')).outcomes.join(' ')).toMatch(/Паисий Хилендарски/);
+    expect((await loadTopicDetails('8-history:4.1.6')).outcomes.join(' ')).toMatch(/Търновската конституция/);
+    expect((await loadTopicDetails('8-history:4.2.3')).outcomes.join(' ')).toMatch(/Васил Левски/);
+    expect((await loadTopicDetails('8-history:2')).outcomes).toEqual([]);
+    expect((await loadTopicDetails('9-history-144:4.2.3')).outcomes).toEqual((await loadTopicDetails('8-history:4.2.3')).outcomes);
+    const h144 = programTopics(byId(await loadMonCatalog(), '9-history-144'));
+    expect(h144.find((t) => t.id === '9-history-144:3.2.2')?.title).toBe('Балканското възраждане през XVIII век');
   });
 
   it('очакваните резултати по природни науки за 10. клас са при правилните теми', async () => {

@@ -103,7 +103,7 @@ describe('каталог на учебните програми на МОН', ()
 });
 
 describe('уроци, написани по темите на МОН', () => {
-  it('всеки урок сочи към съществуваща тема, а математиката и БЕЛ за 8.–10. клас са покрити изцяло', async () => {
+  it('всеки урок сочи към съществуваща тема, а програмите с написани уроци са покрити изцяло', async () => {
     const { MON_LESSONS } = await import('../src/data/monLessons');
     const programs = await loadMonCatalog();
     const topicIds = new Set(programs.flatMap((p) => p.modules.flatMap((m) => m.topics.map((t) => t.id))));
@@ -111,7 +111,7 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }

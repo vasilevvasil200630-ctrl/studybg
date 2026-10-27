@@ -5,6 +5,7 @@
 // "__replace": { "<етап>/<slug>": [заглавия] } — програми с ненадеждна първа колона (без номерация);
 // "__outcomes": { "<етап>/<slug>#<индекс>": [резултати] } — когато редовете в таблицата на МОН са разместени.
 // "__depth": { "<етап>/<slug>#<индекс>": дълбочина } — раздел без номерация (1) и темите в него (2).
+// "__drop": [ "<етап>/<slug>#<индекс>" ] — ред, който извличането е взело за тема; пропуска се, без да мести номерата.
 // Темите без номерация се номерират поред; вмъкната тема с localId не мести номерата на следващите,
 // защото по тях се пазят напредъкът и кешираните уроци на ученика.
 const fs = require('fs');
@@ -16,6 +17,7 @@ const replaces = overrides.__replace || {};
 const outcomeFixes = overrides.__outcomes || {};
 const conceptFixes = overrides.__concepts || {};
 const depthFixes = overrides.__depth || {};
+const dropped = new Set(overrides.__drop || []);
 
 const SUBJECT = {
   bge: 'bel', be: 'bel', bel: 'bel', lit: 'lit', math: 'math', informatika: 'informatika', it: 'it',
@@ -162,6 +164,11 @@ for (const p of programs) {
       const split = raw.title.match(/^([IVXІ]{1,4})\.\s+(\d{1,2})\.\s*/);
       const t = split ? { ...raw, num: `${split[1]}.${split[2]}.`, title: raw.title.slice(split[0].length) } : raw;
       const okey = `${key}#${multi ? mi + ':' : ''}${ti}`;
+      if (dropped.has(okey)) {
+        position++;
+        insertAfter(ti);
+        return;
+      }
       const ov = overrides[okey];
       if (ov !== null) {
         const title = typeof ov === 'string' ? ov : cleanTitle(t.title, t.num);

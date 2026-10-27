@@ -111,7 +111,7 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
@@ -199,6 +199,19 @@ describe('уроци, написани по темите на МОН', () => {
     expect(practiceTopics(byId(catalog, '9-geo-72')).map((t) => t.id)).not.toContain('9-geo-72:11');
     expect((await loadTopicDetails('9-geo-36:9')).outcomes.join(' ')).toMatch(/енергетиката/);
     expect((await loadTopicDetails('9-geo-36:9')).outcomes.join(' ')).not.toMatch(/металургия/);
+  });
+
+  it('географията за 10. клас: повторното заглавие е пропуснато, без да се местят номерата', async () => {
+    const geo = byId(await loadMonCatalog(), '10-geo');
+    const topics = programTopics(geo);
+    expect(topics.map((t) => t.id)).not.toContain('10-geo:4');
+    expect(topics.find((t) => t.id === '10-geo:5')?.title).toBe('Природни области');
+    expect(topics.find((t) => t.id === '10-geo:5')?.section).toBe('Природна среда на България');
+    expect(topics.find((t) => t.id === '10-geo:23')?.title).toBe('Райони в България');
+    expect(practiceTopics(geo)).toHaveLength(21);
+    expect((await loadTopicDetails('10-geo:6')).outcomes.join(' ')).toMatch(/демографската ситуация/);
+    expect((await loadTopicDetails('10-geo:8')).outcomes.join(' ')).toMatch(/държавното устройство/);
+    expect((await loadTopicDetails('10-geo:8')).outcomes.join(' ')).not.toMatch(/селища/);
   });
 
   it('очакваните резултати по природни науки за 10. клас са при правилните теми', async () => {

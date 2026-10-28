@@ -111,7 +111,7 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil', '8-history', '9-history-72', '9-history-144', '10-history', '11-lit', '12-lit', '11-go', '12-go', '8-informatika', '8-it', '9-it', '10-it', 'lang-ae-a1', 'lang-ae-a2-8-neint', 'lang-ae-a2-11-12', 'lang-ae-b1.1-8-int', 'lang-ae-b1.1', 'lang-ae-b1', 'lang-ae-b2.1', 'lang-ne-a1', 'lang-ne-a2-8-neint', 'lang-ne-a2-11-12', 'lang-ne-b1.1-8-int', 'lang-ne-b1.1', 'lang-ne-b1', 'lang-ne-b2.1', '8-tp', '9-tp', 'pp-bel', 'pp-history', 'pp-bio', 'pp-fa', 'pp-it']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil', '8-history', '9-history-72', '9-history-144', '10-history', '11-lit', '12-lit', '11-go', '12-go', '8-informatika', '8-it', '9-it', '10-it', 'lang-ae-a1', 'lang-ae-a2-8-neint', 'lang-ae-a2-11-12', 'lang-ae-b1.1-8-int', 'lang-ae-b1.1', 'lang-ae-b1', 'lang-ae-b2.1', 'lang-ne-a1', 'lang-ne-a2-8-neint', 'lang-ne-a2-11-12', 'lang-ne-b1.1-8-int', 'lang-ne-b1.1', 'lang-ne-b1', 'lang-ne-b2.1', '8-tp', '9-tp', 'pp-bel', 'pp-history', 'pp-bio', 'pp-fa', 'pp-it', 'pp-himia', 'pp-phil', 'pp-predpriemachestvo', 'pp-math']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
@@ -521,6 +521,27 @@ describe('уроци, написани по темите на МОН', () => {
     expect((await loadTopicDetails('pp-predpriemachestvo:m2:4.2')).concepts).toContain('модел на петте конкурентни сили на Майкъл Портър');
     expect((await loadTopicDetails('pp-predpriemachestvo:m3:5.2')).concepts).toContain('Канава на бизнес модела (Business Model Canvas – 9 елемента)');
     expect((await loadTopicDetails('pp-predpriemachestvo:m4:4.2')).concepts).toContain('информационни системи за управление (УИС, ERP, CRM)');
+  });
+
+  it('профилирана подготовка по математика (Модули 1–4): всяка подтема има очаквани резултати и понятия', async () => {
+    const programs = await loadMonCatalog();
+    const ppMath = practiceTopics(byId(programs, 'pp-math'));
+    expect(ppMath).toHaveLength(79);
+    for (const topic of ppMath) {
+      const details = await loadTopicDetails(topic.id);
+      expect(details.outcomes.length, topic.id).toBeGreaterThan(0);
+      expect(details.concepts.length, topic.id).toBeGreaterThan(0);
+    }
+    expect(byId(programs, 'pp-math').modules.map((m) => m.title)).toEqual([
+      'Модул 1. Геометрия',
+      'Модул 2. Елементи на математическия анализ',
+      'Модул 3. Практическа математика',
+      'Модул 4. Вероятности и анализ на данни',
+    ]);
+    expect((await loadTopicDetails('pp-math:m1:1.1')).concepts).toContain('линейна комбинация на вектори');
+    expect((await loadTopicDetails('pp-math:m2:1.2')).concepts).toContain('теорема на Безу (R = P(a))');
+    expect((await loadTopicDetails('pp-math:m3:1.6')).concepts).toContain('инфлексна точка (точка на инфлексия)');
+    expect((await loadTopicDetails('pp-math:m4:1.2')).concepts).toContain('формула на Бейс P(Hₖ|A) = P(Hₖ)·P(A|Hₖ) / P(A)');
   });
 });
 

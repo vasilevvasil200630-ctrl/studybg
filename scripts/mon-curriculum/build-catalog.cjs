@@ -92,7 +92,7 @@ const LANG_AREAS = [
 function moduleTitle(raw) {
   const m = raw.replace(/\s+/g, ' ').trim().match(/^(МОДУЛ|Модул)\s+(\d+)\.?\s*(.*)$/);
   if (!m) return sentenceCase(raw.trim());
-  const rest = m[3].replace(/[„“”"]/g, '').replace(/\s*\[.*$/, '').trim();
+  const rest = m[3].replace(/[„“”"]/g, '').replace(/\s*\[.*$/, '').replace(/\s+е хронологически обвързан.*$/i, '').trim();
   return `Модул ${m[2]}${rest ? '. ' + sentenceCase(rest) : ''}`;
 }
 

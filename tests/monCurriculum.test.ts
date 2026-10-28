@@ -111,7 +111,7 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil', '8-history', '9-history-72', '9-history-144', '10-history', '11-lit', '12-lit', '11-go', '12-go', '8-informatika', '8-it', '9-it', '10-it', 'lang-ae-a1', 'lang-ae-a2-8-neint', 'lang-ae-a2-11-12', 'lang-ae-b1.1-8-int', 'lang-ae-b1.1', 'lang-ae-b1', 'lang-ae-b2.1', 'lang-ne-a1', 'lang-ne-a2-8-neint', 'lang-ne-a2-11-12', 'lang-ne-b1.1-8-int', 'lang-ne-b1.1', 'lang-ne-b1', 'lang-ne-b2.1']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil', '8-history', '9-history-72', '9-history-144', '10-history', '11-lit', '12-lit', '11-go', '12-go', '8-informatika', '8-it', '9-it', '10-it', 'lang-ae-a1', 'lang-ae-a2-8-neint', 'lang-ae-a2-11-12', 'lang-ae-b1.1-8-int', 'lang-ae-b1.1', 'lang-ae-b1', 'lang-ae-b2.1', 'lang-ne-a1', 'lang-ne-a2-8-neint', 'lang-ne-a2-11-12', 'lang-ne-b1.1-8-int', 'lang-ne-b1.1', 'lang-ne-b1', 'lang-ne-b2.1', '8-tp', '9-tp']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
@@ -345,6 +345,21 @@ describe('уроци, написани по темите на МОН', () => {
     const spasova = await loadTopicDetails('12-lit:II.1');
     expect(spasova.outcomes.join(' ')).toMatch(/дебат за вярата/);
     expect(spasova.outcomes.join(' ')).not.toMatch(/Посвещение/);
+  });
+
+  it('технологии и предприемачество за 8. и 9. клас: всяка подтема има очаквани резултати и понятия', async () => {
+    const programs = await loadMonCatalog();
+    const tp8 = practiceTopics(byId(programs, '8-tp'));
+    const tp9 = practiceTopics(byId(programs, '9-tp'));
+    expect(tp8).toHaveLength(21);
+    expect(tp9).toHaveLength(30);
+    for (const topic of [...tp8, ...tp9]) {
+      const details = await loadTopicDetails(topic.id);
+      expect(details.outcomes.length, topic.id).toBeGreaterThan(0);
+      expect(details.concepts.length, topic.id).toBeGreaterThan(0);
+    }
+    expect((await loadTopicDetails('8-tp:2.7')).concepts).toContain('работна сила');
+    expect((await loadTopicDetails('9-tp:5.4')).concepts).toEqual(['мисия на фирма', 'визия на фирма', 'стратегически цели', 'оперативни цели']);
   });
 });
 

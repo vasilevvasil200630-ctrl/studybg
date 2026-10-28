@@ -54,6 +54,8 @@ import { MON_LESSONS_PHIL_8 } from './phil8';
 import { MON_LESSONS_PHIL_9 } from './phil9';
 import { MON_LESSONS_PHIL_10 } from './phil10';
 import { MON_LESSONS_PHYS_10 } from './phys10';
+import { MON_LESSONS_TP_8 } from './tp8';
+import { MON_LESSONS_TP_9 } from './tp9';
 
 // Уроци, написани по темите от каталога на МОН (monTopicIds) — пълнят се по класове и предмети
 export const MON_LESSONS: LessonData[] = [
@@ -112,4 +114,6 @@ export const MON_LESSONS: LessonData[] = [
   ...MON_LESSONS_DE_B11,
   ...MON_LESSONS_DE_B1,
   ...MON_LESSONS_DE_B21,
+  ...MON_LESSONS_TP_8,
+  ...MON_LESSONS_TP_9,
 ];

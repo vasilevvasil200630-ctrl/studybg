@@ -573,6 +573,13 @@ describe('уроци, написани по темите на МОН', () => {
     expect((await loadTopicDetails('pp-informatika:m3:2.8')).concepts).toContain('групиране на записи (GROUP BY) и условие за група (HAVING)');
     expect((await loadTopicDetails('pp-informatika:m4:1.2')).concepts).toContain('транзакция и свойства на транзакцията — ACID (Atomicity, Consistency, Isolation, Durability)');
   });
+
+  it('профилираната подготовка по изобразително изкуство и музика има чисти заглавия, резултати и понятия', async () => {
+    expect((await loadTopicDetails('pp-arts:2.1')).concepts).toContain('ортогонална проекция и перспективна система');
+    expect((await loadTopicDetails('pp-arts:4.2')).concepts).toContain('символика и психология на цвета');
+    expect((await loadTopicDetails('pp-muzika:m1:3.4')).concepts).toContain('сонатна форма: експозиция, разработка и реприза');
+    expect((await loadTopicDetails('pp-muzika:m2:1.7')).concepts).toContain('тризвучие (квинтакорд) и обръщения: секстакорд и квартсекстакорд');
+  });
 });
 
 describe('покритие с уроци от сайта', () => {

@@ -111,7 +111,7 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil', '8-history', '9-history-72', '9-history-144', '10-history', '11-lit', '12-lit', '11-go', '12-go', '8-informatika', '8-it', '9-it', '10-it', 'lang-ae-a1', 'lang-ae-a2-8-neint', 'lang-ae-a2-11-12', 'lang-ae-b1.1-8-int', 'lang-ae-b1.1', 'lang-ae-b1', 'lang-ae-b2.1', 'lang-ne-a1', 'lang-ne-a2-8-neint', 'lang-ne-a2-11-12', 'lang-ne-b1.1-8-int', 'lang-ne-b1.1', 'lang-ne-b1', 'lang-ne-b2.1', '8-tp', '9-tp', 'pp-bel', 'pp-history', 'pp-bio', 'pp-fa', 'pp-it', 'pp-himia', 'pp-phil', 'pp-predpriemachestvo', 'pp-math']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil', '8-history', '9-history-72', '9-history-144', '10-history', '11-lit', '12-lit', '11-go', '12-go', '8-informatika', '8-it', '9-it', '10-it', 'lang-ae-a1', 'lang-ae-a2-8-neint', 'lang-ae-a2-11-12', 'lang-ae-b1.1-8-int', 'lang-ae-b1.1', 'lang-ae-b1', 'lang-ae-b2.1', 'lang-ne-a1', 'lang-ne-a2-8-neint', 'lang-ne-a2-11-12', 'lang-ne-b1.1-8-int', 'lang-ne-b1.1', 'lang-ne-b1', 'lang-ne-b2.1', '8-tp', '9-tp', 'pp-bel', 'pp-history', 'pp-bio', 'pp-fa', 'pp-it', 'pp-himia', 'pp-phil', 'pp-predpriemachestvo', 'pp-math', 'pp-geo']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
@@ -542,6 +542,22 @@ describe('уроци, написани по темите на МОН', () => {
     expect((await loadTopicDetails('pp-math:m2:1.2')).concepts).toContain('теорема на Безу (R = P(a))');
     expect((await loadTopicDetails('pp-math:m3:1.6')).concepts).toContain('инфлексна точка (точка на инфлексия)');
     expect((await loadTopicDetails('pp-math:m4:1.2')).concepts).toContain('формула на Бейс P(Hₖ|A) = P(Hₖ)·P(A|Hₖ) / P(A)');
+  });
+
+  it('профилираната подготовка по география и икономика (Модули 1–6) има чисти заглавия, резултати и понятия', async () => {
+    const programs = await loadMonCatalog();
+    expect(byId(programs, 'pp-geo').modules.map((m) => m.title)).toEqual([
+      'Модул 1. Природноресурсен потенциал. устойчиво развитие',
+      'Модул 2. Геополитическа и обществена култура',
+      'Модул 3. Съвременно икономическо развитие',
+      'Модул 4. Европа, азия и българия',
+      'Модул 5. България и регионална политика',
+      'Модул 6. Географска и икономическа информация',
+    ]);
+    expect((await loadTopicDetails('pp-geo:m1:3.1')).concepts).toContain('природни условия, природни ресурси и природноресурсен потенциал');
+    expect((await loadTopicDetails('pp-geo:m2:1.1')).concepts).toContain('теория за „Хартланда“ (Халфорд Макиндер) и „морската мощ“ (Алфред Маън)');
+    expect((await loadTopicDetails('pp-geo:m5:9.1')).concepts).toContain('шест района за планиране от ниво 2 (NUTS 2) в България: Северозападен, Северен централен, Североизточен, Югоизточен, Югозападен и Южен централен');
+    expect((await loadTopicDetails('pp-geo:m6:3.4')).concepts).toContain('векторен модел (точки, линии, полигони) и растерен модел на данните в ГИС');
   });
 });
 

@@ -60,6 +60,7 @@ import { MON_LESSONS_PP_FA } from './ppFa';
 import { MON_LESSONS_PP_GEO } from './ppGeo';
 import { MON_LESSONS_PP_HIMIA } from './ppHimia';
 import { MON_LESSONS_PP_HISTORY } from './ppHistory';
+import { MON_LESSONS_PP_INFORMATIKA } from './ppInformatika';
 import { MON_LESSONS_PP_IT } from './ppIt';
 import { MON_LESSONS_PP_MATH } from './ppMath';
 import { MON_LESSONS_PP_PHIL } from './ppPhil';
@@ -136,4 +137,5 @@ export const MON_LESSONS: LessonData[] = [
   ...MON_LESSONS_PP_PREDPRIEMACHESTVO,
   ...MON_LESSONS_PP_MATH,
   ...MON_LESSONS_PP_GEO,
+  ...MON_LESSONS_PP_INFORMATIKA,
 ];

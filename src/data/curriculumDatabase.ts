@@ -25,7 +25,8 @@ export const SUBJECTS_LIST: SubjectName[] = [
   'Икономика, Бизнес и Предприемачество',
   'Английски език',
   'Чужди езици (Немски, Френски, Испански)',
-  'Гражданско образование и философия'
+  'Гражданско образование и философия',
+  'Изкуства и музика'
 ];
 
 const CORE_CURRICULUM_LESSONS: LessonData[] = [
@@ -1132,7 +1133,7 @@ function buildInterleavedCurriculum(allLessons: LessonData[]): LessonData[] {
 }
 
 // 108 урока + уроците по темите от каталога на МОН (src/data/monLessons)
-export const TOTAL_CURRICULUM_LESSONS_COUNT = 1423;
+export const TOTAL_CURRICULUM_LESSONS_COUNT = 1540;
 
 export const CURRICULUM_LESSONS: LessonData[] = buildInterleavedCurriculum(
   CORE_CURRICULUM_LESSONS.map(ensureNotebookChecklist)

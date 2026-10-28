@@ -1,4 +1,7 @@
 import type { LessonData } from '../../types';
+import { MON_LESSONS_ARTS_8 } from './arts8';
+import { MON_LESSONS_ARTS_9 } from './arts9';
+import { MON_LESSONS_ARTS_10 } from './arts10';
 import { MON_LESSONS_BEL_8 } from './bel8';
 import { MON_LESSONS_BEL_9 } from './bel9';
 import { MON_LESSONS_BEL_10 } from './bel10';
@@ -48,12 +51,16 @@ import { MON_LESSONS_MATH_9 } from './math9';
 import { MON_LESSONS_MATH_10 } from './math10';
 import { MON_LESSONS_MATH_11 } from './math11';
 import { MON_LESSONS_MATH_12 } from './math12';
+import { MON_LESSONS_MUZIKA_8 } from './muzika8';
+import { MON_LESSONS_MUZIKA_9 } from './muzika9';
+import { MON_LESSONS_MUZIKA_10 } from './muzika10';
 import { MON_LESSONS_PHYS_8 } from './phys8';
 import { MON_LESSONS_PHYS_9 } from './phys9';
 import { MON_LESSONS_PHIL_8 } from './phil8';
 import { MON_LESSONS_PHIL_9 } from './phil9';
 import { MON_LESSONS_PHIL_10 } from './phil10';
 import { MON_LESSONS_PHYS_10 } from './phys10';
+import { MON_LESSONS_PP_ARTS } from './ppArts';
 import { MON_LESSONS_PP_BEL } from './ppBel';
 import { MON_LESSONS_PP_BIO } from './ppBio';
 import { MON_LESSONS_PP_FA } from './ppFa';
@@ -63,6 +70,7 @@ import { MON_LESSONS_PP_HISTORY } from './ppHistory';
 import { MON_LESSONS_PP_INFORMATIKA } from './ppInformatika';
 import { MON_LESSONS_PP_IT } from './ppIt';
 import { MON_LESSONS_PP_MATH } from './ppMath';
+import { MON_LESSONS_PP_MUZIKA } from './ppMuzika';
 import { MON_LESSONS_PP_PHIL } from './ppPhil';
 import { MON_LESSONS_PP_PREDPRIEMACHESTVO } from './ppPredpriemachestvo';
 import { MON_LESSONS_TP_8 } from './tp8';
@@ -138,4 +146,12 @@ export const MON_LESSONS: LessonData[] = [
   ...MON_LESSONS_PP_MATH,
   ...MON_LESSONS_PP_GEO,
   ...MON_LESSONS_PP_INFORMATIKA,
+  ...MON_LESSONS_ARTS_8,
+  ...MON_LESSONS_ARTS_9,
+  ...MON_LESSONS_ARTS_10,
+  ...MON_LESSONS_PP_ARTS,
+  ...MON_LESSONS_MUZIKA_8,
+  ...MON_LESSONS_MUZIKA_9,
+  ...MON_LESSONS_MUZIKA_10,
+  ...MON_LESSONS_PP_MUZIKA,
 ];

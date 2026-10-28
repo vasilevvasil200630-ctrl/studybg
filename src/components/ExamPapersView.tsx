@@ -27,7 +27,27 @@ const byRelevance = (a: ExamPaper, b: ExamPaper) =>
 const ALL_PAPERS: ExamPaper[] = [...EXAM_PAPERS, ...TOPIC_PAPERS];
 
 /** Реда на предметите в списъка: математиката (с тренировката по тема под нея) е първа */
-const SUBJECT_ORDER = ['Математика', 'Български език и литература'];
+const SUBJECT_ORDER = [
+  'Математика',
+  'Български език и литература',
+  'Английски език',
+  'Немски език',
+  'Биология и здравно образование',
+  'Химия и опазване на околната среда',
+  'Физика и астрономия',
+  'История и цивилизации',
+  'География и икономика',
+  'Философия',
+  'Информатика',
+  'Информационни технологии',
+  'Предприемачество',
+  'Изобразително изкуство',
+  'Музика',
+];
+const subjectOrderIndex = (s: string) => {
+  const idx = SUBJECT_ORDER.indexOf(s);
+  return idx === -1 ? SUBJECT_ORDER.length : idx;
+};
 
 /** Къде се упражнява всяка тема: по математика — набор по тема, за другите предмети — примерните задачи на МОН */
 const SUBJECT_SETS: Partial<Record<TopicKey, string>> = { bio: 'sample-nvo10-bio', chem: 'sample-nvo10-chem', phys: 'sample-nvo10-phys', geo: 'sample-nvo10-geo' };
@@ -107,7 +127,7 @@ export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onO
 
       {shown.map((exam) => {
         const papers = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind !== 'sample').sort(byRelevance);
-        const subjects = [...new Set(papers.map((p) => p.subject))].sort((a, b) => SUBJECT_ORDER.indexOf(a) - SUBJECT_ORDER.indexOf(b));
+        const subjects = [...new Set(papers.map((p) => p.subject))].sort((a, b) => subjectOrderIndex(a) - subjectOrderIndex(b));
         const allSamples = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind === 'sample');
         // Примерните набори по предмет с варианти (БЕЛ) са под вариантите му; другите — в „Другите предмети“
         const samples = allSamples.filter((p) => !subjects.includes(p.subject));

@@ -29,6 +29,7 @@ import { DZI_MATH_2024 } from './officialPapers/dziMath2024';
 import { DZI_MATH_2023 } from './officialPapers/dziMath2023';
 import { DZI_MATH_2022 } from './officialPapers/dziMath2022';
 import { DZI_MATH_2021 } from './officialPapers/dziMath2021';
+import { DZI_PROFILE_PAPERS } from './dziProfilePapers';
 
 /**
  * Пълни изпитни варианти за симулатора.
@@ -69,6 +70,7 @@ export const EXAM_PAPERS: ExamPaper[] = [
   DZI_BEL_2023,
   DZI_BEL_2022,
   DZI_BEL_2021,
+  ...DZI_PROFILE_PAPERS,
 
   // -------------------------------------------------------------------------
   // БЕЛ — ДЗИ (12. клас)

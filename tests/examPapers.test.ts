@@ -497,5 +497,50 @@ describe('ДЗИ — оценка по единната скала на МОН',
     const p = EXAM_PAPERS.find((x) => x.id === 'official-dzi-bel-2025')!;
     const r = scorePaper(p, keyAnswers(p), fullOpenScores(p));
     expect(r.grade?.numeric).toBe(6);
+
+    const profileSubjects = [
+      'Английски език',
+      'Немски език',
+      'Биология и здравно образование',
+      'Химия и опазване на околната среда',
+      'Физика и астрономия',
+      'История и цивилизации',
+      'География и икономика',
+      'Философия',
+      'Информатика',
+      'Информационни технологии',
+      'Предприемачество',
+      'Изобразително изкуство',
+      'Музика',
+    ];
+    for (const subj of profileSubjects) {
+      const p2 = EXAM_PAPERS.find((x) => x.exam === 'ДЗИ' && x.subject === subj);
+      expect(p2, `Липсва вариант за Втори ДЗИ по ${subj}`).toBeDefined();
+      expect(p2!.durationMinutes, p2!.id).toBe(240);
+      expect(p2!.maxPoints, p2!.id).toBe(100);
+      expect(p2!.gradeScale, p2!.id).toBe(DZI_SCALE);
+      const r2 = scorePaper(p2!, keyAnswers(p2!), fullOpenScores(p2!));
+      expect(r2.totalPoints, p2!.id).toBe(100);
+      expect(r2.grade?.numeric, p2!.id).toBe(6);
+    }
+
+    const seenIds = new Set<string>();
+    for (const paper of EXAM_PAPERS.filter((x) => x.kind !== 'sample')) {
+      for (const q of allQuestions(paper)) {
+        expect(seenIds.has(q.id), `Дублирано глобално question ID: ${q.id} в ${paper.id}`).toBe(false);
+        seenIds.add(q.id);
+      }
+    }
+
+    const pattern = /\$\$([\s\S]+?)\$\$|\$([^$\n]+?)\$/g;
+    for (const paper of EXAM_PAPERS.filter((x) => x.kind === 'practice')) {
+      for (const text of paperTexts(paper)) {
+        for (const m of text.matchAll(pattern)) {
+          const tex = (m[1] ?? m[2]).trim();
+          expect(() => katex.renderToString(tex, { throwOnError: true, strict: 'ignore' }), `${paper.id}: ${tex}`).not.toThrow();
+        }
+        expect((text.match(/\$/g) ?? []).length % 2, `${paper.id}: ${text.slice(0, 60)}`).toBe(0);
+      }
+    }
   });
 });

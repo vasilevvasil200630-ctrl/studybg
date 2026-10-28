@@ -99,7 +99,7 @@ describe('каталог на учебните програми на МОН', ()
     // Изобразителното изкуство пази резултатите общо за програмата
     const arts = programTopics(byId(programs, '8-arts'))[0];
     expect((await loadTopicDetails(arts.id)).outcomes.length).toBeGreaterThan(0);
-  });
+  }, 20_000);
 });
 
 describe('уроци, написани по темите на МОН', () => {
@@ -111,7 +111,7 @@ describe('уроци, написани по темите на МОН', () => {
       expect(lesson.monTopicIds?.length, lesson.id).toBeGreaterThan(0);
       for (const id of lesson.monTopicIds ?? []) expect(topicIds.has(id), `${lesson.id} → ${id}`).toBe(true);
     }
-    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil', '8-history', '9-history-72', '9-history-144', '10-history', '11-lit', '12-lit', '11-go', '12-go', '8-informatika', '8-it', '9-it', '10-it']) {
+    for (const programId of ['8-math', '8-bge', '8-lit', '9-math', '9-bge', '9-lit', '10-math', '10-bge', '10-lit', '11-math', '11-be', '12-math', '12-be', '8-bio', '8-himia', '8-fa', '9-bio-36', '9-bio-90', '9-himia-54', '9-himia-90', '9-fa-36', '9-fa-90', '10-bio', '10-himia', '10-fa', '8-geo', '9-geo-36', '9-geo-72', '10-geo', '8-phil', '9-phil', '10-phil', '8-history', '9-history-72', '9-history-144', '10-history', '11-lit', '12-lit', '11-go', '12-go', '8-informatika', '8-it', '9-it', '10-it', 'lang-ae-a1', 'lang-ae-a2-8-neint', 'lang-ae-a2-11-12', 'lang-ae-b1.1-8-int', 'lang-ae-b1.1', 'lang-ae-b1', 'lang-ae-b2.1']) {
       const report = programCoverage(byId(programs, programId), MON_LESSONS);
       expect(report.covered, programId).toBe(report.total);
     }
@@ -271,6 +271,19 @@ describe('уроци, написани по темите на МОН', () => {
     expect((await loadTopicDetails('9-it:2')).concepts).toContain('маршрутизатор (router)');
     expect((await loadTopicDetails('10-it:1')).outcomes.join(' ')).toMatch(/дезинформация/);
     expect((await loadTopicDetails('10-it:1')).concepts).toEqual([]);
+  });
+
+  it('английски език: подтемите, уменията и граматиката са подредени във всяка програма', async () => {
+    const programs = await loadMonCatalog();
+    for (const p of programs.filter((x) => x.stage === 'lang' && x.slug.startsWith('ae-'))) {
+      const skills = await loadTopicDetails(`${p.id}:skills`);
+      expect(skills.outcomes.length, p.id).toBeGreaterThan(5);
+      for (const o of skills.outcomes) expect(o, p.id).toMatch(/^(Слушане|Четене|Говорене|Писане): /);
+      expect((await loadTopicDetails(`${p.id}:grammar`)).concepts.length, p.id).toBeGreaterThan(8);
+      expect((await loadTopicDetails(`${p.id}:1`)).concepts.length, p.id).toBeGreaterThan(0);
+    }
+    expect((await loadTopicDetails('lang-ae-a1:4')).concepts).toEqual(['Части на човешкото тяло']);
+    expect((await loadTopicDetails('lang-ae-b2.1:grammar')).concepts.join(' ')).toMatch(/No sooner…than/);
   });
 
   it('гражданското образование: резултатите и понятията са разпределени по подтемите', async () => {

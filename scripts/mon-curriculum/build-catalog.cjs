@@ -6,6 +6,7 @@
 // "__outcomes": { "<етап>/<slug>#<индекс>": [резултати] } — когато редовете в таблицата на МОН са разместени.
 // "__depth": { "<етап>/<slug>#<индекс>": дълбочина } — раздел без номерация (1) и темите в него (2).
 // "__drop": [ "<етап>/<slug>#<индекс>" ] — ред, който извличането е взело за тема; пропуска се, без да мести номерата.
+// "__lang": { "lang/<slug>": { "<тема>|skills|grammar": { outcomes?, concepts? } } } — езикова програма с разбъркани колони.
 // Темите без номерация се номерират поред; вмъкната тема с localId не мести номерата на следващите,
 // защото по тях се пазят напредъкът и кешираните уроци на ученика.
 const fs = require('fs');
@@ -127,6 +128,13 @@ for (const p of programs) {
     const concepts = all.flatMap((t) => t.concepts).map((c) => c.replace(/^[•\-–]\s*/, '').trim()).filter((c) => c.length > 2 && !/^[А-Я\s.]+$/.test(c));
     topics.push({ id: `${programId}:skills`, num: '', title: 'Слушане, четене, говорене и писане', depth: 1, outcomes, concepts: [] });
     topics.push({ id: `${programId}:grammar`, num: '', title: 'Езикови знания: фонетика, лексика и граматика', depth: 1, outcomes: [], concepts });
+    // Таблиците на езиковите програми са в три колони и се смесват при извличането — ръчно подредени резултати
+    const langFix = (overrides.__lang || {})[key] || {};
+    for (const t of topics) {
+      const fix = langFix[t.id.slice(programId.length + 1)];
+      if (fix?.outcomes) t.outcomes = fix.outcomes;
+      if (fix?.concepts) t.concepts = fix.concepts;
+    }
     if (topics.length < 8) flagged.push(`${key}\tсамо ${topics.length - 2} тематични области`);
     out.push({ ...base, testable: true, modules: [{ title: null, topics }] });
     continue;

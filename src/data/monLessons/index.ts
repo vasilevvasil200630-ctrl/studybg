@@ -60,6 +60,7 @@ import { MON_LESSONS_PP_FA } from './ppFa';
 import { MON_LESSONS_PP_HIMIA } from './ppHimia';
 import { MON_LESSONS_PP_HISTORY } from './ppHistory';
 import { MON_LESSONS_PP_IT } from './ppIt';
+import { MON_LESSONS_PP_PHIL } from './ppPhil';
 import { MON_LESSONS_TP_8 } from './tp8';
 import { MON_LESSONS_TP_9 } from './tp9';
 
@@ -128,4 +129,5 @@ export const MON_LESSONS: LessonData[] = [
   ...MON_LESSONS_PP_FA,
   ...MON_LESSONS_PP_IT,
   ...MON_LESSONS_PP_HIMIA,
+  ...MON_LESSONS_PP_PHIL,
 ];

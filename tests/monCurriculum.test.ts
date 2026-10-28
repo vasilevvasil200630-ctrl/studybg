@@ -478,6 +478,29 @@ describe('уроци, написани по темите на МОН', () => {
     expect((await loadTopicDetails('pp-himia:m3:2.2')).concepts).toContain('електрофилно присъединяване (AE) и правило на Марковников');
     expect((await loadTopicDetails('pp-himia:m4:2.2')).concepts).toContain('произведение на разтворимост (Ks / ПР)');
   });
+
+  it('профилирана подготовка по философия (Модули 1–6): всяка подтема има очаквани резултати и понятия', async () => {
+    const programs = await loadMonCatalog();
+    const ppPhil = practiceTopics(byId(programs, 'pp-phil'));
+    expect(ppPhil).toHaveLength(63);
+    for (const topic of ppPhil) {
+      const details = await loadTopicDetails(topic.id);
+      expect(details.outcomes.length, topic.id).toBeGreaterThan(0);
+      expect(details.concepts.length, topic.id).toBeGreaterThan(0);
+    }
+    expect(byId(programs, 'pp-phil').modules.map((m) => m.title)).toEqual([
+      'Модул 1. История на идеите',
+      'Модул 2. Философия и ценности',
+      'Модул 3. Култура на мисленето',
+      'Модул 4. Социална психология',
+      'Модул 5. Философия и политика',
+      'Модул 6. Психология на личността',
+    ]);
+    expect((await loadTopicDetails('pp-phil:m1:1.2')).concepts).toContain('научна парадигма (Томас Кун)');
+    expect((await loadTopicDetails('pp-phil:m2:4.2')).concepts).toContain('справедливост като честност и „було на незнанието“ (Джон Ролс)');
+    expect((await loadTopicDetails('pp-phil:m3:1.2')).concepts).toContain('категорично съждение (логически квадрат) и прост категоричен силогизъм');
+    expect((await loadTopicDetails('pp-phil:m6:2.2')).concepts).toContain('логотерапия и воля за смисъл (Виктор Франкл); отговорност и справяне');
+  });
 });
 
 describe('покритие с уроци от сайта', () => {

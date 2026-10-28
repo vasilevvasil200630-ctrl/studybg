@@ -223,7 +223,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/lang-german-french-spanish-b1-b2-8-12</loc>
+    <loc>https://studybg.vercel.app/lesson/de-a1-me-and-others</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -295,7 +295,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/lang-russian-italian-latin-classical-8-12</loc>
+    <loc>https://studybg.vercel.app/lesson/de-a1-world-around-me</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -367,6 +367,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-a1-everyday-life</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-england</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -433,6 +439,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-a1-health-body</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-france-absolutism</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -488,6 +500,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-a1-nature</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-a1-nature</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -553,6 +571,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-a1-homeland-world</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-ottoman-16-17</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -608,6 +632,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-a1-skills</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-a1-skills</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -673,6 +703,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-a1-grammar</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-new-economy</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -728,6 +764,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-a2-8-me-and-others</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-8-me-and-others</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -793,6 +835,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-8-world-around-me</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-everyday-16-17</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -848,6 +896,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-a2-8-everyday-life</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-8-everyday-life</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -913,6 +967,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-8-health</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-enlightened-absolutism</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -968,6 +1028,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-a2-8-nature</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-8-nature</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -1033,6 +1099,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-8-homeland-and-world</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-french-revolution</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -1088,6 +1160,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-a2-8-skills</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-8-skills</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -1153,6 +1231,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-8-grammar</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-balkan-revival</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -1208,6 +1292,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-a2-11-me-and-others</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-11-me-and-others</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -1273,6 +1363,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-11-world-around-me</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-industrial-everyday</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -1328,6 +1424,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-a2-11-everyday</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-11-everyday-life</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -1393,6 +1495,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-11-health</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-napoleon-1848</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -1448,6 +1556,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-a2-11-nature</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-11-nature</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -1513,6 +1627,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-11-homeland-and-world</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-us-civil-war</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -1573,6 +1693,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-11-skills</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-vienna-congress</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -1622,6 +1748,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-a2-11-grammar</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-a2-11-grammar</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -1681,6 +1813,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-8-me-and-others</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-bulgarian-state</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -1730,6 +1868,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-b11-8-world-around-me</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-8-world-around-me</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -1789,6 +1933,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-8-everyday-life</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-political-ideas</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -1838,6 +1988,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-b11-8-health</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-8-health</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -1897,6 +2053,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-8-nature</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-industrial-revolution-2</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -1946,6 +2108,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-b11-8-homeland-world</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-8-homeland-and-world</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2005,6 +2173,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-8-skills</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon8-hist-art-styles-19</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2054,6 +2228,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-b11-8-grammar</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-8-grammar</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2113,6 +2293,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-emotions</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-contemporary-era</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2162,6 +2348,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-b11-world-around-me</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-world-around-me</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2221,6 +2413,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-everyday-life</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-ww1</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2264,6 +2462,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-b11-health</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-health</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2317,6 +2521,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-nature</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-versailles</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2365,6 +2575,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-homeland-and-world</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-postwar-relations</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2396,6 +2612,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-b11-skills</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-skills</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2437,6 +2659,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b11-grammar</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-ussr</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2468,6 +2696,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-b1-me-and-others</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-b1-me-and-others</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2509,6 +2743,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b1-world-around-me</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-nazism</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2540,6 +2780,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-b1-everyday-life</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-b1-everyday-life</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2581,6 +2827,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b1-health</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-balkan-authoritarianism</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2612,6 +2864,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-b1-nature</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-b1-nature</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2653,6 +2911,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b1-homeland-and-world</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-road-to-ww2</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2684,6 +2948,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-b1-skills</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-b1-skills</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2725,6 +2995,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b1-grammar</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-bulgaria-ww2</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2756,6 +3032,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-b21-modern-world</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-b21-modern-world</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2797,6 +3079,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b21-science</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-totalitarian-economies</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2822,6 +3110,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-b21-media</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-b21-media</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2857,6 +3151,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b21-society</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-interwar-society</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2882,6 +3182,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/en-b21-skills</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/de-b21-skills</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2917,6 +3223,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/de-b21-grammar</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-mass-culture</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2947,6 +3259,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/lang-german-french-spanish-b1-b2-8-12</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-cold-war</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2972,6 +3290,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/english-present-perfect-vs-past</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/lang-russian-italian-latin-classical-8-12</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

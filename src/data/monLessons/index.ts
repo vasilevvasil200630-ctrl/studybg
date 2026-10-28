@@ -12,6 +12,13 @@ import { MON_LESSONS_CHEM_9 } from './chem9';
 import { MON_LESSONS_CHEM_10 } from './chem10';
 import { MON_LESSONS_CIV_11 } from './civ11';
 import { MON_LESSONS_CIV_12 } from './civ12';
+import { MON_LESSONS_DE_A1 } from './deA1';
+import { MON_LESSONS_DE_A2_8 } from './deA28';
+import { MON_LESSONS_DE_A2_11 } from './deA211';
+import { MON_LESSONS_DE_B11_8 } from './deB118';
+import { MON_LESSONS_DE_B11 } from './deB11';
+import { MON_LESSONS_DE_B1 } from './deB1';
+import { MON_LESSONS_DE_B21 } from './deB21';
 import { MON_LESSONS_EN_A1 } from './enA1';
 import { MON_LESSONS_EN_A2_8 } from './enA28';
 import { MON_LESSONS_EN_A2_11 } from './enA211';
@@ -98,4 +105,11 @@ export const MON_LESSONS: LessonData[] = [
   ...MON_LESSONS_EN_B11,
   ...MON_LESSONS_EN_B1,
   ...MON_LESSONS_EN_B21,
+  ...MON_LESSONS_DE_A1,
+  ...MON_LESSONS_DE_A2_8,
+  ...MON_LESSONS_DE_A2_11,
+  ...MON_LESSONS_DE_B11_8,
+  ...MON_LESSONS_DE_B11,
+  ...MON_LESSONS_DE_B1,
+  ...MON_LESSONS_DE_B21,
 ];

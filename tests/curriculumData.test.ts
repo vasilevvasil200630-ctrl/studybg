@@ -32,7 +32,7 @@ describe('данни за уроците', () => {
       expect(count / total4).toBeGreaterThan(0.18);
       expect(count / total4).toBeLessThan(0.32);
     }
-  });
+  }, 20_000);
 
   it('всяка от 56-те теми в дървото на МОН има точен урок (lessonIsApproximate = false) и реален тест', async () => {
     await loadFullCurriculumLessons();

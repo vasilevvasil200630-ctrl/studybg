@@ -1132,7 +1132,7 @@ function buildInterleavedCurriculum(allLessons: LessonData[]): LessonData[] {
 }
 
 // 108 урока + уроците по темите от каталога на МОН (src/data/monLessons)
-export const TOTAL_CURRICULUM_LESSONS_COUNT = 620;
+export const TOTAL_CURRICULUM_LESSONS_COUNT = 674;
 
 export const CURRICULUM_LESSONS: LessonData[] = buildInterleavedCurriculum(
   CORE_CURRICULUM_LESSONS.map(ensureNotebookChecklist)

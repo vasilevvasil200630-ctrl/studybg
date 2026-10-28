@@ -501,6 +501,27 @@ describe('уроци, написани по темите на МОН', () => {
     expect((await loadTopicDetails('pp-phil:m3:1.2')).concepts).toContain('категорично съждение (логически квадрат) и прост категоричен силогизъм');
     expect((await loadTopicDetails('pp-phil:m6:2.2')).concepts).toContain('логотерапия и воля за смисъл (Виктор Франкл); отговорност и справяне');
   });
+
+  it('профилирана подготовка по предприемачество (Модули 1–4): всяка подтема има очаквани резултати и понятия', async () => {
+    const programs = await loadMonCatalog();
+    const ppPred = practiceTopics(byId(programs, 'pp-predpriemachestvo'));
+    expect(ppPred).toHaveLength(69);
+    for (const topic of ppPred) {
+      const details = await loadTopicDetails(topic.id);
+      expect(details.outcomes.length, topic.id).toBeGreaterThan(0);
+      expect(details.concepts.length, topic.id).toBeGreaterThan(0);
+    }
+    expect(byId(programs, 'pp-predpriemachestvo').modules.map((m) => m.title)).toEqual([
+      'Модул 1. Предприемачество и кариерно развитие',
+      'Модул 2. Пазарна икономика',
+      'Модул 3. Стартиране на собствен бизнес',
+      'Модул 4. Управление на предприемаческата дейност',
+    ]);
+    expect((await loadTopicDetails('pp-predpriemachestvo:m1:1.3')).concepts).toContain('самооценка и личен SWOT анализ');
+    expect((await loadTopicDetails('pp-predpriemachestvo:m2:4.2')).concepts).toContain('модел на петте конкурентни сили на Майкъл Портър');
+    expect((await loadTopicDetails('pp-predpriemachestvo:m3:5.2')).concepts).toContain('Канава на бизнес модела (Business Model Canvas – 9 елемента)');
+    expect((await loadTopicDetails('pp-predpriemachestvo:m4:4.2')).concepts).toContain('информационни системи за управление (УИС, ERP, CRM)');
+  });
 });
 
 describe('покритие с уроци от сайта', () => {

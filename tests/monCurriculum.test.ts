@@ -457,6 +457,27 @@ describe('уроци, написани по темите на МОН', () => {
     expect((await loadTopicDetails('pp-it:m3:4.1')).concepts).toContain('система за управление на съдържанието (Content Management System – CMS)');
     expect((await loadTopicDetails('pp-it:m4:1.3')).concepts).toContain('диаграма на Гант (Gantt Chart) и зависимости между задачи');
   });
+
+  it('профилирана подготовка по химия и ООС (Модули 1–4): всяка подтема има очаквани резултати и понятия', async () => {
+    const programs = await loadMonCatalog();
+    const ppHimia = practiceTopics(byId(programs, 'pp-himia'));
+    expect(ppHimia).toHaveLength(61);
+    for (const topic of ppHimia) {
+      const details = await loadTopicDetails(topic.id);
+      expect(details.outcomes.length, topic.id).toBeGreaterThan(0);
+      expect(details.concepts.length, topic.id).toBeGreaterThan(0);
+    }
+    expect(byId(programs, 'pp-himia').modules.map((m) => m.title)).toEqual([
+      'Модул 1. Теоретични основи на химията',
+      'Модул 2. Химия на неорганичните вещества',
+      'Модул 3. Химия на органичните вещества',
+      'Модул 4. Методи за контрол и анализ на веществата',
+    ]);
+    expect((await loadTopicDetails('pp-himia:m1:3.1')).concepts).toContain('закон на Хес и термохимично уравнение');
+    expect((await loadTopicDetails('pp-himia:m2:6.2')).concepts).toContain('синтез на амоняк (метод на Хабер – Бош)');
+    expect((await loadTopicDetails('pp-himia:m3:2.2')).concepts).toContain('електрофилно присъединяване (AE) и правило на Марковников');
+    expect((await loadTopicDetails('pp-himia:m4:2.2')).concepts).toContain('произведение на разтворимост (Ks / ПР)');
+  });
 });
 
 describe('покритие с уроци от сайта', () => {

@@ -56,6 +56,7 @@ import { MON_LESSONS_PHIL_10 } from './phil10';
 import { MON_LESSONS_PHYS_10 } from './phys10';
 import { MON_LESSONS_PP_BEL } from './ppBel';
 import { MON_LESSONS_PP_BIO } from './ppBio';
+import { MON_LESSONS_PP_FA } from './ppFa';
 import { MON_LESSONS_PP_HISTORY } from './ppHistory';
 import { MON_LESSONS_TP_8 } from './tp8';
 import { MON_LESSONS_TP_9 } from './tp9';
@@ -122,4 +123,5 @@ export const MON_LESSONS: LessonData[] = [
   ...MON_LESSONS_PP_BEL,
   ...MON_LESSONS_PP_HISTORY,
   ...MON_LESSONS_PP_BIO,
+  ...MON_LESSONS_PP_FA,
 ];

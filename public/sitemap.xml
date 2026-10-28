@@ -2239,7 +2239,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/phys-newton-laws-mechanics</loc>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m1-1-1</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2305,7 +2305,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/phys-electricity-ohm-joule</loc>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m1-1-2</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2371,7 +2371,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/phys-quantum-nuclear-astrophysics</loc>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m1-1-3</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2437,7 +2437,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/phys-thermodynamics-ideal-gas-dzi</loc>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m1-1-4</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2503,7 +2503,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/phys-electromagnetic-induction-faraday-maxwell-dzi</loc>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m1-1-5</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2569,7 +2569,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/phys-8-10-mechanics-thermodynamics-electricity-complete</loc>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m1-1-6</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2635,7 +2635,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/phys-11-12-relativity-photoelectric-bohr-standard-model</loc>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m1-1-7</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2701,7 +2701,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/physics-ohms-law</loc>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m1-1-7-plus</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2767,7 +2767,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://studybg.vercel.app/lesson/phys-5-6-forces-motion-heat</loc>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m1-1-8</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2827,6 +2827,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m2-1-1</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-tp-4-4</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2876,6 +2882,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon-pp-bio-m2-3-2</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m2-1-2</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -2935,6 +2947,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m2-2-1</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-tp-5-2</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -2984,6 +3002,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon-pp-bio-m2-4-2</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m2-2-2</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3043,6 +3067,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m2-2-3</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-tp-5-4</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -3092,6 +3122,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon-pp-bio-m2-5-1</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m2-3-1</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3151,6 +3187,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m2-3-2</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-tp-5-6</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -3200,6 +3242,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon-pp-bio-m2-5-3</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m3-1-1</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3259,6 +3307,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m3-1-2</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-tp-5-8</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -3308,6 +3362,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon-pp-bio-m2-6-2</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m3-1-3</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3367,6 +3427,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m3-1-4</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-tp-5-10</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -3416,6 +3482,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon-pp-bio-m3-1-1</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m3-1-5</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3475,6 +3547,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m3-2-1</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-tp-5-12</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -3518,6 +3596,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon-pp-bio-m3-2-1</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m3-2-2</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3571,6 +3655,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m3-3-1</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/econ-marketing-management-ecommerce-10-12</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -3614,6 +3704,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon-pp-bio-m3-2-3</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m3-3-2</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3667,6 +3763,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m3-3-3</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/econ-international-trade-forex-stock-market-insurance-11-12</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -3715,6 +3817,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m4-1-1</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/geography-danubian-plain</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -3757,6 +3865,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m4-1-2</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/geo-5-great-discoveries-continents</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -3793,6 +3907,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m4-1-3</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-western-democracies</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -3812,6 +3932,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon-pp-bio-m4-2-1</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m4-1-4</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3841,6 +3967,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m4-2-1</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-fall-of-communism</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -3860,6 +3992,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon-pp-bio-m4-2-3</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m4-2-2</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3889,6 +4027,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m4-2-3</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-european-economic-models</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -3908,6 +4052,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon-pp-bio-m4-3-2</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m4-2-4</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3937,6 +4087,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m4-2-5</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-transition</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -3956,6 +4112,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon-pp-bio-m4-4-1</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m4-3-1</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -3985,6 +4147,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m4-3-2</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon9-hist-technology</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -4004,6 +4172,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/bio-dna-replication-protein</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m4-4</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4033,6 +4207,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m5-1-1</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon10-hist-prehistory</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -4052,6 +4232,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/bio-genetics-mendel-laws</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m5-1-2</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4081,6 +4267,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m5-1-3</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon10-hist-roman-byzantine-lands</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -4100,6 +4292,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/bio-evolution-hardy-weinberg-ecology-dzi</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m5-1-4</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4129,6 +4327,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m5-1-5</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon10-hist-thracian-heritage</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -4148,6 +4352,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/bio-8-10-cell-biology-evolution-ecology-complete</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m5-1-6</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4177,6 +4387,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m5-2-1</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon10-hist-great-migration</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -4196,6 +4412,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/biology-cell-division</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m5-2-2</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4225,6 +4447,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m5-2-3</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon10-hist-krum-omurtag</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -4249,6 +4477,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m5-2-4</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon10-hist-boris-christianization</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -4262,6 +4496,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/math-11-12-exponential-logarithmic-irrational-equations</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m5-2-5</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4285,6 +4525,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m5-2-6</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon10-hist-samuil</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -4298,6 +4544,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/math-7-linear-equations</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/mon-pp-fa-m5-2-7</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4321,6 +4573,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/phys-newton-laws-mechanics</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon10-hist-slavs-bulgars-society</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -4334,6 +4592,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/math-pythagorean-theorem</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/phys-electricity-ohm-joule</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4357,6 +4621,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/phys-quantum-nuclear-astrophysics</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon10-hist-pagan-heritage</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -4370,6 +4640,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/math-10-quadratic-equations-vieta</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/phys-thermodynamics-ideal-gas-dzi</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4393,6 +4669,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/phys-electromagnetic-induction-faraday-maxwell-dzi</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon10-hist-golden-age</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -4411,6 +4693,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/phys-8-10-mechanics-thermodynamics-electricity-complete</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon10-hist-cultural-interactions</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -4418,6 +4706,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon12-lit-dalchev-prayer</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/phys-11-12-relativity-photoelectric-bohr-standard-model</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -4435,6 +4729,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://studybg.vercel.app/lesson/physics-ohms-law</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://studybg.vercel.app/lesson/mon10-hist-autocephalous-church</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
@@ -4442,6 +4742,12 @@
   </url>
   <url>
     <loc>https://studybg.vercel.app/lesson/mon12-lit-windmill</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://studybg.vercel.app/lesson/phys-5-6-forces-motion-heat</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

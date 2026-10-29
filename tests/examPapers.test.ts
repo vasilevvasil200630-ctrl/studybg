@@ -514,14 +514,32 @@ describe('ДЗИ — оценка по единната скала на МОН',
       'Музика',
     ];
     for (const subj of profileSubjects) {
-      const p2 = EXAM_PAPERS.find((x) => x.exam === 'ДЗИ' && x.subject === subj);
-      expect(p2, `Липсва вариант за Втори ДЗИ по ${subj}`).toBeDefined();
-      expect(p2!.durationMinutes, p2!.id).toBe(240);
-      expect(p2!.maxPoints, p2!.id).toBe(100);
-      expect(p2!.gradeScale, p2!.id).toBe(DZI_SCALE);
-      const r2 = scorePaper(p2!, keyAnswers(p2!), fullOpenScores(p2!));
-      expect(r2.totalPoints, p2!.id).toBe(100);
-      expect(r2.grade?.numeric, p2!.id).toBe(6);
+      const papersForSubj = EXAM_PAPERS.filter((x) => x.exam === 'ДЗИ' && x.subject === subj);
+      expect(papersForSubj.length, `Липсва вариант за Втори ДЗИ по ${subj}`).toBeGreaterThanOrEqual(1);
+      for (const p2 of papersForSubj) {
+        expect(p2.durationMinutes, p2.id).toBe(240);
+        expect(p2.maxPoints, p2.id).toBe(100);
+        expect(p2.gradeScale, p2.id).toBe(DZI_SCALE);
+        const r2 = scorePaper(p2, keyAnswers(p2), fullOpenScores(p2));
+        expect(r2.totalPoints, p2.id).toBe(100);
+        expect(r2.grade?.numeric, p2.id).toBe(6);
+      }
+    }
+
+    const subjectsWithVariant2 = [
+      'Английски език',
+      'Биология и здравно образование',
+      'Химия и опазване на околната среда',
+      'Физика и астрономия',
+      'История и цивилизации',
+      'География и икономика',
+      'Философия',
+      'Информатика',
+      'Информационни технологии',
+    ];
+    for (const subj of subjectsWithVariant2) {
+      const papersForSubj = EXAM_PAPERS.filter((x) => x.exam === 'ДЗИ' && x.subject === subj);
+      expect(papersForSubj.length, `Очакваме поне 2 варианта за Втори ДЗИ по ${subj}`).toBeGreaterThanOrEqual(2);
     }
 
     const dippkSubjects = [

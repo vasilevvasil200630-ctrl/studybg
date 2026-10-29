@@ -501,6 +501,9 @@ describe('ДЗИ — оценка по единната скала на МОН',
     const profileSubjects = [
       'Английски език',
       'Немски език',
+      'Френски език',
+      'Испански език',
+      'Руски език',
       'Биология и здравно образование',
       'Химия и опазване на околната среда',
       'Физика и астрономия',
@@ -528,6 +531,7 @@ describe('ДЗИ — оценка по единната скала на МОН',
 
     const subjectsWithVariant2 = [
       'Английски език',
+      'Немски език',
       'Биология и здравно образование',
       'Химия и опазване на околната среда',
       'Физика и астрономия',
@@ -536,31 +540,55 @@ describe('ДЗИ — оценка по единната скала на МОН',
       'Философия',
       'Информатика',
       'Информационни технологии',
+      'Предприемачество',
+      'Изобразително изкуство',
+      'Музика',
     ];
     for (const subj of subjectsWithVariant2) {
       const papersForSubj = EXAM_PAPERS.filter((x) => x.exam === 'ДЗИ' && x.subject === subj);
       expect(papersForSubj.length, `Очакваме поне 2 варианта за Втори ДЗИ по ${subj}`).toBeGreaterThanOrEqual(2);
     }
 
+    const integrated2027Ids = [
+      'practice-nvo10-math-2027-1',
+      'practice-nvo10-math-2027-2',
+      'practice-nvo10-bel-2027-1',
+      'practice-nvo10-bel-2027-2',
+    ];
+    for (const id of integrated2027Ids) {
+      const pInt = EXAM_PAPERS.find((x) => x.id === id);
+      expect(pInt, `Липсва интегриран вариант НВО 10 2027: ${id}`).toBeDefined();
+      expect(pInt!.durationMinutes, id).toBe(120);
+      expect(pInt!.maxPoints, id).toBe(100);
+      const rInt = scorePaper(pInt!, keyAnswers(pInt!), fullOpenScores(pInt!));
+      expect(rInt.totalPoints, id).toBe(100);
+    }
+
     const dippkSubjects = [
       'Системно и приложно програмиране',
+      'Компютърни мрежи, системна администрация и киберсигурност',
       'Икономика, банково дело и счетоводство',
+      'Транспортна логистика, спедиция и митническо дело',
       'Строителство, архитектура и геодезия',
       'Електротехника, мехатроника и енергетика',
       'Машиностроене, автотранспортна техника и CNC технологии',
       'Хотелиерство, ресторантьорство и туризъм',
+      'Хранително-вкусова промишленост и контрол на качеството',
       'Биотехнологии, агроекология и ветеринарна медицина',
       'Графичен дизайн, полиграфия и мултимедия',
+      'Моден, текстилен и интериорен дизайн',
     ];
     for (const subj of dippkSubjects) {
-      const pd = EXAM_PAPERS.find((x) => x.exam === 'ДИППК' && x.subject === subj);
-      expect(pd, `Липсва вариант за ДИППК по ${subj}`).toBeDefined();
-      expect(pd!.durationMinutes, pd!.id).toBe(240);
-      expect(pd!.maxPoints, pd!.id).toBe(100);
-      expect(pd!.gradeScale, pd!.id).toBe(DIPPK_SCALE);
-      const rd = scorePaper(pd!, keyAnswers(pd!), fullOpenScores(pd!));
-      expect(rd.totalPoints, pd!.id).toBe(100);
-      expect(rd.grade?.numeric, pd!.id).toBe(6);
+      const papersForDippk = EXAM_PAPERS.filter((x) => x.exam === 'ДИППК' && x.subject === subj);
+      expect(papersForDippk.length, `Липсва вариант за ДИППК по ${subj}`).toBeGreaterThanOrEqual(1);
+      for (const pd of papersForDippk) {
+        expect(pd.durationMinutes, pd.id).toBe(240);
+        expect(pd.maxPoints, pd.id).toBe(100);
+        expect(pd.gradeScale, pd.id).toBe(DIPPK_SCALE);
+        const rd = scorePaper(pd, keyAnswers(pd), fullOpenScores(pd));
+        expect(rd.totalPoints, pd.id).toBe(100);
+        expect(rd.grade?.numeric, pd.id).toBe(6);
+      }
     }
 
     const seenIds = new Set<string>();

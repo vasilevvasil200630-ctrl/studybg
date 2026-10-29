@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ChevronDown, Clock, ExternalLink, FileText, ListChecks, Target } from 'lucide-react';
+import React, { Suspense, lazy, useEffect, useMemo, useState } from 'react';
+import { Award, ChevronDown, Clock, ExternalLink, FileText, History, ListChecks, Target, Trophy } from 'lucide-react';
 import { EXAM_PAPERS } from '../data/examPapers';
 import { NVO10_BEL_FORMAT_2027, NVO10_FORMAT_2027, NVO10_ORDER_2027_URL, nvo10FormatTag } from '../data/examFormats';
 import { TOPICS, TOPIC_BY_KEY, topicPercent, type TopicArea, type TopicKey } from '../data/examTopics';
@@ -7,7 +7,10 @@ import { AREA_SOURCES, TOPIC_PAPERS, topicPaperId, topicSectionYear } from '../d
 import { sourcePaperTitle } from '../data/mistakesPaper';
 import type { ExamPaper } from '../lib/examPaperScoring';
 import { loadTopicStats, type TopicStat } from '../lib/topicProgress';
+import { examHistoryService, type ExamAttemptRecord } from '../services/examHistoryService';
 import { ExamRunner, PaperBadge } from './exam-engine/ExamRunner';
+
+const ExamHistoryModal = lazy(() => import('./ExamHistoryModal').then((m) => ({ default: m.ExamHistoryModal })));
 
 /**
  * Пълни изпитни варианти с ключ. Списъкът избира вариант, а ExamRunner го провежда
@@ -26,12 +29,17 @@ const byRelevance = (a: ExamPaper, b: ExamPaper) =>
 
 const ALL_PAPERS: ExamPaper[] = [...EXAM_PAPERS, ...TOPIC_PAPERS];
 
+const fmtScore = (n: number): string => (Number.isInteger(n) ? String(n) : n.toFixed(1).replace('.', ','));
+
 /** Реда на предметите в списъка: математиката (с тренировката по тема под нея) е първа */
 const SUBJECT_ORDER = [
   'Математика',
   'Български език и литература',
   'Английски език',
   'Немски език',
+  'Френски език',
+  'Испански език',
+  'Руски език',
   'Биология и здравно образование',
   'Химия и опазване на околната среда',
   'Физика и астрономия',
@@ -44,13 +52,17 @@ const SUBJECT_ORDER = [
   'Изобразително изкуство',
   'Музика',
   'Системно и приложно програмиране',
+  'Компютърни мрежи, системна администрация и киберсигурност',
   'Икономика, банково дело и счетоводство',
+  'Транспортна логистика, спедиция и митническо дело',
   'Строителство, архитектура и геодезия',
   'Електротехника, мехатроника и енергетика',
   'Машиностроене, автотранспортна техника и CNC технологии',
   'Хотелиерство, ресторантьорство и туризъм',
+  'Хранително-вкусова промишленост и контрол на качеството',
   'Биотехнологии, агроекология и ветеринарна медицина',
   'Графичен дизайн, полиграфия и мултимедия',
+  'Моден, текстилен и интериорен дизайн',
 ];
 const subjectOrderIndex = (s: string) => {
   const idx = SUBJECT_ORDER.indexOf(s);
@@ -73,6 +85,34 @@ const topicAreaFor = (exam: ExamPaper['exam'], subject: string): TopicArea | nul
 export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onOpenErrorBank }) => {
   const [paperId, setPaperId] = useState<string | null>(null);
   const [filter, setFilter] = useState<ExamFilter>('all');
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [attemptsVersion, setAttemptsVersion] = useState(0);
+
+  useEffect(() => {
+    const onMutated = () => setAttemptsVersion((v) => v + 1);
+    window.addEventListener('studybg:local-data-mutated', onMutated);
+    return () => window.removeEventListener('studybg:local-data-mutated', onMutated);
+  }, []);
+
+  const allAttempts = useMemo(() => examHistoryService.getAllAttempts(), [paperId, attemptsVersion]);
+
+  const bestByPaperId = useMemo(() => {
+    const map = new Map<string, { best: ExamAttemptRecord; count: number }>();
+    for (const att of allAttempts) {
+      const pid = att.examPreset?.startsWith('paper:') ? att.examPreset.slice(6) : att.lessonId;
+      const cur = map.get(pid);
+      if (!cur) {
+        map.set(pid, { best: att, count: 1 });
+      } else {
+        cur.count += 1;
+        if (att.totalPoints > cur.best.totalPoints) {
+          cur.best = att;
+        }
+      }
+    }
+    return map;
+  }, [allAttempts]);
+
   const paper = ALL_PAPERS.find((p) => p.id === paperId) ?? null;
 
   if (paper) {
@@ -103,13 +143,52 @@ export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onO
 
   return (
     <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-bold text-slate-900">Пълни изпитни варианти с ключ</h3>
-        <p className="mt-1 max-w-2xl text-sm leading-relaxed text-slate-600">
-          Решаваш цял вариант с таймер, както на изпита. Затворените задачи и кратките отговори се проверяват по ключа, а задачите
-          със свободен отговор оценяваш сам по критериите и еталона. Резултатът се записва в историята ти.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h3 className="text-lg font-bold text-slate-900">Пълни изпитни варианти с ключ</h3>
+          <p className="mt-1 max-w-2xl text-sm leading-relaxed text-slate-600">
+            Решаваш цял вариант с таймер, както на изпита. Затворените задачи и кратките отговори се проверяват по ключа, а задачите
+            със свободен отговор оценяваш сам по критериите и еталона. Резултатът се записва в историята ти.
+          </p>
+        </div>
+        {allAttempts.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setHistoryOpen(true)}
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-2xs transition-colors hover:border-brand-sapphire/40 hover:bg-brand-sapphire-soft hover:text-brand-ink"
+          >
+            <History className="h-4 w-4 text-brand-sapphire" aria-hidden="true" />
+            Моята история и прогрес ({allAttempts.length})
+          </button>
+        )}
       </div>
+
+      {bestByPaperId.size > 0 && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-blue-100 bg-blue-50/50 px-4 py-3 text-xs text-slate-700">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <span className="inline-flex items-center gap-1.5 font-semibold text-slate-900">
+              <Trophy className="h-4 w-4 text-brand-sapphire" aria-hidden="true" />
+              Решени варианти: <strong className="tabular-nums">{bestByPaperId.size}</strong> от {EXAM_PAPERS.length}
+            </span>
+            <span>
+              Общо изпитни сесии: <strong className="tabular-nums">{allAttempts.length}</strong>
+            </span>
+            <span>
+              Най-висок резултат:{' '}
+              <strong className="tabular-nums text-emerald-800">
+                {fmtScore(Math.max(...allAttempts.map((a) => a.totalPoints)))} т.
+              </strong>
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setHistoryOpen(true)}
+            className="font-semibold text-brand-sapphire hover:underline"
+          >
+            Виж пълната статистика →
+          </button>
+        </div>
+      )}
 
       {exams.length > 1 && (
         <div className="flex flex-wrap gap-1.5" role="group" aria-label="Изпит">
@@ -160,7 +239,7 @@ export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onO
                   {papers
                     .filter((p) => p.subject === subject)
                     .map((p) => (
-                      <PaperCard key={p.id} paper={p} onStart={() => setPaperId(p.id)} />
+                      <PaperCard key={p.id} paper={p} stats={bestByPaperId.get(p.id)} onStart={() => setPaperId(p.id)} />
                     ))}
                 </ul>
                 {allSamples.some((p) => p.subject === subject) && (
@@ -176,7 +255,7 @@ export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onO
                       {allSamples
                         .filter((p) => p.subject === subject)
                         .map((p) => (
-                          <PaperCard key={p.id} paper={p} onStart={() => setPaperId(p.id)} />
+                          <PaperCard key={p.id} paper={p} stats={bestByPaperId.get(p.id)} onStart={() => setPaperId(p.id)} />
                         ))}
                     </ul>
                   </div>
@@ -197,7 +276,7 @@ export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onO
                 </div>
                 <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   {samples.map((p) => (
-                    <PaperCard key={p.id} paper={p} onStart={() => setPaperId(p.id)} />
+                    <PaperCard key={p.id} paper={p} stats={bestByPaperId.get(p.id)} onStart={() => setPaperId(p.id)} />
                   ))}
                 </ul>
               </div>
@@ -205,11 +284,25 @@ export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onO
           </section>
         );
       })}
+
+      {historyOpen && (
+        <Suspense fallback={null}>
+          <ExamHistoryModal
+            isOpen={historyOpen}
+            onClose={() => setHistoryOpen(false)}
+            onRefresh={() => setAttemptsVersion((v) => v + 1)}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };
 
-const PaperCard: React.FC<{ paper: ExamPaper; onStart: () => void }> = ({ paper: p, onStart }) => {
+const PaperCard: React.FC<{
+  paper: ExamPaper;
+  stats?: { best: ExamAttemptRecord; count: number };
+  onStart: () => void;
+}> = ({ paper: p, stats, onStart }) => {
   const questionCount = p.sections.reduce((n, s) => n + s.questions.length, 0);
   const tag = nvo10FormatTag(p);
   return (
@@ -223,6 +316,13 @@ const PaperCard: React.FC<{ paper: ExamPaper; onStart: () => void }> = ({ paper:
             }`}
           >
             {tag.label}
+          </span>
+        )}
+        {stats && (
+          <span className="inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-800 tabular-nums">
+            <Award className="h-3.5 w-3.5 text-emerald-600" aria-hidden="true" />
+            Най-добър: {fmtScore(stats.best.totalPoints)}/{p.maxPoints} т.
+            {stats.best.gradeNumeric !== null && ` · ${stats.best.gradeEquivalent}`}
           </span>
         )}
       </div>
@@ -244,7 +344,7 @@ const PaperCard: React.FC<{ paper: ExamPaper; onStart: () => void }> = ({ paper:
         className="mt-auto inline-flex items-center justify-center gap-1.5 self-start rounded-lg bg-brand-sapphire px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-sapphire-dark"
       >
         <FileText className="h-4 w-4" aria-hidden="true" />
-        Започни варианта
+        {stats ? 'Реши отново' : 'Започни варианта'}
       </button>
     </li>
   );

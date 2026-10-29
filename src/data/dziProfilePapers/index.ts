@@ -20,11 +20,26 @@ import { DZI_HIST_PRACTICE_2 } from './variant2/history_v2';
 import { DZI_GEO_PRACTICE_2 } from './variant2/geography_v2';
 import { DZI_PHIL_PRACTICE_2 } from './variant2/philosophy_v2';
 import { DZI_INF_PRACTICE_2, DZI_IT_PRACTICE_2 } from './variant2/informatics_it_v2';
+import {
+  DZI_DE_B2_PRACTICE_2,
+  DZI_ENTR_PRACTICE_2,
+  DZI_ARTS_PRACTICE_2,
+  DZI_MUSIC_PRACTICE_2,
+} from './variant2/german_entrepreneurship_arts_music_v2';
+import {
+  DZI_FR_B2_PRACTICE_1,
+  DZI_ES_B2_PRACTICE_1,
+  DZI_RU_B2_PRACTICE_1,
+} from './foreignLanguagesB2';
 
 export const DZI_PROFILE_PAPERS: ExamPaper[] = [
   DZI_EN_B2_PRACTICE_1,
   DZI_EN_B2_PRACTICE_2,
   DZI_DE_B2_PRACTICE_1,
+  DZI_DE_B2_PRACTICE_2,
+  DZI_FR_B2_PRACTICE_1,
+  DZI_ES_B2_PRACTICE_1,
+  DZI_RU_B2_PRACTICE_1,
   DZI_BIO_PRACTICE_1,
   DZI_BIO_PRACTICE_2,
   DZI_CHEM_PRACTICE_1,
@@ -42,6 +57,9 @@ export const DZI_PROFILE_PAPERS: ExamPaper[] = [
   DZI_IT_PRACTICE_1,
   DZI_IT_PRACTICE_2,
   DZI_ENTR_PRACTICE_1,
+  DZI_ENTR_PRACTICE_2,
   DZI_ARTS_PRACTICE_1,
+  DZI_ARTS_PRACTICE_2,
   DZI_MUSIC_PRACTICE_1,
+  DZI_MUSIC_PRACTICE_2,
 ];

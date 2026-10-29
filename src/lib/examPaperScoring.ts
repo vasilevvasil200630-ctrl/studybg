@@ -6,7 +6,7 @@ import { pointsToGrade, type GradeResult, type GradeScale } from './monGradeScal
 
 /**
  * Текстовете (условия, отговори, обяснения) могат да съдържат математика между $…$ (KaTeX).
- * Онагледяването към задачата — чертеж, таблица — е в `stimulus` и се показва над отговорите.
+ * Онагледяването към задачата — чертеж, таблица или текст — е в `stimulus` и се показва над отговорите.
  */
 export type Stimulus =
   /** Чертеж или диаграма, нарисувани като SVG компонент (components/exam-engine/figures) */
@@ -18,6 +18,14 @@ export type Stimulus =
       groups?: { label: string; span: number }[];
       head: string[];
       rows: string[][];
+      source?: string;
+    }
+  /** Текстов откъс или транскрипт към задача (четене / слушане с разбиране) */
+  | {
+      kind: 'text';
+      title?: string;
+      body?: string;
+      text?: string;
       source?: string;
     };
 
@@ -188,6 +196,7 @@ export function validateExamPaper(paper: ExamPaper): string[] {
     q.stimulus?.forEach((s, si) => {
       if (s.kind === 'figure' && (!s.figureId.trim() || !s.alt.trim())) errors.push(`${where(q)}: чертеж ${si + 1} без id или описание (alt)`);
       if (s.kind === 'table' && s.rows.some((r) => r.length !== s.head.length)) errors.push(`${where(q)}: таблица ${si + 1} с редове с различен брой клетки`);
+      if (s.kind === 'text' && !(s.body ?? s.text ?? '').trim()) errors.push(`${where(q)}: празен текст в stimulus ${si + 1}`);
     });
 
     if (q.kind === 'multi') {
@@ -270,7 +279,7 @@ function numberReadings(raw: string): number[] {
   let text = raw.includes('=') ? raw.slice(raw.lastIndexOf('=') + 1) : raw;
   text = replaceNumberWords(text).replace(/[−–]/g, '-');
   const hasThousandsWord = /(?:хиляди|хиляда|хил\.?)/i.test(text);
-  text = text.replace(/(\d)[\s ]+(?=\d{3}(?!\d))/g, '$1'); // „12 000“ → „12000“
+  text = text.replace(/(\d)[\s\u00A0]+(?=\d{3}(?!\d))/g, '$1'); // „12 000“ → „12000“
 
   // Цифри веднага след буква са част от означение (cm2, x1, H2O), не са отговор
   const tokens = [...text.matchAll(/-?\d+(?:[.,]\d+)?/g)]

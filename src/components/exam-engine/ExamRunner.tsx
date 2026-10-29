@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AlertCircle, Bookmark, CheckCircle2, ExternalLink, Lightbulb, RotateCcw, Send, Trophy, X, XCircle } from 'lucide-react';
+import { AlertCircle, Award, Bookmark, CheckCircle2, ExternalLink, Lightbulb, Printer, RotateCcw, Send, Target, Trophy, X, XCircle } from 'lucide-react';
 import {
   PRACTICE_PAPER_LABEL,
   isPartCorrect,
@@ -18,6 +18,7 @@ import { clearTestProgress, loadTestProgress, useTestProgressAutosave } from '..
 import { examHistoryService, type ExamAttemptRecord } from '../../services/examHistoryService';
 import { errorBankService } from '../../services/errorBankService';
 import { reviewAnswers } from '../../lib/examMistakes';
+import { ExcellenceCertificateModal } from '../ExcellenceCertificateModal';
 import { ExamFocusBar } from './ExamFocusBar';
 import { FormulaSheetPanel } from './FormulaSheetPanel';
 import { topicBreakdown, topicPercent, type TopicKey, type TopicScore } from '../../data/examTopics';
@@ -195,6 +196,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
   const warnedRef = useRef(false);
   const attemptIdRef = useRef<string | null>(null);
   const [bankNote, setBankNote] = useState<BankNote | null>(null);
+  const [certOpen, setCertOpen] = useState(false);
 
   // Възстановяване на незавършен изпит (само в браузъра, след монтиране)
   useEffect(() => {
@@ -223,6 +225,31 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
   const unscored = countUnscored(questions, openScores);
   const isLanguagePaper = paper.subject === 'Български език и литература';
   const topics = useMemo(() => topicBreakdown(paper, result), [paper, result]);
+
+  const subjectBreakdown = useMemo(() => {
+    const map = new Map<string, { label: string; points: number; maxPoints: number; count: number }>();
+    for (const q of questions) {
+      if (!q.topic) continue;
+      const r = resultById.get(q.id);
+      if (!r) continue;
+      const cur = map.get(q.topic) ?? { label: q.topic, points: 0, maxPoints: 0, count: 0 };
+      cur.points += r.points;
+      cur.maxPoints += r.maxPoints;
+      cur.count += 1;
+      map.set(q.topic, cur);
+    }
+    return map.size > 1 ? Array.from(map.values()) : [];
+  }, [questions, resultById]);
+
+  const wrongAutoQuestions = useMemo(
+    () =>
+      questions.filter((q) => {
+        if (q.kind === 'open') return false;
+        const r = resultById.get(q.id);
+        return !r || r.points < r.maxPoints;
+      }),
+    [questions, resultById]
+  );
 
   const submit = useCallback(() => {
     spentRef.current = Math.round((Date.now() - startedAtRef.current) / 1000);
@@ -300,6 +327,35 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const retryMistakes = () => {
+    if (wrongAutoQuestions.length === 0) return;
+    const nextAnswers: PaperAnswers = { ...answers };
+    const nextFlags: Record<string, boolean> = {};
+    for (const q of wrongAutoQuestions) {
+      nextFlags[q.id] = true;
+      if (q.kind === 'choice' || q.kind === 'short') {
+        delete nextAnswers[q.id];
+      } else if (q.kind === 'multi') {
+        for (const p of q.parts) {
+          if (p.answer.type !== 'self') {
+            const k = partKey(q, p);
+            if (!isPartCorrect(p, nextAnswers[k])) {
+              delete nextAnswers[k];
+            }
+          }
+        }
+      }
+    }
+    setAnswers(nextAnswers);
+    setFlags((prev) => ({ ...prev, ...nextFlags }));
+    setSubmitted(false);
+    const firstWrong = wrongAutoQuestions[0];
+    window.setTimeout(() => {
+      const el = document.getElementById(`${Q_ID_PREFIX}${firstWrong.number}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 80);
+  };
+
   const exit = () => {
     clearTestProgress(progressKey);
     onExit();
@@ -368,23 +424,40 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
       )}
 
       {submitted && (
-        <ResultPanel
-          result={result}
-          unscored={unscored}
-          onRestart={reset}
-          onExit={exit}
-          topics={topics}
-          practiceTopics={practiceTopics}
-          onPracticeTopic={onPracticeTopic}
-          bankNote={bankNote}
-          onOpenErrorBank={onOpenErrorBank}
-          exitLabel={exitLabel}
-          pointsNote={
-            paper.exam === 'НВО 10'
-              ? 'НВО 10: резултатът се отчита в точки'
-              : 'Резултат в точки'
-          }
-        />
+        <>
+          <ResultPanel
+            paper={paper}
+            result={result}
+            unscored={unscored}
+            wrongAutoCount={wrongAutoQuestions.length}
+            onRetryMistakes={retryMistakes}
+            onOpenCertificate={() => setCertOpen(true)}
+            onPrintProtocol={() => window.print()}
+            onRestart={reset}
+            onExit={exit}
+            topics={topics}
+            subjectBreakdown={subjectBreakdown}
+            practiceTopics={practiceTopics}
+            onPracticeTopic={onPracticeTopic}
+            bankNote={bankNote}
+            onOpenErrorBank={onOpenErrorBank}
+            exitLabel={exitLabel}
+            pointsNote={
+              paper.exam === 'НВО 10'
+                ? 'НВО 10: резултатът се отчита в точки'
+                : 'Резултат в точки'
+            }
+          />
+          <ExcellenceCertificateModal
+            isOpen={certOpen}
+            onClose={() => setCertOpen(false)}
+            achievementTitle={paper.title}
+            examOrTrackLabel={`${paper.exam} • ${paper.subject}`}
+            scoreText={`Резултат: ${fmt(result.totalPoints)} / ${result.maxPoints} точки (${result.maxPoints > 0 ? Math.round((result.totalPoints / result.maxPoints) * 100) : 0}%)`}
+            gradeLabel={result.grade ? `Оценка: ${formatGrade(result.grade)}` : `Резултат: ${fmt(result.totalPoints)} т. (${paper.exam})`}
+            highlights={result.sections.map((s) => `${s.title.replace(/\s*\(\d+ т\.\)$/, '')}: ${fmt(s.points)} / ${s.maxPoints} т.`)}
+          />
+        </>
       )}
 
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_260px]">
@@ -472,11 +545,17 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
 /* ------------------------------------------------------------------ */
 
 const ResultPanel: React.FC<{
+  paper: ExamPaper;
   result: PaperResult;
   unscored: number;
+  wrongAutoCount: number;
+  onRetryMistakes: () => void;
+  onOpenCertificate: () => void;
+  onPrintProtocol: () => void;
   onRestart: () => void;
   onExit: () => void;
   topics: TopicScore[];
+  subjectBreakdown: { label: string; points: number; maxPoints: number; count: number }[];
   practiceTopics: TopicKey[];
   onPracticeTopic?: (key: TopicKey) => void;
   /** Какво да пише под точките, когато няма превръщане в оценка */
@@ -484,11 +563,44 @@ const ResultPanel: React.FC<{
   bankNote: BankNote | null;
   onOpenErrorBank?: () => void;
   exitLabel: string;
-}> = ({ result, unscored, onRestart, onExit, topics, practiceTopics, onPracticeTopic, pointsNote, bankNote, onOpenErrorBank, exitLabel }) => {
+}> = ({
+  paper,
+  result,
+  unscored,
+  wrongAutoCount,
+  onRetryMistakes,
+  onOpenCertificate,
+  onPrintProtocol,
+  onRestart,
+  onExit,
+  topics,
+  subjectBreakdown,
+  practiceTopics,
+  onPracticeTopic,
+  pointsNote,
+  bankNote,
+  onOpenErrorBank,
+  exitLabel,
+}) => {
   const percent = result.maxPoints > 0 ? Math.round((result.totalPoints / result.maxPoints) * 100) : 0;
+  const weakestSubject = [...subjectBreakdown]
+    .filter((s) => s.points < s.maxPoints)
+    .sort((a, b) => a.points / a.maxPoints - b.points / b.maxPoints || b.maxPoints - a.maxPoints)[0];
+
   return (
-    <section role="status" aria-live="polite" className="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8">
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+    <section role="status" aria-live="polite" className="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8 print:border-slate-400 print:shadow-none">
+      {/* Заглавна лента за официален протокол при принтиране */}
+      <div className="mb-4 hidden border-b border-slate-300 pb-3 print:block">
+        <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+          Официален изпитен протокол · StudyBG Симулатор ({paper.exam})
+        </p>
+        <h3 className="mt-0.5 text-lg font-bold text-slate-900">{paper.title}</h3>
+        <p className="text-xs text-slate-600">
+          Предмет / Направление: {paper.subject} · Дата: {new Date().toLocaleDateString('bg-BG')}
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-4">
           <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-blue-50 text-brand-sapphire">
             <Trophy className="h-7 w-7" aria-hidden="true" />
@@ -503,7 +615,33 @@ const ResultPanel: React.FC<{
             </p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 print:hidden">
+          {wrongAutoCount > 0 && (
+            <button
+              type="button"
+              onClick={onRetryMistakes}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-sm font-semibold text-amber-900 transition-colors hover:bg-amber-100"
+            >
+              <Target className="h-4 w-4 text-amber-700" aria-hidden="true" />
+              Поправи сгрешените ({wrongAutoCount})
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onOpenCertificate}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-sm font-semibold text-emerald-900 transition-colors hover:bg-emerald-100"
+          >
+            <Award className="h-4 w-4 text-emerald-700" aria-hidden="true" />
+            Сертификат
+          </button>
+          <button
+            type="button"
+            onClick={onPrintProtocol}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+          >
+            <Printer className="h-4 w-4 text-slate-500" aria-hidden="true" />
+            Принтирай протокол
+          </button>
           <button type="button" onClick={onRestart} className="inline-flex items-center gap-1.5 rounded-lg bg-brand-sapphire px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-sapphire-dark">
             <RotateCcw className="h-4 w-4" aria-hidden="true" />
             Реши отново
@@ -514,16 +652,70 @@ const ResultPanel: React.FC<{
         </div>
       </div>
 
-      <ul className="mt-6 grid gap-2 border-t border-slate-100 pt-4 text-sm sm:grid-cols-2">
-        {result.sections.map((s) => (
-          <li key={s.id} className="flex items-center justify-between gap-3 text-slate-700">
-            <span className="truncate">{s.title.replace(/\s*\(\d+ т\.\)$/, '')}</span>
-            <span className="font-semibold tabular-nums text-slate-900">
-              {fmt(s.points)}/{s.maxPoints}
-            </span>
-          </li>
-        ))}
-      </ul>
+      {/* Диагностика по изпитни модули / части */}
+      <div className="mt-6 border-t border-slate-100 pt-4">
+        <p className="mb-2.5 text-xs font-bold uppercase tracking-wide text-slate-500">Разбивка по части / модули</p>
+        <ul className="grid gap-3 text-sm sm:grid-cols-2">
+          {result.sections.map((s) => {
+            const secPct = s.maxPoints > 0 ? Math.round((s.points / s.maxPoints) * 100) : 0;
+            return (
+              <li key={s.id} className="rounded-xl border border-slate-100 bg-slate-50/70 p-3">
+                <div className="flex items-center justify-between gap-3 text-slate-700">
+                  <span className="truncate font-medium text-slate-800">{s.title.replace(/\s*\(\d+ т\.\)$/, '')}</span>
+                  <span className="shrink-0 font-semibold tabular-nums text-slate-900">
+                    {fmt(s.points)}/{s.maxPoints} <span className="text-xs font-normal text-slate-500">({secPct}%)</span>
+                  </span>
+                </div>
+                <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-200/80" aria-hidden="true">
+                  <div
+                    className={`h-full rounded-full ${secPct >= 80 ? 'bg-emerald-500' : secPct >= 50 ? 'bg-brand-sapphire' : 'bg-amber-400'}`}
+                    style={{ width: `${secPct}%` }}
+                  />
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {/* Диагностика по интегрирани предмети и области (при наличие на topic по задачите) */}
+      {subjectBreakdown.length > 1 && (
+        <div className="mt-5 border-t border-slate-100 pt-4">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h3 className="text-sm font-bold text-slate-900">Диагностика по интегрирани предмети и области</h3>
+            <p className="text-xs text-slate-500">Резултат по всеки включен предмет във варианта</p>
+          </div>
+          <ul className="mt-3 grid gap-2.5 sm:grid-cols-2">
+            {subjectBreakdown.map((item) => {
+              const itemPct = item.maxPoints > 0 ? Math.round((item.points / item.maxPoints) * 100) : 0;
+              const isWeakest = weakestSubject?.label === item.label;
+              return (
+                <li key={item.label} className="rounded-xl border border-slate-100 bg-white p-3 shadow-2xs">
+                  <div className="flex items-center justify-between gap-2 text-sm">
+                    <span className="flex min-w-0 items-center gap-1.5 font-medium text-slate-800">
+                      <span className="truncate">{item.label}</span>
+                      {isWeakest && (
+                        <span className="shrink-0 rounded bg-amber-50 px-1.5 py-0.5 text-[11px] font-semibold text-amber-800 ring-1 ring-inset ring-amber-200">
+                          за преговор
+                        </span>
+                      )}
+                    </span>
+                    <span className="shrink-0 font-semibold tabular-nums text-slate-900">
+                      {fmt(item.points)}/{fmt(item.maxPoints)} т. ({itemPct}%)
+                    </span>
+                  </div>
+                  <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-100" aria-hidden="true">
+                    <div
+                      className={`h-full rounded-full ${itemPct >= 80 ? 'bg-emerald-500' : itemPct >= 50 ? 'bg-brand-sapphire' : 'bg-amber-400'}`}
+                      style={{ width: `${itemPct}%` }}
+                    />
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
 
       <p className="mt-4 text-sm text-slate-600">
         По ключа: <strong className="tabular-nums">{fmt(result.autoPoints)} т.</strong> · Самооценка:{' '}
@@ -626,6 +818,17 @@ const StimulusView: React.FC<{ s: Stimulus }> = ({ s }) => {
       <figure className="my-4 flex justify-center rounded-xl border border-slate-100 bg-white p-3">
         <Figure />
       </figure>
+    );
+  }
+  if (s.kind === 'text') {
+    return (
+      <article className="my-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+        {s.title && <h4 className="mb-1.5 text-sm font-bold text-slate-900">{s.title}</h4>}
+        <p className="whitespace-pre-line font-serif text-[15px] leading-relaxed text-slate-800">
+          <MathText text={s.body ?? s.text ?? ''} />
+        </p>
+        {s.source && <p className="mt-1.5 text-right text-xs italic text-slate-500">{s.source}</p>}
+      </article>
     );
   }
   return (

@@ -90,7 +90,7 @@ export default defineConfig({
           if (id.includes('src/data/examModulesData')) {
             return 'data-exam-modules';
           }
-          // Изпитните варианти: отделно математика, БЕЛ и чертежите — свалят се паралелно и се кешират поотделно
+          // Изпитните варианти: отделно математика, БЕЛ, профилирани и чертежите — свалят се паралелно и се кешират поотделно
           if (id.includes('src/components/exam-engine/figures')) {
             return 'exam-figures';
           }
@@ -100,17 +100,20 @@ export default defineConfig({
           if (id.includes('src/data/officialPapers/') || id.includes('src/data/integratedSamples/')) {
             return 'data-exam-math';
           }
-          if (id.includes('src/data/monLessons/pp')) {
-            if (/pp(Math|Informatika|It|Fa|Bio|Himia)/.test(id)) {
+          if (id.includes('src/data/dziProfilePapers/')) {
+            return 'data-exam-profile';
+          }
+          if (id.includes('src/data/monLessons/pp') || id.includes('src/data/monLessons/groupPp')) {
+            if (/pp(Math|Informatika|It|Fa|Bio|Himia)|groupPpStem/.test(id)) {
               return 'mon-lessons-pp-stem';
             }
             return 'mon-lessons-pp-hum';
           }
           if (id.includes('src/data/monLessons/')) {
-            if (/\/(en|de)[A-Z]/.test(id)) {
+            if (/\/(en|de)[A-Z]|groupLang/.test(id)) {
               return 'mon-lessons-lang';
             }
-            if (/\/(math|phys|chem|bio|inf|it|tp)\d/.test(id)) {
+            if (/\/(math|phys|chem|bio|inf|it|tp)\d|groupOopStem/.test(id)) {
               return 'mon-lessons-oop-stem';
             }
             return 'mon-lessons-oop-hum';

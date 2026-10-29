@@ -1159,10 +1159,18 @@ export async function loadFullCurriculumLessons(): Promise<LessonData[]> {
     import('./curriculumExpansionLessonsPart1B'),
     import('./curriculumExpansionLessonsPart2'),
     import('./curriculumExpansionLessonsPart3'),
-    import('./monLessons')
-  ]).then(([corePack, part1A, part1B, part2, part3, monLessons]) => {
+    import('./monLessons/groupOopStem'),
+    import('./monLessons/groupOopHum'),
+    import('./monLessons/groupLang'),
+    import('./monLessons/groupPpStem'),
+    import('./monLessons/groupPpHum'),
+  ]).then(([corePack, part1A, part1B, part2, part3, oopStem, oopHum, lang, ppStem, ppHum]) => {
     const fullRaw: LessonData[] = [
-      ...monLessons.MON_LESSONS,
+      ...oopStem.MON_LESSONS_GROUP_OOP_STEM,
+      ...oopHum.MON_LESSONS_GROUP_OOP_HUM,
+      ...lang.MON_LESSONS_GROUP_LANG,
+      ...ppStem.MON_LESSONS_GROUP_PP_STEM,
+      ...ppHum.MON_LESSONS_GROUP_PP_HUM,
       ...part1A.EXTRA_CURRICULUM_LESSONS,
       ...part1B.EXTRA_CURRICULUM_LESSONS_PART1B,
       ...part2.EXTRA_CURRICULUM_LESSONS_PART2,

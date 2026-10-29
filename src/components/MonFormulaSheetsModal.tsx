@@ -5,19 +5,47 @@ import {
   LITERATURE_EXAM_MATRIX,
   SCIENCE_CONSTANTS
 } from '../data/monFormulaSheets';
-import { NVO10_MATH_FORMULAS } from '../data/formulaSheets/nvo10Math';
+import { NVO10_MATH_FORMULAS, type FormulaSheet } from '../data/formulaSheets/nvo10Math';
 import { DZI_MATH_FORMULAS } from '../data/formulaSheets/dziMath';
+import { DZI_PHYSICS_FORMULAS } from '../data/formulaSheets/dziPhysics';
+import { DZI_CHEMISTRY_FORMULAS } from '../data/formulaSheets/dziChemistry';
+import { DZI_BIOLOGY_FORMULAS } from '../data/formulaSheets/dziBiology';
+import { DZI_INFORMATICS_FORMULAS } from '../data/formulaSheets/dziInformatics';
+import { DZI_GEO_ECON_FORMULAS } from '../data/formulaSheets/dziGeographyEcon';
 import { FormulaSheetBrowser, FormulaSheetSource } from './exam-engine/FormulaSheetPanel';
 
 interface MonFormulaSheetsModalProps {
   onClose: () => void;
 }
 
+type ModalTab =
+  | 'official'
+  | 'official-dzi'
+  | 'dzi-physics'
+  | 'dzi-chemistry'
+  | 'dzi-biology'
+  | 'dzi-informatics'
+  | 'dzi-geography-econ'
+  | 'math'
+  | 'literature'
+  | 'science'
+  | 'posters';
+
+const SHEET_BY_TAB: Partial<Record<ModalTab, FormulaSheet>> = {
+  official: NVO10_MATH_FORMULAS,
+  'official-dzi': DZI_MATH_FORMULAS,
+  'dzi-physics': DZI_PHYSICS_FORMULAS,
+  'dzi-chemistry': DZI_CHEMISTRY_FORMULAS,
+  'dzi-biology': DZI_BIOLOGY_FORMULAS,
+  'dzi-informatics': DZI_INFORMATICS_FORMULAS,
+  'dzi-geography-econ': DZI_GEO_ECON_FORMULAS,
+};
+
 export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ onClose }) => {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
-  const [activeTab, setActiveTab] = useState<'official' | 'official-dzi' | 'math' | 'literature' | 'science' | 'posters'>('official');
-  // Официалните листове на МОН — същото съдържание като панела „Формули“ в изпитите
-  const officialSheet = activeTab === 'official' ? NVO10_MATH_FORMULAS : activeTab === 'official-dzi' ? DZI_MATH_FORMULAS : null;
+  const [activeTab, setActiveTab] = useState<ModalTab>('official');
+  // Официалните листове на МОН и интерактивните справочници за Втори ДЗИ / ДИППК
+  const officialSheet = SHEET_BY_TAB[activeTab] ?? null;
   const isOfficial = officialSheet !== null;
   const [selectedPoster, setSelectedPoster] = useState<'bel_dzi' | 'math_all' | 'history_dates' | 'civics_eu' | 'dippk_stem'>('bel_dzi');
   const [searchQuery, setSearchQuery] = useState('');
@@ -139,7 +167,17 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
           
           {/* Segmented Controls */}
           <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg bg-white border border-slate-200 w-full sm:w-auto shadow-2xs">
-            {([['official', 'НВО 10 — лист на МОН'], ['official-dzi', 'ДЗИ — лист на МОН']] as const).map(([id, label]) => (
+            {(
+              [
+                ['official', 'НВО 10 — лист на МОН'],
+                ['official-dzi', 'ДЗИ Математика'],
+                ['dzi-physics', 'Физика & Електро'],
+                ['dzi-chemistry', 'Химия & Разтворимост'],
+                ['dzi-biology', 'Биология & Кодони'],
+                ['dzi-informatics', 'Информатика & Мрежи'],
+                ['dzi-geography-econ', 'География & Икономика'],
+              ] as const
+            ).map(([id, label]) => (
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}

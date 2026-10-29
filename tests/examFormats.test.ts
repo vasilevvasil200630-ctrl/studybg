@@ -38,5 +38,17 @@ describe('формат на НВО 10 за 2027 г. (модел на МОН)', (
       expect(tag(`official-nvo10-bel-${y}`)?.label).toContain('Без история и философия');
     }
     expect(tag('sample-nvo10-bel-2027')).toBeNull();
+    expect(tag('practice-nvo10-math-2027-1')?.tone).toBe('current');
+    expect(tag('practice-nvo10-bel-2027-1')?.tone).toBe('current');
+
+    const math27 = EXAM_PAPERS.find((p) => p.id === 'practice-nvo10-math-2027-1')!;
+    expect(math27.sections.flatMap((s) => s.questions)).toHaveLength(16);
+    expect(math27.durationMinutes).toBe(120);
+    expect(math27.maxPoints).toBe(100);
+
+    const bel27 = EXAM_PAPERS.find((p) => p.id === 'practice-nvo10-bel-2027-1')!;
+    expect(bel27.sections.flatMap((s) => s.questions)).toHaveLength(22);
+    expect(bel27.durationMinutes).toBe(120);
+    expect(bel27.maxPoints).toBe(100);
   });
 });

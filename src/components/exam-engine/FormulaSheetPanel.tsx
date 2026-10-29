@@ -45,7 +45,21 @@ export const FormulaSheetBrowser: React.FC<FormulaSheetBrowserProps> = ({ sheet,
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={sheet.id.startsWith('dzi') ? 'Търси: производна, Бейс, елипса, бином…' : 'Търси: Виет, медиана, конус, Херон…'}
+            placeholder={
+              sheet.id === 'dzi-physics'
+                ? 'Търси: Планк, Кулон, Лоренц, трифазна мощност, Хук…'
+                : sheet.id === 'dzi-chemistry'
+                  ? 'Търси: Хес, Фарадей, pH, разтворимост, атомна маса…'
+                  : sheet.id === 'dzi-biology'
+                    ? 'Търси: кодон, AUG, Харди–Вайнберг, Чаргаф, АТФ…'
+                    : sheet.id === 'dzi-informatics'
+                      ? 'Търси: сложност, Quick Sort, CIDR, подмрежа, Де Морган…'
+                      : sheet.id === 'dzi-geography-econ'
+                        ? 'Търси: прираст, БВП, ROE, критична точка, RevPAR…'
+                        : sheet.id.startsWith('dzi')
+                          ? 'Търси: производна, Бейс, елипса, бином…'
+                          : 'Търси: Виет, медиана, конус, Херон…'
+            }
             aria-label="Търси формула"
             className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-9 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-sapphire focus:outline-none focus:ring-2 focus:ring-brand-sapphire/15 [&::-webkit-search-cancel-button]:appearance-none"
           />

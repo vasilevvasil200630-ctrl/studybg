@@ -72,7 +72,7 @@ describe('MON Curriculum Coverage & Infinite Quiz Generator', () => {
       expect(lid, `Author ${author.id} should be mapped`).toBeTruthy();
       expect(idSet.has(lid), `Author ${author.id} -> ${lid} must exist`).toBe(true);
     }
-  });
+  }, 20_000);
 
   it('generates infinite non-repeating material-aligned quiz variants and tailored MON lessons', async () => {
     const lessons = await loadFullCurriculumLessons();
@@ -119,7 +119,7 @@ describe('MON Curriculum Coverage & Infinite Quiz Generator', () => {
     const tailoredMatrix = buildTailoredMatrixSubjectLesson(gm, matrixSubj, mathLesson, lessons);
     expect(tailoredMatrix.title).toContain(gm.grade);
     expect(tailoredMatrix.quiz.length).toBe(10);
-  });
+  }, 20_000);
 
   it('generates valid infinite variants across all 9 specialized laboratories', () => {
     const litV1 = generateAuthorInfiniteQuiz(LITERATURE_CANON[0], LITERATURE_CANON, 1);

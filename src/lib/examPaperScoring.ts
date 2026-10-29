@@ -117,7 +117,7 @@ export interface PaperSection {
 export interface ExamPaper {
   id: string;
   title: string;
-  exam: 'ДЗИ' | 'НВО 10';
+  exam: 'ДЗИ' | 'НВО 10' | 'ДИППК';
   subject: string;
   /**
    * 'practice' = тренировъчен вариант на StudyBG; 'official' = преписан официален вариант на МОН;
@@ -138,7 +138,15 @@ export interface ExamPaper {
   /** Кратка бележка под заглавието — напр. кое е официално (условия, ключ) и кое е добавено от StudyBG */
   note?: string;
   /** Лист с формули, който се отваря от лентата на изпита (както на истинския изпит) */
-  formulaSheet?: 'nvo10-math' | 'dzi-math' | 'dzi-math-2021';
+  formulaSheet?:
+    | 'nvo10-math'
+    | 'dzi-math'
+    | 'dzi-math-2021'
+    | 'dzi-physics'
+    | 'dzi-chemistry'
+    | 'dzi-biology'
+    | 'dzi-informatics'
+    | 'dzi-geography-econ';
   sections: PaperSection[];
 }
 

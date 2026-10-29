@@ -54,7 +54,7 @@ export default defineConfig({
           if (id.includes('bulgarianCurriculumTree')) {
             return 'data-curriculum-tree';
           }
-          if (id.includes('src/data/monFormulaSheets')) {
+          if (id.includes('src/data/monFormulaSheets') || id.includes('src/data/formulaSheets/dzi')) {
             return 'data-formula-sheets';
           }
           if (id.includes('cultureExpansionData')) {
@@ -97,11 +97,14 @@ export default defineConfig({
           if (id.includes('src/data/officialPapers/') && /Bel20\d\d/.test(id)) {
             return 'data-exam-bel';
           }
-          if (id.includes('src/data/officialPapers/') || id.includes('src/data/integratedSamples/')) {
+          if (id.includes('src/data/officialPapers/') || id.includes('src/data/integratedSamples/') || id.includes('src/data/nvo10Integrated2027/')) {
             return 'data-exam-math';
           }
           if (id.includes('src/data/dziProfilePapers/')) {
             return 'data-exam-profile';
+          }
+          if (id.includes('src/data/dippkPapers/')) {
+            return 'data-exam-dippk';
           }
           if (id.includes('src/data/monLessons/pp') || id.includes('src/data/monLessons/groupPp')) {
             if (/pp(Math|Informatika|It|Fa|Bio|Himia)|groupPpStem/.test(id)) {

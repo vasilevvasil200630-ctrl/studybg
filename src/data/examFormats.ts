@@ -71,10 +71,16 @@ export type FormatTone = 'current' | 'legacy';
 export function nvo10FormatTag(paper: ExamPaper): { label: string; tone: FormatTone } | null {
   if (paper.exam !== 'НВО 10' || paper.kind === 'sample' || paper.kind === 'topic' || paper.kind === 'review') return null;
   if (paper.subject === 'Български език и литература') {
+    if (paper.kind === 'practice' && (paper.year ?? 0) >= 2027) {
+      return { label: 'По модела за 2027 г.: с история и философия, 120 мин', tone: 'current' };
+    }
     if (paper.kind === 'practice') return { label: `Тренировъчен: ${paper.durationMinutes} мин — не следва формата на МОН`, tone: 'legacy' };
     return { label: `Без история и философия, ${paper.durationMinutes} мин — частта по БЕЛ`, tone: 'legacy' };
   }
   if (paper.subject !== 'Математика') return null;
+  if (paper.kind === 'practice' && (paper.year ?? 0) >= 2027) {
+    return { label: 'По модела за 2027 г.: с интегрирани предмети, 120 мин', tone: 'current' };
+  }
   if (paper.kind === 'practice') return { label: `Тренировъчен: ${paper.durationMinutes} мин — не следва формата на МОН`, tone: 'legacy' };
   if ((paper.year ?? 0) >= 2026) return { label: 'С интегрирани предмети — най-близо до изпита през 2027', tone: 'current' };
   return { label: `Стар формат: само математика, ${paper.durationMinutes} мин`, tone: 'legacy' };

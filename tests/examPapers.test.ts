@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { EXAM_PAPERS } from '../src/data/examPapers';
 import katex from 'katex';
 import { FIGURES } from '../src/components/exam-engine/figures';
-import { DZI_SCALE } from '../src/lib/monGradeScale';
+import { DIPPK_SCALE, DZI_SCALE } from '../src/lib/monGradeScale';
 import {
   isPartCorrect,
   isShortAnswerCorrect,
@@ -522,6 +522,27 @@ describe('ДЗИ — оценка по единната скала на МОН',
       const r2 = scorePaper(p2!, keyAnswers(p2!), fullOpenScores(p2!));
       expect(r2.totalPoints, p2!.id).toBe(100);
       expect(r2.grade?.numeric, p2!.id).toBe(6);
+    }
+
+    const dippkSubjects = [
+      'Системно и приложно програмиране',
+      'Икономика, банково дело и счетоводство',
+      'Строителство, архитектура и геодезия',
+      'Електротехника, мехатроника и енергетика',
+      'Машиностроене, автотранспортна техника и CNC технологии',
+      'Хотелиерство, ресторантьорство и туризъм',
+      'Биотехнологии, агроекология и ветеринарна медицина',
+      'Графичен дизайн, полиграфия и мултимедия',
+    ];
+    for (const subj of dippkSubjects) {
+      const pd = EXAM_PAPERS.find((x) => x.exam === 'ДИППК' && x.subject === subj);
+      expect(pd, `Липсва вариант за ДИППК по ${subj}`).toBeDefined();
+      expect(pd!.durationMinutes, pd!.id).toBe(240);
+      expect(pd!.maxPoints, pd!.id).toBe(100);
+      expect(pd!.gradeScale, pd!.id).toBe(DIPPK_SCALE);
+      const rd = scorePaper(pd!, keyAnswers(pd!), fullOpenScores(pd!));
+      expect(rd.totalPoints, pd!.id).toBe(100);
+      expect(rd.grade?.numeric, pd!.id).toBe(6);
     }
 
     const seenIds = new Set<string>();

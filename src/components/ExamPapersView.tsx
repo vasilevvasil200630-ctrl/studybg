@@ -18,7 +18,7 @@ import { ExamRunner, PaperBadge } from './exam-engine/ExamRunner';
 
 type ExamFilter = 'all' | ExamPaper['exam'];
 
-const EXAM_ORDER: ExamPaper['exam'][] = ['НВО 10', 'ДЗИ'];
+const EXAM_ORDER: ExamPaper['exam'][] = ['НВО 10', 'ДЗИ', 'ДИППК'];
 
 /** Официалните първо (най-новите отгоре), после тренировъчните */
 const byRelevance = (a: ExamPaper, b: ExamPaper) =>
@@ -43,6 +43,14 @@ const SUBJECT_ORDER = [
   'Предприемачество',
   'Изобразително изкуство',
   'Музика',
+  'Системно и приложно програмиране',
+  'Икономика, банково дело и счетоводство',
+  'Строителство, архитектура и геодезия',
+  'Електротехника, мехатроника и енергетика',
+  'Машиностроене, автотранспортна техника и CNC технологии',
+  'Хотелиерство, ресторантьорство и туризъм',
+  'Биотехнологии, агроекология и ветеринарна медицина',
+  'Графичен дизайн, полиграфия и мултимедия',
 ];
 const subjectOrderIndex = (s: string) => {
   const idx = SUBJECT_ORDER.indexOf(s);
@@ -138,6 +146,7 @@ export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onO
               {exam}
             </h4>
             {exam === 'НВО 10' && <Nvo10FormatCard />}
+            {exam === 'ДИППК' && <DippkFormatCard />}
             {subjects.map((subject) => {
               const topicArea = topicAreaFor(exam, subject);
               return (
@@ -240,6 +249,19 @@ const PaperCard: React.FC<{ paper: ExamPaper; onStart: () => void }> = ({ paper:
     </li>
   );
 };
+
+const DippkFormatCard: React.FC = () => (
+  <div className="rounded-2xl border border-slate-200 bg-white p-5">
+    <p className="text-base font-bold text-slate-900">
+      ДИППК (12. клас — СПК III степен): комплексен изпит по теория и практика на професията
+    </p>
+    <p className="mt-1 max-w-3xl text-sm leading-relaxed text-slate-600">
+      Държавният изпит за придобиване на трета степен на професионална квалификация (Наредба № 1 на МОН) се провежда за 240 минути
+      върху 100 точки (Част 1: тест, Част 2: изчислителни и казусни задачи, Част 3: практическо дипломиращо задание по ДОС).
+      Прагът за успешно полагане е 50 точки (Среден 3,00).
+    </p>
+  </div>
+);
 
 /** Двата изпита в НВО 10 през 2027 г. — превключвател между математика и БЕЛ */
 const Nvo10FormatCard: React.FC = () => {

@@ -1,11 +1,11 @@
 import React, { Suspense, lazy, useEffect, useMemo, useState } from 'react';
-import { Award, ChevronDown, Clock, ExternalLink, FileText, History, ListChecks, Target, Trophy } from 'lucide-react';
+import { Award, ChevronDown, Clock, ExternalLink, FileText, History, ListChecks, Search, Sparkles, Target, Trophy, X, Zap } from 'lucide-react';
 import { EXAM_PAPERS } from '../data/examPapers';
 import { NVO10_BEL_FORMAT_2027, NVO10_FORMAT_2027, NVO10_ORDER_2027_URL, nvo10FormatTag } from '../data/examFormats';
 import { TOPICS, TOPIC_BY_KEY, topicPercent, type TopicArea, type TopicKey } from '../data/examTopics';
 import { AREA_SOURCES, TOPIC_PAPERS, topicPaperId, topicSectionYear } from '../data/topicPapers';
 import { sourcePaperTitle } from '../data/mistakesPaper';
-import type { ExamPaper } from '../lib/examPaperScoring';
+import type { ExamPaper, PaperQuestion } from '../lib/examPaperScoring';
 import { loadTopicStats, type TopicStat } from '../lib/topicProgress';
 import { examHistoryService, type ExamAttemptRecord } from '../services/examHistoryService';
 import { ExamRunner, PaperBadge } from './exam-engine/ExamRunner';
@@ -20,6 +20,8 @@ const ExamHistoryModal = lazy(() => import('./ExamHistoryModal').then((m) => ({ 
  */
 
 type ExamFilter = 'all' | ExamPaper['exam'];
+type StatusFilter = 'all' | 'official' | 'practice' | 'unsolved';
+type BlitzMode = 'blitz10' | 'auto15' | 'openPractice';
 
 const EXAM_ORDER: ExamPaper['exam'][] = ['НВО 10', 'ДЗИ', 'ДИППК'];
 
@@ -84,7 +86,10 @@ const topicAreaFor = (exam: ExamPaper['exam'], subject: string): TopicArea | nul
 
 export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onOpenErrorBank }) => {
   const [paperId, setPaperId] = useState<string | null>(null);
+  const [customPaper, setCustomPaper] = useState<ExamPaper | null>(null);
   const [filter, setFilter] = useState<ExamFilter>('all');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [historyOpen, setHistoryOpen] = useState(false);
   const [attemptsVersion, setAttemptsVersion] = useState(0);
 
@@ -94,7 +99,7 @@ export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onO
     return () => window.removeEventListener('studybg:local-data-mutated', onMutated);
   }, []);
 
-  const allAttempts = useMemo(() => examHistoryService.getAllAttempts(), [paperId, attemptsVersion]);
+  const allAttempts = useMemo(() => examHistoryService.getAllAttempts(), [paperId, customPaper, attemptsVersion]);
 
   const bestByPaperId = useMemo(() => {
     const map = new Map<string, { best: ExamAttemptRecord; count: number }>();
@@ -112,6 +117,48 @@ export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onO
     }
     return map;
   }, [allAttempts]);
+
+  const recommendedPaper = useMemo(() => {
+    const pool = EXAM_PAPERS.filter((p) => p.kind !== 'sample' && (filter === 'all' || p.exam === filter));
+    // Първо търсим още нерешен вариант (с приоритет на актуалните 2026/2027 или тренировъчни)
+    const unsolved = pool.find((p) => !bestByPaperId.has(p.id));
+    if (unsolved) return { paper: unsolved, reason: 'Още нерешен вариант — отличен за следваща тренировка' };
+    // Ако всички са решени, препоръчваме варианта с най-нисък резултат под 75 т.
+    const weakest = pool
+      .map((p) => ({ paper: p, pts: bestByPaperId.get(p.id)?.best.totalPoints ?? 100 }))
+      .sort((a, b) => a.pts - b.pts)[0];
+    if (weakest && weakest.pts < 75) {
+      return { paper: weakest.paper, reason: `Последен най-добър резултат ${fmtScore(weakest.pts)} т. — подходящ за подобряване` };
+    }
+    return null;
+  }, [filter, bestByPaperId]);
+
+  const matchesFilters = (p: ExamPaper): boolean => {
+    if (statusFilter === 'official' && p.kind !== 'official' && p.kind !== 'sample') return false;
+    if (statusFilter === 'practice' && p.kind !== 'practice') return false;
+    if (statusFilter === 'unsolved' && bestByPaperId.has(p.id)) return false;
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      p.title.toLowerCase().includes(q) ||
+      p.subject.toLowerCase().includes(q) ||
+      p.exam.toLowerCase().includes(q) ||
+      (p.year ? String(p.year).includes(q) : false)
+    );
+  };
+
+  if (customPaper) {
+    return (
+      <ExamRunner
+        key={customPaper.id}
+        paper={customPaper}
+        onExit={() => setCustomPaper(null)}
+        exitLabel="Към всички варианти"
+        recordHistory={false}
+        onOpenErrorBank={onOpenErrorBank}
+      />
+    );
+  }
 
   const paper = ALL_PAPERS.find((p) => p.id === paperId) ?? null;
 
@@ -190,8 +237,36 @@ export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onO
         </div>
       )}
 
-      {exams.length > 1 && (
-        <div className="flex flex-wrap gap-1.5" role="group" aria-label="Изпит">
+      {/* Препоръчан следващ вариант */}
+      {recommendedPaper && !searchQuery.trim() && (
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-indigo-200/80 bg-gradient-to-r from-indigo-50/80 via-blue-50/50 to-white p-4 shadow-2xs">
+          <div className="min-w-0 flex-1">
+            <p className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-brand-sapphire">
+              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+              Препоръчан следващ вариант за теб
+            </p>
+            <p className="mt-1 truncate text-base font-bold text-slate-900">{recommendedPaper.paper.title}</p>
+            <p className="mt-0.5 text-xs text-slate-600">
+              {recommendedPaper.reason} · {recommendedPaper.paper.durationMinutes} мин · {recommendedPaper.paper.maxPoints} т.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setPaperId(recommendedPaper.paper.id)}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-brand-sapphire px-4 py-2.5 text-xs font-semibold text-white transition-colors hover:bg-brand-sapphire-dark"
+          >
+            <FileText className="h-4 w-4" aria-hidden="true" />
+            Започни препоръчания вариант
+          </button>
+        </div>
+      )}
+
+      {/* Генератор на персонализиран блиц-изпит („Създай свой тест“) */}
+      <CustomBlitzGenerator onLaunch={(p) => { setCustomPaper(p); window.scrollTo({ top: 0 }); }} />
+
+      {/* Филтри по изпит, статус и търсачка */}
+      <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Изпит">
           {(['all', ...exams] as ExamFilter[]).map((e) => {
             const n = e === 'all' ? EXAM_PAPERS.length : EXAM_PAPERS.filter((p) => p.exam === e).length;
             const active = filter === e;
@@ -205,29 +280,77 @@ export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onO
                   active ? 'border-brand-sapphire bg-brand-sapphire text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900'
                 }`}
               >
-                {e === 'all' ? 'Всички' : e} <span className={active ? 'text-white/80' : 'text-slate-400'}>{n}</span>
+                {e === 'all' ? 'Всички изпити' : e} <span className={active ? 'text-white/80' : 'text-slate-400'}>{n}</span>
               </button>
             );
           })}
         </div>
-      )}
+
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="inline-flex flex-wrap rounded-xl border border-slate-200 bg-slate-50 p-0.5" role="group" aria-label="Вид вариант">
+            {(
+              [
+                { id: 'all', label: 'Всички' },
+                { id: 'official', label: 'Официални МОН' },
+                { id: 'practice', label: 'Тренировъчни' },
+                { id: 'unsolved', label: 'Нерешени' },
+              ] as { id: StatusFilter; label: string }[]
+            ).map((st) => (
+              <button
+                key={st.id}
+                type="button"
+                aria-pressed={statusFilter === st.id}
+                onClick={() => setStatusFilter(st.id)}
+                className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors ${
+                  statusFilter === st.id ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {st.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="relative min-w-[14rem] flex-1 sm:w-64">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Търси предмет, професия, година..."
+              aria-label="Търси изпитен вариант"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-1.5 pl-9 pr-8 text-xs text-slate-900 placeholder:text-slate-400 focus:border-brand-sapphire focus:bg-white focus:outline-none"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                aria-label="Изчисти търсенето"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
 
       {shown.map((exam) => {
-        const papers = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind !== 'sample').sort(byRelevance);
+        const papers = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind !== 'sample' && matchesFilters(p)).sort(byRelevance);
         const subjects = [...new Set(papers.map((p) => p.subject))].sort((a, b) => subjectOrderIndex(a) - subjectOrderIndex(b));
-        const allSamples = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind === 'sample');
+        const allSamples = EXAM_PAPERS.filter((p) => p.exam === exam && p.kind === 'sample' && matchesFilters(p));
         // Примерните набори по предмет с варианти (БЕЛ) са под вариантите му; другите — в „Другите предмети“
         const samples = allSamples.filter((p) => !subjects.includes(p.subject));
-        const hasTopics = subjects.some((s) => topicAreaFor(exam, s) !== null);
+        const hasTopics = !searchQuery.trim() && statusFilter === 'all' && subjects.some((s) => topicAreaFor(exam, s) !== null);
+        if (papers.length === 0 && allSamples.length === 0) return null;
         return (
           <section key={exam} aria-labelledby={`papers-${exam}`} className="space-y-3">
             <h4 id={`papers-${exam}`} className="text-sm font-bold uppercase tracking-wide text-slate-500">
               {exam}
             </h4>
-            {exam === 'НВО 10' && <Nvo10FormatCard />}
-            {exam === 'ДИППК' && <DippkFormatCard />}
+            {exam === 'НВО 10' && !searchQuery.trim() && statusFilter === 'all' && <Nvo10FormatCard />}
+            {exam === 'ДИППК' && !searchQuery.trim() && statusFilter === 'all' && <DippkFormatCard />}
             {subjects.map((subject) => {
-              const topicArea = topicAreaFor(exam, subject);
+              const topicArea = !searchQuery.trim() && statusFilter === 'all' ? topicAreaFor(exam, subject) : null;
               return (
               <div key={subject} className="space-y-3">
                 {(subjects.length > 1 || samples.length > 0 || hasTopics) && (
@@ -295,6 +418,180 @@ export const ExamPapersView: React.FC<{ onOpenErrorBank?: () => void }> = ({ onO
         </Suspense>
       )}
     </div>
+  );
+};
+
+/** Генератор на персонализиран блиц-изпит („Създай свой тест“) */
+const CustomBlitzGenerator: React.FC<{ onLaunch: (paper: ExamPaper) => void }> = ({ onLaunch }) => {
+  const [exam, setExam] = useState<ExamPaper['exam']>('ДЗИ');
+  const subjectsForExam = useMemo(() => {
+    const set = new Set(EXAM_PAPERS.filter((p) => p.exam === exam && p.kind !== 'sample').map((p) => p.subject));
+    return [...set].sort((a, b) => subjectOrderIndex(a) - subjectOrderIndex(b));
+  }, [exam]);
+
+  const [subject, setSubject] = useState<string>(() => subjectsForExam[0] ?? 'Български език и литература');
+  const [mode, setMode] = useState<BlitzMode>('blitz10');
+
+  useEffect(() => {
+    if (!subjectsForExam.includes(subject)) {
+      setSubject(subjectsForExam[0] ?? '');
+    }
+  }, [subjectsForExam, subject]);
+
+  const handleBuild = () => {
+    const sourcePapers = EXAM_PAPERS.filter((p) => p.exam === exam && p.subject === subject);
+    if (sourcePapers.length === 0) return;
+
+    // Събираме задачите, които нямат зависимост от външен PDF или дълъг общ текст на секцията (или за open взимаме Част 3)
+    const allQuestions: PaperQuestion[] = [];
+    for (const sp of sourcePapers) {
+      for (const sec of sp.sections) {
+        if (mode !== 'openPractice' && (sec.sourceText || sec.externalText)) continue;
+        for (const q of sec.questions) {
+          allQuestions.push(q);
+        }
+      }
+    }
+    // Ако всички секции имат общ текст (напр. някои езикови матури), разрешаваме всички задачи от Част 2/3
+    const fallbackPool = allQuestions.length >= 6 ? allQuestions : sourcePapers.flatMap((sp) => sp.sections.flatMap((s) => s.questions));
+
+    let filtered: PaperQuestion[];
+    let durationMinutes = 20;
+    let modeLabel = 'Блиц-тест (10 задачи)';
+
+    if (mode === 'blitz10') {
+      filtered = fallbackPool.filter((q) => q.kind === 'choice');
+      durationMinutes = 20;
+      modeLabel = 'Блиц-тест (10 тестови задачи)';
+    } else if (mode === 'auto15') {
+      filtered = fallbackPool.filter((q) => q.kind !== 'open');
+      durationMinutes = 45;
+      modeLabel = 'Автоматичен тренировъчен тест (15 задачи)';
+    } else {
+      filtered = fallbackPool.filter((q) => q.kind === 'open');
+      durationMinutes = 60;
+      modeLabel = 'Практическо задание / Свободен отговор';
+    }
+
+    if (filtered.length === 0) filtered = fallbackPool;
+
+    // Разбъркваме и взимаме съответния брой задачи
+    const targetCount = mode === 'blitz10' ? 10 : mode === 'auto15' ? 15 : Math.min(2, filtered.length);
+    const shuffled = [...filtered].sort(() => Math.random() - 0.5).slice(0, targetCount);
+    const numbered = shuffled.map((q, idx) => ({ ...q, number: idx + 1 }));
+    const maxPoints = numbered.reduce((sum, q) => sum + q.points, 0);
+    const formulaSheet = sourcePapers.find((p) => p.formulaSheet)?.formulaSheet;
+
+    const generated: ExamPaper = {
+      id: `custom-blitz-${exam}-${Date.now()}`,
+      title: `${subject} (${exam}) — Персонализиран ${modeLabel}`,
+      exam,
+      subject,
+      kind: 'practice',
+      durationMinutes,
+      maxPoints,
+      gradeScale: null,
+      formulaSheet,
+      note: 'Персонализиран блиц-тест, съставен динамично от изпитните варианти по избрания предмет.',
+      sections: [
+        {
+          id: 'custom-blitz-sec-1',
+          title: `${modeLabel} (${maxPoints} т.)`,
+          instructions:
+            mode === 'openPractice'
+              ? 'Разработете решенията си и след предаване използвайте интерактивния чеклист и анализа по ключови понятия за самооценка.'
+              : 'Решете задачите за време — след предаване ще получите моментална проверка по ключа и подробни обяснения.',
+          questions: numbered,
+        },
+      ],
+    };
+
+    onLaunch(generated);
+  };
+
+  return (
+    <details className="group rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs">
+      <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-2 text-sm font-bold text-slate-900 [&::-webkit-details-marker]:hidden">
+        <span className="inline-flex items-center gap-2">
+          <span className="grid h-7 w-7 place-items-center rounded-lg bg-amber-100 text-amber-800">
+            <Zap className="h-4 w-4" aria-hidden="true" />
+          </span>
+          Създай свой блиц-изпит (Персонализиран генератор за 20, 45 или 60 мин)
+        </span>
+        <span className="inline-flex items-center gap-1 text-xs font-semibold text-brand-sapphire">
+          Настрой и генерирай
+          <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" aria-hidden="true" />
+        </span>
+      </summary>
+
+      <div className="mt-4 grid gap-3 border-t border-slate-100 pt-4 sm:grid-cols-3">
+        <div>
+          <label htmlFor="blitz-exam" className="block text-xs font-semibold text-slate-700">
+            1. Избери изпит
+          </label>
+          <select
+            id="blitz-exam"
+            value={exam}
+            onChange={(e) => setExam(e.target.value as ExamPaper['exam'])}
+            className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-900 focus:border-brand-sapphire focus:bg-white focus:outline-none"
+          >
+            {EXAM_ORDER.map((e) => (
+              <option key={e} value={e}>
+                {e}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="blitz-subject" className="block text-xs font-semibold text-slate-700">
+            2. Предмет / Професионално направление
+          </label>
+          <select
+            id="blitz-subject"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-900 focus:border-brand-sapphire focus:bg-white focus:outline-none"
+          >
+            {subjectsForExam.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="blitz-mode" className="block text-xs font-semibold text-slate-700">
+            3. Формат и времетраене
+          </label>
+          <select
+            id="blitz-mode"
+            value={mode}
+            onChange={(e) => setMode(e.target.value as BlitzMode)}
+            className="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-900 focus:border-brand-sapphire focus:bg-white focus:outline-none"
+          >
+            <option value="blitz10">Блиц-тест: 10 тестови задачи · 20 мин</option>
+            <option value="auto15">Автоматичен тест: 15 задачи с ключ · 45 мин</option>
+            <option value="openPractice">Практическо задание / Есе / Част 3 · 60 мин</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-slate-500">
+          Събира на случаен принцип задачи от официалните и тренировъчните варианти по избрания предмет за бърза целенасочена подготовка.
+        </p>
+        <button
+          type="button"
+          onClick={handleBuild}
+          className="inline-flex items-center gap-1.5 rounded-xl bg-brand-sapphire px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-brand-sapphire-dark"
+        >
+          <Zap className="h-3.5 w-3.5" aria-hidden="true" />
+          Генерирай и започни теста
+        </button>
+      </div>
+    </details>
   );
 };
 

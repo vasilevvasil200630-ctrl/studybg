@@ -2,10 +2,13 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from '
 import { AlertCircle, Award, Bookmark, CheckCircle2, ExternalLink, Lightbulb, Printer, RotateCcw, Send, Target, Trophy, X, XCircle } from 'lucide-react';
 import {
   PRACTICE_PAPER_LABEL,
+  getCriterionPoints,
+  getPartAnswer,
   isPartCorrect,
   partKey,
   scorePaper,
   type ExamPaper,
+  type OpenQuestion,
   type PaperAnswers,
   type PaperQuestion,
   type PaperResult,
@@ -103,7 +106,7 @@ const isAnswered = (q: PaperQuestion, s: Pick<Snapshot, 'answers' | 'drafts' | '
 const countUnscored = (questions: PaperQuestion[], scores: Scores): number =>
   questions.reduce((n, q) => {
     if (q.kind === 'open') return n + (typeof scores[q.id] === 'number' ? 0 : 1);
-    if (q.kind === 'multi') return n + q.parts.filter((p) => p.answer.type === 'self' && typeof scores[partKey(q, p)] !== 'number').length;
+    if (q.kind === 'multi') return n + q.parts.filter((p) => getPartAnswer(p).type === 'self' && typeof scores[partKey(q, p)] !== 'number').length;
     return n;
   }, 0);
 
@@ -337,7 +340,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
         delete nextAnswers[q.id];
       } else if (q.kind === 'multi') {
         for (const p of q.parts) {
-          if (p.answer.type !== 'self') {
+          if (getPartAnswer(p).type !== 'self') {
             const k = partKey(q, p);
             if (!isPartCorrect(p, nextAnswers[k])) {
               delete nextAnswers[k];
@@ -909,7 +912,7 @@ const ScoreButtons: React.FC<{ id: string; max: number; value: number | undefine
 /* ------------------------------------------------------------------ */
 
 const keyText = (part: QuestionPart): string => {
-  const a = part.answer;
+  const a = getPartAnswer(part);
   if (a.type === 'number') return `${a.acceptedAnswers[0]}${a.unit ? ` ${a.unit}` : ''}`;
   if (a.type === 'text') return a.acceptedAnswers[0];
   if (a.type === 'truefalse') return a.correct ? 'вярно' : 'грешно';
@@ -926,7 +929,7 @@ const PartRow: React.FC<{
   onScore: (key: string, v: number) => void;
   k: string;
 }> = ({ part, value, score, submitted, onAnswer, onScore, k }) => {
-  const a = part.answer;
+  const a = getPartAnswer(part);
   const ok = submitted && a.type !== 'self' ? isPartCorrect(part, value) : null;
   const inputId = `${k}-input`;
   return (
@@ -1188,20 +1191,23 @@ const QuestionCard = memo(function QuestionCard({ q, answers, scores, draft, fla
       )}
 
       {q.kind === 'open' && (
-        <Scratchpad
-          id={`${q.id}-solution`}
-          value={draft}
-          onChange={(v) => onDraft(q.id, v)}
-          disabled={submitted}
-          defaultOpen
-          label={language ? 'Твоят отговор' : 'Твоето решение'}
-          placeholder={
-            language
-              ? 'Напиши отговора си. След предаване ще го сравниш с критериите и примерния отговор на МОН.'
-              : 'Запиши решението си стъпка по стъпка. След предаване ще го сравниш с примерното решение и критериите.'
-          }
-          symbols={!language}
-        />
+        <div>
+          <Scratchpad
+            id={`${q.id}-solution`}
+            value={draft}
+            onChange={(v) => onDraft(q.id, v)}
+            disabled={submitted}
+            defaultOpen
+            label={language ? 'Твоят отговор' : 'Твоето решение'}
+            placeholder={
+              language
+                ? 'Напиши отговора си. След предаване ще го сравниш с критериите и примерния отговор на МОН.'
+                : 'Запиши решението си стъпка по стъпка. След предаване ще го сравниш с примерното решение и критериите.'
+            }
+            symbols={!language}
+          />
+          <OpenWordCountBar prompt={q.prompt} draft={draft} />
+        </div>
       )}
 
       {submitted && q.kind !== 'open' && (
@@ -1217,31 +1223,190 @@ const QuestionCard = memo(function QuestionCard({ q, answers, scores, draft, fla
       )}
 
       {submitted && q.kind === 'open' && (
-        <div className="mt-4 space-y-4 rounded-xl border border-blue-100 bg-blue-50/60 p-4 text-sm text-slate-800">
-          <div>
-            <p className="font-semibold text-slate-900">Критерии</p>
-            <ul className="mt-1.5 divide-y divide-blue-100">
-              {q.criteria.map((c) => (
-                <li key={c.label} className="flex items-start justify-between gap-3 py-1.5">
-                  <span>
-                    <MathText text={c.label} />
-                  </span>
-                  <span className="shrink-0 font-semibold tabular-nums text-brand-sapphire">{fmt(c.points)} т.</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <p className="font-semibold text-slate-900">Примерно решение</p>
-            <div className="mt-1 leading-relaxed">
-              <MathText text={q.modelAnswer} />
-            </div>
-          </div>
-          <div className="border-t border-blue-100 pt-3">
-            <ScoreButtons id={q.id} max={q.points} value={scores[q.id]} onChange={(v) => onScore(q.id, v)} label={`Колко точки заслужава решението ти? (0–${fmt(q.points)})`} />
-          </div>
-        </div>
+        <OpenSelfAssessment q={q} draft={draft} score={scores[q.id]} onScore={(v) => onScore(q.id, v)} />
       )}
     </li>
   );
 });
+
+const STOP_WORDS = new Set([
+  'която', 'който', 'които', 'какво', 'както', 'защото', 'следва', 'трябва', 'може', 'между', 'върху', 'според',
+  'всички', 'всяка', 'всеки', 'първо', 'второ', 'трето', 'общо', 'задача', 'отговор', 'решение', 'точки', 'примерен',
+  'докато', 'когато', 'поради', 'чрез', 'около', 'понеже', 'обаче', 'също', 'само', 'още', 'или', 'при', 'към', 'със',
+  'text', 'frac', 'dfrac', 'cdot', 'times', 'sqrt', 'approx', 'implies', 'longrightarrow', 'rightarrow', 'left', 'right',
+  'begin', 'end', 'mathrm', 'circ', 'delta', 'alpha', 'beta', 'gamma', 'lambda', 'omega', 'sigma', 'const',
+]);
+
+function extractModelKeyTerms(modelAnswer: string): string[] {
+  const cleaned = modelAnswer
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/\\[a-zA-Z]+/g, ' ')
+    .replace(/[*_#$`~>|()[\]{}]/g, ' ');
+  const tokens = cleaned.match(/[A-Za-zА-Яа-яЁёÄÖÜäöüßÉÈÊÀÙÇéèêàùçÑñÁÍÓÚáíóú]{5,}|\b\d+(?:[.,]\d+)?\b/g) ?? [];
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const raw of tokens) {
+    const lower = raw.toLowerCase().replace(',', '.');
+    if (STOP_WORDS.has(lower)) continue;
+    if (/^\d+$/.test(lower) && Number(lower) <= 3) continue; // пропускаме номера на подточки 1, 2, 3
+    if (seen.has(lower)) continue;
+    seen.add(lower);
+    result.push(raw);
+    if (result.length >= 12) break;
+  }
+  return result;
+}
+
+const OpenWordCountBar: React.FC<{ prompt: string; draft: string }> = ({ prompt, draft }) => {
+  const words = useMemo(() => {
+    const trimmed = draft.trim();
+    return trimmed ? trimmed.split(/\s+/).length : 0;
+  }, [draft]);
+  const chars = draft.length;
+
+  const targetRange = useMemo(() => {
+    const m = prompt.match(/(\d{2,3})\s*(?:–|-|до|à|to|bis)\s*(\d{2,3})\s*(?:думи|mots|palabras|слов|Wörter|words)/i);
+    if (!m) return null;
+    return { min: Number(m[1]), max: Number(m[2]) };
+  }, [prompt]);
+
+  const inRange = targetRange ? words >= targetRange.min && words <= targetRange.max : false;
+
+  return (
+    <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 tabular-nums">
+      <span>
+        Думи: <strong className="font-semibold text-slate-700">{words}</strong> · Знаци: <strong className="font-semibold text-slate-700">{chars}</strong>
+      </span>
+      {targetRange && (
+        <span
+          className={`rounded-md px-2 py-0.5 font-semibold ${
+            inRange
+              ? 'bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200'
+              : words === 0
+                ? 'bg-slate-100 text-slate-600'
+                : 'bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200'
+          }`}
+        >
+          Целеви обем: {targetRange.min}–{targetRange.max} думи {inRange ? '✓' : ''}
+        </span>
+      )}
+    </div>
+  );
+};
+
+const OpenSelfAssessment: React.FC<{
+  q: OpenQuestion;
+  draft: string;
+  score: number | undefined;
+  onScore: (v: number) => void;
+}> = ({ q, draft, score, onScore }) => {
+  const [checkedIdx, setCheckedIdx] = useState<Record<number, boolean>>({});
+
+  const keyTerms = useMemo(() => extractModelKeyTerms(q.modelAnswer), [q.modelAnswer]);
+  const draftLower = useMemo(() => draft.toLowerCase().replace(',', '.'), [draft]);
+
+  const termMatches = useMemo(() => {
+    if (!draft.trim()) return { matched: [] as string[], missing: keyTerms };
+    const matched: string[] = [];
+    const missing: string[] = [];
+    for (const term of keyTerms) {
+      const tLow = term.toLowerCase().replace(',', '.');
+      // За думи >= 6 букви проверяваме корен (първите 5-6 букви), за да хващаме граматични форми
+      const stem = tLow.length >= 6 && !/^\d/.test(tLow) ? tLow.slice(0, Math.max(5, tLow.length - 2)) : tLow;
+      if (draftLower.includes(stem)) matched.push(term);
+      else missing.push(term);
+    }
+    return { matched, missing };
+  }, [draft, draftLower, keyTerms]);
+
+  const suggestedPoints = useMemo(() => {
+    if (!draft.trim() || keyTerms.length === 0) return 0;
+    const ratio = termMatches.matched.length / keyTerms.length;
+    const raw = q.points * Math.min(1, ratio * 1.25);
+    return Math.min(q.points, Math.max(0, Math.round(raw * 2) / 2));
+  }, [draft, keyTerms.length, q.points, termMatches.matched.length]);
+
+  const toggleCriterion = (idx: number) => {
+    const next = { ...checkedIdx, [idx]: !checkedIdx[idx] };
+    setCheckedIdx(next);
+    const sum = q.criteria.reduce((acc, c, i) => acc + (next[i] ? getCriterionPoints(c) : 0), 0);
+    onScore(Math.min(q.points, sum));
+  };
+
+  return (
+    <div className="mt-4 space-y-4 rounded-xl border border-blue-100 bg-blue-50/60 p-4 text-sm text-slate-800">
+      <div>
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <p className="font-semibold text-slate-900">Интерактивен чеклист по критериите</p>
+          <span className="text-xs text-slate-500">Отметни изпълнените критерии за автоматично пресмятане на точките</span>
+        </div>
+        <ul className="mt-2 divide-y divide-blue-100 rounded-xl border border-blue-100 bg-white px-3">
+          {q.criteria.map((c, idx) => {
+            const pts = getCriterionPoints(c);
+            const checked = !!checkedIdx[idx];
+            return (
+              <li key={c.label} className="py-2">
+                <label className="flex cursor-pointer items-start justify-between gap-3">
+                  <span className="flex items-start gap-2.5">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleCriterion(idx)}
+                      className="mt-0.5 h-4 w-4 rounded accent-[#1a6fb8]"
+                    />
+                    <span className={checked ? 'font-medium text-slate-900' : 'text-slate-700'}>
+                      <MathText text={c.label} />
+                    </span>
+                  </span>
+                  <span className="shrink-0 font-semibold tabular-nums text-brand-sapphire">{fmt(pts)} т.</span>
+                </label>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {draft.trim().length > 0 && keyTerms.length > 0 && (
+        <div className="rounded-xl border border-indigo-100 bg-white p-3.5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-700">
+              Анализ на ключовите понятия спрямо еталона:{' '}
+              <span className="text-brand-sapphire tabular-nums">
+                {termMatches.matched.length} / {keyTerms.length}
+              </span>
+            </p>
+            <button
+              type="button"
+              onClick={() => onScore(suggestedPoints)}
+              className="rounded-lg border border-brand-sapphire/30 bg-brand-sapphire-soft px-2.5 py-1 text-xs font-semibold text-brand-ink transition-colors hover:bg-blue-100"
+            >
+              Приложи препоръчителна оценка ({fmt(suggestedPoints)} т.)
+            </button>
+          </div>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {termMatches.matched.map((term) => (
+              <span key={term} className="inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800">
+                ✓ {term}
+              </span>
+            ))}
+            {termMatches.missing.map((term) => (
+              <span key={term} className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs text-slate-600" title="Ключов термин от еталона, който не бе открит в черновата">
+                + {term}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div>
+        <p className="font-semibold text-slate-900">Примерно решение / Еталон</p>
+        <div className="mt-1 leading-relaxed">
+          <MathText text={q.modelAnswer} />
+        </div>
+      </div>
+      <div className="border-t border-blue-100 pt-3">
+        <ScoreButtons id={q.id} max={q.points} value={score} onChange={onScore} label={`Колко точки заслужава решението ти? (0–${fmt(q.points)})`} />
+      </div>
+    </div>
+  );
+};

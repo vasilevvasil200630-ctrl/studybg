@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { EXAM_PAPERS } from '../src/data/examPapers';
 import { BEL_TOPIC_BY_QUESTION, DZI_TOPIC_BY_QUESTION, MATH_TOPIC_BY_QUESTION, TOPICS, topicBreakdown, topicOf } from '../src/data/examTopics';
 import { TOPIC_PAPERS, topicPaperId, topicSectionYear } from '../src/data/topicPapers';
-import { partKey, scorePaper, validateExamPaper, type ExamPaper, type PaperAnswers } from '../src/lib/examPaperScoring';
+import { getPartAnswer, partKey, scorePaper, validateExamPaper, type ExamPaper, type PaperAnswers } from '../src/lib/examPaperScoring';
 import { topicStatsFromAttempts } from '../src/lib/topicProgress';
 import type { ExamAttemptRecord } from '../src/services/examHistoryService';
 import { mergeExamHistoryRecords } from '../src/services/authService';
@@ -17,7 +17,7 @@ const keyAnswers = (paper: ExamPaper): PaperAnswers => {
     else if (q.kind === 'short') out[q.id] = q.acceptedAnswers[0];
     else if (q.kind === 'multi') {
       for (const part of q.parts) {
-        const a = part.answer;
+        const a = getPartAnswer(part);
         if (a.type === 'number' || a.type === 'text') out[partKey(q, part)] = a.acceptedAnswers[0];
         else if (a.type === 'truefalse') out[partKey(q, part)] = a.correct;
         else if (a.type === 'pick') out[partKey(q, part)] = [...a.correctIndices];
@@ -30,7 +30,7 @@ const fullOpen = (paper: ExamPaper): Record<string, number> => {
   const out: Record<string, number> = {};
   for (const q of all(paper)) {
     if (q.kind === 'open') out[q.id] = q.points;
-    if (q.kind === 'multi') q.parts.filter((p) => p.answer.type === 'self').forEach((p) => (out[partKey(q, p)] = p.points));
+    if (q.kind === 'multi') q.parts.filter((p) => getPartAnswer(p).type === 'self').forEach((p) => (out[partKey(q, p)] = p.points));
   }
   return out;
 };

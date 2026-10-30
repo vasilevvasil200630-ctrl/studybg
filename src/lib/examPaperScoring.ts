@@ -58,8 +58,11 @@ export interface ShortAnswerQuestion extends QuestionBase {
 
 export interface OpenTaskCriterion {
   label: string;
-  points: number;
+  points?: number;
+  maxPoints?: number;
 }
+
+export const getCriterionPoints = (c: OpenTaskCriterion): number => c.points ?? c.maxPoints ?? 0;
 
 /** Задача със свободен отговор: оценява се от ученика по критериите и еталона. */
 export interface OpenQuestion extends QuestionBase {
@@ -88,7 +91,17 @@ export interface QuestionPart {
   label: string;
   prompt: string;
   points: number;
-  answer: PartAnswer;
+  answer?: PartAnswer;
+  acceptedAnswers?: string[];
+  answerType?: 'number' | 'text';
+  unit?: string;
+}
+
+export function getPartAnswer(part: QuestionPart): PartAnswer {
+  if (part.answer) return part.answer;
+  const accepted = part.acceptedAnswers ?? [];
+  const isNum = part.answerType ? part.answerType === 'number' : accepted.length > 0 && accepted.every((x) => parseNumberAnswer(x) !== null);
+  return isNum ? { type: 'number', acceptedAnswers: accepted, unit: part.unit } : { type: 'text', acceptedAnswers: accepted };
 }
 
 /** Задача с подточки (А, Б, В …) — всяка се оценява поотделно, точките се събират */
@@ -209,7 +222,7 @@ export function validateExamPaper(paper: ExamPaper): string[] {
         partIds.add(p.id);
         partsTotal += p.points;
         if (!isHalfStep(p.points)) errors.push(`${at}: точките трябва да са кратни на 0,5`);
-        const a = p.answer;
+        const a = getPartAnswer(p);
         if ((a.type === 'number' || a.type === 'text') && a.acceptedAnswers.length === 0) errors.push(`${at}: няма верни отговори`);
         if (a.type === 'number' && a.acceptedAnswers.some((x) => parseNumberAnswer(x) === null)) errors.push(`${at}: числов ключ, който не е число`);
         if (a.type === 'pick') {
@@ -235,7 +248,7 @@ export function validateExamPaper(paper: ExamPaper): string[] {
       }
       if (!q.explanation.trim()) errors.push(`${where(q)}: липсва обяснение към ключа`);
     } else {
-      const criteriaTotal = q.criteria.reduce((sum, c) => sum + c.points, 0);
+      const criteriaTotal = q.criteria.reduce((sum, c) => sum + getCriterionPoints(c), 0);
       if (criteriaTotal !== q.points) errors.push(`${where(q)}: критериите дават ${criteriaTotal} т., а задачата е за ${q.points}`);
       if (!q.modelAnswer.trim()) errors.push(`${where(q)}: липсва еталонен отговор`);
     }
@@ -328,7 +341,7 @@ export type PaperAnswers = Record<string, PartValue>;
 
 /** Дали отговорът на подточка е верен (за 'self' — винаги false; там решава самооценката) */
 export function isPartCorrect(part: QuestionPart, value: PartValue): boolean {
-  const a = part.answer;
+  const a = getPartAnswer(part);
   switch (a.type) {
     case 'number':
     case 'text':
@@ -390,7 +403,8 @@ export function scorePaper(paper: ExamPaper, answers: PaperAnswers, openScores: 
         let selfPending = false;
         for (const part of q.parts) {
           const key = partKey(q, part);
-          if (part.answer.type === 'self') {
+          const a = getPartAnswer(part);
+          if (a.type === 'self') {
             if (typeof openScores[key] !== 'number') selfPending = true;
             const got = clampHalf(openScores[key], part.points);
             points += got;

@@ -1,4 +1,5 @@
 import {
+  getPartAnswer,
   isPartCorrect,
   isShortAnswerCorrect,
   partKey,
@@ -35,7 +36,7 @@ const hasValue = (v: PartValue): boolean =>
 const NO_ANSWER = '—';
 
 function partValueText(part: QuestionPart, value: PartValue): string {
-  const a = part.answer;
+  const a = getPartAnswer(part);
   if (!hasValue(value)) return NO_ANSWER;
   if (a.type === 'pick') return (value as number[]).map((i) => a.options[i] ?? '?').join(', ');
   if (a.type === 'truefalse') return value ? 'вярно' : 'невярно';
@@ -43,7 +44,7 @@ function partValueText(part: QuestionPart, value: PartValue): string {
 }
 
 function partKeyText(part: QuestionPart): string {
-  const a = part.answer;
+  const a = getPartAnswer(part);
   switch (a.type) {
     case 'pick':
       return a.correctIndices.map((i) => a.options[i]).join(', ');
@@ -73,7 +74,7 @@ export function reviewAnswers(paper: ExamPaper, answers: PaperAnswers): AnswerRe
       if (isShortAnswerCorrect(q, v)) correctIds.push(q.id);
       else mistakes.push({ question: q, userAnswer: v.trim(), correctAnswer: q.acceptedAnswers[0] });
     } else if (q.kind === 'multi') {
-      const auto = q.parts.filter((p) => p.answer.type !== 'self');
+      const auto = q.parts.filter((p) => getPartAnswer(p).type !== 'self');
       if (auto.length === 0 || !auto.some((p) => hasValue(answers[partKey(q, p)]))) continue;
       const wrong = auto.filter((p) => !isPartCorrect(p, answers[partKey(q, p)]));
       if (wrong.length === 0) {

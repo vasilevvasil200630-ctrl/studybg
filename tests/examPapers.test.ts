@@ -4,6 +4,7 @@ import katex from 'katex';
 import { FIGURES } from '../src/components/exam-engine/figures';
 import { DIPPK_SCALE, DZI_SCALE } from '../src/lib/monGradeScale';
 import {
+  getPartAnswer,
   isPartCorrect,
   isShortAnswerCorrect,
   partKey,
@@ -25,7 +26,7 @@ const keyAnswers = (paper: ExamPaper): PaperAnswers => {
     else if (q.kind === 'short') out[q.id] = q.acceptedAnswers[0];
     else if (q.kind === 'multi') {
       for (const part of q.parts) {
-        const a = part.answer;
+        const a = getPartAnswer(part);
         if (a.type === 'number' || a.type === 'text') out[partKey(q, part)] = a.acceptedAnswers[0];
         else if (a.type === 'truefalse') out[partKey(q, part)] = a.correct;
         else if (a.type === 'pick') out[partKey(q, part)] = [...a.correctIndices];
@@ -40,7 +41,7 @@ const fullOpenScores = (paper: ExamPaper): Record<string, number> => {
   const out: Record<string, number> = {};
   for (const q of allQuestions(paper)) {
     if (q.kind === 'open') out[q.id] = q.points;
-    if (q.kind === 'multi') q.parts.filter((p) => p.answer.type === 'self').forEach((p) => (out[partKey(q, p)] = p.points));
+    if (q.kind === 'multi') q.parts.filter((p) => getPartAnswer(p).type === 'self').forEach((p) => (out[partKey(q, p)] = p.points));
   }
   return out;
 };
@@ -212,8 +213,8 @@ const paperTexts = (paper: ExamPaper): string[] =>
       texts.push(q.explanation);
       for (const p of q.parts) {
         texts.push(p.prompt);
-        if (p.answer.type === 'self') texts.push(p.answer.modelAnswer);
-        if (p.answer.type === 'pick') texts.push(...p.answer.options);
+        if (getPartAnswer(p).type === 'self') texts.push((getPartAnswer(p) as { type: 'self'; modelAnswer: string }).modelAnswer);
+        if (getPartAnswer(p).type === 'pick') texts.push(...(getPartAnswer(p) as { type: 'pick'; options: string[] }).options);
       }
     }
     return texts;
@@ -487,7 +488,7 @@ describe('НВО 10 по БЕЛ през 2027 г. — примерни зада�
     expect(choice('bel27-s3')).toBe('националното самосъзнание');
     expect(choice('bel27-s4')).toBe('секуларизацията');
     const s8 = q('bel27-s8');
-    expect(s8.kind === 'multi' && s8.parts[0].answer.type === 'text' && s8.parts[0].answer.acceptedAnswers[0]).toBe('Априлското въстание');
+    expect(s8.kind === 'multi' && getPartAnswer(s8.parts[0]).type === 'text' && (getPartAnswer(s8.parts[0]) as { type: 'text'; acceptedAnswers: string[] }).acceptedAnswers[0]).toBe('Априлското въстание');
   });
 });
 
@@ -532,6 +533,9 @@ describe('ДЗИ — оценка по единната скала на МОН',
     const subjectsWithVariant2 = [
       'Английски език',
       'Немски език',
+      'Френски език',
+      'Испански език',
+      'Руски език',
       'Биология и здравно образование',
       'Химия и опазване на околната среда',
       'Физика и астрономия',
@@ -580,7 +584,7 @@ describe('ДЗИ — оценка по единната скала на МОН',
     ];
     for (const subj of dippkSubjects) {
       const papersForDippk = EXAM_PAPERS.filter((x) => x.exam === 'ДИППК' && x.subject === subj);
-      expect(papersForDippk.length, `Липсва вариант за ДИППК по ${subj}`).toBeGreaterThanOrEqual(1);
+      expect(papersForDippk.length, `Очакваме поне 2 варианта за ДИППК по ${subj}`).toBeGreaterThanOrEqual(2);
       for (const pd of papersForDippk) {
         expect(pd.durationMinutes, pd.id).toBe(240);
         expect(pd.maxPoints, pd.id).toBe(100);

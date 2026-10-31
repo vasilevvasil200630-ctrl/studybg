@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Calendar,
   Clock,
@@ -23,6 +23,7 @@ import {
   nextExamSession,
   computeUserXpAndLevel,
   evaluateUserAchievements,
+  type MonOfficialExamDate,
   type TargetExamTrack,
   type UserStudyProgress
 } from '../services/studyProgressService';
@@ -34,6 +35,97 @@ import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import { ExcellenceCertificateModal } from './ExcellenceCertificateModal';
 import { PlannerExamResults } from './PlannerExamResults';
+
+const INITIAL_CHECKLIST_LESSONS = 48;
+const CHECKLIST_LOAD_MORE_STEP = 60;
+
+interface LiveExamCountdownGridProps {
+  activeExam: MonOfficialExamDate;
+}
+
+const LiveExamCountdownGrid: React.FC<LiveExamCountdownGridProps> = React.memo(({ activeExam }) => {
+  const [now, setNow] = useState<Date>(() => new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const nextSession = nextExamSession(activeExam, now);
+  const examDate = nextSession.date;
+  const diffMs = Math.max(0, examDate.getTime() - now.getTime());
+
+  const countdownDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const countdownHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+  const countdownMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
+  const countdownSeconds = Math.floor((diffMs / 1000) % 60);
+
+  return (
+    <div className="lg:col-span-7 space-y-4">
+      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-700">
+        <Clock className="w-4 h-4" />
+        <span>
+          Оставащо време до {nextSession.label} ({examDate.toLocaleDateString('bg-BG')}
+          {nextSession.official ? '' : ' — ориентировъчно, МОН още не е обявил графика'}):
+        </span>
+      </div>
+
+      <div className="grid grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-slate-200 text-center backdrop-blur-xs">
+          <div className="text-2xl sm:text-4xl font-bold tabular-nums text-slate-900 tracking-tight">
+            {countdownDays}
+          </div>
+          <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
+            Дни
+          </div>
+        </div>
+
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-slate-200 text-center backdrop-blur-xs">
+          <div className="text-2xl sm:text-4xl font-bold tabular-nums text-slate-900 tracking-tight">
+            {String(countdownHours).padStart(2, '0')}
+          </div>
+          <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
+            Часа
+          </div>
+        </div>
+
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-slate-200 text-center backdrop-blur-xs">
+          <div className="text-2xl sm:text-4xl font-bold tabular-nums text-slate-900 tracking-tight">
+            {String(countdownMinutes).padStart(2, '0')}
+          </div>
+          <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
+            Минути
+          </div>
+        </div>
+
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-emerald-200 text-center backdrop-blur-xs">
+          <div className="text-2xl sm:text-4xl font-bold tabular-nums text-emerald-700 tracking-tight">
+            {String(countdownSeconds).padStart(2, '0')}
+          </div>
+          <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-600 mt-1">
+            Секунди
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-600 pt-1">
+        <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 tabular-nums">
+          Времетраене: {activeExam.durationText}
+        </span>
+        <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 tabular-nums">
+          Максимум: {activeExam.maxPoints} т.
+        </span>
+        <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200">
+          {activeExam.resultText}
+        </span>
+      </div>
+    </div>
+  );
+});
+
+LiveExamCountdownGrid.displayName = 'LiveExamCountdownGrid';
 
 interface StudyPlannerDashboardProps {
   lessons: LessonData[];
@@ -62,8 +154,8 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
   const [progress, setProgress] = useState<UserStudyProgress>(() =>
     studyProgressService.getProgress()
   );
-  const [now, setNow] = useState<Date>(() => new Date());
   const [checklistTab, setChecklistTab] = useState<'authors' | 'lessons'>('authors');
+  const [visibleChecklistLessons, setVisibleChecklistLessons] = useState(INITIAL_CHECKLIST_LESSONS);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
   const [googleProfile, setGoogleProfile] = useState<GoogleUserProfile | null>(() => getCachedGoogleProfile());
 
@@ -76,24 +168,21 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
     return () => window.removeEventListener(AUTH_SYNC_EVENT, handleAuthOrProgressSync);
   }, []);
 
-  // Tick every second for the live official exam countdown
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setNow(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
   const activeExam =
     MON_OFFICIAL_EXAMS.find(e => e.id === progress.targetExam) || MON_OFFICIAL_EXAMS[0];
-  const nextSession = nextExamSession(activeExam, now);
-  const examDate = nextSession.date;
-  const diffMs = Math.max(0, examDate.getTime() - now.getTime());
 
-  const countdownDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  const countdownHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
-  const countdownMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
-  const countdownSeconds = Math.floor((diffMs / 1000) % 60);
+  const masteredAuthorSet = useMemo(
+    () => new Set(progress.masteredAuthorIds),
+    [progress.masteredAuthorIds]
+  );
+  const masteredLessonSet = useMemo(
+    () => new Set(progress.masteredLessonIds),
+    [progress.masteredLessonIds]
+  );
+  const completedDaysSet = useMemo(
+    () => new Set(progress.completedWeeklyDays),
+    [progress.completedWeeklyDays]
+  );
 
   // Readiness calculations across the 4 core pillars
   const totalAuthors = LITERATURE_CANON.length;
@@ -111,7 +200,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
   );
 
   const allErrors = errorBankService.getAllErrors();
-  const unresolvedErrorsCount = allErrors.filter(e => !e.resolved).length;
+  const unresolvedErrorsCount = errorBankService.getUnresolvedCount();
   const errorCleanPercent =
     allErrors.length === 0
       ? 100
@@ -124,14 +213,18 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
       errorCleanPercent * 0.15
   );
 
-  const plannerLevelInfo = computeUserXpAndLevel(progress, {
-    resolvedErrorsCount: allErrors.length - unresolvedErrorsCount
-  });
-  const plannerAchievements = evaluateUserAchievements(progress, {
-    resolvedErrorsCount: allErrors.length - unresolvedErrorsCount
-  });
-  const unlockedBadgesCount = Number(
-    plannerAchievements.filter(b => b.unlocked).length
+  const resolvedErrorsCount = allErrors.length - unresolvedErrorsCount;
+  const plannerLevelInfo = useMemo(
+    () => computeUserXpAndLevel(progress, { resolvedErrorsCount }),
+    [progress, resolvedErrorsCount]
+  );
+  const plannerAchievements = useMemo(
+    () => evaluateUserAchievements(progress, { resolvedErrorsCount }),
+    [progress, resolvedErrorsCount]
+  );
+  const unlockedBadgesCount = useMemo(
+    () => plannerAchievements.filter(b => b.unlocked).length,
+    [plannerAchievements]
   );
 
   const handleSelectExamTrack = (track: TargetExamTrack) => {
@@ -396,6 +489,10 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
 
   const weeklySchedule = getWeeklySchedule(progress.targetExam);
   const completedDaysCount = progress.completedWeeklyDays.length;
+  const visibleLessonsSlice = useMemo(
+    () => lessons.slice(0, visibleChecklistLessons),
+    [lessons, visibleChecklistLessons]
+  );
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -452,66 +549,8 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
           {/* Countdown Grid + Overall Readiness Index */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
             
-            {/* Left 7 cols: Live Countdown Timer */}
-            <div className="lg:col-span-7 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-700">
-                <Clock className="w-4 h-4" />
-                <span>
-                  Оставащо време до {nextSession.label} ({examDate.toLocaleDateString('bg-BG')}
-                  {nextSession.official ? '' : ' — ориентировъчно, МОН още не е обявил графика'}):
-                </span>
-              </div>
-
-              <div className="grid grid-cols-4 gap-2.5 sm:gap-4">
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-slate-200 text-center backdrop-blur-xs">
-                  <div className="text-2xl sm:text-4xl font-bold tabular-nums text-slate-900 tracking-tight">
-                    {countdownDays}
-                  </div>
-                  <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
-                    Дни
-                  </div>
-                </div>
-
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-slate-200 text-center backdrop-blur-xs">
-                  <div className="text-2xl sm:text-4xl font-bold tabular-nums text-slate-900 tracking-tight">
-                    {String(countdownHours).padStart(2, '0')}
-                  </div>
-                  <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
-                    Часа
-                  </div>
-                </div>
-
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-slate-200 text-center backdrop-blur-xs">
-                  <div className="text-2xl sm:text-4xl font-bold tabular-nums text-slate-900 tracking-tight">
-                    {String(countdownMinutes).padStart(2, '0')}
-                  </div>
-                  <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
-                    Минути
-                  </div>
-                </div>
-
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-emerald-200 text-center backdrop-blur-xs">
-                  <div className="text-2xl sm:text-4xl font-bold tabular-nums text-emerald-700 tracking-tight">
-                    {String(countdownSeconds).padStart(2, '0')}
-                  </div>
-                  <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-600 mt-1">
-                    Секунди
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-600 pt-1">
-                <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 tabular-nums">
-                  Времетраене: {activeExam.durationText}
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 tabular-nums">
-                  Максимум: {activeExam.maxPoints} т.
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-white border border-slate-200">
-                  {activeExam.resultText}
-                </span>
-              </div>
-            </div>
+            {/* Left 7 cols: Live Countdown Timer isolated in child component */}
+            <LiveExamCountdownGrid activeExam={activeExam} />
 
             {/* Right 5 cols: Personal Readiness Gauge */}
             <div className="lg:col-span-5 p-5 rounded-2xl bg-white border border-slate-200 space-y-3">
@@ -586,7 +625,6 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
         </div>
       </div>
 
-      {/* ========================================================================= */}
       {/* ========================================================================= */}
       {/* 1.5. XP LEVEL, DAILY STREAK & ACHIEVEMENTS BAR                            */}
       {/* ========================================================================= */}
@@ -827,7 +865,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
         {/* 7-Day Plan Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {weeklySchedule.map(day => {
-            const isCompleted = progress.completedWeeklyDays.includes(day.id);
+            const isCompleted = completedDaysSet.has(day.id);
             return (
               <div
                 key={day.id}
@@ -954,7 +992,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
         {checklistTab === 'authors' ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {LITERATURE_CANON.map(author => {
-              const isMastered = progress.masteredAuthorIds.includes(author.id);
+              const isMastered = masteredAuthorSet.has(author.id);
               return (
                 <div
                   key={author.id}
@@ -997,49 +1035,67 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
             })}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {lessons.map(lesson => {
-              const isMastered = progress.masteredLessonIds.includes(lesson.id);
-              return (
-                <div
-                  key={lesson.id}
-                  className={`cv-card p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3 ${
-                    isMastered
-                      ? 'bg-blue-50/60 border-blue-300'
-                      : 'bg-slate-50/60 border-slate-200'
-                  }`}
-                >
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600">
-                        {lesson.subject.split(' ')[0]} • {lesson.grade.split(' ')[0]}
-                      </span>
-                      <button
-                        onClick={() => handleToggleLesson(lesson.id)}
-                        className={`px-2.5 py-0.5 rounded-lg text-[11px] font-bold cursor-pointer ${
-                          isMastered
-                            ? 'bg-emerald-700 text-white'
-                            : 'bg-white text-slate-600 border border-slate-200 hover:border-blue-400'
-                        }`}
-                      >
-                        {isMastered ? 'Научен ✓' : 'Отметни'}
-                      </button>
-                    </div>
-                    <div className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-1 pt-1">
-                      {lesson.title}
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => onSelectLesson(lesson, 'summary')}
-                    className="text-[11px] font-bold text-blue-700 hover:text-blue-900 flex items-center gap-1 cursor-pointer self-start"
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {visibleLessonsSlice.map((lesson, idx) => {
+                const isMastered = masteredLessonSet.has(lesson.id);
+                return (
+                  <div
+                    key={lesson.id}
+                    className={`${idx >= 6 ? 'cv-card ' : ''}p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3 ${
+                      isMastered
+                        ? 'bg-blue-50/60 border-blue-300'
+                        : 'bg-slate-50/60 border-slate-200'
+                    }`}
                   >
-                    <span>Отвори конспекта</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </button>
-                </div>
-              );
-            })}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600">
+                          {lesson.subject.split(' ')[0]} • {lesson.grade.split(' ')[0]}
+                        </span>
+                        <button
+                          onClick={() => handleToggleLesson(lesson.id)}
+                          className={`px-2.5 py-0.5 rounded-lg text-[11px] font-bold cursor-pointer ${
+                            isMastered
+                              ? 'bg-emerald-700 text-white'
+                              : 'bg-white text-slate-600 border border-slate-200 hover:border-blue-400'
+                          }`}
+                        >
+                          {isMastered ? 'Научен ✓' : 'Отметни'}
+                        </button>
+                      </div>
+                      <div className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-1 pt-1">
+                        {lesson.title}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => onSelectLesson(lesson, 'summary')}
+                      className="text-[11px] font-bold text-blue-700 hover:text-blue-900 flex items-center gap-1 cursor-pointer self-start"
+                    >
+                      <span>Отвори конспекта</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            {lessons.length > visibleChecklistLessons && (
+              <div className="flex justify-center pt-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setVisibleChecklistLessons(prev =>
+                      Math.min(lessons.length, prev + CHECKLIST_LOAD_MORE_STEP)
+                    )
+                  }
+                  className="px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-2xs transition-colors cursor-pointer"
+                >
+                  Покажи още конспекти ({visibleChecklistLessons} от {lessons.length})
+                </button>
+              </div>
+            )}
           </div>
         )}
 

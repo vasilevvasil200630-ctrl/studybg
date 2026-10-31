@@ -25,10 +25,30 @@ export const examErrorId = (questionId: string): string => `exam-${questionId}`;
 
 const STORAGE_KEY = 'studybg_error_bank';
 
+let cachedRawJson: string | null | undefined = undefined;
+let cachedErrorsList: SavedErrorItem[] = [];
+let cachedUnresolvedCount = 0;
+
+function syncCache(items: SavedErrorItem[], rawJson: string | null): void {
+  cachedRawJson = rawJson;
+  cachedErrorsList = items;
+  let unresolved = 0;
+  for (let i = 0; i < items.length; i++) {
+    if (!items[i].resolved) unresolved++;
+  }
+  cachedUnresolvedCount = unresolved;
+}
+
 export const errorBankService = {
   getAllErrors(): SavedErrorItem[] {
     try {
-      return readStoredArray<SavedErrorItem>(STORAGE_KEY, isObjectItem);
+      const raw = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
+      if (raw === cachedRawJson) {
+        return cachedErrorsList;
+      }
+      const parsed = readStoredArray<SavedErrorItem>(STORAGE_KEY, isObjectItem);
+      syncCache(parsed, raw);
+      return parsed;
     } catch {
       return [];
     }
@@ -36,7 +56,9 @@ export const errorBankService = {
 
   saveErrors(items: SavedErrorItem[], options?: { silentCloudTrigger?: boolean }): void {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      const raw = JSON.stringify(items);
+      localStorage.setItem(STORAGE_KEY, raw);
+      syncCache(items, raw);
       if (!options?.silentCloudTrigger && typeof window !== 'undefined') {
         window.dispatchEvent(
           new CustomEvent('studybg:local-data-mutated', { detail: { source: 'error_bank' } })
@@ -52,7 +74,7 @@ export const errorBankService = {
     lesson: LessonData,
     selectedOptionIndex: number
   ): SavedErrorItem {
-    const errors = this.getAllErrors();
+    const errors = [...this.getAllErrors()];
     const existingIndex = errors.findIndex(e => e.id === `quiz-${question.id}-${lesson.id}`);
 
     const newError: SavedErrorItem = {
@@ -88,7 +110,7 @@ export const errorBankService = {
     lesson: LessonData,
     checkId: string
   ): SavedErrorItem {
-    const errors = this.getAllErrors();
+    const errors = [...this.getAllErrors()];
     const itemId = `audit-${checkId}-${lesson.id}`;
     const existingIndex = errors.findIndex(e => e.id === itemId);
 
@@ -163,12 +185,8 @@ export const errorBankService = {
   },
 
   toggleResolved(id: string): void {
-    const errors = this.getAllErrors();
-    const item = errors.find(e => e.id === id);
-    if (item) {
-      item.resolved = !item.resolved;
-      this.saveErrors(errors);
-    }
+    const errors = this.getAllErrors().map(e => (e.id === id ? { ...e, resolved: !e.resolved } : e));
+    this.saveErrors(errors);
   },
 
   removeError(id: string): void {
@@ -178,9 +196,11 @@ export const errorBankService = {
 
   clearAll(): void {
     localStorage.removeItem(STORAGE_KEY);
+    syncCache([], null);
   },
 
   getUnresolvedCount(): number {
-    return this.getAllErrors().filter(e => !e.resolved).length;
+    this.getAllErrors();
+    return cachedUnresolvedCount;
   }
 };

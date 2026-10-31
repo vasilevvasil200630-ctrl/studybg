@@ -485,12 +485,27 @@ const DEFAULT_PROGRESS: UserStudyProgress = {
   bonusXp: 0
 };
 
+let cachedRawProgress: string | null | undefined = undefined;
+let cachedRawLegacy: string | null | undefined = undefined;
+let cachedTodayKey: string | undefined = undefined;
+let cachedProgress: UserStudyProgress | null = null;
+
 export const studyProgressService = {
   getProgress(): UserStudyProgress {
     try {
       const todayKey = getTodayDateKey();
       const raw = localStorage.getItem(PROGRESS_STORAGE_KEY);
       const legacyRaw = localStorage.getItem(LEGACY_MASTERED_LESSONS_KEY);
+
+      if (
+        cachedProgress &&
+        raw === cachedRawProgress &&
+        legacyRaw === cachedRawLegacy &&
+        todayKey === cachedTodayKey
+      ) {
+        return cachedProgress;
+      }
+
       let legacyIds: string[] = [];
       if (legacyRaw) {
         try {
@@ -507,13 +522,18 @@ export const studyProgressService = {
         const mergedDefault = legacyIds.length > 0
           ? normalizeMasteredIds([...DEFAULT_PROGRESS.masteredLessonIds, ...legacyIds])
           : DEFAULT_PROGRESS.masteredLessonIds;
-        return {
+        const result: UserStudyProgress = {
           ...DEFAULT_PROGRESS,
           masteredLessonIds: mergedDefault,
           activeDaysHistory: [todayKey],
           currentDailyStreak: 1,
           longestDailyStreak: 1
         };
+        cachedRawProgress = raw;
+        cachedRawLegacy = legacyRaw;
+        cachedTodayKey = todayKey;
+        cachedProgress = result;
+        return result;
       }
 
       const parsed = JSON.parse(raw) as Partial<UserStudyProgress>;
@@ -527,7 +547,7 @@ export const studyProgressService = {
         : [todayKey];
       const streakStats = computeDailyStreakStats(rawActiveDays, todayKey);
 
-      return {
+      const result: UserStudyProgress = {
         ...DEFAULT_PROGRESS,
         ...parsed,
         masteredLessonIds: mergedMastered,
@@ -542,6 +562,11 @@ export const studyProgressService = {
         longestDailyStreak: Math.max(streakStats.longestDailyStreak, Number(parsed.longestDailyStreak) || 1),
         bonusXp: Number(parsed.bonusXp) || 0
       };
+      cachedRawProgress = raw;
+      cachedRawLegacy = legacyRaw;
+      cachedTodayKey = todayKey;
+      cachedProgress = result;
+      return result;
     } catch {
       return DEFAULT_PROGRESS;
     }
@@ -561,8 +586,15 @@ export const studyProgressService = {
         longestDailyStreak: Math.max(streakStats.longestDailyStreak, Number(progress.longestDailyStreak) || 1),
         bonusXp: Number(progress.bonusXp) || 0
       };
-      localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(normalized));
-      localStorage.setItem(LEGACY_MASTERED_LESSONS_KEY, JSON.stringify(normalized.masteredLessonIds));
+      const serialized = JSON.stringify(normalized);
+      const serializedLegacy = JSON.stringify(normalized.masteredLessonIds);
+      localStorage.setItem(PROGRESS_STORAGE_KEY, serialized);
+      localStorage.setItem(LEGACY_MASTERED_LESSONS_KEY, serializedLegacy);
+
+      cachedRawProgress = serialized;
+      cachedRawLegacy = serializedLegacy;
+      cachedTodayKey = todayKey;
+      cachedProgress = normalized;
 
       if (!options?.silentCloudTrigger && typeof window !== 'undefined') {
         window.dispatchEvent(

@@ -32,18 +32,22 @@ export function stems(text: string): Set<string> {
 
 const quoted = (text: string) => (text.match(/„[^“”]+[“”]/g) ?? []).join(' ');
 
-export function titlesMatch(topicTitle: string, lessonTitle: string): boolean {
-  // Творбите се сравняват по заглавията в кавички — иначе общият автор свързва „Андрешко“ с урок за „Гераците“
-  const topicWorks = quoted(topicTitle);
-  const lessonWorks = quoted(lessonTitle);
-  const a = stems(topicWorks && lessonWorks ? topicWorks : topicTitle);
-  const b = stems(topicWorks && lessonWorks ? lessonWorks : lessonTitle);
+function setsMatch(a: Set<string>, b: Set<string>): boolean {
   if (!a.size || !b.size) return false;
   let common = 0;
   for (const s of a) if (b.has(s)) common++;
   const shorter = Math.min(a.size, b.size);
   // Една обща дума стига само за еднословно заглавие („Вектори“); иначе „Квадратен корен“ би минал за „Квадратни уравнения“
   return common / shorter >= 0.5 && (common >= 2 || shorter === 1);
+}
+
+export function titlesMatch(topicTitle: string, lessonTitle: string): boolean {
+  // Творбите се сравняват по заглавията в кавички — иначе общият автор свързва „Андрешко“ с урок за „Гераците“
+  const topicWorks = quoted(topicTitle);
+  const lessonWorks = quoted(lessonTitle);
+  const a = stems(topicWorks && lessonWorks ? topicWorks : topicTitle);
+  const b = stems(topicWorks && lessonWorks ? lessonWorks : lessonTitle);
+  return setsMatch(a, b);
 }
 
 export interface TopicCoverage {
@@ -59,17 +63,97 @@ export interface ProgramCoverage {
   total: number;
 }
 
+interface PrecomputedCandidate {
+  id: string;
+  grades: number[];
+  worksStems: Set<string> | null;
+  titleStems: Set<string>;
+}
+
+interface LessonCoverageIndex {
+  byMonTopicId: Map<string, string[]>;
+  unmappedBySubject: Map<string, PrecomputedCandidate[]>;
+  programCache: Map<string, ProgramCoverage>;
+}
+
+const coverageIndexCache = new WeakMap<LessonData[], LessonCoverageIndex>();
+
+function getCoverageIndex(lessons: LessonData[]): LessonCoverageIndex {
+  let idx = coverageIndexCache.get(lessons);
+  if (idx) return idx;
+
+  const byMonTopicId = new Map<string, string[]>();
+  const unmappedBySubject = new Map<string, PrecomputedCandidate[]>();
+
+  for (const l of lessons) {
+    if (l.monTopicIds && l.monTopicIds.length > 0) {
+      for (const tid of l.monTopicIds) {
+        let list = byMonTopicId.get(tid);
+        if (!list) {
+          list = [];
+          byMonTopicId.set(tid, list);
+        }
+        list.push(l.id);
+      }
+    } else {
+      const works = quoted(l.title);
+      const cand: PrecomputedCandidate = {
+        id: l.id,
+        grades: lessonGradeNumbers(l.grade),
+        worksStems: works ? stems(works) : null,
+        titleStems: stems(l.title),
+      };
+      let list = unmappedBySubject.get(l.subject);
+      if (!list) {
+        list = [];
+        unmappedBySubject.set(l.subject, list);
+      }
+      list.push(cand);
+    }
+  }
+
+  idx = {
+    byMonTopicId,
+    unmappedBySubject,
+    programCache: new Map<string, ProgramCoverage>(),
+  };
+  coverageIndexCache.set(lessons, idx);
+  return idx;
+}
+
 export function programCoverage(program: MonProgram, lessons: LessonData[]): ProgramCoverage {
+  const idx = getCoverageIndex(lessons);
+  const cached = idx.programCache.get(program.id);
+  if (cached) return cached;
+
   const lessonSubject = MON_SUBJECTS[program.subject].lessonSubject;
   const grades = programGrades(program);
-  const candidates = lessonSubject
-    ? lessons.filter((l) => l.subject === lessonSubject && lessonGradeNumbers(l.grade).some((g) => grades.includes(g)))
-    : [];
+  const subjectPool = lessonSubject ? idx.unmappedBySubject.get(lessonSubject) ?? [] : [];
+  const candidates = subjectPool.filter((c) => c.grades.some((g) => grades.includes(g)));
+
   const topics = practiceTopics(program).map((t) => {
-    // Урок, написан по темата от каталога, се връзва точно; останалите — по заглавие
-    const exact = lessons.filter((l) => l.monTopicIds?.includes(t.id)).map((l) => l.id);
-    const similar = candidates.filter((l) => !l.monTopicIds && titlesMatch(t.title, l.title)).map((l) => l.id);
-    return { topicId: t.id, lessonIds: [...exact, ...similar] };
+    const exact = idx.byMonTopicId.get(t.id) ?? [];
+    let similar: string[] = [];
+    if (candidates.length > 0) {
+      const topicWorks = quoted(t.title);
+      const topicWorksStems = topicWorks ? stems(topicWorks) : null;
+      const topicTitleStems = stems(t.title);
+      similar = candidates
+        .filter((c) => {
+          const useWorks = Boolean(topicWorksStems && c.worksStems);
+          return setsMatch(useWorks ? topicWorksStems! : topicTitleStems, useWorks ? c.worksStems! : c.titleStems);
+        })
+        .map((c) => c.id);
+    }
+    return { topicId: t.id, lessonIds: exact.length && similar.length ? [...exact, ...similar] : exact.length ? exact : similar };
   });
-  return { programId: program.id, topics, covered: topics.filter((t) => t.lessonIds.length).length, total: topics.length };
+
+  const result: ProgramCoverage = {
+    programId: program.id,
+    topics,
+    covered: topics.filter((t) => t.lessonIds.length > 0).length,
+    total: topics.length,
+  };
+  idx.programCache.set(program.id, result);
+  return result;
 }

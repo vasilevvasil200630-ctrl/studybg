@@ -16,7 +16,7 @@ export default defineConfig({
     modulePreload: {
       polyfill: false,
     },
-    chunkSizeWarningLimit: 560,
+    chunkSizeWarningLimit: 1700,
     rollupOptions: {
       output: {
         manualChunks(rawId: string) {
@@ -100,26 +100,53 @@ export default defineConfig({
           if (id.includes('src/data/officialPapers/') || id.includes('src/data/integratedSamples/') || id.includes('src/data/nvo10Integrated2027/')) {
             return 'data-exam-math';
           }
+          if (id.includes('src/data/dziProfilePapers/variant2/')) {
+            return 'data-exam-profile-v2';
+          }
           if (id.includes('src/data/dziProfilePapers/')) {
-            return 'data-exam-profile';
+            return 'data-exam-profile-v1';
+          }
+          if (id.includes('src/data/dippkPapers/variant2/')) {
+            return 'data-exam-dippk-v2';
           }
           if (id.includes('src/data/dippkPapers/')) {
-            return 'data-exam-dippk';
+            return 'data-exam-dippk-v1';
+          }
+          if (id.includes('src/data/monLessons/hydrateMonLessons')) {
+            return 'mon-lessons-runtime';
           }
           if (id.includes('src/data/monLessons/pp') || id.includes('src/data/monLessons/groupPp')) {
-            if (/pp(Math|Informatika|It|Fa|Bio|Himia)|groupPpStem/.test(id)) {
-              return 'mon-lessons-pp-stem';
+            if (/ppMath/.test(id)) {
+              return 'mon-lessons-pp-math';
             }
-            return 'mon-lessons-pp-hum';
+            if (/pp(Informatika|It)/.test(id)) {
+              return 'mon-lessons-pp-cs';
+            }
+            if (/pp(Fa|Bio|Himia)|groupPpStem/.test(id)) {
+              return 'mon-lessons-pp-sci';
+            }
+            if (/pp(Bel|Hist|Phil)/.test(id)) {
+              return 'mon-lessons-pp-hum-a';
+            }
+            if (/pp(Geo|Go)/.test(id)) {
+              return 'mon-lessons-pp-hum-b';
+            }
+            return 'mon-lessons-pp-arts';
           }
           if (id.includes('src/data/monLessons/')) {
-            if (/\/(en|de)[A-Z]|groupLang/.test(id)) {
-              return 'mon-lessons-lang';
+            if (/\/en[A-Z]/.test(id)) {
+              return 'mon-lessons-lang-en';
+            }
+            if (/\/de[A-Z]|groupLang/.test(id)) {
+              return 'mon-lessons-lang-de';
             }
             if (/\/(math|phys|chem|bio|inf|it|tp)\d|groupOopStem/.test(id)) {
               return 'mon-lessons-oop-stem';
             }
-            return 'mon-lessons-oop-hum';
+            if (/\/(bel|hist|geo)\d/.test(id)) {
+              return 'mon-lessons-oop-hum-a';
+            }
+            return 'mon-lessons-oop-hum-b';
           }
         }
       }

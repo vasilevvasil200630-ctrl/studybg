@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, BookOpen, Layers, GraduationCap, Clock, CheckSquare, Zap, CheckCircle2 } from 'lucide-react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { Search, BookOpen, Layers, GraduationCap, Clock, CheckSquare, Zap, CheckCircle2, ChevronDown } from 'lucide-react';
 import type { LessonData, GradeLevel, SubjectName, QuizQuestion } from '../types';
 import type { AppNavTab } from './Navbar';
 import { GRADES_LIST, SUBJECTS_LIST } from '../data/curriculumDatabase';
@@ -17,6 +17,36 @@ interface SubjectCatalogProps {
   onAddNewScan: () => void;
 }
 
+const INITIAL_VISIBLE_LESSONS = 48;
+const LOAD_MORE_STEP = 60;
+
+const EXAM_TYPES_LIST = [
+  { id: 'Всички изпити', label: 'Всички изпитни формати' },
+  { id: 'ДЗИ / Матура', label: 'ДЗИ / Матура (12. кл.)' },
+  { id: 'ДИППК / Професионален изпит', label: 'ДИППК / Професионален изпит (III СПК)' },
+  { id: 'НВО (10. клас)', label: 'НВО (10. клас)' },
+  { id: 'НВО (7. клас)', label: 'НВО (7. клас)' }
+] as const;
+
+function matchesGradeFilter(lessonGrade: string, targetGrade: GradeLevel): boolean {
+  if (targetGrade === 'Всички класове') return true;
+  const numMatch = targetGrade.match(/(\d+)/);
+  if (!numMatch) return true;
+  const targetNum = Number(numMatch[1]);
+
+  // Check range format like "8.–10. клас" or "10.–12. клас"
+  const rangeMatch = lessonGrade.match(/(\d+)\.\s*[–-]\s*(\d+)\./);
+  if (rangeMatch) {
+    const startGrade = Number(rangeMatch[1]);
+    const endGrade = Number(rangeMatch[2]);
+    if (targetNum >= startGrade && targetNum <= endGrade) return true;
+  }
+
+  // Check direct grade number like "10. клас"
+  const directRegex = new RegExp(`(^|\\D)${targetNum}\\.`);
+  return directRegex.test(lessonGrade);
+}
+
 export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
   lessons,
   currentLessonId,
@@ -28,22 +58,51 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
   const [selectedExamType, setSelectedExamType] = useState<string>('Всички изпити');
   const [masteryFilter, setMasteryFilter] = useState<'all' | 'unmastered' | 'mastered'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [visibleCount, setVisibleCount] = useState<number>(INITIAL_VISIBLE_LESSONS);
   const [masteredIds, setMasteredIds] = useState<string[]>(
     () => studyProgressService.getProgress().masteredLessonIds
   );
+
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const handleToggleMastered = (lessonId: string) => {
     const updated = studyProgressService.toggleMasteredLesson(lessonId);
     setMasteredIds(updated.masteredLessonIds);
   };
 
-  const examTypesList = [
-    { id: 'Всички изпити', label: 'Всички изпитни формати' },
-    { id: 'ДЗИ / Матура', label: 'ДЗИ / Матура (12. кл.)' },
-    { id: 'ДИППК / Професионален изпит', label: 'ДИППК / Професионален изпит (III СПК)' },
-    { id: 'НВО (10. клас)', label: 'НВО (10. клас)' },
-    { id: 'НВО (7. клас)', label: 'НВО (7. клас)' }
-  ];
+  // O(1) lookup set for mastered lessons
+  const masteredSet = useMemo(() => new Set(masteredIds), [masteredIds]);
+
+  // Precomputed maps & counts so keystrokes don't rescan 1,540 lessons 20 times
+  const { lessonsById, firstLessonBySubject, examCounts, subjectCounts, totalMasteredInCatalog } = useMemo(() => {
+    const byId = new Map<string, LessonData>();
+    const firstBySubj = new Map<string, LessonData>();
+    const exCounts = new Map<string, number>();
+    const subjCounts = new Map<string, number>();
+    let masteredTotal = 0;
+
+    for (const l of lessons) {
+      byId.set(l.id, l);
+      if (!firstBySubj.has(l.subject)) {
+        firstBySubj.set(l.subject, l);
+      }
+      if (l.examType) {
+        exCounts.set(l.examType, (exCounts.get(l.examType) ?? 0) + 1);
+      }
+      subjCounts.set(l.subject, (subjCounts.get(l.subject) ?? 0) + 1);
+      if (masteredSet.has(l.id)) {
+        masteredTotal++;
+      }
+    }
+
+    return {
+      lessonsById: byId,
+      firstLessonBySubject: firstBySubj,
+      examCounts: exCounts,
+      subjectCounts: subjCounts,
+      totalMasteredInCatalog: masteredTotal,
+    };
+  }, [lessons, masteredSet]);
 
   const isJuniorHigh =
     selectedGrade.includes('5.') ||
@@ -51,45 +110,84 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
     selectedGrade.includes('7.') ||
     selectedExamType === 'НВО (7. клас)';
 
-  const matchesGradeFilter = (lessonGrade: string, targetGrade: GradeLevel): boolean => {
-    if (targetGrade === 'Всички класове') return true;
-    const numMatch = targetGrade.match(/(\d+)/);
-    if (!numMatch) return true;
-    const targetNum = Number(numMatch[1]);
-
-    // Check range format like "8.–10. клас" or "10.–12. клас"
-    const rangeMatch = lessonGrade.match(/(\d+)\.\s*[–-]\s*(\d+)\./);
-    if (rangeMatch) {
-      const startGrade = Number(rangeMatch[1]);
-      const endGrade = Number(rangeMatch[2]);
-      if (targetNum >= startGrade && targetNum <= endGrade) return true;
-    }
-
-    // Check direct grade number like "10. клас"
-    const directRegex = new RegExp(`(^|\\D)${targetNum}\\.`);
-    return directRegex.test(lessonGrade);
-  };
-
-  const filteredLessons = lessons.filter((lesson) => {
-    const matchesGrade = matchesGradeFilter(lesson.grade, selectedGrade);
-    const matchesSubject =
-      selectedSubject === 'Всички предмети' || lesson.subject === selectedSubject;
-    const matchesExam =
-      selectedExamType === 'Всички изпити' || lesson.examType === selectedExamType;
-    const isMastered = masteredIds.includes(lesson.id);
-    const matchesMastery =
-      masteryFilter === 'all' ||
-      (masteryFilter === 'mastered' && isMastered) ||
-      (masteryFilter === 'unmastered' && !isMastered);
+  const filteredLessons = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
-    const matchesQuery =
-      !q ||
-      lesson.title.toLowerCase().includes(q) ||
-      lesson.subject.toLowerCase().includes(q) ||
-      lesson.summary.overview.toLowerCase().includes(q) ||
-      lesson.summary.keyPoints.some((kp) => kp.toLowerCase().includes(q));
-    return matchesGrade && matchesSubject && matchesExam && matchesMastery && matchesQuery;
-  });
+    return lessons.filter((lesson) => {
+      if (!matchesGradeFilter(lesson.grade, selectedGrade)) return false;
+      if (selectedSubject !== 'Всички предмети' && lesson.subject !== selectedSubject) return false;
+      if (selectedExamType !== 'Всички изпити' && lesson.examType !== selectedExamType) return false;
+      if (masteryFilter !== 'all') {
+        const isMastered = masteredSet.has(lesson.id);
+        if (masteryFilter === 'mastered' && !isMastered) return false;
+        if (masteryFilter === 'unmastered' && isMastered) return false;
+      }
+      if (!q) return true;
+      return (
+        lesson.title.toLowerCase().includes(q) ||
+        lesson.subject.toLowerCase().includes(q) ||
+        lesson.summary.overview.toLowerCase().includes(q) ||
+        lesson.summary.keyPoints.some((kp) => kp.toLowerCase().includes(q))
+      );
+    });
+  }, [lessons, selectedGrade, selectedSubject, selectedExamType, masteryFilter, masteredSet, searchQuery]);
+
+  // Reset pagination whenever filters change
+  useEffect(() => {
+    setVisibleCount(INITIAL_VISIBLE_LESSONS);
+  }, [selectedGrade, selectedSubject, selectedExamType, masteryFilter, searchQuery]);
+
+  // Progressive infinite scroll via IntersectionObserver
+  useEffect(() => {
+    const el = loadMoreRef.current;
+    if (!el || visibleCount >= filteredLessons.length) return;
+    if (typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setVisibleCount((prev) => Math.min(filteredLessons.length, prev + LOAD_MORE_STEP));
+        }
+      },
+      { rootMargin: '320px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [visibleCount, filteredLessons.length]);
+
+  const visibleLessons = useMemo(
+    () => filteredLessons.slice(0, visibleCount),
+    [filteredLessons, visibleCount]
+  );
+
+  const filteredSubDomains = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    return BULGARIAN_CURRICULUM_TREE.filter(
+      (tree) => selectedSubject === 'Всички предмети' || tree.subject === selectedSubject
+    ).flatMap((tree) =>
+      tree.grades
+        .filter((g) => matchesGradeFilter(g.grade, selectedGrade))
+        .flatMap((g) =>
+          g.domains.flatMap((dom) =>
+            dom.subDomains
+              .filter((sub) => {
+                if (!q) return true;
+                return (
+                  sub.name.toLowerCase().includes(q) ||
+                  dom.name.toLowerCase().includes(q) ||
+                  sub.keywords.some((kw) => kw.toLowerCase().includes(q)) ||
+                  sub.gradeRequirement6.some((req) => req.toLowerCase().includes(q))
+                );
+              })
+              .map((sub) => ({ tree, g, dom, sub }))
+          )
+        )
+    );
+  }, [selectedSubject, selectedGrade, searchQuery]);
+
+  const quizSampleCount = useMemo(
+    () => Math.min(12, filteredLessons.reduce((acc, l) => acc + l.quiz.length, 0)),
+    [filteredLessons]
+  );
 
   return (
     <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200 shadow-xs mb-12">
@@ -166,11 +264,11 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
           <span>Изпитен формат на МОН (ДЗИ / ДИППК / НВО):</span>
         </div>
         <div className="flex items-center gap-1.5 overflow-x-auto pb-2 no-scrollbar">
-          {examTypesList.map((examItem) => {
+          {EXAM_TYPES_LIST.map((examItem) => {
             const count =
               examItem.id === 'Всички изпити'
                 ? lessons.length
-                : lessons.filter((l) => l.examType === examItem.id).length;
+                : examCounts.get(examItem.id) ?? 0;
             const isSelected = selectedExamType === examItem.id;
             return (
               <button
@@ -232,7 +330,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                   masteryFilter === 'mastered' ? 'bg-emerald-600 text-white shadow-2xs' : 'text-emerald-800 hover:text-emerald-950'
                 }`}
               >
-                Усвоени ✓ ({lessons.filter((l) => masteredIds.includes(l.id)).length})
+                Усвоени ✓ ({totalMasteredInCatalog})
               </button>
             </div>
             <span className="text-[11px] font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
@@ -260,7 +358,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                 title="Генерирай сборен тест от показаните в момента теми"
               >
                 <Zap className="w-3 h-3" />
-                <span>Генерирай сборен тест ({Math.min(12, filteredLessons.reduce((acc, l) => acc + l.quiz.length, 0))} въпроса)</span>
+                <span>Генерирай сборен тест ({quizSampleCount} въпроса)</span>
               </button>
             )}
           </div>
@@ -270,7 +368,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
             const subjCount =
               subj === 'Всички предмети'
                 ? lessons.length
-                : lessons.filter((l) => l.subject === subj).length;
+                : subjectCounts.get(subj) ?? 0;
             return (
               <button
                 key={subj}
@@ -319,129 +417,110 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[520px] overflow-y-auto pr-1">
-          {BULGARIAN_CURRICULUM_TREE.filter(
-            (tree) => selectedSubject === 'Всички предмети' || tree.subject === selectedSubject
-          ).flatMap((tree) =>
-            tree.grades
-              .filter((g) => matchesGradeFilter(g.grade, selectedGrade))
-              .flatMap((g) =>
-                g.domains.flatMap((dom) =>
-                  dom.subDomains
-                    .filter((sub) => {
-                      const q = searchQuery.toLowerCase().trim();
-                      if (!q) return true;
-                      return (
-                        sub.name.toLowerCase().includes(q) ||
-                        dom.name.toLowerCase().includes(q) ||
-                        sub.keywords.some((kw) => kw.toLowerCase().includes(q)) ||
-                        sub.gradeRequirement6.some((req) => req.toLowerCase().includes(q))
-                      );
-                    })
-                    .map((sub) => {
-                      const mappedId = SUBDOMAIN_LESSON_MAP[sub.id];
-                      const baseLesson =
-                        lessons.find((l) => l.id === mappedId) ||
-                        lessons.find((l) => l.subject === tree.subject) ||
-                        lessons[0];
+          {filteredSubDomains.map(({ tree, g, dom, sub }) => {
+            const mappedId = SUBDOMAIN_LESSON_MAP[sub.id];
+            const baseLesson =
+              (mappedId ? lessonsById.get(mappedId) : undefined) ||
+              firstLessonBySubject.get(tree.subject) ||
+              lessons[0];
 
-                      return (
-                        <div
-                          key={sub.id}
-                          className="p-3.5 rounded-xl bg-white border border-blue-100 hover:border-blue-300 shadow-2xs flex flex-col justify-between gap-2.5 transition-all"
-                        >
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between gap-1.5 text-[10px]">
-                              <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 truncate">
-                                {tree.subject}
-                              </span>
-                              <span className="tabular-nums font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">
-                                {g.grade}
-                              </span>
-                            </div>
-                            <div className="text-[11px] font-semibold text-slate-500 line-clamp-1">
-                              {dom.name}
-                            </div>
-                            <h5 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
-                              {sub.name}
-                            </h5>
-                            <ul className="space-y-1 pt-1">
-                              {sub.gradeRequirement6.slice(0, 2).map((req, rIdx) => (
-                                <li key={rIdx} className="text-[11px] text-slate-700 flex items-start gap-1.5 leading-snug">
-                                  <span className="text-emerald-600 font-bold">✓</span>
-                                  <span>{req}</span>
-                                </li>
-                              ))}
-                            </ul>
-                            <div className="text-[11px] text-amber-900 bg-amber-50/70 border border-amber-200/70 rounded-lg px-2 py-1 leading-snug">
-                              <span className="font-bold">Съвет по МОН: </span>
-                              {sub.advice}
-                            </div>
-                          </div>
+            return (
+              <div
+                key={sub.id}
+                className="p-3.5 rounded-xl bg-white border border-blue-100 hover:border-blue-300 shadow-2xs flex flex-col justify-between gap-2.5 transition-all"
+              >
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between gap-1.5 text-[10px]">
+                    <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 truncate">
+                      {tree.subject}
+                    </span>
+                    <span className="tabular-nums font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">
+                      {g.grade}
+                    </span>
+                  </div>
+                  <div className="text-[11px] font-semibold text-slate-500 line-clamp-1">
+                    {dom.name}
+                  </div>
+                  <h5 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
+                    {sub.name}
+                  </h5>
+                  <ul className="space-y-1 pt-1">
+                    {sub.gradeRequirement6.slice(0, 2).map((req, rIdx) => (
+                      <li key={rIdx} className="text-[11px] text-slate-700 flex items-start gap-1.5 leading-snug">
+                        <span className="text-emerald-600 font-bold">✓</span>
+                        <span>{req}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="text-[11px] text-amber-900 bg-amber-50/70 border border-amber-200/70 rounded-lg px-2 py-1 leading-snug">
+                    <span className="font-bold">Съвет по МОН: </span>
+                    {sub.advice}
+                  </div>
+                </div>
 
-                          <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-1.5">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (!baseLesson) return;
-                                const tailored = buildTailoredSubDomainLesson(
-                                  tree.subject,
-                                  g.grade,
-                                  dom.name,
-                                  sub,
-                                  baseLesson,
-                                  lessons
-                                );
-                                onSelectLesson(tailored, 'summary');
-                              }}
-                              className="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-[11px] font-bold transition-colors cursor-pointer"
-                            >
-                              <BookOpen className="w-3 h-3 text-blue-700" />
-                              <span>Материал по МОН</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (!baseLesson) return;
-                                const tailored = buildTailoredSubDomainLesson(
-                                  tree.subject,
-                                  g.grade,
-                                  dom.name,
-                                  sub,
-                                  baseLesson,
-                                  lessons
-                                );
-                                onSelectLesson(tailored, 'quiz');
-                              }}
-                              className="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold transition-colors cursor-pointer shadow-2xs"
-                            >
-                              <CheckSquare className="w-3 h-3" />
-                              <span>Тест по темата (∞)</span>
-                            </button>
-                          </div>
-                        </div>
+                <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!baseLesson) return;
+                      const tailored = buildTailoredSubDomainLesson(
+                        tree.subject,
+                        g.grade,
+                        dom.name,
+                        sub,
+                        baseLesson,
+                        lessons
                       );
-                    })
-                )
-              )
-          )}
+                      onSelectLesson(tailored, 'summary');
+                    }}
+                    className="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-[11px] font-bold transition-colors cursor-pointer"
+                  >
+                    <BookOpen className="w-3 h-3 text-blue-700" />
+                    <span>Материал по МОН</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!baseLesson) return;
+                      const tailored = buildTailoredSubDomainLesson(
+                        tree.subject,
+                        g.grade,
+                        dom.name,
+                        sub,
+                        baseLesson,
+                        lessons
+                      );
+                      onSelectLesson(tailored, 'quiz');
+                    }}
+                    className="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold transition-colors cursor-pointer shadow-2xs"
+                  >
+                    <CheckSquare className="w-3 h-3" />
+                    <span>Тест по темата (∞)</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* Lessons Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-        {filteredLessons.map((lesson) => {
+        {visibleLessons.map((lesson, idx) => {
           const isCurrent = lesson.id === currentLessonId;
-          const isMastered = masteredIds.includes(lesson.id);
+          const isMastered = masteredSet.has(lesson.id);
           const isJuniorLesson =
             lesson.grade.includes('7.') ||
             lesson.grade.includes('6.') ||
             lesson.grade.includes('5.');
+          // Apply content-visibility: auto only to off-screen cards below the initial fold
+          const deferredClass = idx >= 6 ? 'cv-card' : '';
 
           return (
             <div
               key={lesson.id}
               onClick={() => onSelectLesson(lesson, 'summary')}
-              className={`cv-card p-4 sm:p-5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between group ${
+              className={`${deferredClass} p-4 sm:p-5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between group ${
                 isCurrent
                   ? 'bg-blue-50/70 border-blue-400 shadow-xs ring-1 ring-blue-400/40'
                   : isJuniorLesson
@@ -539,6 +618,29 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
           );
         })}
       </div>
+
+      {/* Progressive Pagination Controls */}
+      {visibleCount < filteredLessons.length && (
+        <div ref={loadMoreRef} className="mt-6 flex flex-wrap items-center justify-center gap-3 pt-2">
+          <button
+            type="button"
+            onClick={() => setVisibleCount((prev) => Math.min(filteredLessons.length, prev + LOAD_MORE_STEP))}
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+          >
+            <ChevronDown className="w-4 h-4" />
+            <span>
+              Покажи още {Math.min(LOAD_MORE_STEP, filteredLessons.length - visibleCount)} теми (показани {visibleCount} от {filteredLessons.length})
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setVisibleCount(filteredLessons.length)}
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold transition-colors cursor-pointer"
+          >
+            <span>Покажи всички ({filteredLessons.length})</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

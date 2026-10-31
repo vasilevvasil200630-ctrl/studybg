@@ -14,7 +14,8 @@ import {
   Sparkles,
   TrendingUp,
   ShieldCheck,
-  Printer
+  Printer,
+  Mail
 } from 'lucide-react';
 import {
   studyProgressService,
@@ -35,6 +36,7 @@ import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import { ExcellenceCertificateModal } from './ExcellenceCertificateModal';
 import { PlannerExamResults } from './PlannerExamResults';
+import { EmailShareModal } from './EmailShareModal';
 
 const INITIAL_CHECKLIST_LESSONS = 48;
 const CHECKLIST_LOAD_MORE_STEP = 60;
@@ -157,6 +159,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
   const [checklistTab, setChecklistTab] = useState<'authors' | 'lessons'>('authors');
   const [visibleChecklistLessons, setVisibleChecklistLessons] = useState(INITIAL_CHECKLIST_LESSONS);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
+  const [isEmailPlanModalOpen, setIsEmailPlanModalOpen] = useState(false);
   const [googleProfile, setGoogleProfile] = useState<GoogleUserProfile | null>(() => getCachedGoogleProfile());
 
   useEffect(() => {
@@ -859,6 +862,16 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
               <Printer className="w-3.5 h-3.5 text-amber-400" />
               <span>Принтирай A4 График</span>
             </button>
+
+            <button
+              type="button"
+              onClick={() => setIsEmailPlanModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-2xs cursor-pointer print:hidden"
+              title="Изпрати индекса на готовност и седмичния план по имейл чрез Resend"
+            >
+              <Mail className="w-3.5 h-3.5" />
+              <span>Изпрати отчета по имейл</span>
+            </button>
           </div>
         </div>
 
@@ -1179,6 +1192,21 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
           `Модул 1 задачи: ${progress.grammarQuestionsSolved} решени`,
           `Най-дълга серия: ${progress.grammarBestStreak} верни`
         ]}
+      />
+
+      <EmailShareModal
+        isOpen={isEmailPlanModalOpen}
+        onClose={() => setIsEmailPlanModalOpen(false)}
+        testResult={{
+          lessonTitle: `Седмичен отчет по „Моят План за 6.00“ — ${activeExam.title} (Ниво ${plannerLevelInfo.level}: ${plannerLevelInfo.title}, ${completedDaysCount}/7 дни)`,
+          score: overallReadinessPercent,
+          total: 100,
+          gradeBg: progress.targetGrade,
+          missedQuestions: allErrors
+            .filter(e => !e.resolved)
+            .slice(0, 8)
+            .map(e => `[${e.subject}] ${e.questionOrRequirement}`)
+        }}
       />
 
     </div>

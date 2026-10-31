@@ -1,4 +1,11 @@
 @import "tailwindcss";
+@source not "./data/monLessons";
+@source not "./data/monCurriculum";
+@source not "./data/dziProfilePapers";
+@source not "./data/dippkPapers";
+@source not "./data/officialPapers";
+@source not "../scripts";
+@source not "../tests";
 
 /*
  * Geist (SIL OFL 1.1) — същият шрифт като в Матура Плюс, самостоятелно хостван variable
@@ -319,12 +326,12 @@ textarea {
 /* Modern Web CWV Optimization: Defer layout & paint for offscreen sections and cards */
 .cv-auto {
   content-visibility: auto;
-  contain-intrinsic-size: auto none auto 480px;
+  contain-intrinsic-size: auto 480px;
 }
 
 .cv-card {
   content-visibility: auto;
-  contain-intrinsic-size: auto none auto 220px;
+  contain-intrinsic-size: auto 220px;
 }
 
 /* Isolate high-frequency interactive widgets (Pomodoro timer, live trainers) to prevent global reflows */

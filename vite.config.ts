@@ -112,24 +112,33 @@ export default defineConfig({
           if (id.includes('src/data/dippkPapers/')) {
             return 'data-exam-dippk-v1';
           }
-          if (id.includes('src/data/monLessons/hydrateMonLessons')) {
+          if (id.includes('src/data/monLessons/hydrateMonLessons') || id.includes('src/data/monLessons/group')) {
             return 'mon-lessons-runtime';
           }
-          if (id.includes('src/data/monLessons/pp') || id.includes('src/data/monLessons/groupPp')) {
+          if (id.includes('src/data/monLessons/pp')) {
             if (/ppMath/.test(id)) {
               return 'mon-lessons-pp-math';
             }
             if (/pp(Informatika|It)/.test(id)) {
               return 'mon-lessons-pp-cs';
             }
-            if (/pp(Fa|Bio|Himia)|groupPpStem/.test(id)) {
-              return 'mon-lessons-pp-sci';
+            if (/ppFa/.test(id)) {
+              return 'mon-lessons-pp-fa';
             }
-            if (/pp(Bel|Hist|Phil)/.test(id)) {
+            if (/ppBio/.test(id)) {
+              return 'mon-lessons-pp-bio';
+            }
+            if (/ppHimia/.test(id)) {
+              return 'mon-lessons-pp-chem';
+            }
+            if (/pp(Bel|Phil)/.test(id)) {
               return 'mon-lessons-pp-hum-a';
             }
+            if (/ppHistory/.test(id)) {
+              return 'mon-lessons-pp-hist';
+            }
             if (/pp(Geo|Go)/.test(id)) {
-              return 'mon-lessons-pp-hum-b';
+              return 'mon-lessons-pp-geo';
             }
             return 'mon-lessons-pp-arts';
           }
@@ -137,14 +146,23 @@ export default defineConfig({
             if (/\/en[A-Z]/.test(id)) {
               return 'mon-lessons-lang-en';
             }
-            if (/\/de[A-Z]|groupLang/.test(id)) {
+            if (/\/de[A-Z]/.test(id)) {
               return 'mon-lessons-lang-de';
             }
-            if (/\/(math|phys|chem|bio|inf|it|tp)\d|groupOopStem/.test(id)) {
-              return 'mon-lessons-oop-stem';
+            if (/\/(math|inf|it)\d/.test(id)) {
+              return 'mon-lessons-oop-math-cs';
             }
-            if (/\/(bel|hist|geo)\d/.test(id)) {
-              return 'mon-lessons-oop-hum-a';
+            if (/\/(phys|chem|bio)\d/.test(id)) {
+              return 'mon-lessons-oop-sci';
+            }
+            if (/\/tp\d/.test(id)) {
+              return 'mon-lessons-oop-tp';
+            }
+            if (/\/(bel|geo)\d/.test(id)) {
+              return 'mon-lessons-oop-bel-geo';
+            }
+            if (/\/hist\d/.test(id)) {
+              return 'mon-lessons-oop-hist';
             }
             return 'mon-lessons-oop-hum-b';
           }

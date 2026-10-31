@@ -5,6 +5,7 @@ const TOKEN_RE = /@@([0-9a-z]+)@@/g;
 const KEY_MAP: Record<string, string> = {
   s: 'subject',
   g: 'grade',
+  et: 'examType',
   st: 'sourceType',
   m: 'monTopicIds',
   t: 'title',
@@ -25,6 +26,7 @@ const KEY_MAP: Record<string, string> = {
   fc: 'flashcards',
   f: 'front',
   b: 'back',
+  h: 'hint',
   tg: 'tag',
   q: 'quiz',
   qu: 'question',

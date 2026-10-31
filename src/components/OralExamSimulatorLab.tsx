@@ -18,6 +18,7 @@ import type { LessonData } from '../types';
 import { SUBJECTS_LIST } from '../data/curriculumDatabase';
 import { evaluateOralAnswerWithGemini, type OralExamAiEvaluation, AI_EXAMINER_LABEL } from '../services/geminiService';
 import { isObjectItem, readStoredArray } from '../lib/storage';
+import { EXTRA_DIPPK_COMMISSION_TICKETS, EXTRA_UNIVERSITY_COLLOQUIUM_TICKETS } from '../data/oralExamTickets';
 
 interface OralExamSimulatorLabProps {
   lessons: LessonData[];
@@ -77,6 +78,7 @@ interface SpecialOralTicket {
 }
 
 const DIPPK_COMMISSION_TICKETS: SpecialOralTicket[] = [
+  ...EXTRA_DIPPK_COMMISSION_TICKETS,
   {
     id: 'dippk-it-sec',
     code: 'СПК-481010 • Програмист / Системен програмист',
@@ -254,6 +256,7 @@ const DIPPK_COMMISSION_TICKETS: SpecialOralTicket[] = [
 ];
 
 const UNIVERSITY_COLLOQUIUM_TICKETS: SpecialOralTicket[] = [
+  ...EXTRA_UNIVERSITY_COLLOQUIUM_TICKETS,
   {
     id: 'uni-su-fmi',
     code: 'СУ „Св. Климент Охридски“ • ФМИ / Юридически факултет',
@@ -358,6 +361,31 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
   const [aiOralEval, setAiOralEval] = useState<OralExamAiEvaluation | null>(null);
   const [isAiEvaluating, setIsAiEvaluating] = useState<boolean>(false);
   const [aiError, setAiError] = useState<string | null>(null);
+  const [defenseSecondsLeft, setDefenseSecondsLeft] = useState<number>(300);
+  const [defenseTimerRunning, setDefenseTimerRunning] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!defenseTimerRunning) return;
+    const interval = window.setInterval(() => {
+      setDefenseSecondsLeft((prev) => {
+        if (prev <= 1) {
+          setDefenseTimerRunning(false);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => window.clearInterval(interval);
+  }, [defenseTimerRunning]);
+
+  const defensePhaseLabel =
+    defenseSecondsLeft > 210
+      ? 'Фаза 1: Въведение, цел и архитектура (0:00–1:30)'
+      : defenseSecondsLeft > 90
+      ? 'Фаза 2: Аргументация, формули и изчисления (1:30–3:30)'
+      : defenseSecondsLeft > 0
+      ? 'Фаза 3: Изводи, ЗБУТ/нормативи и въпроси на ДИК (3:30–5:00)'
+      : 'Времето за експозето изтече — въпроси от комисията';
 
   useEffect(() => {
     setActiveLessonId(currentLesson.id);
@@ -639,6 +667,34 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
     <div className="space-y-6">
       {/* Header Banner */}
       <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-slate-200 shadow-2xs text-xs">
+          <span className="font-bold text-slate-700">Таймер за устна защита:</span>
+          <span
+            className={`font-mono font-bold px-2 py-0.5 rounded tabular-nums ${
+              defenseSecondsLeft <= 60 ? 'bg-rose-50 text-rose-800 border border-rose-200' : 'bg-blue-50 text-blue-900 border border-blue-200'
+            }`}
+          >
+            {Math.floor(defenseSecondsLeft / 60)}:{String(defenseSecondsLeft % 60).padStart(2, '0')}
+          </span>
+          <button
+            type="button"
+            onClick={() => setDefenseTimerRunning((r) => !r)}
+            className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold cursor-pointer"
+          >
+            {defenseTimerRunning ? 'Пауза' : 'Старт'}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setDefenseTimerRunning(false);
+              setDefenseSecondsLeft(300);
+            }}
+            className="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold cursor-pointer"
+          >
+            5:00
+          </button>
+          <span className="text-[11px] font-medium text-slate-500 hidden md:inline">• {defensePhaseLabel}</span>
+        </div>
 
         <button
           onClick={handleRandomBoardCall}
@@ -688,7 +744,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
         >
           <div className="text-xs font-bold">2. ДИППК Защита пред Комисия (Трета СПК)</div>
           <div className={`text-[11px] mt-0.5 ${oralMode === 'dippk' ? 'text-emerald-100' : 'text-slate-500'}`}>
-            6 дипломни защити (IT, Ядрена/Електро, СГСАГ, НТБГ, CNC, Биотех)
+            12 дипломни защити — всички професионални направления (СПК III степен)
           </div>
         </button>
 
@@ -709,7 +765,7 @@ export const OralExamSimulatorLab: React.FC<OralExamSimulatorLabProps> = ({
         >
           <div className="text-xs font-bold">3. Академично събеседване за ВУЗ</div>
           <div className={`text-[11px] mt-0.5 ${oralMode === 'university' ? 'text-amber-100' : 'text-slate-500'}`}>
-            Колоквиум за СУ (ФМИ/Право), МУ (Медицина) и ТУ / УАСГ
+            6 академични профила — СУ, МУ, ТУ/УАСГ, УНСС, Хуманитарни и Изкуства
           </div>
         </button>
       </div>

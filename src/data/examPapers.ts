@@ -32,6 +32,7 @@ import { DZI_MATH_2021 } from './officialPapers/dziMath2021';
 import { DZI_PROFILE_PAPERS } from './dziProfilePapers';
 import { DIPPK_PAPERS } from './dippkPapers';
 import { NVO10_INTEGRATED_2027_PAPERS } from './nvo10Integrated2027';
+import { DZI_BEL_PRACTICE_2, DZI_MATH_PRACTICE_1, DZI_MATH_PRACTICE_2 } from './dziBelAndMathPractice';
 
 /**
  * Пълни изпитни варианти за симулатора.
@@ -74,6 +75,9 @@ export const EXAM_PAPERS: ExamPaper[] = [
   DZI_BEL_2021,
   ...NVO10_INTEGRATED_2027_PAPERS,
   ...DZI_PROFILE_PAPERS,
+  DZI_BEL_PRACTICE_2,
+  DZI_MATH_PRACTICE_1,
+  DZI_MATH_PRACTICE_2,
   ...DIPPK_PAPERS,
 
   // -------------------------------------------------------------------------

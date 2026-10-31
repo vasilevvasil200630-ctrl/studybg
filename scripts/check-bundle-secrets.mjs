@@ -8,7 +8,8 @@ const PATTERNS = [
   { name: 'Google API ключ (AIza…)', re: /AIza[0-9A-Za-z_-]{30,}/ },
   { name: 'Google API ключ (AQ.…)', re: /AQ\.[0-9A-Za-z_-]{30,}/ },
   { name: 'OpenAI ключ (sk-…)', re: /sk-(?:proj-)?[0-9A-Za-z_-]{32,}/ },
-  { name: 'Supabase service/secret ключ', re: /sb_secret_[0-9A-Za-z_-]{20,}/ }
+  { name: 'Supabase service/secret ключ', re: /sb_secret_[0-9A-Za-z_-]{20,}/ },
+  { name: 'Resend API ключ (re_…)', re: /\bre_[0-9A-Za-z_]{24,}\b/ }
 ];
 const TEXT_EXT = /\.(?:js|mjs|css|html|json|txt|xml|webmanifest|map)$/;
 

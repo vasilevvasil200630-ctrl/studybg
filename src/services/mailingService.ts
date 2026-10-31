@@ -9,6 +9,8 @@ export interface EmailSendParams {
   includeSummary?: boolean;
   includeFormulas?: boolean;
   includeGoldenRule?: boolean;
+  /** Принудително отваряне в локалния имейл клиент (mailto:) вместо директно изпращане чрез Resend */
+  preferMailto?: boolean;
   testResult?: {
     lessonTitle: string;
     score: number;
@@ -24,11 +26,73 @@ export interface NewsletterSubscription {
   subscribedAt: string;
 }
 
+export interface EmailDispatchResponse {
+  success: boolean;
+  message: string;
+  deliveredVia?: 'resend' | 'mailto';
+  resendId?: string | null;
+  previewHtml?: string;
+  mailtoUrl?: string;
+  plainText?: string;
+}
+
 const LOCAL_STORAGE_SUBSCRIBERS_KEY = 'studybg_newsletter_subscribers';
 const LOCAL_STORAGE_RECENT_EMAIL_KEY = 'studybg_last_used_email';
 
 /**
- * Service handling email dispatch and newsletter subscriptions
+ * Вътрешен помощник за сървърно изпращане чрез Resend:
+ * 1) Опитва Vercel Serverless Function `/api/send-email`
+ * 2) При липса на Vercel функция/ключ опитва Supabase Edge Function `resend-mailer`
+ */
+async function dispatchViaResend(payload: {
+  to: string;
+  subject: string;
+  html: string;
+  text: string;
+}): Promise<{ delivered: boolean; id?: string | null; error?: string }> {
+  // 1. Опит през Vercel Serverless Route (/api/send-email)
+  try {
+    const res = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+      const data = (await res.json().catch(() => ({}))) as { success?: boolean; id?: string | null };
+      if (data?.success) {
+        return { delivered: true, id: data.id ?? null };
+      }
+    } else if (res.status !== 404 && res.status !== 503) {
+      const errData = (await res.json().catch(() => ({}))) as { message?: string };
+      if (errData?.message) {
+        return { delivered: false, error: errData.message };
+      }
+    }
+  } catch {
+    // Продължаваме към резервния канал (Supabase Edge Function или mailto)
+  }
+
+  // 2. Опит през Supabase Edge Function `resend-mailer` (ако е конфигурирана)
+  try {
+    const { supabase, isSupabaseConfigured } = await import('./supabaseClient');
+    if (isSupabaseConfigured()) {
+      const { data, error } = await supabase.functions.invoke('resend-mailer', {
+        body: payload,
+      });
+      if (!error && data && (data as { success?: boolean }).success) {
+        return { delivered: true, id: (data as { id?: string | null }).id ?? null };
+      }
+    }
+  } catch {
+    // Без прекъсване
+  }
+
+  return { delivered: false };
+}
+
+/**
+ * Service handling email dispatch (Resend + mailto fallback) and newsletter subscriptions
  */
 export const mailingService = {
   /**
@@ -66,7 +130,63 @@ export const mailingService = {
   },
 
   /**
-   * Subscribe an email to the weekly study newsletter
+   * Генерира приветствен HTML имейл при абонамент за седмичния бюлетин на StudyBG
+   */
+  generateWelcomeNewsletterHtml(email: string, grade: string): string {
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; color: #0f172a; margin: 0; padding: 24px; line-height: 1.55; }
+    .card { max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+    .header { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: #ffffff; padding: 28px 24px; text-align: left; }
+    .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+    .title { margin: 0; font-size: 22px; font-weight: 800; }
+    .body { padding: 24px; }
+    .tip-box { background: #f8fafc; border-left: 4px solid #2563eb; padding: 12px 16px; border-radius: 8px; margin-bottom: 12px; font-size: 13px; color: #334155; }
+    .btn { display: inline-block; background: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 22px; border-radius: 10px; font-size: 13px; font-weight: 700; margin-top: 16px; }
+    .footer { background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 16px 24px; text-align: center; font-size: 11px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <span class="badge">StudyBG Седмичен Бюлетин • ${grade}</span>
+      <h1 class="title">Добре дошъл в седмичната подготовка на StudyBG!</h1>
+    </div>
+    <div class="body">
+      <p style="font-size: 14px; color: #334155;">
+        Здравей! Твоят имейл <strong>${email}</strong> е записан за седмичния учебен бюлетин с фокус <strong>${grade}</strong>.
+      </p>
+      <p style="font-size: 13px; color: #475569;">
+        Какво можеш да използваш още днес в платформата:
+      </p>
+      <div class="tip-box">
+        <strong>1. Пълни изпитни варианти (100 т.):</strong> Решавай официални матури на МОН и тренировъчни варианти за НВО 10, ДЗИ (БЕЛ + 16 профилиращи предмета) и ДИППК (12 професии) с автоматична оценка.
+      </div>
+      <div class="tip-box">
+        <strong>2. Генератор на блиц-изпит:</strong> Създай 20-минутен блиц тест от 10 задачи по избран от теб предмет.
+      </div>
+      <div class="tip-box">
+        <strong>3. Справочници с формули и Банка с грешки:</strong> Всяка сбъркана задача се запазва автоматично за целеви преговор.
+      </div>
+      <div style="text-align: center; margin-top: 22px;">
+        <a href="https://studybg.vercel.app#simulator" class="btn" style="color: #ffffff;">Към Изпитния симулатор</a>
+      </div>
+    </div>
+    <div class="footer">
+      Изпратено от <strong>StudyBG</strong> по твое съгласие (GDPR). Можеш да се отпишеш с 1 клик по всяко време от сайта.
+    </div>
+  </div>
+</body>
+</html>
+    `.trim();
+  },
+
+  /**
+   * Subscribe an email to the weekly study newsletter + send welcome email via Resend
    */
   async subscribeToNewsletter(email: string, grade: string = 'Всички'): Promise<{ success: boolean; message: string }> {
     const cleanEmail = email.trim().toLowerCase();
@@ -80,8 +200,7 @@ export const mailingService = {
       subscribedAt: new Date().toISOString()
     };
 
-    // 1. Облак: само INSERT (RLS не позволява четене/промяна на чужди имейли).
-    // supabase-js връща грешките, вместо да ги хвърля — проверяваме ги изрично.
+    // 1. Облак: запис в Supabase (ако е конфигуриран)
     let savedInCloud = false;
     try {
       const { supabase, isSupabaseConfigured } = await import('./supabaseClient');
@@ -95,14 +214,25 @@ export const mailingService = {
     } catch (err) {
       console.warn('Newsletter save failed:', err);
     }
-    if (!savedInCloud) {
+
+    // 2. Изпращане на приветствен имейл чрез Resend (ако RESEND_API_KEY е активен)
+    const welcomeHtml = this.generateWelcomeNewsletterHtml(cleanEmail, grade);
+    const welcomeText = `Добре дошъл в седмичния бюлетин на StudyBG (${grade})! Отвори симулатора тук: https://studybg.vercel.app#simulator`;
+    const resendDispatch = await dispatchViaResend({
+      to: cleanEmail,
+      subject: `[StudyBG] Добре дошъл в седмичната подготовка за ${grade}!`,
+      html: welcomeHtml,
+      text: welcomeText
+    });
+
+    if (!savedInCloud && !resendDispatch.delivered) {
       return {
         success: false,
         message: 'Абонаментът не можа да бъде записан в момента. Моля, опитайте отново по-късно.'
       };
     }
 
-    // 2. Локално — само за да помним, че този браузър е абониран
+    // 3. Локално съхранение за състоянието на абонамента в браузъра
     try {
       const raw = localStorage.getItem(LOCAL_STORAGE_SUBSCRIBERS_KEY);
       const parsedExisting: unknown = raw ? JSON.parse(raw) : [];
@@ -115,11 +245,11 @@ export const mailingService = {
       console.warn('LocalStorage save error:', e);
     }
 
-
-    // Сайтът е статичен и не изпраща автоматични имейли — не обещаваме приветствено писмо
     return {
       success: true,
-      message: `Абонаментът за ${grade} е записан. Ще ти пишем на ${cleanEmail}, когато излезе новият брой на бюлетина.`
+      message: resendDispatch.delivered
+        ? `Абонаментът за ${grade} е активен! Изпратихме ти приветствен имейл на ${cleanEmail} чрез Resend.`
+        : `Абонаментът за ${grade} е записан. Ще ти пишем на ${cleanEmail}, когато излезе новият брой на бюлетина.`
     };
   },
 
@@ -147,7 +277,6 @@ export const mailingService = {
     try {
       const { supabase, isSupabaseConfigured } = await import('./supabaseClient');
       if (isSupabaseConfigured()) {
-        // Защитена функция: изтрива само подадения имейл, без да дава достъп до таблицата
         const { error } = await supabase.rpc('unsubscribe_newsletter', { p_email: cleanEmail });
         if (error) console.warn('Supabase unsubscribe failed:', error.message);
       }
@@ -321,7 +450,7 @@ export const mailingService = {
   },
 
   /**
-   * Текстова версия на имейла (за mailto: и за копиране)
+   * Текстова версия на имейла (за Resend text fallback, mailto: и копиране)
    */
   generatePlainText(params: EmailSendParams): string {
     const lines: string[] = [];
@@ -352,16 +481,10 @@ export const mailingService = {
   },
 
   /**
-   * Подготвя имейла и го отваря в имейл клиента на потребителя (mailto:).
-   * StudyBG НЕ изпраща имейли от свой сървър — потребителят изпраща сам.
+   * Изпраща имейла директно чрез Resend (/api/send-email или Supabase Edge Function `resend-mailer`),
+   * а при липса на конфигуриран ключ на сървъра предоставя резервен `mailto:` + HTML изтегляне.
    */
-  async sendEmail(params: EmailSendParams): Promise<{
-    success: boolean;
-    message: string;
-    previewHtml?: string;
-    mailtoUrl?: string;
-    plainText?: string;
-  }> {
+  async sendEmail(params: EmailSendParams): Promise<EmailDispatchResponse> {
     const cleanEmail = params.recipientEmail.trim().toLowerCase();
     if (!cleanEmail || !cleanEmail.includes('@') || !cleanEmail.includes('.')) {
       return { success: false, message: 'Моля, посочете валиден имейл адрес.' };
@@ -385,7 +508,6 @@ export const mailingService = {
     }
 
     const plainText = this.generatePlainText(params);
-    // Повечето имейл клиенти режат дълги mailto: адреси — пълният текст остава за копиране/изтегляне
     const MAX_MAILTO_BODY = 1800;
     const body =
       plainText.length > MAX_MAILTO_BODY
@@ -393,8 +515,31 @@ export const mailingService = {
         : plainText;
     const mailtoUrl = `mailto:${encodeURIComponent(cleanEmail)}?subject=${encodeURIComponent(emailSubject ?? 'StudyBG')}&body=${encodeURIComponent(body)}`;
 
+    // Ако не е избран принудителен mailto, опитваме сървърно изпращане чрез Resend
+    if (!params.preferMailto) {
+      const resendRes = await dispatchViaResend({
+        to: cleanEmail,
+        subject: emailSubject ?? 'StudyBG Учебен конспект',
+        html: htmlContent,
+        text: plainText
+      });
+
+      if (resendRes.delivered) {
+        return {
+          success: true,
+          deliveredVia: 'resend',
+          resendId: resendRes.id,
+          message: `Имейлът беше изпратен директно чрез Resend до ${cleanEmail}! Проверете входящата поща (и папка Спам/Промоции).`,
+          previewHtml: htmlContent,
+          mailtoUrl,
+          plainText
+        };
+      }
+    }
+
     return {
       success: true,
+      deliveredVia: 'mailto',
       message: `Отворихме имейл клиента ви с готово писмо до ${cleanEmail}. Натиснете „Изпрати“ там. Ако не се отвори, копирайте текста или изтеглете конспекта по-долу.`,
       previewHtml: htmlContent,
       mailtoUrl,

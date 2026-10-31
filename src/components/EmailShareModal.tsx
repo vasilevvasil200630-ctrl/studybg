@@ -45,6 +45,7 @@ export const EmailShareModal: React.FC<EmailShareModalProps> = ({
   const [showPreview, setShowPreview] = useState(false);
   const [prepared, setPrepared] = useState<{ mailtoUrl: string; plainText: string; html: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [deliveredViaResend, setDeliveredViaResend] = useState(false);
 
   if (!isOpen) return null;
 
@@ -79,7 +80,12 @@ export const EmailShareModal: React.FC<EmailShareModalProps> = ({
         setPrepared({ mailtoUrl: res.mailtoUrl, plainText: res.plainText, html: res.previewHtml ?? '' });
         setSuccessMessage(res.message);
         // Имейлът се изпраща от собствения имейл клиент на потребителя
-        window.location.href = res.mailtoUrl;
+        if (res.deliveredVia === 'resend') {
+          setDeliveredViaResend(true);
+        } else {
+          setDeliveredViaResend(false);
+          window.location.href = res.mailtoUrl;
+        }
       } else {
         setErrorMessage(res.message);
       }
@@ -166,7 +172,9 @@ export const EmailShareModal: React.FC<EmailShareModalProps> = ({
               <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
                 <Check className="w-6 h-6 stroke-[2.5]" />
               </div>
-              <h4 className="text-base font-bold text-slate-900">Писмото е готово в имейл клиента ви</h4>
+              <h4 className="text-base font-bold text-slate-900">
+                {deliveredViaResend ? 'Имейлът е изпратен директно чрез Resend!' : 'Писмото е готово в имейл клиента ви'}
+              </h4>
               <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
                 {successMessage}
               </p>
@@ -392,7 +400,7 @@ export const EmailShareModal: React.FC<EmailShareModalProps> = ({
                     ) : (
                       <>
                         <Send className="w-3.5 h-3.5" />
-                        <span>Отвори в имейл клиента</span>
+                        <span>Изпрати по имейл</span>
                       </>
                     )}
                   </button>

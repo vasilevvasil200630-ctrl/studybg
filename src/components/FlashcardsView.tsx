@@ -13,23 +13,28 @@ import {
   Zap,
   Trophy,
   Lightbulb,
-  Clock
+  Clock,
+  Globe
 } from 'lucide-react';
-import type { Flashcard } from '../types';
+import type { Flashcard, LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import {
   LEITNER_INTERVAL_DAYS,
   boxLabel,
   getLeitnerCardState,
   getLeitnerSummaryForCards,
+  getGlobalLeitnerDueStats,
+  collectGlobalDueFlashcards,
   recordLeitnerCardReview,
   resetLeitnerCardsForLesson,
+  type GlobalFlashcardItem,
   type LeitnerBox,
   type Response as LeitnerResponse
 } from '../lib/leitnerFlashcards';
 
 interface FlashcardsViewProps {
   flashcards: Flashcard[];
+  allLessons?: LessonData[];
   onProceedToQuiz: () => void;
   onNavigateTab?: (tab: AppNavTab) => void;
 }
@@ -38,14 +43,15 @@ const LEITNER_BOXES: LeitnerBox[] = [1, 2, 3, 4, 5];
 
 export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   flashcards,
+  allLessons = [],
   onProceedToQuiz,
   onNavigateTab
 }) => {
-  const [cards, setCards] = useState<Flashcard[]>(flashcards);
+  const [cards, setCards] = useState<GlobalFlashcardItem[]>(flashcards);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [onlyReviewMode, setOnlyReviewMode] = useState(false);
-  const [selectedBoxFilter, setSelectedBoxFilter] = useState<LeitnerBox | 'all' | 'due'>('all');
+  const [selectedBoxFilter, setSelectedBoxFilter] = useState<LeitnerBox | 'all' | 'due' | 'global_due'>('all');
   const [leitnerTick, setLeitnerTick] = useState(0);
   const [sessionXp, setSessionXp] = useState(0);
   const [justMasteredXp, setJustMasteredXp] = useState(false);
@@ -59,6 +65,16 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
     void leitnerTick;
     return getLeitnerSummaryForCards(allCardIds);
   }, [allCardIds, leitnerTick]);
+
+  const globalLeitnerStats = useMemo(() => {
+    void leitnerTick;
+    return getGlobalLeitnerDueStats();
+  }, [leitnerTick]);
+
+  const globalDueDeck = useMemo(() => {
+    void leitnerTick;
+    return collectGlobalDueFlashcards(allLessons, flashcards);
+  }, [allLessons, flashcards, leitnerTick]);
 
   // Update cards when lesson changes
   useEffect(() => {
@@ -173,7 +189,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [card, isSessionCompleted, handleToggleFlip, handleLeitnerReview, handleNext, handlePrev]);
 
-  const applyFilter = (mode: LeitnerBox | 'all' | 'due', reviewOnly: boolean) => {
+  const applyFilter = (mode: LeitnerBox | 'all' | 'due' | 'global_due', reviewOnly: boolean) => {
     setIsSessionCompleted(false);
     setCurrentIndex(0);
     setIsFlipped(false);
@@ -198,6 +214,8 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
       const dueSet = new Set(leitnerSummary.dueIds);
       const filtered = flashcards.filter((c) => dueSet.has(c.id));
       setCards(filtered.length > 0 ? filtered : flashcards);
+    } else if (mode === 'global_due') {
+      setCards(globalDueDeck.length > 0 ? globalDueDeck : flashcards);
     } else {
       const filtered = flashcards.filter((c) => getLeitnerCardState(c.id).box === mode);
       setCards(filtered.length > 0 ? filtered : flashcards);
@@ -376,6 +394,21 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
             >
               За преговор днес ({leitnerSummary.dueIds.length})
             </button>
+            <button
+              type="button"
+              onClick={() => applyFilter('global_due', false)}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                selectedBoxFilter === 'global_due'
+                  ? 'bg-emerald-700 text-white shadow-xs'
+                  : 'bg-emerald-50 text-emerald-900 border border-emerald-200 hover:bg-emerald-100'
+              }`}
+              title="Събира на едно място всички флаш карти от целия каталог, чийто интервал за преговор е настъпил днес"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              <span>
+                От всички уроци днес ({globalLeitnerStats.dueIds.length > 0 ? globalLeitnerStats.dueIds.length : globalDueDeck.length})
+              </span>
+            </button>
           </div>
         </div>
 
@@ -512,10 +545,15 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
               {/* Front Side */}
               <div className="absolute inset-0 w-full h-full p-8 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between backface-hidden">
                 <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="px-2.5 py-1 rounded text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
                       {card.tag || 'Учебна концепция'}
                     </span>
+                    {card.lessonTitle && selectedBoxFilter === 'global_due' && (
+                      <span className="px-2.5 py-1 rounded text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 truncate max-w-[260px]">
+                        {card.lessonSubject ? `${card.lessonSubject} • ` : ''}{card.lessonTitle}
+                      </span>
+                    )}
                     {cardLeitnerState && (
                       <span className="px-2.5 py-1 rounded text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
                         Кутия {cardLeitnerState.box} • {boxLabel(cardLeitnerState.box)}

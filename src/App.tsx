@@ -664,6 +664,7 @@ export function App() {
                     {activeTab === 'flashcards' && (
                       <FlashcardsView
                         flashcards={currentLesson.flashcards}
+                        allLessons={lessons}
                         onProceedToQuiz={() => handleNavigateStudyTab('quiz')}
                         onNavigateTab={handleNavigateStudyTab}
                       />

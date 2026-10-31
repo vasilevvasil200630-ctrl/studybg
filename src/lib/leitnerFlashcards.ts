@@ -3,8 +3,16 @@
  * прехвърлена от МатураПлюс (src/lib/flashcards.ts & src/app/api/flashcards/review/route.ts).
  */
 
+import type { Flashcard, LessonData } from '../types';
+
 export type Response = 'hard' | 'medium' | 'easy';
 export type LeitnerBox = 1 | 2 | 3 | 4 | 5;
+
+export interface GlobalFlashcardItem extends Flashcard {
+  lessonId?: string;
+  lessonTitle?: string;
+  lessonSubject?: string;
+}
 
 export const LEITNER_INTERVAL_DAYS: Record<LeitnerBox, number> = {
   1: 1,
@@ -311,4 +319,120 @@ export function getLeitnerSummaryForCards(
   }
 
   return { boxCounts, dueIds, masteredIds, reviewIds };
+}
+
+/**
+ * Изчислява глобална статистика за всички Leitner флаш карти, записани от ученика в платформата.
+ */
+export function getGlobalLeitnerDueStats(now: Date = new Date()): {
+  dueIds: string[];
+  totalTracked: number;
+  boxCounts: Record<LeitnerBox, number>;
+  box5MasteredCount: number;
+} {
+  const store = readLeitnerStore();
+  const entries = Object.values(store);
+  const boxCounts: Record<LeitnerBox, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+  const dueIds: string[] = [];
+  let box5MasteredCount = 0;
+
+  for (const st of entries) {
+    if (!st || typeof st !== 'object' || !st.id) continue;
+    const safeBox = Math.min(5, Math.max(1, Number(st.box) || 1)) as LeitnerBox;
+    boxCounts[safeBox] = (boxCounts[safeBox] ?? 0) + 1;
+    if (safeBox === 5) {
+      box5MasteredCount += 1;
+    }
+    if (isLeitnerCardDue(st, now)) {
+      dueIds.push(st.id);
+    }
+  }
+
+  return {
+    dueIds,
+    totalTracked: entries.length,
+    boxCounts,
+    box5MasteredCount
+  };
+}
+
+/**
+ * Събира глобално тесте с флаш карти за преговор днес от всички уроци в каталога (до maxCards карти).
+ * Приоритетно включва вече започнатите карти с настъпил интервал за преговор (nextDueAt <= now),
+ * а при нужда допълва с най-важните карти от уроците.
+ */
+export function collectGlobalDueFlashcards(
+  lessons: LessonData[],
+  fallbackFlashcards: Flashcard[] = [],
+  now: Date = new Date(),
+  maxCards = 30
+): GlobalFlashcardItem[] {
+  const store = readLeitnerStore();
+  const trackedDueResult: { item: GlobalFlashcardItem; box: number; dueMs: number }[] = [];
+  const untriedFallback: GlobalFlashcardItem[] = [];
+  const seenIds = new Set<string>();
+
+  for (const lesson of lessons) {
+    if (!lesson?.flashcards) continue;
+    for (const fc of lesson.flashcards) {
+      if (!fc?.id || seenIds.has(fc.id)) continue;
+      const state = store[fc.id];
+      if (state) {
+        if (isLeitnerCardDue(state, now)) {
+          seenIds.add(fc.id);
+          const dueMs = Date.parse(state.nextDueAt);
+          trackedDueResult.push({
+            item: {
+              ...fc,
+              lessonId: lesson.id,
+              lessonTitle: lesson.title,
+              lessonSubject: lesson.subject
+            },
+            box: state.box,
+            dueMs: Number.isNaN(dueMs) ? 0 : dueMs
+          });
+        }
+      } else if (untriedFallback.length < maxCards) {
+        seenIds.add(fc.id);
+        untriedFallback.push({
+          ...fc,
+          lessonId: lesson.id,
+          lessonTitle: lesson.title,
+          lessonSubject: lesson.subject
+        });
+      }
+    }
+  }
+
+  // Също проверяваме текущите fallbackFlashcards, ако не са били в lessons
+  for (const fc of fallbackFlashcards) {
+    if (!fc?.id || seenIds.has(fc.id)) continue;
+    const state = store[fc.id];
+    if (state) {
+      if (isLeitnerCardDue(state, now)) {
+        seenIds.add(fc.id);
+        const dueMs = Date.parse(state.nextDueAt);
+        trackedDueResult.push({
+          item: { ...fc },
+          box: state.box,
+          dueMs: Number.isNaN(dueMs) ? 0 : dueMs
+        });
+      }
+    } else if (untriedFallback.length < maxCards) {
+      seenIds.add(fc.id);
+      untriedFallback.push({ ...fc });
+    }
+  }
+
+  trackedDueResult.sort((a, b) => a.box - b.box || a.dueMs - b.dueMs);
+  const prioritized = trackedDueResult.map((r) => r.item);
+
+  if (prioritized.length >= maxCards) {
+    return prioritized.slice(0, maxCards);
+  }
+  if (prioritized.length > 0) {
+    return prioritized;
+  }
+
+  return untriedFallback.slice(0, Math.min(20, maxCards));
 }

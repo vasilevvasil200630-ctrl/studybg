@@ -9,7 +9,9 @@ import {
   getLeitnerSummaryForCards,
   resetLeitnerCardsForLesson,
   mergeLeitnerCardStores,
-  saveLeitnerStore
+  saveLeitnerStore,
+  getGlobalLeitnerDueStats,
+  collectGlobalDueFlashcards
 } from '../src/lib/leitnerFlashcards';
 import {
   buildWeeklyDigestHtml,
@@ -105,6 +107,34 @@ describe('Leitner Spaced Repetition System (ported from MaturaPlus)', () => {
     expect(dueLow.getTime() - now.getTime()).toBe(1 * 24 * 60 * 60 * 1000);
     const dueHigh = nextDueFromBox(99, now);
     expect(dueHigh.getTime() - now.getTime()).toBe(30 * 24 * 60 * 60 * 1000);
+  });
+
+  it('collects global due flashcards across multiple lessons and computes global Leitner stats', () => {
+    const pastNow = new Date('2026-10-20T00:00:00.000Z');
+    recordLeitnerCardReview('global-c1', 'hard', pastNow); // due on 2026-10-21 (box 1)
+    recordLeitnerCardReview('global-c2', 'easy', new Date('2026-10-31T00:00:00.000Z')); // due on 2026-11-03 (box 2)
+
+    const today = new Date('2026-10-31T12:00:00.000Z');
+    const globalStats = getGlobalLeitnerDueStats(today);
+    expect(globalStats.totalTracked).toBe(2);
+    expect(globalStats.dueIds).toEqual(['global-c1']);
+
+    const mockLessons = [
+      {
+        id: 'l-bel',
+        title: 'Христо Ботев — Поезия',
+        subject: 'Български език и литература',
+        flashcards: [
+          { id: 'global-c1', front: 'Въпрос 1', back: 'Отговор 1' },
+          { id: 'global-c2', front: 'Въпрос 2', back: 'Отговор 2' }
+        ]
+      }
+    ] as never;
+
+    const dueDeck = collectGlobalDueFlashcards(mockLessons, [], today);
+    expect(dueDeck).toHaveLength(1);
+    expect(dueDeck[0].id).toBe('global-c1');
+    expect(dueDeck[0].lessonTitle).toBe('Христо Ботев — Поезия');
   });
 });
 

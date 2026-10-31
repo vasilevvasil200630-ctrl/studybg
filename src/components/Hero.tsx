@@ -55,7 +55,7 @@ export const Hero: React.FC<HeroProps> = ({
           <ShieldCheck className="w-4 h-4 text-blue-600" />
           <span>Академичен стандарт на МОН за гимназиален етап (8.–12. клас)</span>
           <span className="text-[11px] bg-blue-600 text-white px-2 py-0.5 rounded font-bold uppercase tracking-wider">
-            НВО 10 & ДЗИ 12
+            ДЗИ 12 & ДИППК
           </span>
         </div>
 
@@ -63,7 +63,7 @@ export const Hero: React.FC<HeroProps> = ({
         <h1 className="text-3xl sm:text-5xl lg:text-5xl font-bold tracking-tight text-slate-900 max-w-4xl mx-auto leading-[1.2]">
           Гимназията — без хаос.{' '}
           <span className="text-blue-600">
-            Подготовка за НВО 10 и ДЗИ 12
+            Подготовка за ДЗИ 12 и ДИППК
           </span>{' '}
           по стандарта на МОН.
         </h1>
@@ -88,7 +88,7 @@ export const Hero: React.FC<HeroProps> = ({
             className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-brand-sapphire hover:bg-brand-sapphire-light text-white font-semibold text-sm sm:text-base shadow-sm transition-all"
           >
             <Clock className="w-5 h-5 text-amber-400" />
-            <span>Подготвям се за НВО (10. клас)</span>
+            <span>Подготвям се за 8.–10. клас / ДИППК</span>
           </button>
 
           <button

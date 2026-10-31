@@ -111,7 +111,7 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  8.–10. кл & НВО ({nvo10Lessons.length})
+                  8.–10. клас ({nvo10Lessons.length})
                 </button>
                 <button
                   onClick={() => {
@@ -125,7 +125,7 @@ export const HomeCurriculumSection: React.FC<HomeCurriculumSectionProps> = ({ le
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  5.–7. кл & НВО 7 ({juniorLessons.length})
+                  5.–7. клас ({juniorLessons.length})
                 </button>
                 <button
                   onClick={() => {

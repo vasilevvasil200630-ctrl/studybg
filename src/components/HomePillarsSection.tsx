@@ -70,7 +70,7 @@ export const HomePillarsSection: React.FC<HomePillarsSectionProps> = ({ totalLes
       tab: 'mathlab',
       Icon: Compass,
       tone: 'emerald',
-      badge: 'НВО 10 и ДЗИ',
+      badge: 'ДЗИ и СТЕМ',
       title: 'Математика и STEM решавач',
       text: 'Квадратни уравнения, прогресии, комбинаторика, синусова/косинусова теорема и производни стъпка по стъпка.',
       action: 'Отвори математическия лаб'

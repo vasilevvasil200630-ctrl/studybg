@@ -253,7 +253,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       tab: 'mathlab',
       label: 'Математика & STEM Лаборатория',
       desc: 'Интерактивен решавач на уравнения, прогресии и геометрия',
-      badge: 'НВО 10 & ДЗИ',
+      badge: 'ДЗИ & СТЕМ',
       icon: <Compass className="w-4 h-4 text-brand-sapphire" />,
       accentBg: 'bg-slate-50 border-slate-200 text-slate-600'
     },
@@ -292,7 +292,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       tab: 'calculator',
       label: 'МОН Калкулатор за оценки и бал',
-      desc: 'Точно превръщане на точки (0–100) в оценка за НВО 10 и ДЗИ',
+      desc: 'Точно превръщане на точки (0–100) в оценка за ДЗИ и ДИППК',
       badge: 'Скала МОН',
       icon: <Calculator className="w-4 h-4 text-brand-sapphire" />,
       accentBg: 'bg-slate-50 border-slate-200 text-slate-600'
@@ -395,7 +395,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       icon: <Compass className="w-3.5 h-3.5 text-slate-500" />,
       badge: (
         <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">
-          НВО 10 & ДЗИ
+          ДЗИ & СТЕМ
         </span>
       )
     },

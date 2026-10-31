@@ -69,7 +69,7 @@ export const ExamBridgeCard: React.FC<ExamBridgeCardProps> = ({
         </div>
 
         <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-800 border border-blue-200">
-          {lesson.examType || 'ДЗИ / НВО'} • {lesson.subject}
+          {lesson.examType || 'ДЗИ / ДИППК'} • {lesson.subject}
         </span>
       </div>
 

@@ -469,7 +469,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
   const [selectedDefenseId, setSelectedDefenseId] = useState<string>(DIPLOMA_DEFENSE_ASSIGNMENTS[0].id);
 
   // Секция 5: Калкулатор за Приемен Бал след 7. клас (НВО max 500 т.) и ВУЗ (СУ, МУ, ТУ, УАСГ, УНСС)
-  const [admissionCalcTab, setAdmissionCalcTab] = useState<'grade7_nvo' | 'university_vuz'>('grade7_nvo');
+  const [admissionCalcTab, setAdmissionCalcTab] = useState<'grade7_nvo' | 'university_vuz'>('university_vuz');
   const [nvoBelPts, setNvoBelPts] = useState<number>(88);
   const [nvoMathPts, setNvoMathPts] = useState<number>(92);
   const [grade7Subj1Pts, setGrade7Subj1Pts] = useState<number>(50); // Отличен 6 = 50 т.
@@ -1506,7 +1506,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
               Национално класиране & Университетски прием
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-              5. Калкулатор за Приемен Бал след 7. клас (max 500 т.) & ВУЗ (СУ, МУ, ТУ, УАСГ, УНСС)
+              5. Калкулатор за Кандидат-студентски Бал за ВУЗ (СУ, МУ, ТУ, УАСГ, УНСС) & Гимназиален прием
             </h2>
             <p className="text-xs sm:text-sm text-slate-500">
               Симулирай състезателния си бал по официалните формули на МОН и провери в кои елитни гимназии и университетски специалности се класираш.
@@ -1522,7 +1522,7 @@ export const SchoolsSpecialtiesHub: React.FC<SchoolsSpecialtiesHubProps> = ({
                   : 'text-slate-600 hover:text-brand-sapphire'
               }`}
             >
-              Прием след 7. клас (НВО — max 500 т.)
+              Прием в гимназия (max 500 т.)
             </button>
             <button
               onClick={() => setAdmissionCalcTab('university_vuz')}

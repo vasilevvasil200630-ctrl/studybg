@@ -9,7 +9,7 @@ interface NewsletterSectionProps {
 
 export const NewsletterSection: React.FC<NewsletterSectionProps> = ({ onOpenPolicyModal }) => {
   const [email, setEmail] = useState('');
-  const [grade, setGrade] = useState('7. клас (НВО)');
+  const [grade, setGrade] = useState('12. клас (ДЗИ)');
   const [gdprConsent, setGdprConsent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -74,7 +74,7 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({ onOpenPoli
           <div className="space-y-3 max-w-xl text-center md:text-left">
             <h3 id="newsletter-heading" className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center justify-center md:justify-start gap-2">
               <BellRing className="w-5 h-5 text-brand-sapphire shrink-0" aria-hidden="true" />
-              Подготвяй се редовно за НВО и ДЗИ без стрес
+              Подготвяй се редовно за ДЗИ и матурите без стрес
             </h3>
 
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
@@ -129,8 +129,8 @@ export const NewsletterSection: React.FC<NewsletterSectionProps> = ({ onOpenPoli
                       onChange={(e) => setGrade(e.target.value)}
                       className="w-full h-10 px-3 rounded-xl border border-slate-300 text-xs font-medium text-slate-800 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600"
                     >
-                      <option value="7. клас (НВО)">7. клас (НВО)</option>
-                      <option value="10. клас (НВО)">10. клас (НВО)</option>
+                      <option value="8.–10. клас (Гимназия)">8.–10. клас (Гимназия)</option>
+                      <option value="12. клас (ДИППК / Професия)">12. клас (ДИППК / Професия)</option>
                       <option value="12. клас (ДЗИ)">12. клас (ДЗИ)</option>
                       <option value="Всички класове">Всички класове</option>
                     </select>

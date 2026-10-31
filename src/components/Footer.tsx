@@ -74,7 +74,7 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="space-y-4">
             <BrandLogo />
             <p className="text-xs text-slate-600 leading-relaxed">
-              Безплатна учебна платформа по програмите на МОН за 5.–12. клас: уроци, тестове и подготовка за НВО 7, НВО 10, ДЗИ и ДИППК.
+              Безплатна учебна платформа по програмите на МОН за 5.–12. клас: уроци, тестове и подготовка за гимназиален етап (8.–12. клас), ДЗИ и ДИППК.
             </p>
             
             {/* Quick Actions */}
@@ -125,7 +125,7 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-blue-700 transition-colors flex items-center gap-2"
                 >
                   <Clock className="w-3.5 h-3.5 text-brand-sapphire" aria-hidden="true" />
-                  <span>100т. Симулатор МОН (НВО 10 & ДЗИ)</span>
+                  <span>100т. Симулатор МОН (ДЗИ & ДИППК)</span>
                 </button>
               </li>
               <li>
@@ -234,7 +234,7 @@ export const Footer: React.FC<FooterProps> = ({
                   className="hover:text-blue-700 transition-colors flex items-center gap-2 font-semibold text-slate-800"
                 >
                   <Calculator className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Калкулатор ДЗИ / НВО & Бал за ВУЗ</span>
+                  <span>Калкулатор ДЗИ / ДИППК & Бал за ВУЗ</span>
                 </button>
               </li>
               <li>

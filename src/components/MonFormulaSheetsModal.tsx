@@ -564,7 +564,7 @@ export const MonFormulaSheetsModal: React.FC<MonFormulaSheetsModalProps> = ({ on
                 <div className="border border-slate-900 rounded-xl p-5 bg-white space-y-4">
                   <div className="text-center border-b-2 border-slate-900 pb-3">
                     <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                      StudyBG • Едностранично A4 Табло за Стена • Математика (НВО 7. & 10. клас и ДЗИ)
+                      StudyBG • Едностранично A4 Табло за Стена • Математика (Гимназиален етап и ДЗИ)
                     </div>
                     <h3 className="text-lg font-bold text-slate-900 font-serif mt-0.5">
                       Златни Формули по Алгебра, Тригонометрия и Геометрия на 1 лист

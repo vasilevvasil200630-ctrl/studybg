@@ -1136,7 +1136,7 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
       </div>
 
       {/* ========================================================================= */}
-      {/* 5. TARGET SCORE & DIPLOMA STRATEGY MATRIX (НВО / ДЗИ / ТРЕТА СПК)         */}
+      {/* 5. TARGET SCORE & DIPLOMA STRATEGY MATRIX (ДЗИ / ТРЕТА СПК / ВУЗ)          */}
       {/* ========================================================================= */}
       <div className="p-6 sm:p-8 rounded-2xl bg-blue-50/60 border border-blue-100 shadow-sm space-y-5 cv-auto">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
@@ -1188,13 +1188,13 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
 
           <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-2">
             <div className="text-brand-sapphire font-bold uppercase text-[11px]">
-              3. НВО 7. и 10. клас (БЕЛ + МАТ — 100 т.)
+              3. Кандидат-студентски прием във ВУЗ (ДЗИ + Диплома)
             </div>
             <div className="text-xl font-bold tabular-nums text-slate-900">
               Минимум {progress.targetGrade >= 5.95 ? '96' : progress.targetGrade >= 5.5 ? '86' : '74'} / 100 т.
             </div>
             <p className="text-slate-600 leading-relaxed">
-              Осигурява състезателен бал над <strong>465 / 500 т.</strong> за прием в първо желание (СМГ, ТУЕС, НПМГ, 91. НЕГ, НТБГ, СГСАГ).
+              Осигурява максимален състезателен бал при кандидатстване по матура в <strong>СУ, МУ, ТУ, УАСГ, УНСС и АУБГ</strong> (утроена оценка от ДЗИ + диплома).
             </p>
           </div>
         </div>

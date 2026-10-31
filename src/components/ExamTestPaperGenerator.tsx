@@ -361,7 +361,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
                 : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
-            Класна Контролна Работа / ДЗИ & НВО Тест (по урок)
+            Класна Контролна Работа / ДЗИ & Профилиран Тест (по урок)
           </button>
           <button
             onClick={() => setPaperMode('dippk_ticket')}
@@ -448,7 +448,7 @@ export const ExamTestPaperGenerator: React.FC<ExamTestPaperGeneratorProps> = ({
                 РЕПУБЛИКА БЪЛГАРИЯ • МИНИСТЕРСТВО НА ОБРАЗОВАНИЕТО И НАУКАТА
               </span>
               <h2 className="font-bold uppercase text-sm tracking-tight text-slate-900">
-                ДЪРЖАВЕН ЗРЕЛОСТЕН ИЗПИТ (ДЗИ) / НАЦИОНАЛНО ВЪНШНО ОЦЕНЯВАНЕ (НВО)
+                ДЪРЖАВЕН ЗРЕЛОСТЕН ИЗПИТ (ДЗИ) / КЛАСНА КОНТРОЛНА РАБОТА (8.–12. КЛАС)
               </h2>
             </div>
             <div className="text-right">

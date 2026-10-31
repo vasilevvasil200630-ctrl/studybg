@@ -308,7 +308,7 @@ export const ExcellenceCertificateModal: React.FC<ExcellenceCertificateModalProp
   <div class="cert-outer">
     <div class="cert-inner">
       <div class="badge-top">
-        ${isSpk ? 'StudyBG • Симулация на ДИППК • НЕ Е ОФИЦИАЛЕН ДОКУМЕНТ' : 'StudyBG • Национална дигитална академия за НВО 10 & ДЗИ 12'}
+        ${isSpk ? 'StudyBG • Симулация на ДИППК • НЕ Е ОФИЦИАЛЕН ДОКУМЕНТ' : 'StudyBG • Национална дигитална академия за ДЗИ 12 & Трета СПК'}
       </div>
       <h1>${isSpk ? 'Резултат от симулация на ДИППК' : 'Удостоверение за Академично Отличие'}</h1>
       <div class="subtitle">

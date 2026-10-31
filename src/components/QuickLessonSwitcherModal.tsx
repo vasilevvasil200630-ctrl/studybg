@@ -11,9 +11,9 @@ type StageFilter = 'all' | 'dzi12' | 'nvo10' | 'gymnasium89' | 'junior57';
 const STAGE_OPTIONS: { id: StageFilter; label: string; badge?: string }[] = [
   { id: 'all', label: 'Всички (5.–12. кл.)' },
   { id: 'dzi12', label: 'ДЗИ 12 (Матура)', badge: '11.–12. кл.' },
-  { id: 'nvo10', label: 'НВО 10. клас', badge: '10. кл.' },
+  { id: 'nvo10', label: '10. клас (Гимназия)', badge: '10. кл.' },
   { id: 'gymnasium89', label: '8.–9. клас', badge: 'Преговор' },
-  { id: 'junior57', label: '5.–7. клас (НВО)', badge: '5.–7. кл.' },
+  { id: 'junior57', label: '5.–7. клас', badge: '5.–7. кл.' },
 ];
 
 const INITIAL_MODAL_LIMIT = 60;
@@ -94,7 +94,7 @@ export const QuickLessonSwitcherModal: React.FC<QuickLessonSwitcherModalProps> =
             </div>
             <div>
               <h3 id="quick-lesson-switcher-title" className="text-base font-bold text-slate-900">Бърза смяна на урок</h3>
-              <p className="text-xs text-slate-500">Пълен учебен каталог (5.–12. клас): НВО 7, НВО 10, ДЗИ 12 и ДИППК ({totalCount} теми)</p>
+              <p className="text-xs text-slate-500">Пълен учебен каталог (5.–12. клас): ДЗИ 12, ДИППК и общообразователна подготовка ({totalCount} теми)</p>
             </div>
           </div>
 

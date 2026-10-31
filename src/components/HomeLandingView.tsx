@@ -279,7 +279,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.12] text-slate-900 max-w-4xl mx-auto text-balance">
             Национална дигитална академия за{' '}
-            <span className="text-brand-sapphire">НВО&nbsp;7, НВО&nbsp;10 и ДЗИ&nbsp;12</span>
+            <span className="text-brand-sapphire">ДЗИ&nbsp;(Матура), ДИППК и 8.–12.&nbsp;клас</span>
           </h1>
 
           <p className="mt-5 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed text-pretty">
@@ -488,7 +488,7 @@ export const HomeLandingView: React.FC<HomeLandingViewProps> = ({
                     <ArrowRight className="w-4 h-4 text-brand-sapphire transition-transform group-hover:translate-x-1" aria-hidden="true" />
                   </h3>
                   <p className="mt-1.5 text-sm text-slate-600 leading-relaxed">
-                    Пълни конспекти, устно изпитване пред дъската, 100-точков симулатор за НВО 7, НВО 10 и ДЗИ, STEM лаборатории и бележник към всеки урок.
+                    Пълни конспекти, устно изпитване пред дъската, 100-точков симулатор за ДЗИ и ДИППК, STEM лаборатории и бележник към всеки урок.
                   </p>
                 </div>
                 <div className="mt-4 pt-3 border-t border-blue-100 flex items-center justify-between text-xs font-semibold text-brand-sapphire">

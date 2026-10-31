@@ -36,6 +36,189 @@ export interface EmailDispatchResponse {
   plainText?: string;
 }
 
+export interface WeeklyDigestData {
+  parentName?: string;
+  studentName: string;
+  weekNumber: number;
+  studyHours: number;
+  testsCompleted: number;
+  avgScorePercent: number;
+  streakDays: number;
+  weakAreasResolved: string[];
+  weakAreasToFocus: string[];
+  adviceForParent: string;
+}
+
+/**
+ * Маскира имейл адрес за дискретно показване (напр. "radostina@gmail.com" -> "r****@gmail.com")
+ */
+export function maskEmail(email: string): string {
+  if (!email || !email.includes('@')) return email || '';
+  const [localPart, domain] = email.split('@');
+  if (!localPart || !domain) return email;
+
+  if (localPart.length <= 2) {
+    return `${localPart[0]}****@${domain}`;
+  }
+  const firstChar = localPart[0];
+  const stars = '*'.repeat(Math.min(Math.max(localPart.length - 1, 3), 4));
+  return `${firstChar}${stars}@${domain}`;
+}
+
+/**
+ * Builds a beautiful, responsive HTML email template for the Parent Weekly Digest
+ */
+export function buildWeeklyDigestHtml(data: WeeklyDigestData): string {
+  const {
+    studentName,
+    weekNumber,
+    studyHours,
+    testsCompleted,
+    avgScorePercent,
+    streakDays,
+    weakAreasResolved,
+    weakAreasToFocus,
+    adviceForParent
+  } = data;
+
+  const resolvedHtml =
+    weakAreasResolved.length > 0
+      ? weakAreasResolved
+          .map(
+            (w) =>
+              `<li style="margin-bottom: 6px; color: #15803d;"><strong>✓ ${w}</strong> — преодолян дефицит</li>`
+          )
+          .join('')
+      : `<li style="color: #64748b;">Продължава работата по затвърждаване на основните теми.</li>`;
+
+  const focusHtml =
+    weakAreasToFocus.length > 0
+      ? weakAreasToFocus
+          .map(
+            (w) =>
+              `<li style="margin-bottom: 6px; color: #b45309;"><strong>• ${w}</strong> — препоръчва се преговор</li>`
+          )
+          .join('')
+      : `<li style="color: #64748b;">Няма регистрирани сериозни пропуски тази седмица.</li>`;
+
+  const baseAppUrl =
+    typeof window !== 'undefined' && window.location?.origin
+      ? window.location.origin
+      : 'https://studybg.vercel.app';
+
+  return `
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Седмичен отчет от StudyBG за ${studentName}</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 24px; color: #0f172a;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);">
+    <!-- Header -->
+    <tr>
+      <td style="background-color: #0a4b82; padding: 32px 24px; text-align: center; color: #ffffff;">
+        <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; opacity: 0.9; display: block; margin-bottom: 8px;">
+          StudyBG • Седмичен напредък
+        </span>
+        <h1 style="margin: 0; font-size: 24px; font-weight: 800; line-height: 1.2;">
+          Седмица ${weekNumber}: Отчет за ${studentName}
+        </h1>
+        <p style="margin: 8px 0 0 0; font-size: 14px; opacity: 0.95;">
+          Официална подготовка за ДЗИ (Матура) и ДИППК по стандартите на МОН
+        </p>
+      </td>
+    </tr>
+
+    <!-- Content -->
+    <tr>
+      <td style="padding: 28px 24px;">
+        <p style="font-size: 15px; line-height: 1.6; color: #334155; margin-top: 0;">
+          Здравейте, представяме Ви обобщение на учебната активност и напредъка на <strong>${studentName}</strong> през изминалата седмица.
+        </p>
+
+        <!-- Stats Grid -->
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin: 20px 0;">
+          <tr>
+            <td width="25%" style="padding: 12px; background-color: #f1f5f9; border-radius: 12px; text-align: center;">
+              <span style="display: block; font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase;">Време</span>
+              <strong style="font-size: 20px; color: #0a4b82;">${studyHours} ч.</strong>
+            </td>
+            <td width="4%"></td>
+            <td width="25%" style="padding: 12px; background-color: #f1f5f9; border-radius: 12px; text-align: center;">
+              <span style="display: block; font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase;">Тестове</span>
+              <strong style="font-size: 20px; color: #168a46;">${testsCompleted}</strong>
+            </td>
+            <td width="4%"></td>
+            <td width="25%" style="padding: 12px; background-color: #f1f5f9; border-radius: 12px; text-align: center;">
+              <span style="display: block; font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase;">Успеваемост</span>
+              <strong style="font-size: 20px; color: #0a4b82;">${avgScorePercent}%</strong>
+            </td>
+            <td width="4%"></td>
+            <td width="25%" style="padding: 12px; background-color: #fef3c7; border-radius: 12px; text-align: center;">
+              <span style="display: block; font-size: 11px; color: #92400e; font-weight: 600; text-transform: uppercase;">Поредица</span>
+              <strong style="font-size: 20px; color: #b45309;">${streakDays} дни</strong>
+            </td>
+          </tr>
+        </table>
+
+        <!-- Overcome Deficits -->
+        <div style="margin-top: 24px; padding: 16px; border-left: 4px solid #168a46; background-color: #f0fdf4; border-radius: 0 12px 12px 0;">
+          <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: 700; color: #166534; text-transform: uppercase; letter-spacing: 0.5px;">
+            👏 Преодолени пропуски тази седмица:
+          </h3>
+          <ul style="margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.5;">
+            ${resolvedHtml}
+          </ul>
+        </div>
+
+        <!-- Areas for Next Week -->
+        <div style="margin-top: 16px; padding: 16px; border-left: 4px solid #f59e0b; background-color: #fffbeb; border-radius: 0 12px 12px 0;">
+          <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: 700; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px;">
+            🎯 Фокус за предстоящата седмица:
+          </h3>
+          <ul style="margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.5;">
+            ${focusHtml}
+          </ul>
+        </div>
+
+        <!-- Advice for Parent -->
+        <div style="margin-top: 24px; padding: 18px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
+          <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 700; color: #0a4b82;">
+            💡 Препоръка от образователния ментор:
+          </h3>
+          <p style="margin: 0; font-size: 13px; line-height: 1.6; color: #475569;">
+            ${adviceForParent}
+          </p>
+        </div>
+
+        <!-- Button -->
+        <div style="margin-top: 28px; text-align: center;">
+          <a href="${baseAppUrl}#planner" style="display: inline-block; background-color: #0a4b82; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 14px; padding: 12px 28px; border-radius: 10px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);">
+            Виж пълното родителско табло →
+          </a>
+        </div>
+      </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+      <td style="padding: 20px 24px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; font-size: 11px; color: #475569;">
+        <p style="margin: 0;">
+          StudyBG • Платформа за персонализирана подготовка за ДЗИ и ДИППК по стандартите на МОН
+        </p>
+        <p style="margin: 4px 0 0 0;">
+          Получавате този имейл като регистриран родител на ученик в платформата.
+        </p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `.trim();
+}
+
 const LOCAL_STORAGE_SUBSCRIBERS_KEY = 'studybg_newsletter_subscribers';
 const LOCAL_STORAGE_RECENT_EMAIL_KEY = 'studybg_last_used_email';
 
@@ -545,5 +728,85 @@ export const mailingService = {
       mailtoUrl,
       plainText
     };
+  },
+
+  /**
+   * Изпраща родителски седмичен дайджест (buildWeeklyDigestHtml) чрез Resend (/api/send-email)
+   * с резервен mailto: канал.
+   */
+  async sendWeeklyDigestEmail(params: {
+    toEmail: string;
+    digestData: WeeklyDigestData;
+  }): Promise<EmailDispatchResponse> {
+    const cleanEmail = params.toEmail.trim().toLowerCase();
+    if (!cleanEmail || !cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+      return { success: false, message: 'Моля, въведете валиден имейл адрес на родителя.' };
+    }
+
+    this.saveLastUsedEmail(cleanEmail);
+
+    const { digestData } = params;
+    const html = buildWeeklyDigestHtml(digestData);
+    const subject = `📊 Седмичен отчет: Напредъкът на ${digestData.studentName} за Седмица ${digestData.weekNumber}`;
+    const plainText = [
+      `StudyBG • Седмичен отчет за ${digestData.studentName} (Седмица ${digestData.weekNumber})`,
+      `Официална подготовка за ДЗИ (Матура) и ДИППК по стандартите на МОН`,
+      '',
+      `• Време за подготовка: ${digestData.studyHours} ч.`,
+      `• Решени тестове и задачи: ${digestData.testsCompleted}`,
+      `• Средна успеваемост: ${digestData.avgScorePercent}%`,
+      `• Поредица (Streak): ${digestData.streakDays} дни`,
+      '',
+      'Преодолени пропуски тази седмица:',
+      ...(digestData.weakAreasResolved.length > 0
+        ? digestData.weakAreasResolved.map((w) => `✓ ${w}`)
+        : ['• Продължава работата по затвърждаване на основните теми.']),
+      '',
+      'Фокус за предстоящата седмица:',
+      ...(digestData.weakAreasToFocus.length > 0
+        ? digestData.weakAreasToFocus.map((w) => `• ${w}`)
+        : ['• Няма регистрирани сериозни пропуски тази седмица.']),
+      '',
+      `Препоръка от образователния ментор: ${digestData.adviceForParent}`,
+      '',
+      '— StudyBG (https://studybg.vercel.app#planner)'
+    ].join('\n');
+
+    const mailtoUrl = `mailto:${encodeURIComponent(cleanEmail)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(plainText.slice(0, 1800))}`;
+
+    const resendRes = await dispatchViaResend({
+      to: cleanEmail,
+      subject,
+      html,
+      text: plainText
+    });
+
+    if (resendRes.delivered) {
+      return {
+        success: true,
+        deliveredVia: 'resend',
+        resendId: resendRes.id,
+        message: `Седмичният отчет беше изпратен успешно чрез Resend до ${cleanEmail}!`,
+        previewHtml: html,
+        mailtoUrl,
+        plainText
+      };
+    }
+
+    return {
+      success: true,
+      deliveredVia: 'mailto',
+      message: `Седмичният отчет за ${digestData.studentName} е подготвен за ${cleanEmail} (прегледайте го или го изпратете през имейл клиента).`,
+      previewHtml: html,
+      mailtoUrl,
+      plainText
+    };
   }
 };
+
+export async function sendWeeklyDigestEmail(params: {
+  toEmail: string;
+  digestData: WeeklyDigestData;
+}): Promise<EmailDispatchResponse> {
+  return mailingService.sendWeeklyDigestEmail(params);
+}

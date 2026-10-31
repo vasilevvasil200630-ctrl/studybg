@@ -37,6 +37,8 @@ import type { AppNavTab } from './Navbar';
 import { ExcellenceCertificateModal } from './ExcellenceCertificateModal';
 import { PlannerExamResults } from './PlannerExamResults';
 import { EmailShareModal } from './EmailShareModal';
+import { ParentCodeCard } from './ParentCodeCard';
+import { ParentPortalView } from './ParentPortalView';
 
 const INITIAL_CHECKLIST_LESSONS = 48;
 const CHECKLIST_LOAD_MORE_STEP = 60;
@@ -160,6 +162,10 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
   const [visibleChecklistLessons, setVisibleChecklistLessons] = useState(INITIAL_CHECKLIST_LESSONS);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
   const [isEmailPlanModalOpen, setIsEmailPlanModalOpen] = useState(false);
+  const [showParentPortal, setShowParentPortal] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return Boolean(new URLSearchParams(window.location.search).get('code'));
+  });
   const [googleProfile, setGoogleProfile] = useState<GoogleUserProfile | null>(() => getCachedGoogleProfile());
 
   useEffect(() => {
@@ -497,6 +503,15 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
     [lessons, visibleChecklistLessons]
   );
 
+  if (showParentPortal) {
+    return (
+      <ParentPortalView
+        lessons={lessons}
+        onClose={() => setShowParentPortal(false)}
+      />
+    );
+  }
+
   return (
     <div className="space-y-8 animate-fadeIn">
       
@@ -684,6 +699,12 @@ export const StudyPlannerDashboard: React.FC<StudyPlannerDashboardProps> = ({
           )}
         </div>
       </div>
+
+      {/* 1.8. РОДИТЕЛСКИ КОНТРОЛ И СЕДМИЧЕН ДАЙДЖЕСТ (ParentCodeCard) */}
+      <ParentCodeCard
+        lessons={lessons}
+        onOpenPortal={() => setShowParentPortal(true)}
+      />
 
       {/* 2. FOUR PILLARS OF READINESS BREAKDOWN CARDS */}
       {/* ========================================================================= */}

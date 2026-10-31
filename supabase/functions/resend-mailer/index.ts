@@ -71,6 +71,9 @@ Deno.serve(async (req) => {
   const fromEmail =
     (Deno.env.get('RESEND_FROM_EMAIL') ?? '').trim() ||
     'StudyBG Академия <onboarding@resend.dev>';
+  const replyTo =
+    (Deno.env.get('RESEND_REPLY_TO') ?? '').trim() ||
+    'vasilevvasil200630@gmail.com';
 
   try {
     const res = await fetch('https://api.resend.com/emails', {
@@ -84,7 +87,8 @@ Deno.serve(async (req) => {
         to: [to],
         subject,
         html: html || undefined,
-        text: text || undefined
+        text: text || undefined,
+        reply_to: replyTo
       }),
       signal: AbortSignal.timeout(15_000)
     });

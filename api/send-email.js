@@ -107,7 +107,7 @@ export default async function handler(req, res) {
   const fromEmail =
     (process.env.RESEND_FROM_EMAIL || '').trim() ||
     'StudyBG Академия <onboarding@resend.dev>';
-  const replyTo = (process.env.RESEND_REPLY_TO || '').trim() || undefined;
+  const replyTo = (process.env.RESEND_REPLY_TO || '').trim() || 'vasilevvasil200630@gmail.com';
 
   try {
     const resendRes = await fetch('https://api.resend.com/emails', {

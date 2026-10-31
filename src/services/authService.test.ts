@@ -124,9 +124,10 @@ describe('authService — Google OAuth, Real-Time Sync, Streaks, XP & Achievemen
     const badges = evaluateUserAchievements(progress, {
       examAttemptsCount: 2,
       highestExamScore: 92,
-      resolvedErrorsCount: 5
+      resolvedErrorsCount: 5,
+      leitnerBox5Count: 25
     });
-    expect(badges.length).toBe(12);
+    expect(badges.length).toBe(13);
     const unlockedIds = badges.filter((b) => b.unlocked).map((b) => b.id);
     expect(unlockedIds).toContain('first-steps');
     expect(unlockedIds).toContain('curriculum-explorer');
@@ -137,6 +138,7 @@ describe('authService — Google OAuth, Real-Time Sync, Streaks, XP & Achievemen
     expect(unlockedIds).toContain('weekly-planner-pro');
     expect(unlockedIds).toContain('exam-gladiator');
     expect(unlockedIds).toContain('exam-excellence-6');
+    expect(unlockedIds).toContain('leitner-box5-master');
 
     const levelInfo = computeUserXpAndLevel(progress, {
       examAttemptsCount: 2,

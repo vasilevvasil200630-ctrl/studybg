@@ -1,4 +1,4 @@
-import type { LeitnerCardState } from '../lib/leitnerFlashcards';
+import { getGlobalLeitnerDueStats, type LeitnerCardState } from '../lib/leitnerFlashcards';
 import type { ParentPortalStoredState } from './parentPortalService';
 
 export type TargetExamTrack = 'dzi_bel' | 'dzi_history' | 'nvo_10' | 'dzi_stem';
@@ -278,7 +278,12 @@ const ACADEMIC_LEVEL_THRESHOLDS: { level: number; minXp: number; title: string; 
 
 export function evaluateUserAchievements(
   progress: UserStudyProgress,
-  extraStats?: { examAttemptsCount?: number; highestExamScore?: number; resolvedErrorsCount?: number }
+  extraStats?: {
+    examAttemptsCount?: number;
+    highestExamScore?: number;
+    resolvedErrorsCount?: number;
+    leitnerBox5Count?: number;
+  }
 ): StudyAchievementBadge[] {
   const lessonsCount = progress.masteredLessonIds.length;
   const authorsCount = progress.masteredAuthorIds.length;
@@ -288,6 +293,12 @@ export function evaluateUserAchievements(
   const bestDailyStreak = Math.max(progress.longestDailyStreak ?? 1, progress.currentDailyStreak ?? 1);
   const examCount = extraStats?.examAttemptsCount ?? 0;
   const highestScore = extraStats?.highestExamScore ?? 0;
+  const leitnerBox5FromProgress = progress.leitnerCards
+    ? Object.values(progress.leitnerCards).filter((c) => c && c.box === 5).length
+    : 0;
+  const leitnerBox5Count =
+    extraStats?.leitnerBox5Count ??
+    Math.max(leitnerBox5FromProgress, getGlobalLeitnerDueStats().box5MasteredCount);
 
   const rawBadges: Omit<StudyAchievementBadge, 'unlocked' | 'progressPercent'>[] = [
     {
@@ -409,6 +420,16 @@ export function evaluateUserAchievements(
       xpReward: 500,
       currentValue: highestScore,
       targetValue: 85
+    },
+    {
+      id: 'leitner-box5-master',
+      title: 'Майстор на Leitner (Кутия 5)',
+      description: 'Усвои поне 25 флаш карти до Кутия 5 (30-дневен интервал) по системата на Лайтнер.',
+      category: 'curriculum',
+      iconName: 'sparkles',
+      xpReward: 350,
+      currentValue: leitnerBox5Count,
+      targetValue: 25
     }
   ];
 
@@ -425,7 +446,12 @@ export function evaluateUserAchievements(
 
 export function computeUserXpAndLevel(
   progress: UserStudyProgress,
-  extraStats?: { examAttemptsCount?: number; highestExamScore?: number; resolvedErrorsCount?: number }
+  extraStats?: {
+    examAttemptsCount?: number;
+    highestExamScore?: number;
+    resolvedErrorsCount?: number;
+    leitnerBox5Count?: number;
+  }
 ): AcademicLevelInfo {
   const badges = evaluateUserAchievements(progress, extraStats);
   const unlockedBadgesXp = badges.reduce((sum, b) => sum + (b.unlocked ? b.xpReward : 0), 0);
@@ -433,6 +459,12 @@ export function computeUserXpAndLevel(
   const activeDaysCount = Array.isArray(progress.activeDaysHistory)
     ? progress.activeDaysHistory.length
     : 1;
+  const leitnerBox5FromProgress = progress.leitnerCards
+    ? Object.values(progress.leitnerCards).filter((c) => c && c.box === 5).length
+    : 0;
+  const leitnerBox5Count =
+    extraStats?.leitnerBox5Count ??
+    Math.max(leitnerBox5FromProgress, getGlobalLeitnerDueStats().box5MasteredCount);
 
   const totalXp =
     progress.masteredLessonIds.length * 50 +
@@ -441,6 +473,7 @@ export function computeUserXpAndLevel(
     progress.grammarBestStreak * 10 +
     progress.completedWeeklyDays.length * 40 +
     activeDaysCount * 30 +
+    leitnerBox5Count * 20 +
     (extraStats?.examAttemptsCount ?? 0) * 120 +
     (extraStats?.resolvedErrorsCount ?? 0) * 25 +
     (progress.bonusXp ?? 0) +

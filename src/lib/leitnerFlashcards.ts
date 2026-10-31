@@ -95,15 +95,110 @@ export function readLeitnerStore(): Record<string, LeitnerCardState> {
   return {};
 }
 
-function writeLeitnerStore(store: Record<string, LeitnerCardState>): void {
+function writeLeitnerStore(
+  store: Record<string, LeitnerCardState>,
+  options?: { silentCloudTrigger?: boolean }
+): void {
   try {
     const raw = JSON.stringify(store);
     localStorage.setItem(STORAGE_KEY, raw);
     cachedRawJson = raw;
     cachedMap = store;
+    if (!options?.silentCloudTrigger && typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('studybg:local-data-mutated', { detail: { source: 'leitner_flashcards' } })
+      );
+    }
   } catch {
     // ignore storage errors
   }
+}
+
+export function saveLeitnerStore(
+  store: Record<string, LeitnerCardState>,
+  options?: { silentCloudTrigger?: boolean }
+): void {
+  writeLeitnerStore(store, options);
+  try {
+    const masteredSet = new Set<string>();
+    const reviewSet = new Set<string>();
+    for (const [cardId, state] of Object.entries(store)) {
+      if (!state || typeof state !== 'object') continue;
+      if (state.box >= 4 || (state.timesEasy > 0 && state.box >= 2)) {
+        masteredSet.add(cardId);
+      } else if (state.timesHard > 0 && state.box === 1) {
+        reviewSet.add(cardId);
+      }
+    }
+    localStorage.setItem(MASTERED_KEY, JSON.stringify(Array.from(masteredSet)));
+    localStorage.setItem(REVIEW_KEY, JSON.stringify(Array.from(reviewSet)));
+  } catch {
+    // ignore storage errors
+  }
+}
+
+/**
+ * Слива локалното и облачното състояние на Leitner флаш картите без загуба на прогрес.
+ * За всяка карта избира по-скорошното ревю (по lastReviewedAt или timesReviewed) и запазва максималните броячи.
+ */
+export function mergeLeitnerCardStores(
+  local: Record<string, LeitnerCardState>,
+  cloud: Record<string, LeitnerCardState> | null | undefined
+): Record<string, LeitnerCardState> {
+  if (!cloud || typeof cloud !== 'object' || Array.isArray(cloud)) {
+    return { ...local };
+  }
+
+  const merged: Record<string, LeitnerCardState> = { ...local };
+
+  for (const [cardId, cloudCard] of Object.entries(cloud)) {
+    if (!cloudCard || typeof cloudCard !== 'object' || !cardId.trim()) continue;
+    const localCard = merged[cardId];
+    if (!localCard) {
+      merged[cardId] = {
+        id: cardId,
+        box: Math.min(5, Math.max(1, Number(cloudCard.box) || 1)) as LeitnerBox,
+        nextDueAt: typeof cloudCard.nextDueAt === 'string' ? cloudCard.nextDueAt : new Date(0).toISOString(),
+        lastReviewedAt: typeof cloudCard.lastReviewedAt === 'string' ? cloudCard.lastReviewedAt : null,
+        timesReviewed: Math.max(0, Number(cloudCard.timesReviewed) || 0),
+        timesHard: Math.max(0, Number(cloudCard.timesHard) || 0),
+        timesMedium: Math.max(0, Number(cloudCard.timesMedium) || 0),
+        timesEasy: Math.max(0, Number(cloudCard.timesEasy) || 0),
+      };
+      continue;
+    }
+
+    const localTime = localCard.lastReviewedAt ? Date.parse(localCard.lastReviewedAt) : 0;
+    const cloudTime = cloudCard.lastReviewedAt ? Date.parse(cloudCard.lastReviewedAt) : 0;
+    const safeLocalTime = Number.isNaN(localTime) ? 0 : localTime;
+    const safeCloudTime = Number.isNaN(cloudTime) ? 0 : cloudTime;
+
+    const useCloudState =
+      safeCloudTime > safeLocalTime ||
+      (safeCloudTime === safeLocalTime &&
+        (Number(cloudCard.timesReviewed) || 0) > (Number(localCard.timesReviewed) || 0));
+
+    const winner = useCloudState ? cloudCard : localCard;
+
+    merged[cardId] = {
+      id: cardId,
+      box: Math.min(5, Math.max(1, Number(winner.box) || 1)) as LeitnerBox,
+      nextDueAt: typeof winner.nextDueAt === 'string' ? winner.nextDueAt : localCard.nextDueAt,
+      lastReviewedAt:
+        typeof winner.lastReviewedAt === 'string'
+          ? winner.lastReviewedAt
+          : localCard.lastReviewedAt ?? cloudCard.lastReviewedAt ?? null,
+      timesReviewed: Math.max(
+        Number(localCard.timesReviewed) || 0,
+        Number(cloudCard.timesReviewed) || 0
+      ),
+      timesHard: Math.max(Number(localCard.timesHard) || 0, Number(cloudCard.timesHard) || 0),
+      timesMedium: Math.max(Number(localCard.timesMedium) || 0, Number(cloudCard.timesMedium) || 0),
+      timesEasy: Math.max(Number(localCard.timesEasy) || 0, Number(cloudCard.timesEasy) || 0),
+    };
+  }
+
+  return merged;
 }
 
 export function getLeitnerCardState(cardId: string): LeitnerCardState {

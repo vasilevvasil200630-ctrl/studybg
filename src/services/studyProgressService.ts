@@ -1,3 +1,6 @@
+import type { LeitnerCardState } from '../lib/leitnerFlashcards';
+import type { ParentPortalStoredState } from './parentPortalService';
+
 export type TargetExamTrack = 'dzi_bel' | 'dzi_history' | 'nvo_10' | 'dzi_stem';
 
 export const LOCAL_DATA_MUTATED_EVENT = 'studybg:local-data-mutated';
@@ -16,6 +19,10 @@ export interface UserStudyProgress {
   currentDailyStreak?: number;
   longestDailyStreak?: number;
   bonusXp?: number;
+  /** Облачно синхронизирано състояние на Leitner кутиите (Spaced Repetition) */
+  leitnerCards?: Record<string, LeitnerCardState>;
+  /** Облачно синхронизирано състояние на Родителския портал (ученически код и свързан родителски имейл) */
+  parentPortal?: ParentPortalStoredState;
 }
 
 export interface AcademicLevelInfo {

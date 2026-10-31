@@ -7,7 +7,9 @@ import {
   getLeitnerCardState,
   recordLeitnerCardReview,
   getLeitnerSummaryForCards,
-  resetLeitnerCardsForLesson
+  resetLeitnerCardsForLesson,
+  mergeLeitnerCardStores,
+  saveLeitnerStore
 } from '../src/lib/leitnerFlashcards';
 import {
   buildWeeklyDigestHtml,
@@ -21,7 +23,8 @@ import {
   classifySubject,
   detectCategory,
   bucketByCategory,
-  parentPortalService
+  parentPortalService,
+  mergeParentPortalState
 } from '../src/services/parentPortalService';
 
 beforeEach(() => {
@@ -165,5 +168,70 @@ describe('Parent Weekly Digest & Parent Portal Service (ported from MaturaPlus f
     expect(digestData.studentName).toBeTruthy();
     expect(digestData.adviceForParent).toContain('ДЗИ');
     expect(digestData.adviceForParent).not.toContain('НВО');
+  });
+
+  it('merges Leitner card stores and Parent Portal state across cloud & local devices without data loss', () => {
+    const mergedCards = mergeLeitnerCardStores(
+      {
+        c1: {
+          id: 'c1',
+          box: 2,
+          nextDueAt: '2026-11-02T00:00:00.000Z',
+          lastReviewedAt: '2026-10-30T10:00:00.000Z',
+          timesReviewed: 2,
+          timesHard: 0,
+          timesMedium: 1,
+          timesEasy: 1
+        }
+      },
+      {
+        c1: {
+          id: 'c1',
+          box: 4,
+          nextDueAt: '2026-11-14T00:00:00.000Z',
+          lastReviewedAt: '2026-10-31T15:00:00.000Z',
+          timesReviewed: 4,
+          timesHard: 0,
+          timesMedium: 1,
+          timesEasy: 3
+        },
+        c2: {
+          id: 'c2',
+          box: 5,
+          nextDueAt: '2026-11-30T00:00:00.000Z',
+          lastReviewedAt: '2026-10-31T16:00:00.000Z',
+          timesReviewed: 5,
+          timesHard: 0,
+          timesMedium: 0,
+          timesEasy: 5
+        }
+      }
+    );
+
+    expect(mergedCards.c1.box).toBe(4);
+    expect(mergedCards.c1.timesReviewed).toBe(4);
+    expect(mergedCards.c2.box).toBe(5);
+
+    saveLeitnerStore(mergedCards, { silentCloudTrigger: true });
+    expect(getLeitnerCardState('c2').box).toBe(5);
+
+    const mergedPortal = mergeParentPortalState(
+      {
+        studentCode: 'MP-234567',
+        parentEmail: null,
+        isConnected: false,
+        linkedAt: null
+      },
+      {
+        studentCode: 'MP-89ABCD',
+        parentEmail: 'parent@example.com',
+        isConnected: true,
+        linkedAt: '2026-10-31T12:00:00.000Z'
+      }
+    );
+
+    expect(mergedPortal.studentCode).toBe('MP-89ABCD');
+    expect(mergedPortal.isConnected).toBe(true);
+    expect(mergedPortal.parentEmail).toBe('parent@example.com');
   });
 });

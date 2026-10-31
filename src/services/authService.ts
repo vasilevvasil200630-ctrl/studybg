@@ -12,6 +12,15 @@ import {
 import { errorBankService, type SavedErrorItem } from './errorBankService';
 import { examHistoryService, type ExamAttemptRecord } from './examHistoryService';
 import { mailingService } from './mailingService';
+import {
+  readLeitnerStore,
+  saveLeitnerStore,
+  mergeLeitnerCardStores
+} from '../lib/leitnerFlashcards';
+import {
+  parentPortalService,
+  mergeParentPortalState
+} from './parentPortalService';
 
 export interface GoogleUserProfile {
   id: string;
@@ -340,7 +349,7 @@ export function mergeStudyProgress(
   const mergedActiveDays = uniqueStrings(local.activeDaysHistory, cloud.activeDaysHistory);
   const streakStats = computeDailyStreakStats(mergedActiveDays);
 
-  return {
+  const merged: UserStudyProgress = {
     targetExam: local.targetExam || targetExam,
     dailyGoalMinutes: local.dailyGoalMinutes || dailyGoalMinutes,
     targetGrade: local.targetGrade || targetGrade,
@@ -368,6 +377,18 @@ export function mergeStudyProgress(
     ),
     bonusXp: Math.max(Number(local.bonusXp) || 0, Number(cloud.bonusXp) || 0)
   };
+
+  if (local.leitnerCards || cloud.leitnerCards) {
+    merged.leitnerCards = mergeLeitnerCardStores(local.leitnerCards ?? {}, cloud.leitnerCards);
+  }
+  if (local.parentPortal || cloud.parentPortal) {
+    merged.parentPortal = mergeParentPortalState(
+      local.parentPortal ?? parentPortalService.getState(),
+      cloud.parentPortal
+    );
+  }
+
+  return merged;
 }
 
 /**
@@ -556,6 +577,8 @@ export const authService = {
     const localProgress = studyProgressService.getProgress();
     const localErrors = errorBankService.getAllErrors();
     const localExams = examHistoryService.getAllAttempts();
+    const localLeitner = readLeitnerStore();
+    const localParentPortal = parentPortalService.getState();
 
     if (!isSupabaseConfigured()) {
       return {
@@ -600,6 +623,8 @@ export const authService = {
       let mergedProgress = localProgress;
       let mergedErrors = localErrors;
       let mergedExams = localExams;
+      let mergedLeitner = localLeitner;
+      let mergedParentPortal = localParentPortal;
       let profileSynced = false;
       let profileSyncWarning: string | undefined;
 
@@ -610,9 +635,12 @@ export const authService = {
         .maybeSingle();
 
       if (!selectError && cloudRow) {
-        mergedProgress = mergeStudyProgress(
-          localProgress,
-          cloudRow.study_progress as Partial<UserStudyProgress> | null
+        const cloudProgressObj = cloudRow.study_progress as Partial<UserStudyProgress> | null;
+        mergedProgress = mergeStudyProgress(localProgress, cloudProgressObj);
+        mergedLeitner = mergeLeitnerCardStores(localLeitner, cloudProgressObj?.leitnerCards);
+        mergedParentPortal = mergeParentPortalState(
+          localParentPortal,
+          cloudProgressObj?.parentPortal
         );
         mergedErrors = mergeErrorBankItems(
           localErrors,
@@ -622,7 +650,16 @@ export const authService = {
           localExams,
           cloudRow.exam_history as ExamAttemptRecord[] | null
         );
-        studyProgressService.saveProgress(mergedProgress, { silentCloudTrigger: true });
+        studyProgressService.saveProgress(
+          {
+            ...mergedProgress,
+            leitnerCards: mergedLeitner,
+            parentPortal: mergedParentPortal
+          },
+          { silentCloudTrigger: true }
+        );
+        saveLeitnerStore(mergedLeitner, { silentCloudTrigger: true });
+        parentPortalService.saveState(mergedParentPortal, { silentCloudTrigger: true });
         errorBankService.saveErrors(mergedErrors, { silentCloudTrigger: true });
         if (mergedExams.length !== localExams.length) {
           examHistoryService.saveAttempts(mergedExams, { silentCloudTrigger: true });
@@ -638,7 +675,11 @@ export const authService = {
           full_name: profile.fullName,
           avatar_url: profile.avatarUrl,
           auth_provider: profile.provider,
-          study_progress: mergedProgress,
+          study_progress: {
+            ...mergedProgress,
+            leitnerCards: mergedLeitner,
+            parentPortal: mergedParentPortal
+          },
           error_bank: mergedErrors.slice(0, 200),
           exam_history: mergedExams.slice(0, 200),
           updated_at: nowIso
@@ -809,6 +850,8 @@ export const authService = {
           }))
         },
         studyProgress: progress,
+        leitnerFlashcards: readLeitnerStore(),
+        parentPortal: parentPortalService.getState(),
         errorBank: allErrors,
         examHistory: examAttempts,
         oralExamHistory
@@ -889,6 +932,10 @@ export const authService = {
 
     const keysToRemove = [
       'studybg_study_progress_v1',
+      'studybg_leitner_cards_v1',
+      'studybg_flashcards_mastered_v1',
+      'studybg_flashcards_review_v1',
+      'studybg_parent_portal_v1',
       'studybg_exam_history',
       'studybg_error_bank',
       'studybg_oral_exam_history_v1',

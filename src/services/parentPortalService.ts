@@ -189,6 +189,60 @@ export interface ParentPortalStoredState {
   studentName?: string;
 }
 
+/**
+ * Слива локалното и облачното състояние на Родителския портал между устройствата.
+ * Запазва активната връзка с родителския имейл и синхронизира ученическия код (MP-XXXXXX).
+ */
+export function mergeParentPortalState(
+  local: ParentPortalStoredState,
+  cloud: Partial<ParentPortalStoredState> | null | undefined
+): ParentPortalStoredState {
+  if (!cloud || typeof cloud !== 'object') {
+    return local;
+  }
+
+  const cloudCleanCode =
+    typeof cloud.studentCode === 'string' && cloud.studentCode.trim()
+      ? stripStudentCodePrefix(normalizeParentCode(cloud.studentCode))
+      : '';
+  const localCleanCode = stripStudentCodePrefix(normalizeParentCode(local.studentCode));
+
+  const studentCode =
+    cloudCleanCode.length === CODE_LENGTH
+      ? `MP-${cloudCleanCode}`
+      : localCleanCode.length === CODE_LENGTH
+      ? `MP-${localCleanCode}`
+      : local.studentCode;
+
+  const localConnected = Boolean(local.isConnected && local.parentEmail);
+  const cloudConnected = Boolean(cloud.isConnected && typeof cloud.parentEmail === 'string' && cloud.parentEmail.trim());
+
+  let parentEmail: string | null = local.parentEmail;
+  let isConnected = localConnected;
+  let linkedAt: string | null = local.linkedAt;
+
+  if (localConnected && cloudConnected) {
+    const localTime = local.linkedAt ? Date.parse(local.linkedAt) : 0;
+    const cloudTime = typeof cloud.linkedAt === 'string' ? Date.parse(cloud.linkedAt) : 0;
+    if ((Number.isNaN(cloudTime) ? 0 : cloudTime) > (Number.isNaN(localTime) ? 0 : localTime)) {
+      parentEmail = cloud.parentEmail!.trim().toLowerCase();
+      linkedAt = cloud.linkedAt ?? local.linkedAt;
+    }
+  } else if (cloudConnected) {
+    parentEmail = cloud.parentEmail!.trim().toLowerCase();
+    isConnected = true;
+    linkedAt = typeof cloud.linkedAt === 'string' ? cloud.linkedAt : new Date().toISOString();
+  }
+
+  return {
+    studentCode,
+    parentEmail,
+    isConnected,
+    linkedAt,
+    studentName: local.studentName || (typeof cloud.studentName === 'string' ? cloud.studentName : undefined)
+  };
+}
+
 export interface PortalChildData {
   id: string;
   name: string;
@@ -288,14 +342,14 @@ export const parentPortalService = {
       isConnected: false,
       linkedAt: null
     };
-    this.saveState(initial);
+    this.saveState(initial, { silentCloudTrigger: true });
     return initial;
   },
 
-  saveState(state: ParentPortalStoredState): void {
+  saveState(state: ParentPortalStoredState, options?: { silentCloudTrigger?: boolean }): void {
     try {
       localStorage.setItem(PARENT_PORTAL_STORAGE_KEY, JSON.stringify(state));
-      if (typeof window !== 'undefined') {
+      if (!options?.silentCloudTrigger && typeof window !== 'undefined') {
         window.dispatchEvent(
           new CustomEvent(LOCAL_DATA_MUTATED_EVENT, { detail: { source: 'parent_portal' } })
         );

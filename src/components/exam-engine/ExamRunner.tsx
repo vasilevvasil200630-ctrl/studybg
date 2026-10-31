@@ -22,6 +22,7 @@ import { examHistoryService, type ExamAttemptRecord } from '../../services/examH
 import { errorBankService } from '../../services/errorBankService';
 import { reviewAnswers } from '../../lib/examMistakes';
 import { ExcellenceCertificateModal } from '../ExcellenceCertificateModal';
+import { EmailShareModal } from '../EmailShareModal';
 import { ExamFocusBar } from './ExamFocusBar';
 import { FormulaSheetPanel } from './FormulaSheetPanel';
 import { topicBreakdown, topicPercent, type TopicKey, type TopicScore } from '../../data/examTopics';
@@ -200,6 +201,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
   const attemptIdRef = useRef<string | null>(null);
   const [bankNote, setBankNote] = useState<BankNote | null>(null);
   const [certOpen, setCertOpen] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
 
   // Възстановяване на незавършен изпит (само в браузъра, след монтиране)
   useEffect(() => {
@@ -435,6 +437,7 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
             wrongAutoCount={wrongAutoQuestions.length}
             onRetryMistakes={retryMistakes}
             onOpenCertificate={() => setCertOpen(true)}
+            onOpenEmail={() => setEmailOpen(true)}
             onPrintProtocol={() => window.print()}
             onRestart={reset}
             onExit={exit}
@@ -459,6 +462,17 @@ export const ExamRunner: React.FC<ExamRunnerProps> = ({ paper, onExit, onPractic
             scoreText={`Резултат: ${fmt(result.totalPoints)} / ${result.maxPoints} точки (${result.maxPoints > 0 ? Math.round((result.totalPoints / result.maxPoints) * 100) : 0}%)`}
             gradeLabel={result.grade ? `Оценка: ${formatGrade(result.grade)}` : `Резултат: ${fmt(result.totalPoints)} т. (${paper.exam})`}
             highlights={result.sections.map((s) => `${s.title.replace(/\s*\(\d+ т\.\)$/, '')}: ${fmt(s.points)} / ${s.maxPoints} т.`)}
+          />
+          <EmailShareModal
+            isOpen={emailOpen}
+            onClose={() => setEmailOpen(false)}
+            testResult={{
+              lessonTitle: paper.title,
+              score: Math.round(result.totalPoints * 100) / 100,
+              total: result.maxPoints,
+              gradeBg: result.grade ? result.grade.numeric : Math.max(2, Math.min(6, 2 + (result.totalPoints / Math.max(1, result.maxPoints)) * 4)),
+              missedQuestions: wrongAutoQuestions.slice(0, 8).map((q) => `Задача ${q.number}: ${q.prompt.slice(0, 120)}${q.prompt.length > 120 ? '…' : ''}`)
+            }}
           />
         </>
       )}
@@ -554,6 +568,7 @@ const ResultPanel: React.FC<{
   wrongAutoCount: number;
   onRetryMistakes: () => void;
   onOpenCertificate: () => void;
+  onOpenEmail: () => void;
   onPrintProtocol: () => void;
   onRestart: () => void;
   onExit: () => void;
@@ -573,6 +588,7 @@ const ResultPanel: React.FC<{
   wrongAutoCount,
   onRetryMistakes,
   onOpenCertificate,
+  onOpenEmail,
   onPrintProtocol,
   onRestart,
   onExit,
@@ -636,6 +652,14 @@ const ResultPanel: React.FC<{
           >
             <Award className="h-4 w-4 text-emerald-700" aria-hidden="true" />
             Сертификат
+          </button>
+          <button
+            type="button"
+            onClick={onOpenEmail}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3.5 py-2.5 text-sm font-semibold text-blue-900 transition-colors hover:bg-blue-100"
+          >
+            <Send className="h-4 w-4 text-blue-700" aria-hidden="true" />
+            Изпрати по имейл
           </button>
           <button
             type="button"

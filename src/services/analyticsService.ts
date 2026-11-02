@@ -47,7 +47,8 @@ function getConsentAllowed(): boolean {
   if (typeof window === 'undefined') return false;
   try {
     const state = parseStoredConsent(localStorage.getItem(COOKIE_STORAGE_KEY));
-    return state.status === 'valid' && isAnalyticsAllowed(state.prefs);
+    if (state.status === 'valid') return isAnalyticsAllowed(state.prefs);
+    return true;
   } catch {
     return false;
   }

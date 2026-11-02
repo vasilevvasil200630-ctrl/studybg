@@ -126,7 +126,7 @@ const STORAGE_REGISTRY: StorageRegistryEntry[] = [
     retention: 'До обновяване на версията'
   },
   {
-    keyName: '_ga, _ga_EE8QCTTSKD',
+    keyName: '_ga, _ga_NS76N3C6PP',
     category: 'Аналитичен (само със съгласие)',
     purpose: 'Google Analytics 4 — агрегирана статистика за посещенията със забранена рекламна персонализация (allow_google_signals: false)',
     retention: 'До 2 години (или до оттегляне)'

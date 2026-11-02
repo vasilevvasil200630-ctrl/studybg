@@ -95,7 +95,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
 
   useEffect(() => {
     if (!analyticsAllowed || typeof window === 'undefined') return;
-    const rawGaId = (import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-EE8QCTTSKD').trim();
+    const rawGaId = (import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-NS76N3C6PP').trim();
     const rawClarityId = (import.meta.env.VITE_CLARITY_PROJECT_ID || 'yqlqdpk1li').trim();
     const gaId = /^G-[A-Z0-9]+$/.test(rawGaId) ? rawGaId : '';
     const clarityId = /^[a-z0-9]+$/i.test(rawClarityId) ? rawClarityId : '';
@@ -138,6 +138,15 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({
     }
     if (!prefs.analytics) {
       clearAnalyticsCookies();
+      const w = window as unknown as { gtag?: (...args: unknown[]) => void };
+      if (typeof w.gtag === 'function') {
+        w.gtag('consent', 'update', { analytics_storage: 'denied' });
+      }
+    } else {
+      const w = window as unknown as { gtag?: (...args: unknown[]) => void };
+      if (typeof w.gtag === 'function') {
+        w.gtag('consent', 'update', { analytics_storage: 'granted' });
+      }
     }
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent(COOKIE_CONSENT_UPDATED_EVENT, { detail: prefs }));

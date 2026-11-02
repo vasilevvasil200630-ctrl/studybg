@@ -112,7 +112,7 @@ export default defineConfig({
           if (id.includes('src/data/dippkPapers/')) {
             return 'data-exam-dippk-v1';
           }
-          if (id.includes('src/data/monLessons/hydrateMonLessons') || id.includes('src/data/monLessons/group')) {
+          if (id.includes('src/data/monLessons/hydrateMonLessons') || id.includes('src/data/monLessons/writeLessons') || id.includes('src/data/monLessons/group')) {
             return 'mon-lessons-runtime';
           }
           if (id.includes('src/data/monLessons/pp')) {

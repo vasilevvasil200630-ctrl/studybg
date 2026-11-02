@@ -119,7 +119,7 @@ export default defineConfig({
             if (/ppMath/.test(id)) {
               return 'mon-lessons-pp-math';
             }
-            if (/pp(Informatika|It)/.test(id)) {
+            if (/pp(Inf|It)/.test(id)) {
               return 'mon-lessons-pp-cs';
             }
             if (/ppFa/.test(id)) {

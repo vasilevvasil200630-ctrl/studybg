@@ -405,6 +405,13 @@ export const Footer: React.FC<FooterProps> = ({
               <Cookie className="w-3.5 h-3.5" aria-hidden="true" />
               Настройки на бисквитките
             </button>
+            <span>•</span>
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('studybg:open-feedback'))}
+              className="text-emerald-700 hover:text-emerald-900 font-semibold"
+            >
+              Обратна връзка & Мнение
+            </button>
           </div>
 
           <div className="flex items-center gap-1.5 text-slate-500 text-[11px]">

@@ -130,3 +130,91 @@ export function syncCanonicalUrl(pathname: string): void {
   document.querySelector('link[rel="canonical"]')?.setAttribute('href', href);
   document.querySelector('meta[property="og:url"]')?.setAttribute('content', href);
 }
+
+/**
+ * Динамично синхронизиране на мета тагове (description, OpenGraph, Twitter) и Schema.org JSON-LD
+ * за всяка страница и всеки урок (/lesson/<id>), за да се индексират оптимално от Googlebot.
+ */
+export function syncDynamicSeoMeta(params: {
+  pathname: string;
+  title: string;
+  description: string;
+  breadcrumbLabel?: string;
+  lesson?: {
+    id: string;
+    title: string;
+    subject: string;
+    grade: string;
+    overview: string;
+  };
+}): void {
+  if (typeof document === 'undefined') return;
+  syncCanonicalUrl(params.pathname);
+
+  const canonicalUrl = `${SITE_ORIGIN}${params.pathname === '/' ? '/' : params.pathname}`;
+  document.querySelector('meta[name="description"]')?.setAttribute('content', params.description);
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', params.title);
+  document.querySelector('meta[property="og:description"]')?.setAttribute('content', params.description);
+  document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', params.title);
+  document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', params.description);
+
+  // Динамичен Schema.org JSON-LD блок за урока или раздела (LearningResource + BreadcrumbList)
+  const scriptId = 'studybg-dynamic-jsonld';
+  let scriptEl = document.getElementById(scriptId) as HTMLScriptElement | null;
+  if (!scriptEl) {
+    scriptEl = document.createElement('script');
+    scriptEl.id = scriptId;
+    scriptEl.type = 'application/ld+json';
+    document.head.appendChild(scriptEl);
+  }
+
+  const breadcrumbItems = [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'StudyBG',
+      item: `${SITE_ORIGIN}/`
+    }
+  ];
+
+  if (params.pathname !== '/') {
+    breadcrumbItems.push({
+      '@type': 'ListItem',
+      position: 2,
+      name: params.breadcrumbLabel || params.title.split('|')[0].trim(),
+      item: canonicalUrl
+    });
+  }
+
+  const graph: Array<Record<string, unknown>> = [
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbItems
+    }
+  ];
+
+  if (params.lesson) {
+    graph.push({
+      '@type': 'LearningResource',
+      '@id': `${canonicalUrl}#learning-resource`,
+      name: params.lesson.title,
+      description: params.lesson.overview,
+      url: canonicalUrl,
+      inLanguage: 'bg-BG',
+      isAccessibleForFree: true,
+      educationalLevel: params.lesson.grade,
+      about: params.lesson.subject,
+      learningResourceType: ['Lesson Plan', 'Flashcards', 'Practice Quiz'],
+      provider: {
+        '@type': 'EducationalOrganization',
+        name: 'StudyBG',
+        url: SITE_ORIGIN
+      }
+    });
+  }
+
+  scriptEl.textContent = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': graph
+  });
+}

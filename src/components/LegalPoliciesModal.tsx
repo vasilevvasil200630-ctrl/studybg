@@ -96,6 +96,12 @@ const STORAGE_REGISTRY: StorageRegistryEntry[] = [
     retention: 'До изчистване'
   },
   {
+    keyName: 'studybg_engagement_stats_v1 / studybg_feedback_history_v1',
+    category: 'Функционален',
+    purpose: 'Локална статистика за активно учебно време по раздели („Къде отделяш най-много време“) и подадени сигнали/обратна връзка',
+    retention: 'До изчистване'
+  },
+  {
     keyName: 'sb-*-auth-token / studybg_cached_google_profile_v1',
     category: 'Строго необходим',
     purpose: 'Криптирана OAuth 2.0 (PKCE) сесия и кеш на потребителския профил при доброволен вход с Google за облачна синхронизация',

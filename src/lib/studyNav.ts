@@ -113,15 +113,15 @@ export function getStudyPageMeta(tab: AppNavTab, totalLessons: number): PageMeta
     case 'program':
       return { title: 'Моята програма', description: 'Предметите и темите по учебните програми на МОН за твоя клас, училище и профил.' };
     case 'planner':
-      return { title: 'Моят план', description: 'Колко време остава до изпита, седмичен график и готовност по теми.' };
+      return { title: 'Моят план', description: 'Колко време остава до изпита, седмичен график, Родителски портал и готовност по теми.' };
     case 'grammar':
-      return { title: 'Граматика и правопис', description: 'Задачи от Модул 1 на ДЗИ и НВО 10 по нормите на БАН.' };
+      return { title: 'Граматика и правопис', description: 'Задачи от Модул 1 на ДЗИ и гимназиален етап (8.–12. клас) по нормите на БАН.' };
     case 'moduletwo':
-      return { title: 'Тропи, пароними и резюме', description: 'Модул 2 на ДЗИ и НВО 10: изразни средства, лексика и сбит преразказ.' };
+      return { title: 'Тропи, пароними и резюме', description: 'Модул 2 на ДЗИ и гимназиален етап: изразни средства, лексика и резюме.' };
     case 'literature':
-      return { title: 'Литература', description: 'Задължителните автори и творби и помощ за теза към 41. задача (есе и ЛИС).' };
+      return { title: 'Литература', description: 'Задължителните автори и творби за ДЗИ и помощ за теза към 41. задача (есе и ЛИС).' };
     case 'mathlab':
-      return { title: 'Математика', description: 'Задачи 16–17 от НВО 10 и 26–28 от ДЗИ, решени стъпка по стъпка, с чертежи.' };
+      return { title: 'Математика', description: 'Задачи с отворен отговор и пълни решения стъпка по стъпка за ДЗИ и профилирана подготовка.' };
     case 'sciencelab':
       return { title: 'Природни науки', description: 'Биология, химия и физика: ДНК и белтъци, йонни реакции, закон на Ом.' };
     case 'oralexam':
@@ -129,23 +129,23 @@ export function getStudyPageMeta(tab: AppNavTab, totalLessons: number): PageMeta
     case 'atlas':
       return { title: 'История и география', description: 'Мирните договори от 681 до 1947 г. и шестте района за планиране (NUTS 2).' };
     case 'english':
-      return { title: 'Английски език', description: 'ДЗИ и НВО: Use of English и Writing на ниво B1.1 и B2.' };
+      return { title: 'Английски език', description: 'ДЗИ (B1.1 и B2) и профилирана подготовка: Use of English и Writing.' };
     case 'civics':
-      return { title: 'Гражданско образование', description: 'Конституцията, разделението на властите и Европейският съюз.' };
+      return { title: 'Гражданско образование', description: 'Конституцията, разделението на властите, Кодекс на труда и Европейският съюз.' };
     case 'blitz':
       return { title: 'Блиц за 60 секунди', description: 'Бързи въпроси срещу часовника — сам или отбор срещу отбор в час.' };
     case 'cases':
       return { title: 'Исторически казуси', description: 'Задачи с архивни извори за ДЗИ по история, 11.–12. клас.' };
     case 'calculator':
-      return { title: 'Оценка и бал', description: 'От точки към оценка по скалата на МОН за ДЗИ и състезателен бал.' };
+      return { title: 'Оценка и бал', description: 'От точки към оценка по скалата на МОН за ДЗИ, ДИППК и състезателен бал.' };
     case 'errorbank':
       return { title: 'Банка с грешки', description: 'Въпросите, на които си сгрешил, събрани за повторение.' };
     case 'catalog':
-      return { title: 'Учебна програма', description: `Всички ${totalLessons} урока, подредени по клас, предмет и изпит.` };
+      return { title: 'Учебна програма', description: `Всички ${totalLessons} урока по програмите на МОН за гимназиален етап и ДЗИ.` };
     case 'simulator':
-      return { title: 'Изпитен симулатор', description: 'Изпит по текущия урок или пълен вариант на МОН — с таймер, ключ и точки.' };
+      return { title: 'Изпитен симулатор', description: 'Изпит по текущия урок или пълен 100-точков вариант на МОН за ДЗИ и ДИППК — с таймер, ключ и точки.' };
     case 'generator':
-      return { title: 'Контролни за печат', description: 'Варианти А и Б по избран урок, готови за принтиране.' };
+      return { title: 'Контролни за печат', description: 'Варианти А и Б по избран урок и изпитни билети за ДИППК, готови за принтиране.' };
     default:
       return null;
   }

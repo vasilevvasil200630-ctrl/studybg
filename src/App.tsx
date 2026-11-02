@@ -12,7 +12,9 @@ import { CookieConsentBanner } from './components/CookieConsentBanner';
 import type { LegalPolicyTab } from './components/LegalPoliciesModal';
 import { MaturaPlusBridgeBanner } from './components/MaturaPlusBridgeBanner';
 import { ChunkErrorBoundary } from './components/ChunkErrorBoundary';
-import { parseLocation, pushRoute, routeToPath, syncCanonicalUrl } from './lib/routing';
+import { parseLocation, pushRoute, routeToPath, syncCanonicalUrl, syncDynamicSeoMeta } from './lib/routing';
+import { analyticsService } from './services/analyticsService';
+import { FeedbackWidget } from './components/FeedbackWidget';
 
 import { HomeLandingView } from './components/HomeLandingView';
 
@@ -245,6 +247,74 @@ export function App() {
   }, [portalMode, activeTab, cultureSubTab, currentLesson, totalLessonsDisplayCount]);
 
   // Legal Policies and Cookie Consent State
+  const [activeDwellSeconds, setActiveDwellSeconds] = useState(0);
+  useEffect(() => {
+    setActiveDwellSeconds(0);
+    const sectionKey = portalMode === 'culture' ? `culture:${cultureSubTab}` : activeTab;
+    const sectionLabel =
+      portalMode === 'culture'
+        ? `Обща култура (${cultureSubTab})`
+        : getStudyNavLabel(activeTab) || (activeTab === 'home' ? 'Начало' : activeTab);
+    const isLessonContext = portalMode === 'study' && LESSON_TABS.has(activeTab);
+    const meta = portalMode === 'study' ? getStudyPageMeta(activeTab, totalLessonsDisplayCount) : null;
+    const pageDesc =
+      portalMode === 'culture'
+        ? 'Портал за обща култура, 41 конспиративни досиета, карта на мистичните зони и историческа хронология в StudyBG.'
+        : isLessonContext
+        ? `${currentLesson.title} (${currentLesson.subject}, ${currentLesson.grade}): ${currentLesson.summary.overview.slice(0, 150)}...`
+        : meta?.description ||
+          'Национална образователна платформа за гимназиален етап (8.–12. клас), ДЗИ (Матура) и Трета СПК (ДИППК) по стандартите на МОН.';
+
+    syncDynamicSeoMeta({
+      pathname: window.location.pathname,
+      title: document.title,
+      description: pageDesc,
+      breadcrumbLabel: sectionLabel,
+      lesson: isLessonContext
+        ? {
+            id: currentLesson.id,
+            title: currentLesson.title,
+            subject: currentLesson.subject,
+            grade: currentLesson.grade,
+            overview: currentLesson.summary.overview
+          }
+        : undefined
+    });
+
+    analyticsService.trackPageView({
+      path: window.location.pathname,
+      title: document.title,
+      section: sectionKey,
+      sectionLabel,
+      lessonId: isLessonContext ? currentLesson.id : undefined,
+      lessonTitle: isLessonContext ? currentLesson.title : undefined,
+      subject: isLessonContext ? currentLesson.subject : undefined,
+      grade: isLessonContext ? currentLesson.grade : undefined
+    });
+
+    let accumulatedSeconds = 0;
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        accumulatedSeconds += 1;
+        setActiveDwellSeconds(accumulatedSeconds);
+      }
+    }, 1000);
+
+    return () => {
+      window.clearInterval(interval);
+      if (accumulatedSeconds >= 2) {
+        analyticsService.recordDwellTime({
+          section: sectionKey,
+          sectionLabel,
+          seconds: accumulatedSeconds,
+          lessonId: isLessonContext ? currentLesson.id : undefined,
+          lessonTitle: isLessonContext ? currentLesson.title : undefined,
+          subject: isLessonContext ? currentLesson.subject : undefined,
+          grade: isLessonContext ? currentLesson.grade : undefined
+        });
+      }
+    };
+  }, [portalMode, activeTab, cultureSubTab, currentLesson, totalLessonsDisplayCount]);
   const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
   const [activePolicyTab, setActivePolicyTab] = useState<LegalPolicyTab>('privacy');
   const [forceOpenCookieSettings, setForceOpenCookieSettings] = useState(false);
@@ -924,6 +994,21 @@ export function App() {
       </div>
 
       {isAppShell && <MobileBottomNav activeTab={activeTab} onSelectTab={handleNavigateStudyTab} />}
+
+      {/* Interactive Feedback & Engagement Time Widget */}
+      <FeedbackWidget
+        currentSection={portalMode === 'culture' ? `culture:${cultureSubTab}` : activeTab}
+        currentSectionLabel={
+          portalMode === 'culture'
+            ? `Обща култура (${cultureSubTab})`
+            : getStudyNavLabel(activeTab) || (activeTab === 'home' ? 'Начало' : activeTab)
+        }
+        currentLessonId={portalMode === 'study' && LESSON_TABS.has(activeTab) ? currentLesson.id : undefined}
+        currentLessonTitle={portalMode === 'study' && LESSON_TABS.has(activeTab) ? currentLesson.title : undefined}
+        currentSubject={portalMode === 'study' && LESSON_TABS.has(activeTab) ? currentLesson.subject : undefined}
+        currentGrade={portalMode === 'study' && LESSON_TABS.has(activeTab) ? currentLesson.grade : undefined}
+        activeDwellSeconds={activeDwellSeconds}
+      />
 
       {/* GDPR Cookie Consent Banner */}
       <CookieConsentBanner

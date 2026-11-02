@@ -21,6 +21,7 @@ export const NativeDialog: React.FC<NativeDialogProps> = ({
   children
 }) => {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
+  const pressedOutsideRef = useRef<boolean>(false);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -36,18 +37,32 @@ export const NativeDialog: React.FC<NativeDialogProps> = ({
     onClose();
   };
 
-  // Light-dismiss за браузъри без closedby="any": клик извън панела затваря диалога
-  const handleClick = (event: React.MouseEvent<HTMLDialogElement>) => {
-    const dialog = dialogRef.current;
-    if (!dialog || event.target !== dialog) return;
+  const isPointerOutside = (event: React.PointerEvent<HTMLDialogElement>, dialog: HTMLDialogElement): boolean => {
     const rect = dialog.getBoundingClientRect();
-    const inside =
-      rect.top <= event.clientY &&
-      event.clientY <= rect.bottom &&
-      rect.left <= event.clientX &&
-      event.clientX <= rect.right;
-    if (!inside) {
+    return (
+      event.clientX < rect.left ||
+      event.clientX > rect.right ||
+      event.clientY < rect.top ||
+      event.clientY > rect.bottom
+    );
+  };
+
+  // Fallback за браузъри без closedby="any": изискваме и pointerdown, и pointerup да са извън панела,
+  // за да не се затваря прозорецът при маркиране на текст с мишката, което завършва върху фона.
+  const handlePointerDown = (event: React.PointerEvent<HTMLDialogElement>) => {
+    const dialog = dialogRef.current;
+    if (!dialog || 'closedBy' in HTMLDialogElement.prototype) return;
+    pressedOutsideRef.current = event.target === dialog && isPointerOutside(event, dialog);
+  };
+
+  const handlePointerUp = (event: React.PointerEvent<HTMLDialogElement>) => {
+    const dialog = dialogRef.current;
+    if (!dialog || 'closedBy' in HTMLDialogElement.prototype) return;
+    if (pressedOutsideRef.current && event.target === dialog && isPointerOutside(event, dialog)) {
+      pressedOutsideRef.current = false;
       onClose();
+    } else {
+      pressedOutsideRef.current = false;
     }
   };
 
@@ -55,10 +70,10 @@ export const NativeDialog: React.FC<NativeDialogProps> = ({
     <dialog
       ref={dialogRef}
       aria-labelledby={labelledBy}
-      aria-modal="true"
       onCancel={handleCancel}
       onClose={onClose}
-      onClick={handleClick}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
       {...({ closedby: 'any' } as React.DialogHTMLAttributes<HTMLDialogElement>)}
       className={`m-auto w-[calc(100%-1.5rem)] sm:w-[calc(100%-2rem)] ${widthClassName} bg-transparent p-0 border-0 overflow-visible backdrop:bg-black/50 backdrop:backdrop-blur-xs`}
     >

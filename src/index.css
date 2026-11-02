@@ -429,3 +429,13 @@ textarea {
 body[data-exam-focus] [data-hide-in-exam] {
   display: none;
 }
+
+
+/* Предотвратяване на скролване на страницата зад отворен модален <dialog> */
+dialog:modal {
+  overscroll-behavior: contain;
+}
+dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+}

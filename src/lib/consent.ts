@@ -5,6 +5,8 @@
  */
 export const COOKIE_STORAGE_KEY = 'studybg_cookie_consent';
 export const CONSENT_VERSION = 2;
+export const COOKIE_BANNER_REOPEN_EVENT = 'studybg:reopen-cookie-banner';
+export const COOKIE_CONSENT_UPDATED_EVENT = 'studybg:cookie-consent-updated';
 
 export interface CookiePreferences {
   version: typeof CONSENT_VERSION;
@@ -68,4 +70,32 @@ export function parseStoredConsent(raw: string | null): StoredConsentState {
       timestamp: typeof p.timestamp === 'string' ? p.timestamp : new Date(0).toISOString()
     }
   };
+}
+
+/**
+ * Изтрива аналитичните бисквитки на Google Analytics 4 (_ga, _ga_*, _gid, _gat)
+ * и Microsoft Clarity (_clck, _clsk, CLID, MUID, ANONCHK, SM) при оттегляне на съгласието.
+ */
+export function clearAnalyticsCookies(): void {
+  if (typeof document === 'undefined' || typeof window === 'undefined') return;
+  const host = window.location.hostname;
+  const parts = host.split('.');
+  const rootDomain = parts.length >= 2 ? `.${parts.slice(-2).join('.')}` : host;
+  const domains = ['', host, `.${host}`, rootDomain];
+
+  document.cookie.split(';').forEach((cookie) => {
+    const name = cookie.split('=')[0].trim();
+    if (!/^(_ga|_gid|_gat|_clck|_clsk|CLID|MUID|ANONCHK|SM)(_|$)/.test(name)) return;
+    domains.forEach((domain) => {
+      document.cookie = `${name}=; Max-Age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${
+        domain ? `; domain=${domain}` : ''
+      }; SameSite=Lax`;
+    });
+  });
+}
+
+/** Отваря отново банера за настройки на бисквитките (напр. от Политиката за поверителност или футъра). */
+export function reopenCookieSettings(): void {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent(COOKIE_BANNER_REOPEN_EVENT));
 }

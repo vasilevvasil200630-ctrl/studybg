@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { buildConsent, isAnalyticsAllowed, parseStoredConsent } from '../src/lib/consent';
+import {
+  COOKIE_BANNER_REOPEN_EVENT,
+  buildConsent,
+  clearAnalyticsCookies,
+  isAnalyticsAllowed,
+  parseStoredConsent,
+  reopenCookieSettings
+} from '../src/lib/consent';
 
 describe('съгласие за аналитика + чл. 25в ЗЗЛД', () => {
   it('аналитиката е разрешена само при analytics И потвърдена възраст', () => {
@@ -37,5 +44,21 @@ describe('съгласие за аналитика + чл. 25в ЗЗЛД', () =>
     const prefs = buildConsent({ functional: true, analytics: true, ageConfirmed: true }, new Date('2026-10-17T10:00:00Z'));
     const state = parseStoredConsent(JSON.stringify(prefs));
     expect(state).toEqual({ status: 'valid', prefs });
+  });
+
+  it('clearAnalyticsCookies и reopenCookieSettings са безопасни за извикване', () => {
+    expect(() => clearAnalyticsCookies()).not.toThrow();
+    let reopened = false;
+    if (typeof window !== 'undefined') {
+      const listener = () => {
+        reopened = true;
+      };
+      window.addEventListener(COOKIE_BANNER_REOPEN_EVENT, listener);
+      reopenCookieSettings();
+      window.removeEventListener(COOKIE_BANNER_REOPEN_EVENT, listener);
+      expect(reopened).toBe(true);
+    } else {
+      expect(() => reopenCookieSettings()).not.toThrow();
+    }
   });
 });

@@ -5,8 +5,8 @@ type LessonBase = Pick<LessonData, 'subject' | 'grade' | 'sourceType'> & Partial
 /** Урок в кратък, четим запис — `writeLessons` го превръща в пълен `LessonData`. */
 export interface LessonDraft {
   id: string;
-  /** Номерът на темата в програмата, напр. 'm1:1.3' → `<programId>:m1:1.3` */
-  topic: string;
+  /** Номерът на темата в програмата, напр. 'm1:1.3' → `<programId>:m1:1.3`; масив, ако урокът покрива няколко теми */
+  topic: string | string[];
   title: string;
   /** Какво казва програмата за темата */
   excerpt: string;
@@ -26,7 +26,7 @@ export function writeLessons(base: LessonBase, programId: string, drafts: Lesson
   return drafts.map((d) => ({
     ...base,
     id: d.id,
-    monTopicIds: [`${programId}:${d.topic}`],
+    monTopicIds: (Array.isArray(d.topic) ? d.topic : [d.topic]).map((t) => `${programId}:${t}`),
     title: d.title,
     originalNoteExcerpt: d.excerpt,
     summary: {

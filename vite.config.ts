@@ -128,7 +128,7 @@ export default defineConfig({
             if (/ppBio/.test(id)) {
               return 'mon-lessons-pp-bio';
             }
-            if (/ppHimia/.test(id)) {
+            if (/ppHim/.test(id)) {
               return 'mon-lessons-pp-chem';
             }
             if (/pp(Bel|Phil)/.test(id)) {

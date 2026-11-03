@@ -147,6 +147,45 @@ describe('validateLessons хваща типичните грешки', () => {
     expect(text).toMatch(/дублирани опции/);
     expect(text).toMatch(/шаблонен дистрактор/);
   });
+
+  const programLessons = (quiz: (i: number) => { options: string[]; correctIndex: number }) =>
+    Array.from({ length: 8 }, (_, l) => ({
+      ...base,
+      id: `p${l}`,
+      monTopicIds: ['pp-test:m1:1.1'],
+      quiz: Array.from({ length: 6 }, (_, q) => ({ id: q + 1, question: `въпрос ${l}-${q}`, ...quiz(l * 6 + q) }))
+    }));
+
+  it('верният отговор почти винаги е на една и съща позиция', () => {
+    const errors = validateLessons(
+      programLessons((i) => ({ options: ['алфа', 'бета', 'гама', 'делта'], correctIndex: i % 5 === 0 ? 0 : 1 })),
+      { subjects: LESSON_SUBJECTS, grades: LESSON_GRADES }
+    );
+    const text = errors.join('\n');
+    expect(text).toMatch(/програма pp-test: верният отговор е на позиция Б/);
+    expect(text).toMatch(/на позиция Г в 0%/);
+  });
+
+  it('верният отговор се познава по дължината, но позициите са балансирани', () => {
+    const errors = validateLessons(
+      programLessons((i) => {
+        const options = ['кратко', 'късо', 'малко', 'дребно'];
+        options[i % 4] = 'дълъг и подробен верен отговор';
+        return { options, correctIndex: i % 4 };
+      }),
+      { subjects: LESSON_SUBJECTS, grades: LESSON_GRADES }
+    );
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toMatch(/най-дългият в 100% от 48 въпроса/);
+  });
+
+  it('малки програми (под 40 въпроса) не се проверяват за баланс', () => {
+    const errors = validateLessons(
+      programLessons(() => ({ options: ['дълъг и подробен верен отговор', 'б', 'в', 'г'], correctIndex: 0 })).slice(0, 6),
+      { subjects: LESSON_SUBJECTS, grades: LESSON_GRADES }
+    );
+    expect(errors).toEqual([]);
+  });
 });
 
 describe('LessonGrade', () => {

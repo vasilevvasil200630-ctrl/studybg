@@ -8,6 +8,74 @@ const ARABIC_CHAR = /[\u0600-\u06FF]/;
 const BOILERPLATE_DISTRACTOR = /Твърдението е невалидно и противоречи на основните принципи/;
 const FORMULA_SWAP_STEM = /^(Кое съответства на|Кое е вярно за|За кое понятие от урока се отнася)/;
 
+// Баланс на тестовете по програма: верният отговор не бива да се познава по позицията или по дължината си.
+// Проверява се само за програми с поне ANSWER_BALANCE_MIN_QUESTIONS въпроса с 4 отговора.
+const ANSWER_BALANCE_MIN_QUESTIONS = 40;
+const POSITION_SHARE_MIN = 0.1;
+const POSITION_SHARE_MAX = 0.42;
+const LONGEST_CORRECT_MAX = 0.6;
+// Стари програми, в които верният отговор все още е най-дългият твърде често. Таванът е сегашното ниво:
+// програмата не бива да се влошава, а след поправка се маха от списъка.
+const LONGEST_CORRECT_DEBT = {
+  'pp-history': 0.86,
+  '9-tp': 0.83,
+  'pp-bio': 0.82,
+  '8-tp': 0.8,
+  '12-go': 0.8,
+  '12-lit': 0.79,
+  'pp-bel': 0.75,
+  '10-phil': 0.75,
+  '9-lit': 0.73,
+  '8-lit': 0.72,
+  '11-go': 0.71,
+  '11-lit': 0.71,
+  '10-lit': 0.7,
+  '8-phil': 0.68,
+  '9-phil': 0.66
+};
+const POSITION_LABELS = ['А', 'Б', 'В', 'Г'];
+
+const programKey = (lesson) => lesson?.monTopicIds?.[0]?.split(':')[0] ?? `${lesson?.subject} · ${lesson?.grade}`;
+
+function validateAnswerBalance(lessons, errors) {
+  const programs = new Map();
+  for (const lesson of lessons) {
+    if (!Array.isArray(lesson?.quiz)) continue;
+    const key = programKey(lesson);
+    const stats = programs.get(key) ?? { total: 0, positions: [0, 0, 0, 0], longest: 0 };
+    programs.set(key, stats);
+    for (const q of lesson.quiz) {
+      if (!Array.isArray(q?.options) || q.options.length !== 4 || !Number.isInteger(q.correctIndex) || q.correctIndex < 0 || q.correctIndex > 3) continue;
+      stats.total++;
+      stats.positions[q.correctIndex]++;
+      const lengths = q.options.map((o) => String(o).trim().length);
+      if (lengths.every((len, i) => i === q.correctIndex || len < lengths[q.correctIndex])) stats.longest++;
+    }
+  }
+
+  const pct = (x) => `${Math.round(x * 100)}%`;
+  for (const [key, { total, positions, longest }] of programs) {
+    if (total < ANSWER_BALANCE_MIN_QUESTIONS) continue;
+    positions.forEach((count, i) => {
+      const share = count / total;
+      if (share < POSITION_SHARE_MIN || share > POSITION_SHARE_MAX) {
+        errors.push(
+          `програма ${key}: верният отговор е на позиция ${POSITION_LABELS[i]} в ${pct(share)} от ${total} въпроса ` +
+            `(позволено ${pct(POSITION_SHARE_MIN)}–${pct(POSITION_SHARE_MAX)}; разпределение ${positions.join('/')})`
+        );
+      }
+    });
+    const longestShare = longest / total;
+    const limit = LONGEST_CORRECT_DEBT[key] ?? LONGEST_CORRECT_MAX;
+    if (longestShare > limit) {
+      errors.push(
+        `програма ${key}: верният отговор е най-дългият в ${pct(longestShare)} от ${total} въпроса (позволено до ${pct(limit)}) — ` +
+          'удължете дистракторите или скъсете верния отговор'
+      );
+    }
+  }
+}
+
 const isNonEmptyString = (v) => typeof v === 'string' && v.trim().length > 0;
 const isNonEmptyArray = (v) => Array.isArray(v) && v.length > 0;
 
@@ -133,6 +201,8 @@ export function validateLessons(lessons, { subjects, grades }) {
       });
     }
   });
+
+  validateAnswerBalance(lessons, errors);
 
   return errors;
 }

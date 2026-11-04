@@ -138,7 +138,8 @@ describe('MON Curriculum Coverage & Infinite Quiz Generator', () => {
     const litV1 = generateAuthorInfiniteQuiz(LITERATURE_CANON[0], LITERATURE_CANON, 1);
     const litV2 = generateAuthorInfiniteQuiz(LITERATURE_CANON[0], LITERATURE_CANON, 2);
     expect(litV1.length).toBeGreaterThanOrEqual(5);
-    expect(litV1[0].question).not.toBe(litV2[0].question);
+    // Различните варианти дават различни грешни отговори и позиции
+    expect(litV1.map((q) => q.options.join('|')).join('||')).not.toBe(litV2.map((q) => q.options.join('|')).join('||'));
 
     const gramV1 = generateGrammarInfiniteQuestions('all', 1);
     const gramV2 = generateGrammarInfiniteQuestions('all', 2);
@@ -155,7 +156,7 @@ describe('MON Curriculum Coverage & Infinite Quiz Generator', () => {
 
     const sciV1 = generateScienceLabInfiniteQuiz(1);
     const sciV2 = generateScienceLabInfiniteQuiz(2);
-    expect(sciV1.length).toBe(6);
+    expect(sciV1.length).toBe(8);
     expect(sciV1[0].question).not.toBe(sciV2[0].question);
 
     const engV1 = generateEnglishTransformationsVariant('ALL', 1);

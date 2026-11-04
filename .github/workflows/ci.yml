@@ -35,5 +35,8 @@ jobs:
       - name: Data integrity
         run: npm run check:data
 
+      - name: Quiz quality
+        run: npm run check:quizzes
+
       - name: Build
         run: npm run build

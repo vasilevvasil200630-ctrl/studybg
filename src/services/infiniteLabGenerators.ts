@@ -11,7 +11,6 @@ import type { MathCategory, MathQuizQuestion } from '../data/mathStemDatabase';
 import {
   CODON_TABLE,
   ION_REACTIONS,
-  ORGANIC_QUALITATIVE_REACTIONS,
   PHOTOELECTRIC_METALS,
   HYDROLYSIS_SALTS,
   SCIENCE_QUIZ,
@@ -111,7 +110,7 @@ export function generateAuthorInfiniteQuiz(
     const genreDistractors = allOtherWorks
       .filter((ow) => ow.genre !== work.genre)
       .slice((seed % 5), (seed % 5) + 6)
-      .map((ow) => `${ow.genre} (${ow.year} г. — като при „${ow.title}“)`);
+      .map((ow) => `${ow.genre} (${ow.year} г.)`);
     const genrePlacement = placeCorrectAtTargetIndex(
       `${work.genre} (${work.year} г.)`,
       genreDistractors,
@@ -120,7 +119,7 @@ export function generateAuthorInfiniteQuiz(
     );
     results.push({
       id: safeVariant * 100 + (++qCounter),
-      question: `[Вариант #${safeVariant} • Жанр и хронология] Какъв е точният жанр и годината на публикуване на творбата „${work.title}“ от ${author.name} според изпитната програма на МОН?`,
+      question: `Какъв е точният жанр и годината на публикуване на творбата „${work.title}“ от ${author.name} според изпитната програма на МОН?`,
       options: genrePlacement.options,
       correctIndex: genrePlacement.correctIndex,
       explanation: `Произведението „${work.title}“ на ${author.name} (${author.period}) е с жанр „${work.genre}“ (${work.year} г.). Основна идея: ${work.coreIdea}`,
@@ -129,16 +128,16 @@ export function generateAuthorInfiniteQuiz(
     // Въпрос за разпознаване на ключов цитат и основен конфликт
     const quoteDistractors = allOtherWorks
       .slice((seed + 2) % Math.max(1, allOtherWorks.length - 4))
-      .map((ow) => `„${ow.title}“ (${ow.authorName}) — конфликт: ${ow.conflict}`);
+      .map((ow) => `„${ow.title}“ (${ow.authorName})`);
     const quotePlacement = placeCorrectAtTargetIndex(
-      `„${work.title}“ (${author.name}) — конфликт: ${work.conflict}`,
+      `„${work.title}“ (${author.name})`,
       quoteDistractors,
       (qCounter + safeVariant) % 4,
       seed + 3
     );
     results.push({
       id: safeVariant * 100 + (++qCounter),
-      question: `[Вариант #${safeVariant} • Цитат и конфликт] От коя творба е цитатът: ${work.famousQuote} и какъв основен художествен конфликт разгръща тя?`,
+      question: `От коя творба е цитатът: ${work.famousQuote}?`,
       options: quotePlacement.options,
       correctIndex: quotePlacement.correctIndex,
       explanation: `Цитатът е от „${work.title}“ (${work.genre}, ${work.year} г.) на ${author.name}. Централният конфликт в творбата е: ${work.conflict}`,
@@ -159,7 +158,7 @@ export function generateAuthorInfiniteQuiz(
     );
     results.push({
       id: safeVariant * 100 + (++qCounter),
-      question: `[Вариант #${safeVariant} • Задача 41 ДЗИ] Коя аргументативна теза отговаря на изпитната тема „${activeEssay.theme}“ върху творчеството на ${author.name}?`,
+      question: `Коя аргументативна теза отговаря на изпитната тема „${activeEssay.theme}“ върху творчеството на ${author.name}?`,
       options: essayPlacement.options,
       correctIndex: essayPlacement.correctIndex,
       explanation: `За темата „${activeEssay.theme}“ (${author.name}) препоръчителните творби са: ${activeEssay.recommendedWorks.join(', ')}. Образцова теза: ${activeEssay.thesisPreview}`,
@@ -283,7 +282,7 @@ export function generateGrammarInfiniteQuestions(
       categoryLabel: 'Пълен и кратък член',
       difficulty: 'dzi_exam',
       sentence: `${sPick.full} / ${sPick.objShort} (Вариант #${v})`,
-      question: `[Вариант #${v}] В кое изречение е допусната НУЛА грешка при членуването на имената от мъжки род единствено число?`,
+      question: `В кое изречение е допусната НУЛА грешка при членуването на имената от мъжки род единствено число?`,
       options: artPlacement.options,
       correctIndex: artPlacement.correctIndex,
       explanation: `Подлогът „${sPick.full}“ (кой? — той) се членува с пълен член, а прякото допълнение „${sPick.objShort}“ (кого/какво? — него) се членува с кратък член.`,
@@ -295,7 +294,7 @@ export function generateGrammarInfiniteQuestions(
       categoryLabel: 'Запетаи в сложни изречения',
       difficulty: 'dzi_exam',
       sentence: `${gPick.gerund}... преди да предаде работата (Вариант #${v})`,
-      question: `[Вариант #${v}] В кое изречение пунктуацията при деепричастен оборот и сложен съюз „преди да“ е напълно коректна?`,
+      question: `В кое изречение пунктуацията при деепричастен оборот и сложен съюз „преди да“ е напълно коректна?`,
       options: punctPlacement.options,
       correctIndex: punctPlacement.correctIndex,
       explanation: `Деепричастният оборот („${gPick.gerund}“) винаги се отделя със запетая, а пред сложния съюз „преди да“ запетаята стои пред цялото съюзно съчетание, а не пред „да“.`,
@@ -307,7 +306,7 @@ export function generateGrammarInfiniteQuestions(
       categoryLabel: 'Слято, полуслято и разделно',
       difficulty: 'dzi_exam',
       sentence: `Сложни съществителни и прилагателни имена (Вариант #${v})`,
-      question: `[Вариант #${v}] В кое изречение са спазени всички правила за слято, полуслято и разделно писане по Официалния правописен речник на БАН?`,
+      question: `В кое изречение са спазени всички правила за слято, полуслято и разделно писане по Официалния правописен речник на БАН?`,
       options: orthoPlacement.options,
       correctIndex: orthoPlacement.correctIndex,
       explanation: oPick.note,
@@ -319,7 +318,7 @@ export function generateGrammarInfiniteQuestions(
       categoryLabel: 'Двойно -НН- и групи -СТН-/-ЗДН-',
       difficulty: 'olympiad',
       sentence: `Правопис на двойно -нн- при прилагателни и причастия (Вариант #${v})`,
-      question: `[Вариант #${v}] В кое изречение НЕ е допусната правописна грешка при писането на -н- и -нн-?`,
+      question: `В кое изречение НЕ е допусната правописна грешка при писането на -н- и -нн-?`,
       options: doubleNPlacement.options,
       correctIndex: doubleNPlacement.correctIndex,
       explanation: nPick.note,
@@ -331,7 +330,7 @@ export function generateGrammarInfiniteQuestions(
       categoryLabel: 'Кой/Кого, Бройна и Учтива форма',
       difficulty: 'olympiad',
       sentence: `Учтива форма, бройна форма и местоимения за лица (Вариант #${v})`,
-      question: `[Вариант #${v}] В кое изречение са спазени едновременно нормите за учтива форма, бройна форма за нелица и личното местоимение „кого“?`,
+      question: `В кое изречение са спазени едновременно нормите за учтива форма, бройна форма за нелица и личното местоимение „кого“?`,
       options: pronPlacement.options,
       correctIndex: pronPlacement.correctIndex,
       explanation: `При учтивост миналото страдателно причастие остава в ед.ч. („Вие сте поканен“), за лица мъже се използва лично-бройна форма („${n1}-ма ученици“), за нелица — бройна форма („${n2} научни доклада“), а за пряко/предложно допълнение лице — „на кого“.`,
@@ -374,7 +373,7 @@ export function generateModuleTwoInfiniteQuestions(
       subcategoryLabel: 'Тропи и фигури',
       excerpt: ex.quote,
       authorOrSource: ex.workAndAuthor,
-      question: `[Вариант #${v}] Кое художествено изразно средство е водещо в посочения откъс от ${ex.workAndAuthor}?`,
+      question: `Кое художествено изразно средство е водещо в посочения откъс от ${ex.workAndAuthor}?`,
       options: placement.options,
       correctIndex: placement.correctIndex,
       explanation: `${fig.name} (${fig.definition}). Анализ: ${ex.analysis}`,
@@ -399,7 +398,7 @@ export function generateModuleTwoInfiniteQuestions(
       subcategoryLabel: 'Лексикология, пароними и фразеологизми',
       excerpt: lex.exampleCorrect,
       authorOrSource: 'Книжовна лексикална норма (ДЗИ БЕЛ)',
-      question: `[Вариант #${v}] Коя лексикална двойка или фразеологизъм се илюстрира правилно чрез примера и какво е точното му значение?`,
+      question: `Коя лексикална двойка или фразеологизъм се илюстрира правилно чрез примера и какво е точното му значение?`,
       options: placement.options,
       correctIndex: placement.correctIndex,
       explanation: `${lex.meaningA}${lex.meaningB ? ` • Контраст: ${lex.meaningB}` : ''} • Изпитен капан: ${lex.monTrapNote}`,
@@ -425,7 +424,7 @@ export function generateModuleTwoInfiniteQuestions(
       subcategoryLabel: 'Четене с разбиране и синтез',
       excerpt: task.sourceExcerpt,
       authorOrSource: `${task.examType} • ${task.title}`,
-      question: `[Вариант #${v}] ${task.taskPrompt} Кой от следните варианти спазва всички критерии на МОН (${task.pointsBreakdown})?`,
+      question: `${task.taskPrompt} Кой от следните варианти спазва всички критерии на МОН (${task.pointsBreakdown})?`,
       options: placement.options,
       correctIndex: placement.correctIndex,
       explanation: `Задължителни критерии на МОН: ${task.mandatoryCriteria.join(' • ')}. Забранени грешки: ${task.forbiddenMistakes.join(' • ')}`,
@@ -452,11 +451,11 @@ export function generateMathLabInfiniteQuiz(
   const prod = r1 * r2;
   const sumSquares = sum * sum - 2 * prod;
   const algPlace = placeCorrectAtTargetIndex(
-    `x₁² + x₂² = ${sumSquares} (тъй като x₁ + x₂ = ${sum} и x₁·x₂ = ${prod})`,
+    `x₁² + x₂² = ${sumSquares}`,
     [
-      `x₁² + x₂² = ${sum * sum + 2 * prod} (прибавяме 2·x₁·x₂)`,
-      `x₁² + x₂² = ${sum * sum} (квадрат на сбора без корекция)`,
-      `x₁² + x₂² = ${sum * sum - prod} (изваждаме само веднъж произведението)`,
+      `x₁² + x₂² = ${sum * sum + 2 * prod}`,
+      `x₁² + x₂² = ${sum * sum}`,
+      `x₁² + x₂² = ${sum * sum - prod}`,
     ],
     v % 4,
     v * 11
@@ -506,9 +505,9 @@ export function generateMathLabInfiniteQuiz(
   const stereoPlace = placeCorrectAtTargetIndex(
     `V = ${cylV}π cm³ и S₁ = ${cylS1}π cm²`,
     [
-      `V = ${2 * cylR * cylH}π cm³ и S₁ = ${cylR * cylR * cylH}π cm²`,
-      `V = ${cylV}π cm³ и S₁ = ${2 * cylR * cylH}π cm² (без двете основи)`,
-      `V = ${Math.round(cylV / 3)}π cm³ и S₁ = ${cylS1}π cm²`,
+      `V = ${cylR * cylH}π cm³ и S₁ = ${cylS1}π cm²`,
+      `V = ${cylV}π cm³ и S₁ = ${2 * cylR * cylH}π cm²`,
+      `V = ${cylV}π cm³ и S₁ = ${2 * cylR * cylH + cylR * cylR}π cm²`,
     ],
     (v + 3) % 4,
     v * 19
@@ -551,7 +550,7 @@ export function generateMathLabInfiniteQuiz(
       id: `math-inf-v${v}-alg`,
       category: 'algebra',
       examType: 'НВО 10 & ДЗИ',
-      question: `[Вариант #${v}] Ако x₁ и x₂ са корените на квадратното уравнение x² - ${sum}x + ${prod} = 0, пресметнете стойността на симетричния израз x₁² + x₂² чрез формулите на Виет.`,
+      question: `Ако x₁ и x₂ са корените на квадратното уравнение x² - ${sum}x + ${prod} = 0, пресметнете стойността на симетричния израз x₁² + x₂² чрез формулите на Виет.`,
       options: algPlace.options,
       correctIndex: algPlace.correctIndex,
       formulaReference: 'Формули на Виет: x₁ + x₂ = -b/a, x₁·x₂ = c/a; x₁² + x₂² = (x₁ + x₂)² - 2x₁x₂',
@@ -561,7 +560,7 @@ export function generateMathLabInfiniteQuiz(
       id: `math-inf-v${v}-prog`,
       category: 'progressions',
       examType: 'НВО 10 & ДЗИ',
-      question: `[Вариант #${v}] Дадена е аритметична прогресия с първи член a₁ = ${a1} и разлика d = ${d}. Намерете десетия член a₁₀ и сумата на първите десет члена S₁₀.`,
+      question: `Дадена е аритметична прогресия с първи член a₁ = ${a1} и разлика d = ${d}. Намерете десетия член a₁₀ и сумата на първите десет члена S₁₀.`,
       options: progPlace.options,
       correctIndex: progPlace.correctIndex,
       formulaReference: 'aₙ = a₁ + (n - 1)d • Sₙ = ((a₁ + aₙ)·n) / 2',
@@ -571,7 +570,7 @@ export function generateMathLabInfiniteQuiz(
       id: `math-inf-v${v}-geom`,
       category: 'geometry',
       examType: 'НВО 10. клас',
-      question: `[Вариант #${v}] В правоъгълен триъгълник ABC (∠C = 90°) катетите са a = ${sideA} cm и b = ${sideB} cm. Намерете хипотенузата c, лицето S, радиуса на вписаната окръжност r и радиуса на описаната окръжност R.`,
+      question: `В правоъгълен триъгълник ABC (∠C = 90°) катетите са a = ${sideA} cm и b = ${sideB} cm. Намерете хипотенузата c, лицето S, радиуса на вписаната окръжност r и радиуса на описаната окръжност R.`,
       options: geomPlace.options,
       correctIndex: geomPlace.correctIndex,
       formulaReference: 'c² = a² + b² • S = a·b/2 • r = (a + b - c)/2 • R = c/2',
@@ -581,7 +580,7 @@ export function generateMathLabInfiniteQuiz(
       id: `math-inf-v${v}-stereo`,
       category: 'stereometry',
       examType: 'НВО 10 & ДЗИ',
-      question: `[Вариант #${v}] Прав кръгов цилиндър има радиус на основата r = ${cylR} cm и височина h = ${cylH} cm. Намерете обема V и пълната повърхнина S₁ на цилиндъра.`,
+      question: `Прав кръгов цилиндър има радиус на основата r = ${cylR} cm и височина h = ${cylH} cm. Намерете обема V и пълната повърхнина S₁ на цилиндъра.`,
       options: stereoPlace.options,
       correctIndex: stereoPlace.correctIndex,
       formulaReference: 'V = π·r²·h • S₁ = 2π·r·h + 2π·r²',
@@ -591,7 +590,7 @@ export function generateMathLabInfiniteQuiz(
       id: `math-inf-v${v}-prob`,
       category: 'probabilities',
       examType: 'ДЗИ Матура',
-      question: `[Вариант #${v}] В кутия има ${whiteBalls} бели и ${blackBalls} черни топки (общо ${totalBalls} топки). По случаен начин едновременно се изтеглят 2 топки. Каква е вероятността и двете изтеглени топки да са бели?`,
+      question: `В кутия има ${whiteBalls} бели и ${blackBalls} черни топки (общо ${totalBalls} топки). По случаен начин едновременно се изтеглят 2 топки. Каква е вероятността и двете изтеглени топки да са бели?`,
       options: probPlace.options,
       correctIndex: probPlace.correctIndex,
       formulaReference: 'P(A) = m / n = C(k, 2) / C(N, 2)',
@@ -601,7 +600,7 @@ export function generateMathLabInfiniteQuiz(
       id: `math-inf-v${v}-calc`,
       category: 'calculus',
       examType: 'ДЗИ Профил / ТУ',
-      question: `[Вариант #${v}] Намерете първата производна f'(x), критичната точка и локалния минимум на функцията f(x) = x² - ${2 * kParam}x + ${cConst}.`,
+      question: `Намерете първата производна f'(x), критичната точка и локалния минимум на функцията f(x) = x² - ${2 * kParam}x + ${cConst}.`,
       options: calcPlace.options,
       correctIndex: calcPlace.correctIndex,
       formulaReference: `(xⁿ)' = n·xⁿ⁻¹ • Условие за екстремум: f'(x₀) = 0`,
@@ -619,150 +618,175 @@ export function generateMathLabInfiniteQuiz(
 export function generateScienceLabInfiniteQuiz(variantNumber: number): typeof SCIENCE_QUIZ {
   const v = Math.max(1, Math.floor(variantNumber));
   const baseId = 1000 + v * 10;
+  // Числата се пишат с десетична запетая, без излишни нули
+  const num = (x: number, digits = 2) => String(Number(x.toFixed(digits))).replace('.', ',');
+  // Отговорът е само наблюдението — без формулата на продукта, която би издала отговора
+  const observation = (badge: string) =>
+    badge.replace(/[⬇⬆]/g, '').replace(/\([^)]*\)/g, '').replace(/\S*[↓↑]\S*/g, '').replace(/\s+/g, ' ').trim();
 
-  // 1. Биология — PCR амплификация и генетичен код
+  // 1. Биология — PCR амплификация
   const pcrCycles = 6 + (v % 7); // между 6 и 12 цикъла
-  const pcrCopies = Math.pow(2, pcrCycles);
-  const codonKeys = Object.keys(CODON_TABLE).filter((k) => CODON_TABLE[k].type !== 'stop');
-  const pickedCodon = codonKeys[(v * 3) % codonKeys.length];
-  const codonInfo = CODON_TABLE[pickedCodon];
-  const bioPlace1 = placeCorrectAtTargetIndex(
-    `${pcrCopies} копия ДНК (2^${pcrCycles}); кодонът 5'-${pickedCodon}-3' кодира ${codonInfo.name} (${codonInfo.short})`,
-    [
-      `${pcrCycles * 2} копия ДНК; кодонът 5'-${pickedCodon}-3' е терминален СТОП кодон`,
-      `${Math.pow(2, pcrCycles - 1)} копия ДНК; кодонът 5'-${pickedCodon}-3' кодира ДНК-полимераза`,
-      `${pcrCycles * 100} копия ДНК; кодонът не се превежда при транслация`,
-    ],
+  const pcrPlace = placeCorrectAtTargetIndex(
+    `${Math.pow(2, pcrCycles)} копия`,
+    [`${Math.pow(2, pcrCycles - 1)} копия`, `${2 * pcrCycles} копия`, `${pcrCycles * pcrCycles} копия`],
     v % 4,
     v * 11
   );
 
-  // 2. Биология — АТФ енергиен добив
-  const glucoseMoles = (v % 5) + 2;
-  const totalAtp = glucoseMoles * 38;
-  const glycolAtp = glucoseMoles * 2;
-  const bioPlace2 = placeCorrectAtTargetIndex(
-    `Сумарно ${totalAtp} mol АТФ, от които ${glycolAtp} mol пряко от гликолизата`,
-    [
-      `Сумарно ${glucoseMoles * 2} mol АТФ, тъй като цикълът на Кребс не образува коензими`,
-      `Сумарно ${totalAtp} mol АТФ, всичките синтезирани в цитозола чрез гликолиза`,
-      `Сумарно ${glucoseMoles * 10} mol АТФ, от които ${glucoseMoles * 8} mol от фотолиза на водата`,
-    ],
+  // 2. Биология — генетичен код
+  const codonKeys = Object.keys(CODON_TABLE).filter((k) => CODON_TABLE[k].type !== 'stop' && CODON_TABLE[k].type !== 'start');
+  const pickedCodon = codonKeys[(v * 3) % codonKeys.length];
+  const codonInfo = CODON_TABLE[pickedCodon];
+  const otherAminoAcids = [...new Set(codonKeys.map((k) => CODON_TABLE[k].name))].filter((n) => n !== codonInfo.name);
+  const codonPlace = placeCorrectAtTargetIndex(
+    codonInfo.name,
+    [0, 5, 11].map((step) => otherAminoAcids[(v * 7 + step) % otherAminoAcids.length]),
     (v + 1) % 4,
     v * 13
   );
 
-  // 3. Химия — Качествена йонна реакция и хидролиза на соли
-  const ionRx = ION_REACTIONS[(v - 1) % ION_REACTIONS.length];
-  const saltCase = HYDROLYSIS_SALTS[(v - 1) % HYDROLYSIS_SALTS.length];
-  const chemPlace1 = placeCorrectAtTargetIndex(
-    `${ionRx.precipitateBadge} (${ionRx.netIonicEq}); а разтворът на ${saltCase.formula} има ${saltCase.phRange}`,
-    [
-      `Не се наблюдава видима промяна; разтворът на ${saltCase.formula} винаги има pH = 7,0`,
-      `Отделя се водороден газ; разтворът на ${saltCase.formula} не дисоциира във вода`,
-      `Утайката се разтваря с отделяне на озон; ${saltCase.formula} е неразтворим оксид`,
-    ],
+  // 3. Биология — енергиен добив от глюкозата
+  const glucoseMoles = (v % 5) + 2;
+  const atpPlace = placeCorrectAtTargetIndex(
+    `${glucoseMoles * 38} mol АТФ`,
+    [`${glucoseMoles * 2} mol АТФ`, `${glucoseMoles * 36} mol АТФ`, `${glucoseMoles * 19} mol АТФ`],
     (v + 2) % 4,
     v * 17
   );
 
-  // 4. Химия — Органичен качествен анализ и неутрализация
-  const orgRx = ORGANIC_QUALITATIVE_REACTIONS[(v - 1) % ORGANIC_QUALITATIVE_REACTIONS.length];
-  const chemPlace2 = placeCorrectAtTargetIndex(
-    `${orgRx.visualEffect} (${orgRx.reagent})`,
-    [
-      `Пълно пасивиране на съда без химично взаимодействие при всякаква температура`,
-      `Отделяне на амоняк при стайна температура без промяна на цвета на разтвора`,
-      `Образуване на червена утайка от меден оксид на студено с чист бензен`,
-    ],
+  // 4. Химия — качествена йонна реакция
+  const ionRx = ION_REACTIONS[(v - 1) % ION_REACTIONS.length];
+  const ionPlace = placeCorrectAtTargetIndex(
+    observation(ionRx.precipitateBadge),
+    ION_REACTIONS.filter((r) => r !== ionRx).map((r) => observation(r.precipitateBadge)),
     (v + 3) % 4,
     v * 19
   );
 
-  // 5. Физика — Закон на Ом и Фотоефект
-  const metal = PHOTOELECTRIC_METALS[(v - 1) % PHOTOELECTRIC_METALS.length];
-  const r1 = ((v % 3) + 1) * 6; // 6, 12 или 18 Ω
-  const r2 = r1 / 2; // 3, 6 или 9 Ω
-  const rEq = (r1 * r2) / (r1 + r2);
-  const voltage = rEq * ((v % 4) + 3);
-  const current = voltage / rEq;
-  const physPlace1 = placeCorrectAtTargetIndex(
-    `R_екв = ${rEq} Ω, I = ${current} A; за ${metal.name} A = ${metal.workFunctionEv} eV (λ_max = ${metal.redLimitNm} nm)`,
-    [
-      `R_екв = ${r1 + r2} Ω, I = ${(voltage / (r1 + r2)).toFixed(1)} A; фотоефект настъпва при всякаква дължина на вълната`,
-      `R_екв = ${rEq} Ω, I = ${voltage * rEq} A; отделителната работа зависи от интензитета на лампата`,
-      `R_екв = ${r1 - r2} Ω, I = 1 A; за ${metal.name} червената граница е над 2000 nm`,
-    ],
+  // 5. Химия — хидролиза на соли
+  const saltCase = HYDROLYSIS_SALTS[(v - 1) % HYDROLYSIS_SALTS.length];
+  const media = { acid: 'кисела (pH < 7)', base: 'основна (pH > 7)', neutral: 'неутрална (pH = 7)' };
+  const medium = saltCase.phRange.startsWith('pH > 7') ? media.base : saltCase.phRange.startsWith('pH < 7') ? media.acid : media.neutral;
+  const saltName = saltCase.formula.replace(/\s*\(.*$/, '');
+  const saltPlace = placeCorrectAtTargetIndex(
+    medium,
+    [...Object.values(media).filter((m) => m !== medium), 'зависи само от концентрацията на солта'],
     v % 4,
     v * 23
   );
 
-  // 6. Физика — Цикъл на Карно
-  const tHotK = 500 + (v % 4) * 100; // 500, 600, 700, 800 K
-  const tColdK = 300;
-  const etaPercent = (((tHotK - tColdK) / tHotK) * 100).toFixed(1);
-  const physPlace2 = placeCorrectAtTargetIndex(
-    `η_max = (T₁ - T₂)/T₁ = (${tHotK} - ${tColdK})/${tHotK} = ${etaPercent}%`,
+  // 6. Физика — успоредно свързани резистори
+  const r1 = ((v % 3) + 1) * 6; // 6, 12 или 18 Ω
+  const r2 = r1 / 2;
+  const rEq = (r1 * r2) / (r1 + r2);
+  const voltage = rEq * ((v % 4) + 3);
+  const current = voltage / rEq;
+  const ohmPlace = placeCorrectAtTargetIndex(
+    `R = ${num(rEq)} Ω, I = ${num(current)} A`,
     [
-      `η_max = T₂/T₁ = ${((tColdK / tHotK) * 100).toFixed(1)}%`,
-      `η_max = ((${tHotK - 273} - ${tColdK - 273})/${tHotK - 273}) = ${(((tHotK - tColdK) / (tHotK - 273)) * 100).toFixed(1)}% (в градуси Целзий)`,
-      `η_max = 100% при отсъствие на механично триене`,
+      `R = ${num(r1 + r2)} Ω, I = ${num(voltage / (r1 + r2))} A`,
+      `R = ${num(rEq)} Ω, I = ${num(voltage * rEq)} A`,
+      `R = ${num((r1 + r2) / 2)} Ω, I = ${num(voltage / ((r1 + r2) / 2))} A`,
     ],
     (v + 1) % 4,
     v * 29
+  );
+
+  // 7. Физика — фотоефект
+  const metal = PHOTOELECTRIC_METALS[(v - 1) % PHOTOELECTRIC_METALS.length];
+  const askRedLimit = v % 2 === 0;
+  const otherMetals = PHOTOELECTRIC_METALS.filter((m) => m !== metal);
+  const photoPlace = placeCorrectAtTargetIndex(
+    askRedLimit ? `${metal.redLimitNm} nm` : `${num(metal.workFunctionEv)} eV`,
+    otherMetals.map((m) => (askRedLimit ? `${m.redLimitNm} nm` : `${num(m.workFunctionEv)} eV`)),
+    (v + 2) % 4,
+    v * 31
+  );
+
+  // 8. Физика — цикъл на Карно
+  const tHotK = 500 + (v % 4) * 100; // 500, 600, 700, 800 K
+  const tColdK = 300;
+  const carnotPlace = placeCorrectAtTargetIndex(
+    `${num(((tHotK - tColdK) / tHotK) * 100, 1)} %`,
+    [
+      `${num(((tHotK - tColdK) / (tHotK + tColdK)) * 100, 1)} %`,
+      `${num(((tHotK - tColdK) / (tHotK - 273)) * 100, 1)} %`,
+      `${num(((tHotK - tColdK) / tColdK) * 100, 1)} %`,
+    ],
+    (v + 3) % 4,
+    v * 37
   );
 
   return [
     {
       id: baseId + 1,
       subject: 'Биология',
-      question: `[Вариант #${v}] Колко копия ДНК ще се получат от 1 матрична молекула след n = ${pcrCycles} цикъла на PCR и коя аминокиселина се кодира от иРНК триплета 5'-${pickedCodon}-3'?`,
-      options: bioPlace1.options,
-      correctIndex: bioPlace1.correctIndex,
-      explanation: `По формулата N = 2ⁿ за ${pcrCycles} цикъла се получават 2^${pcrCycles} = ${pcrCopies} копия. Според генетичния код иРНК кодонът 5'-${pickedCodon}-3' кодира ${codonInfo.name} (${codonInfo.short}).`,
+      question: `Колко копия ДНК се получават от 1 матрична молекула след n = ${pcrCycles} цикъла на PCR?`,
+      options: pcrPlace.options,
+      correctIndex: pcrPlace.correctIndex,
+      explanation: `При всеки цикъл броят на молекулите се удвоява, затова след n цикъла те са 2ⁿ: 2^${pcrCycles} = ${Math.pow(2, pcrCycles)} копия.`,
     },
     {
       id: baseId + 2,
       subject: 'Биология',
-      question: `[Вариант #${v}] При пълно аеробно окисление на ${glucoseMoles} mol глюкоза (при добив 38 mol АТФ/mol глюкоза) колко мола АТФ се синтезират общо и колко от тях са от субстратното фосфорилиране в гликолизата?`,
-      options: bioPlace2.options,
-      correctIndex: bioPlace2.correctIndex,
-      explanation: `За 1 mol глюкоза гликолизата дава чист добив 2 mol АТФ, а пълното аеробно разграждане — 38 mol АТФ. За ${glucoseMoles} mol глюкоза: ${glucoseMoles} × 38 = ${totalAtp} mol АТФ общо и ${glucoseMoles} × 2 = ${glycolAtp} mol АТФ от гликолизата.`,
+      question: `Коя аминокиселина кодира иРНК кодонът 5'-${pickedCodon}-3'?`,
+      options: codonPlace.options,
+      correctIndex: codonPlace.correctIndex,
+      explanation: `Според таблицата на генетичния код кодонът 5'-${pickedCodon}-3' кодира ${codonInfo.name} (${codonInfo.short}).`,
     },
     {
       id: baseId + 3,
-      subject: 'Химия',
-      question: `[Вариант #${v}] Какъв е резултатът при смесване на ${ionRx.reagentPair} и какъв е характерът на средата във воден разтвор на ${saltCase.formula}?`,
-      options: chemPlace1.options,
-      correctIndex: chemPlace1.correctIndex,
-      explanation: `Съкратено йонно уравнение: ${ionRx.netIonicEq} (${ionRx.precipitateBadge}). За ${saltCase.formula}: ${saltCase.hydrolysisIon}`,
+      subject: 'Биология',
+      question: `Колко мола АТФ се получават при пълното аеробно разграждане на ${glucoseMoles} mol глюкоза, ако 1 mol глюкоза дава 38 mol АТФ?`,
+      options: atpPlace.options,
+      correctIndex: atpPlace.correctIndex,
+      explanation: `${glucoseMoles} × 38 = ${glucoseMoles * 38} mol АТФ. От тях само ${glucoseMoles * 2} mol идват пряко от гликолизата — останалите се образуват в митохондриите (цикъл на Кребс и дихателна верига).`,
     },
     {
       id: baseId + 4,
       subject: 'Химия',
-      question: `[Вариант #${v}] С кой реактив и чрез какъв визуален ефект се доказват качествено: ${orgRx.compoundClass}?`,
-      options: chemPlace2.options,
-      correctIndex: chemPlace2.correctIndex,
-      explanation: `Реактив: ${orgRx.reagent}. Уравнение: ${orgRx.equation}. Изпитен акцент: ${orgRx.muExamTip}`,
+      question: `Какво се наблюдава при смесване на ${ionRx.reagentPair}?`,
+      options: ionPlace.options,
+      correctIndex: ionPlace.correctIndex,
+      explanation: `${ionRx.precipitateBadge.replace(/[⬇⬆]/g, '').trim()}. Съкратено йонно уравнение: ${ionRx.netIonicEq}.`,
     },
     {
       id: baseId + 5,
-      subject: 'Физика',
-      question: `[Вариант #${v}] Два резистора R₁ = ${r1} Ω и R₂ = ${r2} Ω са свързани успоредно към източник с U = ${voltage} V. Намерете R_екв, общия ток I и посочете отделителната работа A и червената граница на фотоефекта за ${metal.name}.`,
-      options: physPlace1.options,
-      correctIndex: physPlace1.correctIndex,
-      explanation: `При успоредно свързване R_екв = (${r1}·${r2})/(${r1}+${r2}) = ${rEq} Ω, а I = U/R_екв = ${voltage}/${rEq} = ${current} A. За ${metal.name} отделителната работа е A = ${metal.workFunctionEv} eV, а червената граница е λ_max = ${metal.redLimitNm} nm.`,
+      subject: 'Химия',
+      question: `Каква е средата на воден разтвор на ${saltName}?`,
+      options: saltPlace.options,
+      correctIndex: saltPlace.correctIndex,
+      explanation: `${saltCase.formula}: ${saltCase.hydrolysisIon}`,
     },
     {
       id: baseId + 6,
       subject: 'Физика',
-      question: `[Вариант #${v}] Идеална топлинна машина работи по цикъл на Карно между нагревател с температура T₁ = ${tHotK} K (${tHotK - 273} °C) и охладител с T₂ = ${tColdK} K (${tColdK - 273} °C). Колко е максималният термичен КПД η_max?`,
-      options: physPlace2.options,
-      correctIndex: physPlace2.correctIndex,
-      explanation: `По формулата на Карно с абсолютни температури в келвини: η_max = (${tHotK} - ${tColdK}) / ${tHotK} = ${etaPercent}%.`,
+      question: `Два резистора R₁ = ${r1} Ω и R₂ = ${r2} Ω са свързани успоредно към източник с напрежение U = ${num(voltage)} V. Колко са еквивалентното съпротивление R и общият ток I?`,
+      options: ohmPlace.options,
+      correctIndex: ohmPlace.correctIndex,
+      explanation: `При успоредно свързване R = R₁·R₂/(R₁ + R₂) = ${r1}·${r2}/(${r1} + ${r2}) = ${num(rEq)} Ω, а по закона на Ом I = U/R = ${num(voltage)}/${num(rEq)} = ${num(current)} A.`,
+    },
+    {
+      id: baseId + 7,
+      subject: 'Физика',
+      question: askRedLimit
+        ? `Каква е червената граница на фотоефекта (най-голямата дължина на вълната, при която има фотоефект) за ${metal.name}?`
+        : `Каква е отделителната работа на електроните от ${metal.name}?`,
+      options: photoPlace.options,
+      correctIndex: photoPlace.correctIndex,
+      explanation: `За ${metal.name} отделителната работа е A = ${num(metal.workFunctionEv)} eV, а червената граница е λ_max = hc/A ≈ ${metal.redLimitNm} nm. Светлина с по-голяма дължина на вълната не избива електрони, колкото и да е силна.`,
+    },
+    {
+      id: baseId + 8,
+      subject: 'Физика',
+      question: `Идеална топлинна машина работи по цикъл на Карно между нагревател с T₁ = ${tHotK} K (${tHotK - 273} °C) и охладител с T₂ = ${tColdK} K (${tColdK - 273} °C). Колко е максималният ѝ КПД?`,
+      options: carnotPlace.options,
+      correctIndex: carnotPlace.correctIndex,
+      explanation: `КПД на Карно се смята с абсолютни температури: η_max = (T₁ − T₂)/T₁ = (${tHotK} − ${tColdK})/${tHotK} = ${num(((tHotK - tColdK) / tHotK) * 100, 1)} %. С градуси Целзий резултатът излиза грешен.`,
     },
   ];
 }
+
 
 /**
  * 6. Английски език (CEFR B1.1 / B2 / C1) — безкраен генератор на Sentence Transformations
@@ -880,11 +904,11 @@ export function generateCivicsInfiniteQuiz(
   const absoluteMajority = 121;
 
   const constPlace = placeCorrectAtTargetIndex(
-    `За обикновен закон са нужни поне ${simpleMajority} гласа (> 1/2 от присъстващите ${presentDeps}), а за преодоляване на вето на Президента — поне ${absoluteMajority} гласа (> 1/2 от всички 240 депутати)`,
+    `Поне ${simpleMajority} гласа за закона (над половината от присъстващите) и поне ${absoluteMajority} за ветото (над половината от всички 240)`,
     [
-      `И в двата случая са достатъчни ${simpleMajority} гласа от присъстващите в залата народни представители`,
-      `За обикновен закон са нужни 160 гласа (2/3), а ветото на Президента е абсолютно и не може да се преодолее`,
-      `За преодоляване на вето се изисква свикване на Велико Народно събрание от 400 депутати`,
+      `И в двата случая са достатъчни поне ${simpleMajority} гласа, т.е. повече от половината от присъстващите в залата`,
+      `За закона — 160 гласа (2/3 от всички депутати), а ветото на Президента не може да бъде преодоляно`,
+      `За ветото се свиква Велико Народно събрание, а за закона са нужни поне ${simpleMajority} гласа от присъстващите`,
     ],
     v % 4,
     v * 11
@@ -911,11 +935,11 @@ export function generateCivicsInfiniteQuiz(
   const noticeDays = 30;
   const maxProbationMonths = 6;
   const laborPlace = placeCorrectAtTargetIndex(
-    `Писмена форма по чл. 62 от КТ; срок за изпитване до ${maxProbationMonths} месеца (чл. 70 КТ) и стандартно предизвестие от ${noticeDays} дни при безсрочен договор (чл. 326 КТ)`,
+    `Писмена форма; изпитване до ${maxProbationMonths} месеца; предизвестие ${noticeDays} дни при безсрочен договор`,
     [
-      `Устна уговорка пред свидетели; срок за изпитване до 24 месеца и 3-дневно предизвестие`,
-      `Нотариално заверен граждански договор без трудови осигуровки и без платен годишен отпуск`,
-      `Едностранна заповед без подпис на работника и без подаване на уведомление до НАП`,
+      `Устна уговорка пред свидетели; изпитване до 24 месеца; предизвестие 3 дни`,
+      `Писмена форма; изпитване до 12 месеца; предизвестие 7 дни при безсрочен договор`,
+      `Нотариално заверен граждански договор; без изпитване и без предизвестие`,
     ],
     (v + 3) % 4,
     v * 19
@@ -1040,7 +1064,7 @@ export function generateHistoryGeoInfiniteQuiz(
       id: `hg-inf-v${v}-treaty`,
       subject: 'История и цивилизации',
       examBadge: `Вариант #${v} • Договори и карти`,
-      question: `[Вариант #${v}] Кой исторически акт е подписан между „${treaty.signatories}“ и включва дипломатическата клауза: „${treaty.diplomaticClauses[0]}“?`,
+      question: `Кой исторически акт е подписан между „${treaty.signatories}“ и включва дипломатическата клауза: „${treaty.diplomaticClauses[0]}“?`,
       options: treatyPlace.options,
       correctIndex: treatyPlace.correctIndex,
       explanation: `${treaty.title} (${treaty.year}). Изпитен фокус: ${treaty.examTrap}`,
@@ -1049,7 +1073,7 @@ export function generateHistoryGeoInfiniteQuiz(
       id: `hg-inf-v${v}-source`,
       subject: 'История и цивилизации',
       examBadge: `Вариант #${v} • Анализ на исторически извор`,
-      question: `[Вариант #${v}] Прочетете откъса от историческия извор: ${sourceFig.sourceExcerpt} Коя историческа личност и кой документ са представени?`,
+      question: `Прочетете откъса от историческия извор: ${sourceFig.sourceExcerpt} Коя историческа личност и кой документ са представени?`,
       options: figPlace.options,
       correctIndex: figPlace.correctIndex,
       explanation: `${sourceFig.personName} (${sourceFig.roleAndYears}). Ключови маркери: ${sourceFig.keyCluesInText.join(', ')}. Историческо значение: ${sourceFig.historicalSignificance.join(' ')}`,
@@ -1058,7 +1082,7 @@ export function generateHistoryGeoInfiniteQuiz(
       id: `hg-inf-v${v}-nuts2`,
       subject: 'География и икономика',
       examBadge: `Вариант #${v} • Регионална география (NUTS 2)`,
-      question: `[Вариант #${v}] Кой статистически район за планиране (NUTS 2) в България се характеризира с релеф и води „${geoReg.reliefAndRivers}“ и водещи отрасли: ${geoReg.leadingIndustries.slice(0, 2).join('; ')}?`,
+      question: `Кой статистически район за планиране (NUTS 2) в България се характеризира с релеф и води „${geoReg.reliefAndRivers}“ и водещи отрасли: ${geoReg.leadingIndustries.slice(0, 2).join('; ')}?`,
       options: geoPlace.options,
       correctIndex: geoPlace.correctIndex,
       explanation: `${geoReg.name} (${geoReg.code}), център ${geoReg.centerCity}. Акцент за матурата: ${geoReg.examHighlight}`,
@@ -1067,7 +1091,7 @@ export function generateHistoryGeoInfiniteQuiz(
       id: `hg-inf-v${v}-hub`,
       subject: 'География и икономика',
       examBadge: `Вариант #${v} • Стратегическа енергетика и индустрия`,
-      question: `[Вариант #${v}] Кой стратегически енергиен или индустриален комплекс в България се намира в „${energyHub.location}“ и има технически профил: „${energyHub.technicalProfile}“?`,
+      question: `Кой стратегически енергиен или индустриален комплекс в България се намира в „${energyHub.location}“ и има технически профил: „${energyHub.technicalProfile}“?`,
       options: hubPlace.options,
       correctIndex: hubPlace.correctIndex,
       explanation: `${energyHub.name} (${energyHub.sector}, ${energyHub.regionCode}). Изпитна връзка: ${energyHub.dippkAndExamRelevance}`,
@@ -1117,7 +1141,7 @@ export function generateHistoricalCaseQuiz(
     );
     questions.push({
       id: v * 100 + 1,
-      question: `[Вариант #${v} • Исторически извор] От кой първичен исторически извор за епохата (${activeCase.periodYears}) е следният откъс: ${src.originalExcerpt}`,
+      question: `От кой първичен исторически извор за епохата (${activeCase.periodYears}) е следният откъс: ${src.originalExcerpt}`,
       options: p1.options,
       correctIndex: p1.correctIndex,
       explanation: `Откъсът е от „${src.title}“ (${src.authorOrOrigin}). Контекст по МОН: ${src.sourceContext}`,
@@ -1132,7 +1156,7 @@ export function generateHistoricalCaseQuiz(
   const p2 = placeCorrectAtTargetIndex(argA, argDistractors, (v + 1) % 4, v * 13);
   questions.push({
     id: v * 100 + 2,
-    question: `[Вариант #${v} • Историографска теза] Кой от следните аргументи подкрепя позицията „${activeCase.thesisSideA.perspectiveTitle}“ по казуса за ${activeCase.keyFigure}?`,
+    question: `Кой от следните аргументи подкрепя позицията „${activeCase.thesisSideA.perspectiveTitle}“ по казуса за ${activeCase.keyFigure}?`,
     options: p2.options,
     correctIndex: p2.correctIndex,
     explanation: `Аргументът е част от „${activeCase.thesisSideA.perspectiveTitle}“. Академичен синтез: ${activeCase.synthesisConclusion}`,
@@ -1152,7 +1176,7 @@ export function generateHistoricalCaseQuiz(
     );
     questions.push({
       id: v * 100 + 3,
-      question: `[Вариант #${v} • Терминология по МОН] Кое историческо понятие и неговата дефиниция са ключови за анализа на казуса „${activeCase.shortTitle}“ (${activeCase.periodYears})?`,
+      question: `Кое историческо понятие и неговата дефиниция са ключови за анализа на казуса „${activeCase.shortTitle}“ (${activeCase.periodYears})?`,
       options: p3.options,
       correctIndex: p3.correctIndex,
       explanation: `Понятието „${concept.term}“ означава: ${concept.definition}`,
@@ -1169,7 +1193,7 @@ export function generateHistoricalCaseQuiz(
   );
   questions.push({
     id: v * 100 + 4,
-    question: `[Вариант #${v} • Академичен синтез за ДЗИ] Кой обобщаващ извод разрешава историографската дилема по темата „${activeCase.shortTitle}“?`,
+    question: `Кой обобщаващ извод разрешава историографската дилема по темата „${activeCase.shortTitle}“?`,
     options: p4.options,
     correctIndex: p4.correctIndex,
     explanation: `Образцова теза за писмена разработка: ${activeCase.sampleEssayOutline.thesisStatement}`,

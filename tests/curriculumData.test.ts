@@ -119,6 +119,21 @@ describe('validateLessons хваща типичните грешки', () => {
     expect(errors.join('\n')).toMatch(/смесени латински и кирилски/);
   });
 
+  it('повредена формула (загубена „\\“ от LaTeX) и невидим управляващ знак', () => {
+    const errors = validateLessons(
+      [
+        { ...base, quiz: [{ ...base.quiz[0], explanation: 'μ = f/N = frac1,55 = 0,30' }] },
+        { ...base, id: 'l2', summary: { overview: 'Собствено време (\tau₀)', keyPoints: ['k'] } },
+        { ...base, id: 'l3', summary: { overview: 'Дроби и десетични дроби (fractions); math.sqrt(16)', keyPoints: ['k'] } },
+      ],
+      { subjects: LESSON_SUBJECTS, grades: LESSON_GRADES }
+    );
+    const text = errors.join('\n');
+    expect(text).toMatch(/l1\): повредена формула/);
+    expect(text).toMatch(/l2\): невидим управляващ знак/);
+    expect(text).not.toMatch(/l3\)/);
+  });
+
   it('непознат предмет, дублирано id и невалиден correctIndex', () => {
     const errors = validateLessons(
       [base, { ...base, subject: 'Философия и Гражданско образование', quiz: [{ ...base.quiz[0], correctIndex: 5 }] }],

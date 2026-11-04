@@ -11,6 +11,7 @@
     "lint": "oxlint src --deny-warnings",
     "test": "vitest run",
     "check:data": "node scripts/check-data.mjs",
+    "check:quizzes": "node scripts/check-quizzes.mjs",
     "preview": "vite preview",
     "sitemap": "node scripts/generate-sitemap.mjs"
   },

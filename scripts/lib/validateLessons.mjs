@@ -59,6 +59,18 @@ function validateAnswerBalance(lessons, errors) {
 const isNonEmptyString = (v) => typeof v === 'string' && v.trim().length > 0;
 const isNonEmptyArray = (v) => Array.isArray(v) && v.length > 0;
 
+// Остатъци от LaTeX, загубил обратната наклонена черта: \frac{1,5}{5} → „frac1,55“, \varepsilon → „\v“ + „arepsilon“.
+// Невидимите управляващи знаци (\t, \v, \f, \b) идват от същото: „\tau“, „\beta“ в обикновен низ.
+const BROKEN_MATH = /(?<![\\\p{L}])frac(?=[0-9√(\p{Lu}α-ωτ])|(?<![\\\p{L}.])sqrt(?=[0-9])|arepsilon/u;
+const CONTROL_CHAR = /[\u0000-\u0009\u000b\u000c\u000e-\u001f]/;
+
+/** Всички текстови полета на урока с пътя им — за проверките, които важат навсякъде */
+function* lessonStrings(value, path = '') {
+  if (typeof value === 'string') yield [path, value];
+  else if (Array.isArray(value)) for (let i = 0; i < value.length; i++) yield* lessonStrings(value[i], `${path}[${i}]`);
+  else if (value && typeof value === 'object') for (const [k, v] of Object.entries(value)) yield* lessonStrings(v, path ? `${path}.${k}` : k);
+}
+
 function hasTextCorruption(str) {
   if (typeof str !== 'string') return false;
   const cleaned = str.replace(ROMAN_GROUP_TOKEN, '$1');
@@ -179,6 +191,14 @@ export function validateLessons(lessons, { subjects, grades }) {
           }
         }
       });
+    }
+  });
+
+  lessons.forEach((lesson, index) => {
+    const where = `урок #${index} (${lesson?.id ?? 'без id'})`;
+    for (const [path, text] of lessonStrings(lesson)) {
+      if (CONTROL_CHAR.test(text)) errors.push(`${where}: невидим управляващ знак в „${path}“ (вероятно загубена „\“ от формула)`);
+      else if (BROKEN_MATH.test(text)) errors.push(`${where}: повредена формула в „${path}“: „${text.slice(0, 80)}“`);
     }
   });
 

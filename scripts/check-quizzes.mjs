@@ -164,6 +164,22 @@ try {
     }
   }
 
+  // 2a'. Литература: въпросът е за творбата на урока — не пита за друга творба от програмата и
+  // верният отговор не е друга творба, освен ако въпросът изрично ги сравнява (както в Матура Плюс)
+  const titlesOf = (s) => [...text(s).matchAll(/„([^“]{3,60})“/g)].map((m) => m[1].toLowerCase());
+  const COMPARATIVE = /сравн|съпостав|и в двете|общото между|за разлика от|разлика|както и в|различава|двете творби|двойка творби|обединява/i;
+  const litLessons = lessons.filter((l) => /^(8|9|10|11|12)-lit$|^pp-bel$/.test(l.monTopicIds?.[0]?.split(':')[0] ?? ''));
+  const ownWorks = new Map(litLessons.map((l) => [l.id, new Set(titlesOf(l.title))]));
+  const allWorks = new Set([...ownWorks.values()].flatMap((s) => [...s]));
+  for (const l of litLessons) {
+    const mine = ownWorks.get(l.id);
+    l.quiz.forEach((q, i) => {
+      if (COMPARATIVE.test(q.question)) return;
+      const foreign = [...titlesOf(q.question), ...titlesOf(q.options[q.correctIndex])].filter((t) => allWorks.has(t) && !mine.has(t));
+      if (foreign.length) err(`${l.id}#${i + 1}`, 'foreign-work', `въпросът е за друга творба („${foreign.join('“, „')}“): ${short(q.question)}`);
+    });
+  }
+
   // 2b. Уроци за подтеми, специалности и матрицата на класовете
   const { BULGARIAN_CURRICULUM_TREE } = await load('/src/data/bulgarianCurriculumTree.ts');
   const { SUBDOMAIN_LESSON_MAP } = await load('/src/services/curriculumClassifier.ts');

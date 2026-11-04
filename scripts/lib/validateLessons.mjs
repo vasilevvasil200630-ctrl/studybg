@@ -14,15 +14,6 @@ const ANSWER_BALANCE_MIN_QUESTIONS = 40;
 const POSITION_SHARE_MIN = 0.1;
 const POSITION_SHARE_MAX = 0.42;
 const LONGEST_CORRECT_MAX = 0.6;
-// Стари програми, в които верният отговор все още е най-дългият твърде често. Таванът е сегашното ниво:
-// програмата не бива да се влошава, а след поправка се маха от списъка.
-const LONGEST_CORRECT_DEBT = {
-  '12-go': 0.8,
-  '10-phil': 0.75,
-  '11-go': 0.71,
-  '8-phil': 0.68,
-  '9-phil': 0.66
-};
 const POSITION_LABELS = ['А', 'Б', 'В', 'Г'];
 
 const programKey = (lesson) => lesson?.monTopicIds?.[0]?.split(':')[0] ?? `${lesson?.subject} · ${lesson?.grade}`;
@@ -56,10 +47,9 @@ function validateAnswerBalance(lessons, errors) {
       }
     });
     const longestShare = longest / total;
-    const limit = LONGEST_CORRECT_DEBT[key] ?? LONGEST_CORRECT_MAX;
-    if (longestShare > limit) {
+    if (longestShare > LONGEST_CORRECT_MAX) {
       errors.push(
-        `програма ${key}: верният отговор е най-дългият в ${pct(longestShare)} от ${total} въпроса (позволено до ${pct(limit)}) — ` +
+        `програма ${key}: верният отговор е най-дългият в ${pct(longestShare)} от ${total} въпроса (позволено до ${pct(LONGEST_CORRECT_MAX)}) — ` +
           'удължете дистракторите или скъсете верния отговор'
       );
     }

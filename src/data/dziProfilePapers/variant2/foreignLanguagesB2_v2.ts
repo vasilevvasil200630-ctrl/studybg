@@ -499,7 +499,7 @@ A pesar de estos avances, los ingenieros subrayan que el gran reto tecnológico 
         },
         {
           id: 'dzi-es2-q14', number: 14, kind: 'choice', points: 3,
-          prompt: 'Elija la opción correcta entre „ser“ y „estar“: «La conferencia sobre inteligencia artificial ___ muy interesante; se ___ en el aula magna mañana.»',
+          prompt: 'Elija la opción correcta entre „ser“ y „estar“: «La conferencia sobre inteligencia artificial ___ muy interesante; ___ en el aula magna mañana.»',
           options: ['es / será', 'está / estará', 'es / estará', 'estuvo / fue'],
           correctIndex: 0,
           explanation: 'Para valorar una característica („es interesante“) y para indicar dónde o cuándo tiene lugar un evento („la conferencia será en el aula magna“) se usa el verbo „ser“.',

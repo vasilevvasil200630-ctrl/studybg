@@ -4,7 +4,7 @@ import type { LessonData, QuizQuestion } from '../types';
 import type { AppNavTab } from './Navbar';
 import { EmailShareModal } from './EmailShareModal';
 import { studyProgressService } from '../services/studyProgressService';
-import { generateInfiniteLessonQuiz } from '../services/infiniteQuizGenerator';
+import { generateInfiniteLessonQuiz, topicQuestionPool } from '../services/infiniteQuizGenerator';
 
 const POSITIONAL_OPTION_RE = /^(всички изброени|и двете|никое от|горните|точки а и б)/i;
 const OPTION_LETTERS = ['А', 'Б', 'В', 'Г'] as const;
@@ -48,8 +48,8 @@ export function shuffleQuizSet(questions: QuizQuestion[]): QuizQuestion[] {
 }
 
 /**
- * Генерира нов вариант по темата (до targetCount въпроса), като комбинира
- * въпроси от текущия урок и най-близките уроци по същия предмет и клас.
+ * Нов вариант по темата (до targetCount въпроса): въпросите на урока и на уроците по
+ * същата тема от програмата на МОН в нов ред и с разбъркани отговори.
  */
 export function buildTopicVariantQuiz(
   baseLesson: LessonData,
@@ -323,22 +323,20 @@ export const QuizView: React.FC<QuizViewProps> = ({
     setIsSubmitted(false);
   };
 
+  const lessonsForPool = allLessons && allLessons.length > 0 ? allLessons : currentLesson ? [currentLesson] : [];
+  const activeStems = new Set(activeQuestions.map((q) => q.question.trim().toLowerCase()));
+  const unusedTopicQuestions = currentLesson
+    ? topicQuestionPool(currentLesson, lessonsForPool).filter((q) => !activeStems.has(q.question.trim().toLowerCase())).length
+    : 0;
+
   const handleAppendMoreQuestions = () => {
     const nextNum = variantNumber + 1;
-    if (currentLesson) {
-      const generatedPool = generateInfiniteLessonQuiz(
-        currentLesson,
-        allLessons && allLessons.length > 0 ? allLessons : [currentLesson],
-        nextNum + 10,
-        12
-      );
+    if (currentLesson && unusedTopicQuestions > 0) {
+      const generatedPool = generateInfiniteLessonQuiz(currentLesson, lessonsForPool, nextNum + 10, Number.MAX_SAFE_INTEGER);
       setActiveQuestions((prev) => {
         const existingStems = new Set(prev.map((q) => q.question.trim().toLowerCase()));
-        const additions = generatedPool
-          .filter((q) => !existingStems.has(q.question.trim().toLowerCase()))
-          .slice(0, 5);
-        const fallbackAdditions = additions.length > 0 ? additions : generatedPool.slice(0, 5);
-        return [...prev, ...fallbackAdditions].map((q, idx) => ({ ...q, id: idx + 1 }));
+        const additions = generatedPool.filter((q) => !existingStems.has(q.question.trim().toLowerCase())).slice(0, 5);
+        return [...prev, ...additions].map((q, idx) => ({ ...q, id: idx + 1 }));
       });
       setVariantNumber(nextNum);
       setIsSubmitted(false);
@@ -444,20 +442,20 @@ export const QuizView: React.FC<QuizViewProps> = ({
             type="button"
             onClick={handleGenerateTopicVariant}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition-colors shadow-2xs cursor-pointer"
-            title="Генерирай нов 10-въпросен вариант с нови задачи и казуси по материала на темата (безкраен генератор)"
+            title="Въпросите по темата на урока в нов ред и с нови позиции на верните отговори"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Нов вариант по темата (∞)</span>
+            <span>Нов вариант по темата</span>
           </button>
 
-          {currentLesson && (
+          {currentLesson && unusedTopicQuestions > 0 && (
             <button
               type="button"
               onClick={handleAppendMoreQuestions}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 transition-colors shadow-2xs cursor-pointer"
-              title="Добави още 5 нови въпроса върху материала към текущия тест"
+              title="Добави към теста още въпроси по същата тема"
             >
-              <span>+5 въпроса по материала</span>
+              <span>+{Math.min(5, unusedTopicQuestions)} въпроса по темата</span>
             </button>
           )}
 

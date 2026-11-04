@@ -9,6 +9,7 @@ import {
   buildDualGroupWorksheet,
   formatWorksheetAsText
 } from '../src/components/QuizView';
+import { topicQuestionPool } from '../src/services/infiniteQuizGenerator';
 import { LESSON_GRADES, LESSON_SUBJECTS } from '../src/types';
 import { validateLessons } from '../scripts/lib/validateLessons.mjs';
 
@@ -78,10 +79,14 @@ describe('данни за уроците', () => {
       const shuffled = shuffleQuestionOptions(q);
       expect(shuffled.options[shuffled.correctIndex]).toBe(expectedCorrectText);
     }
+    // Вариантът е само от въпросите по темата на урока (тематична изолация), без повторения
+    const pool = topicQuestionPool(sample, lessons);
     const variant = buildTopicVariantQuiz(sample, lessons, 10);
-    expect(variant.length).toBe(10);
+    expect(variant.length).toBe(Math.min(10, pool.length));
     const uniqueStems = new Set(variant.map((q) => q.question));
-    expect(uniqueStems.size).toBe(10);
+    expect(uniqueStems.size).toBe(variant.length);
+    const poolStems = new Set(pool.map((q) => q.question));
+    for (const q of variant) expect(poolStems.has(q.question)).toBe(true);
 
     const ws = buildDualGroupWorksheet(sample.quiz, sample.title, sample.subject, sample.grade);
     expect(ws.groupA.length).toBe(sample.quiz.length);

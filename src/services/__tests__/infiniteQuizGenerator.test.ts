@@ -8,6 +8,7 @@ import {
 } from '../../data/schoolsSpecialtiesDatabase';
 import {
   generateInfiniteLessonQuiz,
+  topicQuestionPool,
   buildTailoredSubDomainLesson,
   buildTailoredSpecialtyLesson,
   buildTailoredMatrixSubjectLesson,
@@ -78,17 +79,29 @@ describe('MON Curriculum Coverage & Infinite Quiz Generator', () => {
     const lessons = await loadFullCurriculumLessons();
     const mathLesson = lessons.find((l) => l.id === 'math-quadratic-vieta-progressions') ?? lessons[0];
 
+    const pool = topicQuestionPool(mathLesson, lessons);
+    const poolStems = new Set(pool.map((q) => q.question));
     const v1 = generateInfiniteLessonQuiz(mathLesson, lessons, 1, 10);
     const v2 = generateInfiniteLessonQuiz(mathLesson, lessons, 2, 10);
     const v3 = generateInfiniteLessonQuiz(mathLesson, lessons, 3, 10);
 
-    expect(v1.length).toBe(10);
-    expect(v2.length).toBe(10);
-    expect(v3.length).toBe(10);
+    // Тематична изолация: само въпроси от урока и уроците по същата тема, без повторения
+    for (const v of [v1, v2, v3]) {
+      expect(v.length).toBe(Math.min(10, pool.length));
+      expect(new Set(v.map((q) => q.question)).size).toBe(v.length);
+      for (const q of v) expect(poolStems.has(q.question)).toBe(true);
+    }
 
-    // Verify parameterized questions differ across variants
-    expect(v1.map((q) => q.question).join('||')).not.toBe(v2.map((q) => q.question).join('||'));
-    expect(v2.map((q) => q.question).join('||')).not.toBe(v3.map((q) => q.question).join('||'));
+    // Вариантите се различават по реда на въпросите или по позициите на верните отговори
+    const signature = (v: typeof v1) => v.map((q) => `${q.question}#${q.correctIndex}`).join('||');
+    expect(signature(v1)).not.toBe(signature(v2));
+    expect(signature(v2)).not.toBe(signature(v3));
+
+    // Верният отговор остава същият текст като в урока
+    for (const q of v1) {
+      const original = pool.find((p) => p.question === q.question)!;
+      expect(q.options[q.correctIndex]).toBe(original.options[original.correctIndex]);
+    }
 
     // Verify each question has 4 options and valid correctIndex
     for (const q of [...v1, ...v2, ...v3]) {
@@ -106,19 +119,19 @@ describe('MON Curriculum Coverage & Infinite Quiz Generator', () => {
     const tailoredSub = buildTailoredSubDomainLesson(tree.subject, gradeObj.grade, domObj.name, subObj, lessons[0], lessons);
     expect(tailoredSub.summary.keyPoints.length).toBeGreaterThan(2);
     expect((tailoredSub.notebookChecklist || []).length).toBeGreaterThan(2);
-    expect(tailoredSub.quiz.length).toBe(10);
+    expect(tailoredSub.quiz.length).toBe(Math.min(10, topicQuestionPool(lessons[0], lessons).length));
 
     const sec = SCHOOL_SPECIALTIES_SECTIONS[0];
     const spec = sec.specialties[0];
     const tailoredSpec = buildTailoredSpecialtyLesson(sec, spec, mathLesson, lessons);
     expect(tailoredSpec.title).toContain(spec.code);
-    expect(tailoredSpec.quiz.length).toBe(10);
+    expect(tailoredSpec.quiz.length).toBe(Math.min(10, sec.specialtyQuiz.length + pool.length));
 
     const gm = GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX[0];
     const matrixSubj = gm.subjects[0];
     const tailoredMatrix = buildTailoredMatrixSubjectLesson(gm, matrixSubj, mathLesson, lessons);
     expect(tailoredMatrix.title).toContain(gm.grade);
-    expect(tailoredMatrix.quiz.length).toBe(10);
+    expect(tailoredMatrix.quiz.length).toBe(Math.min(10, pool.length));
   }, 20_000);
 
   it('generates valid infinite variants across all 9 specialized laboratories', () => {

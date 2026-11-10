@@ -439,3 +439,16 @@ dialog::backdrop {
   overflow: hidden;
   overscroll-behavior: contain;
 }
+
+/* Отложено рендиране на тежки секции строго под първия екран (below-the-fold) */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 480px;
+}
+
+@media print {
+  .cv-auto {
+    content-visibility: visible !important;
+    contain-intrinsic-size: none !important;
+  }
+}

@@ -18,6 +18,7 @@ import type { LessonData, GradeLevel, SubjectName, QuizQuestion } from '../types
 import type { AppNavTab } from './Navbar';
 import { GRADES_LIST, SUBJECTS_LIST } from '../data/curriculumDatabase';
 import { MaturaPlusBridgeBanner } from './MaturaPlusBridgeBanner';
+import { RichText } from './RichText';
 import { studyProgressService } from '../services/studyProgressService';
 import { BULGARIAN_CURRICULUM_TREE } from '../data/bulgarianCurriculumTree';
 import { SUBDOMAIN_LESSON_MAP } from '../services/curriculumClassifier';
@@ -28,6 +29,8 @@ import {
   getLessonAcademicMetadata,
   inferLessonPreparationSection,
   matchesHighSchoolProfile,
+  matchesLessonGradeFilter,
+  matchesLessonExamFilter,
   type HighSchoolProfileFilterId,
   type PreparationSectionId,
 } from '../lib/curriculumStructure';
@@ -152,13 +155,21 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
       profCounts.set(prof.id, 0);
     }
 
+    for (const examItem of EXAM_TYPES_LIST) {
+      if (examItem.id !== 'Всички изпити') {
+        exCounts.set(examItem.id, 0);
+      }
+    }
+
     for (const l of lessons) {
       byId.set(l.id, l);
       if (!firstBySubj.has(l.subject)) {
         firstBySubj.set(l.subject, l);
       }
-      if (l.examType) {
-        exCounts.set(l.examType, (exCounts.get(l.examType) ?? 0) + 1);
+      for (const examItem of EXAM_TYPES_LIST) {
+        if (examItem.id !== 'Всички изпити' && matchesLessonExamFilter(l, examItem.id)) {
+          exCounts.set(examItem.id, (exCounts.get(examItem.id) ?? 0) + 1);
+        }
       }
       subjCounts.set(l.subject, (subjCounts.get(l.subject) ?? 0) + 1);
       const sec = inferLessonPreparationSection(l);
@@ -200,13 +211,13 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
   const filteredLessons = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
     return lessons.filter((lesson) => {
-      if (!matchesGradeFilter(lesson.grade, selectedGrade)) return false;
+      if (!matchesLessonGradeFilter(lesson, selectedGrade)) return false;
       if (!matchesHighSchoolProfile(lesson, selectedProfile)) return false;
       if (selectedPrepSection !== 'all' && inferLessonPreparationSection(lesson) !== selectedPrepSection) {
         return false;
       }
       if (selectedSubject !== 'Всички предмети' && lesson.subject !== selectedSubject) return false;
-      if (selectedExamType !== 'Всички изпити' && lesson.examType !== selectedExamType) return false;
+      if (!matchesLessonExamFilter(lesson, selectedExamType)) return false;
       if (masteryFilter !== 'all') {
         const isMastered = masteredSet.has(lesson.id);
         if (masteryFilter === 'mastered' && !isMastered) return false;
@@ -259,10 +270,17 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
     return STAGE_ORDER.map((stageInfo) => {
       const subjMap = stageMap.get(stageInfo.id)!;
       const subjects = Array.from(subjMap.entries()).map(([subjectName, domainMap]) => {
-        const domains = Array.from(domainMap.entries()).map(([domainName, items]) => ({
-          domainName,
-          items,
-        }));
+        const domains = Array.from(domainMap.entries())
+          .map(([domainName, rawItems]) => {
+            const items = [...rawItems].sort((a, b) => a.meta.domainOrder - b.meta.domainOrder);
+            const minOrder = items.reduce((m, x) => Math.min(m, x.meta.domainOrder), Infinity);
+            return {
+              domainName,
+              items,
+              minOrder,
+            };
+          })
+          .sort((a, b) => a.minOrder - b.minOrder || a.domainName.localeCompare(b.domainName, 'bg'));
         const totalInSubject = domains.reduce((acc, d) => acc + d.items.length, 0);
         const masteredInSubject = domains.reduce(
           (acc, d) => acc + d.items.filter((x) => masteredSet.has(x.lesson.id)).length,
@@ -825,7 +843,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
       {/* VIEW MODE 1: СТРУКТУРИРАН УЧЕБЕН ПЛАН (Етапи -> Предмети -> Модули/Раздели -> Номерирани Теми) */}
       {viewMode === 'structured' ? (
         <div className="space-y-8">
-          {structuredHierarchy.map((stage) => (
+          {structuredHierarchy.map((stage, stageIdx) => (
             <section
               key={stage.id}
               aria-label={stage.title}
@@ -850,11 +868,12 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                     subjGroup.totalInSubject > 0
                       ? Math.round((subjGroup.masteredInSubject / subjGroup.totalInSubject) * 100)
                       : 0;
+                  const deferredAccordionClass = stageIdx >= 1 || sIdx >= 2 ? 'cv-auto' : '';
                   return (
                     <details
                       key={subjGroup.subjectName}
                       open={sIdx === 0 || selectedSubject !== 'Всички предмети'}
-                      className="group rounded-xl border border-slate-200 bg-white shadow-2xs overflow-hidden"
+                      className={`${deferredAccordionClass} group rounded-xl border border-slate-200 bg-white shadow-2xs overflow-hidden`}
                     >
                       <summary className="flex flex-wrap items-center justify-between gap-3 p-4 cursor-pointer list-none select-none hover:bg-slate-50/80 transition-colors">
                         <div className="flex items-center gap-3 min-w-0">
@@ -925,11 +944,16 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                                       <div className="min-w-0 space-y-1 flex-1">
                                         <div className="flex flex-wrap items-center gap-1.5">
                                           <span className="text-xs sm:text-sm font-bold text-slate-900 hover:text-blue-700 transition-colors">
-                                            {lesson.title}
+                                            <RichText text={lesson.title} />
                                           </span>
                                           <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
                                             {meta.sectionShort}
                                           </span>
+                                          {meta.monSubSection && (
+                                            <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                              {meta.monSubSection}
+                                            </span>
+                                          )}
                                           <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
                                             {lesson.grade}
                                           </span>
@@ -940,7 +964,7 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                                           )}
                                         </div>
                                         <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                                          {lesson.summary.overview}
+                                          <RichText text={lesson.summary.overview} />
                                         </p>
                                       </div>
                                     </div>
@@ -1070,11 +1094,11 @@ export const SubjectCatalog: React.FC<SubjectCatalogProps> = ({
                     </div>
 
                     <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-700 transition-colors line-clamp-2 leading-snug mb-1.5">
-                      {lesson.title}
+                      <RichText text={lesson.title} />
                     </h4>
 
                     <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-4">
-                      {lesson.summary.overview}
+                      <RichText text={lesson.summary.overview} />
                     </p>
                   </div>
 

@@ -510,7 +510,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Застрахователно и осигурително дело & Митническа и данъчна администрация',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Данъчна система в България (ДДС 20%, Корпоративен данък 10%, ДОД 10%)', 'Социално и здравно осигуряване (ДОО, ДЗПО, НЗОК)', 'Митнически режими, ТАРИК и акцизно законодателство', 'Търговско, трудово и облигационно право'],
-        linkedLessonId: 'econ-micro-macro-accounting-finance-8-12'
+        linkedLessonId: 'econ-entrepreneurship-tax-customs-insurance-8-12'
       }
     ],
     gradeProgression: [
@@ -575,7 +575,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
     linkedLessonIds: [
       'econ-micro-macro-accounting-finance-8-12',
       'econ-marketing-management-ecommerce-10-12',
-      'math-10-12-solid-geometry-prisms-pyramids-spheres-cones',
+      'econ-entrepreneurship-tax-customs-insurance-8-12',
       'geo-bulgaria-population-settlements-tertiary-dzi'
     ],
     specialtyQuiz: [
@@ -622,28 +622,28 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Строителство и архитектура (Професия „Строителен техник“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Строителна механика и Съпротивление на материалите', 'Сградостроителство и Архитектурно проектиране', 'Стоманобетонни, метални и дървени конструкции', 'Организация, ценообразуване (КСС) и технология на строителството'],
-        linkedLessonId: 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
+        linkedLessonId: 'eng-civil-architecture-geodesy-dippk'
       },
       {
         code: '5810101',
         name: 'Геодезия (Професия „Геодезист“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Инженерна геодезия и Топографско чертане', 'Нивелация, полигонометрия и тахиметрия с тотални станции', 'Глобални навигационни спътникови системи (GNSS) и Фотограметрия', 'Кадастър, регулация и Географски информационни системи (ГИС)'],
-        linkedLessonId: 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
+        linkedLessonId: 'eng-civil-architecture-geodesy-dippk'
       },
       {
         code: '5820301',
         name: 'Транспортно строителство & Водно строителство (5820402)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Проектиране на пътища, улици, мостове и жп линии', 'Хидравлика, водоснабдяване и канализация (ВиК мрежи)', 'Земна механика и фундиране', 'AutoCAD / Revit / Civil 3D инженерно чертане'],
-        linkedLessonId: 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
+        linkedLessonId: 'eng-civil-architecture-geodesy-dippk'
       },
       {
         code: '6220102',
         name: 'Парково строителство и озеленяване (Професия „Техник-озеленител“ 622010 — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Дендрология, цветарство и екология на градската среда', 'Парково и ландшафтно проектиране', 'Геодезическо трасиране и вертикално планиране', 'Изобразително изкуство и перспективно рисуване'],
-        linkedLessonId: 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
+        linkedLessonId: 'eng-civil-architecture-geodesy-dippk'
       }
     ],
     gradeProgression: [
@@ -706,10 +706,10 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'math-10-12-solid-geometry-prisms-pyramids-spheres-cones',
-      'math-10-12-solid-geometry-prisms-pyramids-spheres-cones',
+      'eng-civil-architecture-geodesy-dippk',
       'math-trigonometry-sine-cosine-nvo10',
-      'phys-newton-laws-mechanics'
+      'phys-newton-laws-mechanics',
+      'mon-pp-arts-1-1'
     ],
     specialtyQuiz: [
       {
@@ -750,28 +750,28 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Мехатроника (Професия „Мехатроник“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Сензори, актуатори и задвижвания (DC, Серво, Стъпкови двигатели)', 'Програмируеми логически контролери (PLC) и PID регулатори', 'Пневматика, хидравлика и индустриална роботика', 'CAD/CAM проектиране и CNC машини с ЦПУ'],
-        linkedLessonId: 'phys-electromagnetic-induction-faraday-maxwell-dzi'
+        linkedLessonId: 'eng-mechatronics-plc-electronics-cnc-dippk'
       },
       {
         code: '5230301',
         name: 'Промишлена електроника & Микропроцесорна техника',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Полупроводникови елементи (Диоди, BJT и MOSFET транзистори, ОУ)', 'Аналогова и цифрова схемотехника (Тригери, Регистри, Броячи, ЦАП/АЦП)', 'Микроконтролери (ARM / AVR / ESP32) и комуникационни шини (I2C, SPI, CAN)', 'Проектиране на печатни платки (PCB Design) и измервателна техника'],
-        linkedLessonId: 'phys-electromagnetic-induction-faraday-maxwell-dzi'
+        linkedLessonId: 'eng-mechatronics-plc-electronics-cnc-dippk'
       },
       {
         code: '5220103',
         name: 'Електрообзавеждане на производството & Възобновяеми енергийни източници (ВЕИ)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Теоретична електротехника (Закони на Ом и Кирхоф, Променлив и трифазен ток)', 'Електрически машини и трансформатори (Асинхронни и синхронни двигатели)', 'Фотоволтаични (PV) централи, инвертори и акумулаторни системи за съхранение', 'Електробезопасност, релейна защита и автоматика'],
-        linkedLessonId: 'phys-electromagnetic-induction-faraday-maxwell-dzi'
+        linkedLessonId: 'eng-electrotechnics-power-renewables-dippk'
       },
       {
         code: '5250101',
         name: 'Автотранспортна техника и Електрически превозни средства',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Двигатели с вътрешно горене (Цикли на Ото и Дизел) и турбокомпресори', 'Електромобили (EV) и Хибридни системи — батерии Li-Ion, BMS и инвертори', 'Автомобилна електроника, CAN шина, ABS/ESP и компютърна диагностика (OBD-II)', 'Ходова част, трансмисии и спирачни уредби'],
-        linkedLessonId: 'phys-electromagnetic-induction-faraday-maxwell-dzi'
+        linkedLessonId: 'eng-automotive-ev-diagnostics-dippk'
       }
     ],
     gradeProgression: [
@@ -829,10 +829,10 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'phys-electromagnetic-induction-faraday-maxwell-dzi',
-      'phys-electricity-ohm-joule',
-      'phys-8-10-mechanics-thermodynamics-electricity-complete',
-      'cs-algorithms-oop-databases-8-12'
+      'eng-mechatronics-plc-electronics-cnc-dippk',
+      'eng-electrotechnics-power-renewables-dippk',
+      'eng-automotive-ev-diagnostics-dippk',
+      'phys-electromagnetic-induction-faraday-maxwell-dzi'
     ],
     specialtyQuiz: [
       {
@@ -873,7 +873,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Биотехнологии и Химични технологии (Професия „Химик-технолог“ / „Биотехнолог“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Обща и индустриална микробиология и биореактори', 'Аналитична химия (Титриметрия, Спектрофотометрия, Хроматография)', 'Генетично инженерство (PCR, рестриктази, плазмидни вектори)', 'Технология на лекарствените форми, храните и биопродуктите'],
-        linkedLessonId: 'bio-medicine-anatomy-biotech-pharmacy-8-12'
+        linkedLessonId: 'eng-biotech-chemical-ecology-vet-dippk'
       },
       {
         code: '8510101',
@@ -894,7 +894,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Ветеринарен техник и Агротехнологии',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Анатомия и физиология на домашните животни', 'Микробиология, паразитология, инфекциозни болести и ваксинопрофилактика', 'Фармакология, клинична диагностика и ветеринарна хирургия', 'Генетика, селекция и контрол на безопасността на суровините (HACCP)'],
-        linkedLessonId: 'bio-medicine-anatomy-biotech-pharmacy-8-12'
+        linkedLessonId: 'eng-biotech-chemical-ecology-vet-dippk'
       }
     ],
     gradeProgression: [
@@ -952,9 +952,9 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
+      'eng-biotech-chemical-ecology-vet-dippk',
       'bio-medicine-anatomy-biotech-pharmacy-8-12',
       'bio-dna-replication-protein',
-      'bio-genetics-mendel-laws',
       'chem-solutions-ph-electrolytes',
       'chem-organic-hydrocarbons-alcohols'
     ],
@@ -997,28 +997,28 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Компютърна графика, Графичен дизайн и Рекламна графика',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Векторна и растерна графика (Adobe Illustrator, Photoshop, InDesign)', 'Типография, шрифт, предпечатна подготовка (CMYK, 300 DPI, Bleed) и брандинг', 'UI/UX дизайн на потребителски интерфейси (Figma) и 3D моделиране', 'История на изкуството, цветознание и композиция'],
-        linkedLessonId: 'econ-marketing-management-ecommerce-10-12'
+        linkedLessonId: 'eng-hospitality-tourism-design-dippk'
       },
       {
         code: '2140104',
         name: 'Интериорен дизайн & Моден дизайн',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Ергономия, антропометрия и функционално зониране на пространството', 'Перспектива, архитектурно заснемане и 3D визуализация', 'Материалознание в интериора/текстила, осветление и акустика', 'История на стиловете в архитектурата, мебелите и модата'],
-        linkedLessonId: 'econ-marketing-management-ecommerce-10-12'
+        linkedLessonId: 'eng-hospitality-tourism-design-dippk'
       },
       {
         code: '8120101',
         name: 'Организация на туризма и свободното време & Екскурзоводство',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Туроператорска и турагентска дейност (формиране на пакетни цени)', 'Туристически ресурси на България и света (ЮНЕСКО обекти, балнео-, еко- и културен туризъм)', 'Екскурзоводска беседа, анимация и протокол', 'Два чужди езика по професията (Английски + Немски / Френски / Испански / Руски)'],
-        linkedLessonId: 'econ-marketing-management-ecommerce-10-12'
+        linkedLessonId: 'eng-hospitality-tourism-design-dippk'
       },
       {
         code: '8110101',
         name: 'Организация на хотелиерството & Кетъринг и кулинарни технологии',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Хотелиерски мениджмънт, Front Office и показатели (Occupancy, ADR, RevPAR)', 'Организация и технология на обслужването в ресторантьорството и сомелиерство', 'Технология на кулинарната продукция, калкулации и система за безопасност HACCP', 'Маркетинг, дигитални резервационни системи (GDS / PMS) и счетоводство в туризма'],
-        linkedLessonId: 'econ-marketing-management-ecommerce-10-12'
+        linkedLessonId: 'eng-hospitality-tourism-design-dippk'
       }
     ],
     gradeProgression: [
@@ -1076,10 +1076,10 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'econ-marketing-management-ecommerce-10-12',
+      'eng-hospitality-tourism-design-dippk',
       'econ-marketing-management-ecommerce-10-12',
       'geo-bulgaria-population-settlements-tertiary-dzi',
-      'lang-german-french-spanish-b1-b2-8-12'
+      'mon-pp-arts-1-1'
     ],
     specialtyQuiz: [
       {
@@ -1125,28 +1125,28 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Спедиция, транспортна и складова логистика (Професия „Спедитор-логистик“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Международни правила за търговия Incoterms 2020 (EXW, FOB, CIF, DDP)', 'Интермодален и комбиниран транспорт, товарителници CMR, CIM и Коносамент', 'Управление на складови запаси (Формула на Уилсън EOQ, ABC/XYZ анализ)', 'Митническо представителство, ТАРИК и транспортна география'],
-        linkedLessonId: 'phys-newton-laws-mechanics'
+        linkedLessonId: 'eng-maritime-aviation-logistics-dippk'
       },
       {
         code: '8400101',
         name: 'Корабоводене — морско и речно & Корабни машини и механизми (5250901)',
         qualification: 'Трета степен на професионална квалификация (ДИППК + IMO STCW)',
         coreSubjects: ['Теория и устройство на кораба (Плаваемост, Остойчивост и Метацентрична височина)', 'Навигация, лоция, морски карти и електронни системи (ECDIS,AIS, Радар ARPA)', 'Морска астрономия, метеорология и МППСМ (правила за предпазване от сблъскване)', 'Корабни дизелови двигатели, спомагателни механизми и електрообзавеждане'],
-        linkedLessonId: 'phys-newton-laws-mechanics'
+        linkedLessonId: 'eng-maritime-aviation-logistics-dippk'
       },
       {
         code: '5251401',
         name: 'Авиационна техника, Авионика и Безпилотни летателни системи (Дронове)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Аеродинамика и динамика на полета (Уравнение на Бернули, подемна сила и челно съпротивление)', 'Конструкция на самолета, вертолета и газотурбинни/реактивни двигатели', 'Авиационни прибори, радионавигация (VOR, ILS, GNSS) и автопилоти', 'Техническо обслужване и безопасност на полетите по стандарти на ИКАО / EASA'],
-        linkedLessonId: 'phys-newton-laws-mechanics'
+        linkedLessonId: 'eng-maritime-aviation-logistics-dippk'
       },
       {
         code: '5250601',
         name: 'Локомотиви и вагони & Осигурителни и комуникационни инсталации в ЖП транспорта',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Електрически и дизелови локомотиви (Контактна мрежа 25 kV, 50 Hz)', 'Спирачни системи, тягови изчисления и динамика на влака', 'Маршрутно-релейни и компютърни централизации, автоблокировка и ETCS / ERTMS', 'Организация и безопасност на железопътното движение'],
-        linkedLessonId: 'phys-newton-laws-mechanics'
+        linkedLessonId: 'eng-maritime-aviation-logistics-dippk'
       }
     ],
     gradeProgression: [
@@ -1204,10 +1204,10 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
+      'eng-maritime-aviation-logistics-dippk',
       'phys-newton-laws-mechanics',
       'phys-8-10-mechanics-thermodynamics-electricity-complete',
-      'phys-electromagnetic-induction-faraday-maxwell-dzi',
-      'phys-newton-laws-mechanics'
+      'phys-electromagnetic-induction-faraday-maxwell-dzi'
     ],
     specialtyQuiz: [
       {
@@ -1253,28 +1253,28 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Технология и контрол на качеството на храни и напитки (Професия „Техник-технолог в ХВП“ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Микробиология и биохимия на ферментационните процеси (млечнокисела и алкохолна ферментация)', 'Технология на месни, млечни, хлебни продукти, вино и безалкохолни напитки', 'Топлинно консервиране (Пастьоризация vs. Стерилизация в автоклав)', 'Физикохимичен и органолептичен анализ и система HACCP'],
-        linkedLessonId: 'chem-organic-hydrocarbons-alcohols'
+        linkedLessonId: 'eng-biotech-chemical-ecology-vet-dippk'
       },
       {
         code: '2130401',
         name: 'Полиграфия, Фотография и Мултимедийни технологии (НПГПФ — III СПК)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Технология на офсетовия, флексо-, дълбокия и дигиталния печат', 'Експозиционен триъгълник във фотографията (Бленда f-stop, Скорост на затвора, ISO) и студийно осветление', 'Предпечатна подготовка, цветоотделяне, растер (LPI / DPI) и книговезки процеси', 'Аудио-визуална продукция, видеомонтаж и колор грейдинг'],
-        linkedLessonId: 'chem-organic-hydrocarbons-alcohols'
+        linkedLessonId: 'eng-hospitality-tourism-design-dippk'
       },
       {
         code: '5430101',
         name: 'Мебелно производство, Дървообработване & Горско и ловно стопанство (6230101)',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Дървесинознание, сушене и влажност на дървесината W%', 'Конструиране на мебели с CAD/CAM системи и CNC дървообработващи центрове', 'Лесовъдство, дендрология, горска таксация и опазване на горите от вредители и пожари', 'Дизайн и реставрация на стилови мебели'],
-        linkedLessonId: 'chem-organic-hydrocarbons-alcohols'
+        linkedLessonId: 'eng-civil-architecture-geodesy-dippk'
       },
       {
         code: '5420101',
         name: 'Конструиране, моделиране и технология на облеклото от текстил',
         qualification: 'Трета степен на професионална квалификация (ДИППК)',
         coreSubjects: ['Текстилно материалознание (естествени и химични влакна; сплитки: лито, кепър, атлаз)', 'Антропометрия, конструиране на кройки и градиране с CAD системи', 'Моделиране на облекло и модна илюстрация', 'Технология на шевното производство и автоматизирани кроячни комплекси'],
-        linkedLessonId: 'chem-organic-hydrocarbons-alcohols'
+        linkedLessonId: 'eng-hospitality-tourism-design-dippk'
       }
     ],
     gradeProgression: [
@@ -1332,10 +1332,10 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
       }
     ],
     linkedLessonIds: [
-      'chem-organic-hydrocarbons-alcohols',
-      'econ-marketing-management-ecommerce-10-12',
-      'chem-organic-hydrocarbons-alcohols',
-      'bio-medicine-anatomy-biotech-pharmacy-8-12'
+      'eng-biotech-chemical-ecology-vet-dippk',
+      'eng-hospitality-tourism-design-dippk',
+      'eng-civil-architecture-geodesy-dippk',
+      'chem-organic-hydrocarbons-alcohols'
     ],
     specialtyQuiz: [
       {
@@ -1383,7 +1383,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
         name: 'Музикално изкуство: Инструментално, Вокално и Фоклорно изпълнителство (напр. професия „Музикант-инструменталист“ 212010, специалност 2120101 „Пиано“)',
         qualification: 'Трета степен на професионална квалификация (ДИППК в НМУ / НУИ / НУФИ)',
         coreSubjects: ['Елементарна теория на музиката, Солфеж и слухов анализ', 'Хармония, Полифония, Музикални форми и анализ', 'История на музиката (Барок, Класицизъм, Романтизъм, XX век и Българска музикална култура)', 'Специален инструмент / Класическо и народно пеене, Камерна и оркестрова музика'],
-        linkedLessonId: 'bio-medicine-anatomy-biotech-pharmacy-8-12'
+        linkedLessonId: 'mon-pp-muzika-m1-1-1'
       },
       {
         code: '2120501',
@@ -1444,7 +1444,7 @@ export const SCHOOL_SPECIALTIES_SECTIONS: SchoolCategorySection[] = [
     ],
     linkedLessonIds: [
       'bio-medicine-anatomy-biotech-pharmacy-8-12',
-      'bio-medicine-anatomy-biotech-pharmacy-8-12',
+      'mon-pp-muzika-m1-1-1',
       'phys-newton-laws-mechanics',
       'phil-psychology-logic-ethics-law-8-10'
     ],
@@ -2197,7 +2197,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'СГСАГ, ПГМЕ, НПГПТО, НТБГ, НГПИ, НМУ, Спортни и Професионални гимназии',
         keyTopics: 'Ортогонални и аксонометрични проекции, стандарти по чертане (БДС ISO), Безопасност на труда (ЗБУТ), Предприемаческо мислене, Академична рисунка, Елементарна теория на музиката и Спортна подготовка',
         weeklyHoursNote: '2–8 ч./седм.',
-        linkedLessonId: 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
+        linkedLessonId: 'eng-civil-architecture-geodesy-dippk'
       },
       {
         subjectName: 'Геодезия, Фотограметрия, Картография, ГИС, Пътно и Водно строителство (8.–12. клас — СГСАГ)',
@@ -2205,7 +2205,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'СГСАГ „Христо Ботев“, Професионални гимназии по строителство, архитектура и геодезия (ПГСАГ)',
         keyTopics: 'Геодезическа координатна система, ъгли в гради (400 gon), геометрична нивелация, права и обратна геодезическа задача, ГИС слоеве, фотограметрия с дронове (GSD), пътна конструкция и формула на Манинг',
         weeklyHoursNote: '4–10 ч./седм.',
-        linkedLessonId: 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
+        linkedLessonId: 'eng-civil-architecture-geodesy-dippk'
       },
       {
         subjectName: 'Графичен дизайн, UI/UX Проектиране, 3D Моделиране и Архитектурна визуализация (8.–12. клас)',
@@ -2301,7 +2301,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'ПГМЕ, ТМТ, Машиностроителни и Мехатронни професионални гимназии',
         keyTopics: 'Програмиране на стругове и фрези с ЦПУ (G00, G01, G02/G03, G90/G91), Скорост на рязане v_c = π·D·n/1000, MIG/MAG и TIG заваряване, Закон на Паскал за хидравлични цилиндри и Кинематика на индустриални роботи',
         weeklyHoursNote: '6–12 ч./седм.',
-        linkedLessonId: 'phys-newton-laws-mechanics'
+        linkedLessonId: 'eng-maritime-aviation-logistics-dippk'
       },
       {
         subjectName: 'Прецизно земеделие (NDVI & GPS), Лозарство, Енология и Ветеринарна клиника (8.–12. клас)',
@@ -2349,7 +2349,7 @@ export const GRADE_8_TO_12_COMPLETE_SUBJECT_MATRIX: GradeCurriculumMatrix[] = [
         schoolTypes: 'Всички гимназии (Разширено за НВО 10, ДЗИ и кандидатстудентски изпити в УАСГ/ТУ/СУ)',
         keyTopics: 'Аксиоми на стереометрията, ъгъл между кръстосани прави, Теорема за трите перпендикуляра, ортогонална проекция (S_пр = S·cos φ), обеми и повърхнини на многостени и ротационни тела, вписано и описано кълбо',
         weeklyHoursNote: '2–4 ч./седм.',
-        linkedLessonId: 'math-10-12-solid-geometry-prisms-pyramids-spheres-cones'
+        linkedLessonId: 'eng-civil-architecture-geodesy-dippk'
       },
       {
         subjectName: 'История и цивилизации (10. клас — Цялата българска история)',

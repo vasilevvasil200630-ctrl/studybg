@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import type { Flashcard, LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
+import { RichText } from './RichText';
 import {
   LEITNER_INTERVAL_DAYS,
   boxLabel,
@@ -568,12 +569,12 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
 
                 <div className="my-auto py-6 text-center">
                   <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">
-                    {card.front}
+                    <RichText text={card.front} />
                   </h3>
                   {card.hint && (
                     <div className="mt-4 inline-flex items-center gap-1.5 text-xs text-slate-600 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
                       <HelpCircle className="w-3.5 h-3.5 text-slate-500" />
-                      <span>Насока: {card.hint}</span>
+                      <span>Насока: <RichText text={card.hint} /></span>
                     </div>
                   )}
                 </div>
@@ -602,7 +603,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
 
                 <div className="my-auto py-6 text-center">
                   <p className="text-base sm:text-lg font-medium text-slate-900 leading-relaxed">
-                    {card.back}
+                    <RichText text={card.back} />
                   </p>
                 </div>
 

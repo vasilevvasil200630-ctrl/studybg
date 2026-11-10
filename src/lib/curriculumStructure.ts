@@ -1,4 +1,5 @@
 import type { LessonData, LessonSubject } from '../types';
+import { MON_TOPIC_HIERARCHY, type MonTopicHierarchyEntry } from '../data/monCurriculum/topicHierarchy';
 
 export type HighSchoolProfileFilterId =
   | 'all'
@@ -39,8 +40,8 @@ export const HIGH_SCHOOL_PROFILE_FILTERS: HighSchoolProfileDescriptor[] = [
     name: 'Математически и Природо-математически гимназии',
     shortName: 'Математически (СМГ / ПМГ)',
     schoolsExample: 'СМГ, ПМГ, МГ „Баба Тонка“, МГ „Д-р Петър Берон“, МГ „Гео Милев“',
-    monProfileCode: 'Профил „Математически“ (Модули М1–М5 по Математика и Информатика)',
-    description: 'Задълбочена подготовка по Алгебра, Геометрия, Математически анализ, Моделиране, Информатика и Физика.',
+    monProfileCode: 'Профил „Математически“ (Модули М1–М4 по Математика и Информатика)',
+    description: 'Задълбочена подготовка по Алгебра, Геометрия, Математически анализ, Вероятности, Информатика и Физика.',
     coreSubjects: [
       'Математика',
       'Информатика, ИТ и Програмиране',
@@ -52,7 +53,7 @@ export const HIGH_SCHOOL_PROFILE_FILTERS: HighSchoolProfileDescriptor[] = [
     id: 'natural-npmg',
     name: 'Природни науки, Биотехнологии и Медицина',
     shortName: 'Природни науки (НПМГ / Медицина)',
-    schoolsExample: 'НПМГ „Акад. Л. Чакалов“, ПМГ профил Биология и Химия, Медицински колежи',
+    schoolsExample: 'НПМГ „Акад. Л. Чакалов“, ПМГ профил Биология и Химия, ПГХХТ, НПГВМ',
     monProfileCode: 'Профил „Природни науки“ (Модули М1–М5 по Биология, Химия и Физика)',
     description: 'Пълна подготовка за ДЗИ и кандидатстудентски изпити в МУ (Медицина, Фармация, Дентална медицина) и СУ.',
     coreSubjects: [
@@ -67,7 +68,7 @@ export const HIGH_SCHOOL_PROFILE_FILTERS: HighSchoolProfileDescriptor[] = [
     name: 'Езикови гимназии и интензивно чуждоезиково обучение',
     shortName: 'Езикови гимназии (ЕГ / АЕГ / НЕГ)',
     schoolsExample: '91. НЕГ, 1. АЕГ, 2. АЕГ, 9. ФЕГ, 164. ИЕГ, ЕГ Пловдив, ЕГ Варна, ЕГ Бургас',
-    monProfileCode: 'Профил „Чужди езици“ (Нива B1.1, B2 и C1 по Общата европейска езикова рамка)',
+    monProfileCode: 'Профил „Чужди езици“ (Нива A2, B1.1, B1 и B2 по Общата европейска езикова рамка)',
     description: 'Интензивен 8. клас (18 ч./седм.) и профилирана подготовка в 11.–12. клас за ДЗИ по чужд език и БЕЛ.',
     coreSubjects: [
       'Английски език',
@@ -82,7 +83,7 @@ export const HIGH_SCHOOL_PROFILE_FILTERS: HighSchoolProfileDescriptor[] = [
     name: 'Хуманитарни, Класически и Обществени гимназии',
     shortName: 'Хуманитарни (НГДЕК / ХГ)',
     schoolsExample: 'НГДЕК, Хуманитарни гимназии „Св. св. Кирил и Методий“, Профили БЕЛ и История',
-    monProfileCode: 'Профили „Хуманитарни науки“ и „Обществени науки“ (Модули М1–М5)',
+    monProfileCode: 'Профили „Хуманитарни науки“ и „Обществени науки“ (Модули М1–М6)',
     description: 'Литературен анализ, есе и интерпретативно съчинение за ДЗИ по БЕЛ, История, Философия и Гражданско образование.',
     coreSubjects: [
       'Български език и литература',
@@ -110,7 +111,7 @@ export const HIGH_SCHOOL_PROFILE_FILTERS: HighSchoolProfileDescriptor[] = [
     name: 'Търговско-банкови, Финансови и Икономически гимназии',
     shortName: 'Икономика и Финанси (НТБГ / НФСГ)',
     schoolsExample: 'НТБГ, НФСГ, Търговски гимназии в Пловдив, Варна, Бургас, Стара Загора, Русе',
-    monProfileCode: 'Профил „Икономическо развитие“ / „Предприемачески“ & ДИППК Счетоводство, Банково дело и Търговия',
+    monProfileCode: 'Профил „Предприемачески“ (М1–М4) & ДИППК Счетоводство, Банково дело и Електронна търговия',
     description: 'Макро- и микроикономика, финанси, счетоводство, маркетинг, предприемачество и икономическа география.',
     coreSubjects: [
       'Икономика, Бизнес и Предприемачество',
@@ -124,24 +125,24 @@ export const HIGH_SCHOOL_PROFILE_FILTERS: HighSchoolProfileDescriptor[] = [
     id: 'technical-sgsag',
     name: 'Строителни, Технически и Професионални гимназии (Трета СПК)',
     shortName: 'Технически и Строителни (СГСАГ / ПГМЕ)',
-    schoolsExample: 'СГСАГ „Христо Ботев“, НПГПТО „М. В. Ломоносов“, ПГМЕ, ПГТ, Аграрни и Ветеринарни гимназии',
+    schoolsExample: 'СГСАГ „Христо Ботев“, НПГПТО „М. В. Ломоносов“, ПГМЕ, ПГТЕ „Хенри Форд“, ВМГ Варна',
     monProfileCode: 'Раздел В: Професионална подготовка за ДИППК (Теория и практика за Трета СПК)',
-    description: 'Архитектура и строителство, електротехника, мехатроника, автотранспорт, аграрни технологии и защита на дипломен проект.',
+    description: 'Архитектура и строителство, електротехника и ВЕИ, мехатроника и PLC, автотранспорт и EV, логистика и биотехнологии.',
     coreSubjects: [
       'Професионални специалности и Инженерство',
       'Икономика, Бизнес и Предприемачество',
       'Информатика, ИТ и Програмиране',
       'Физика и астрономия',
     ],
-    preferExamTypes: ['ДИППК / Професионален изпит'],
+    preferExamTypes: ['ДИППК / Професионален изпит', 'ДИППК (Професионална квалификация)'],
   },
   {
     id: 'arts-sports',
     name: 'Художествени, Музикални, Туристически и Спортни училища',
     shortName: 'Изкуства, Спорт и Туризъм',
-    schoolsExample: 'НГПИ „Св. Лука“, НУИ, НМУ „Л. Пипков“, Спортни училища, Професионални гимназии по туризъм',
+    schoolsExample: 'НГПИ „Св. Лука“, НУИ, НМУ „Л. Пипков“, Спортни училища, СПГТ и ПГ по туризъм',
     monProfileCode: 'Профили „Изобразително изкуство“, „Музика“, „Физическо възпитание и спорт“ и Туризъм',
-    description: 'История на изкуството, музикална теория, дизайн, спортна физиология, здравни грижи и туризъм.',
+    description: 'История на изкуството, музикална теория, графичен и интериорен дизайн, хотелиерство, туризъм и спортна физиология.',
     coreSubjects: [
       'Изкуства и музика',
       'Български език и литература',
@@ -161,7 +162,7 @@ export const PREPARATION_SECTIONS: {
     id: 'all',
     label: 'Всички раздели (А + Б + В)',
     shortLabel: 'Всички видове подготовка',
-    description: 'Общообразователна (ООП), Профилирана (ПП Модули М1–М5) и Професионална подготовка (ДИППК).',
+    description: 'Общообразователна (ООП), Профилирана (ПП Модули М1–М6) и Професионална подготовка (ДИППК).',
   },
   {
     id: 'section-a',
@@ -171,9 +172,9 @@ export const PREPARATION_SECTIONS: {
   },
   {
     id: 'section-b',
-    label: 'Раздел Б: Профилирана подготовка (11.–12. кл. М1–М5)',
-    shortLabel: 'Раздел Б (Профил М1–М5)',
-    description: 'Задължителните профилирани модули (Модул 1 до Модул 5) за втори гимназиален етап и втора матура (ДЗИ).',
+    label: 'Раздел Б: Профилирана подготовка (11.–12. кл. М1–М6)',
+    shortLabel: 'Раздел Б (Профил М1–М6)',
+    description: 'Задължителните профилирани модули за втори гимназиален етап и втора задължителна матура (ДЗИ).',
   },
   {
     id: 'section-c',
@@ -192,23 +193,36 @@ export interface LessonAcademicMetadata {
   sectionShort: string;
   monModuleLabel: string;
   thematicDomain: string;
+  domainOrder: number;
+  monSubSection: string | null;
+  monPdfUrl: string | null;
   matchingProfiles: HighSchoolProfileDescriptor[];
   examWeightLabel: string;
   competencies: string[];
 }
 
-const VOCATIONAL_SUBJECTS = new Set<LessonSubject>([
-  'Професионални специалности и Инженерство',
-  'Икономика, Бизнес и Предприемачество',
-]);
+export function resolveMonHierarchy(lesson: LessonData): MonTopicHierarchyEntry | null {
+  if (!lesson.monTopicIds || lesson.monTopicIds.length === 0) return null;
+  // Избираме най-конкретната (листова) подтема от списъка на урока
+  for (let i = lesson.monTopicIds.length - 1; i >= 0; i--) {
+    const entry = MON_TOPIC_HIERARCHY[lesson.monTopicIds[i]];
+    if (entry) return entry;
+  }
+  return null;
+}
 
 export function inferLessonPreparationSection(lesson: LessonData): Exclude<PreparationSectionId, 'all'> {
+  const monEntry = resolveMonHierarchy(lesson);
+  if (monEntry && (monEntry.sectionId === 'section-a' || monEntry.sectionId === 'section-b' || monEntry.sectionId === 'section-c')) {
+    return monEntry.sectionId;
+  }
+
   if (
+    lesson.subject === 'Професионални специалности и Инженерство' ||
     lesson.examType === 'ДИППК / Професионален изпит' ||
-    VOCATIONAL_SUBJECTS.has(lesson.subject) ||
     lesson.id.includes('dippk') ||
-    lesson.title.toLowerCase().includes('диппк') ||
-    lesson.title.toLowerCase().includes('спк')
+    lesson.id.startsWith('econ-') ||
+    Boolean(lesson.audience && (lesson.audience.includes('ДИППК') || lesson.audience.includes('НТБГ') || lesson.audience.includes('ТУЕС')))
   ) {
     return 'section-c';
   }
@@ -218,15 +232,10 @@ export function inferLessonPreparationSection(lesson: LessonData): Exclude<Prepa
     lesson.grade.includes('12.') ||
     lesson.examType === 'ДЗИ / Матура';
 
-  const titleLower = lesson.title.toLowerCase();
-  const isProfileModule =
-    titleLower.includes('модул') ||
-    titleLower.includes('профил') ||
-    (isUpperSecondary &&
-      lesson.subject !== 'Български език и литература' &&
-      lesson.subject !== 'Гражданско образование и философия');
-
-  if (isProfileModule || (isUpperSecondary && lesson.examType === 'ДЗИ / Матура')) {
+  if (isUpperSecondary) {
+    if (lesson.subject === 'Гражданско образование и философия' && !lesson.title.toLowerCase().includes('модул') && !lesson.title.toLowerCase().includes('философия')) {
+      return 'section-a';
+    }
     return 'section-b';
   }
 
@@ -234,30 +243,140 @@ export function inferLessonPreparationSection(lesson: LessonData): Exclude<Prepa
 }
 
 export function extractThematicDomain(lesson: LessonData): string {
-  // Check if title has a clear section prefix like "Модул 1: ...", "Дял II: ...", or "Тема: ..."
-  const colonIdx = lesson.title.indexOf(':');
-  if (colonIdx > 3 && colonIdx < 48) {
-    return lesson.title.slice(0, colonIdx).trim();
-  }
-  const dashMatch = lesson.title.match(/^([^—–-]{5,42})\s*[—–-]\s*/);
-  if (dashMatch && dashMatch[1]) {
-    const candidate = dashMatch[1].trim();
-    if (lesson.subject === 'Български език и литература') {
-      return `Авторски и тематичен блок: ${candidate}`;
-    }
-    return candidate;
+  const monEntry = resolveMonHierarchy(lesson);
+  if (monEntry) {
+    return monEntry.domainTitle;
   }
 
-  if (lesson.examType === 'ДИППК / Професионален изпит') {
-    return `Специфична професионална подготовка (${lesson.subject})`;
+  const sectionId = inferLessonPreparationSection(lesson);
+  if (sectionId === 'section-c') {
+    if (lesson.subject === 'Професионални специалности и Инженерство') {
+      return 'Инженерни, технически и отраслови специалности за Трета СПК (ДИППК)';
+    }
+    if (lesson.subject === 'Икономика, Бизнес и Предприемачество') {
+      return 'Финанси, счетоводство, маркетинг и бизнес администрация (НТБГ / НФСГ — ДИППК)';
+    }
+    if (lesson.subject === 'Информатика, ИТ и Програмиране') {
+      return 'Системно и приложно програмиране, ООП, мрежи и бази данни (ТУЕС / ПГЕА — ДИППК)';
+    }
+    return `Специализирана професионална подготовка — ${lesson.subject} (ДИППК)`;
   }
-  if (lesson.grade.includes('11.') || lesson.grade.includes('12.')) {
-    return `Втори гимназиален етап и ДЗИ (${lesson.grade})`;
+
+  if (lesson.grade.startsWith('5.')) {
+    return '5. клас — Фундаментални знания и мост към гимназията';
   }
-  if (lesson.grade.includes('8.') || lesson.grade.includes('9.') || lesson.grade.includes('10.')) {
-    return `Първи гимназиален етап — ООП (${lesson.grade})`;
+  if (lesson.grade.startsWith('6.')) {
+    return '6. клас — Основни закономерности и систематизация';
   }
-  return `Основен тематичен раздел (${lesson.grade})`;
+  if (lesson.grade.includes('5.–6.')) {
+    return '5.–6. клас — Прогимназиален синтез и базови понятия';
+  }
+  if (lesson.grade.includes('7.')) {
+    return '7. клас — Интензивна подготовка за НВО след 7. клас';
+  }
+
+  if (lesson.grade.includes('11.') || lesson.grade.includes('12.') || lesson.examType === 'ДЗИ / Матура') {
+    if (lesson.subject === 'Български език и литература') {
+      return 'Канонични творби, езикови норми и интерпретативен анализ за ДЗИ (11.–12. клас)';
+    }
+    return 'Обобщителни профилирани теми и изпитни модели за ДЗИ (11.–12. клас)';
+  }
+
+  if (lesson.grade.includes('10.') || lesson.examType === 'НВО (10. клас)') {
+    return '10. клас — Систематизиращи теми и подготовка за НВО след 10. клас';
+  }
+
+  return '8.–9. клас — Надграждащи синтези за Първи гимназиален етап (ООП)';
+}
+
+function computeDomainOrder(lesson: LessonData, monEntry: MonTopicHierarchyEntry | null, sectionId: Exclude<PreparationSectionId, 'all'>): number {
+  if (monEntry) return monEntry.order;
+  if (sectionId === 'section-c') return 310;
+  if (lesson.grade.startsWith('5.')) return 50;
+  if (lesson.grade.includes('5.–6.') || lesson.grade.startsWith('6.')) return 60;
+  if (lesson.grade.includes('7.')) return 70;
+  if (lesson.grade.includes('8.') && !lesson.grade.includes('12.')) return 85;
+  if (lesson.grade.includes('9.')) return 95;
+  if (lesson.grade.includes('10.')) return 105;
+  if (lesson.grade.includes('11.') && !lesson.grade.includes('12.')) return 118;
+  return 260;
+}
+
+export function parseGradeNumbersFromLabel(gradeLabel: string): number[] {
+  const rangeMatch = gradeLabel.match(/(\d+)\s*[.–-]+\s*(\d+)/);
+  if (rangeMatch) {
+    const start = Number(rangeMatch[1]);
+    const end = Number(rangeMatch[2]);
+    if (start >= 5 && end <= 12 && start <= end) {
+      const out: number[] = [];
+      for (let g = start; g <= end; g++) out.push(g);
+      return out;
+    }
+  }
+  const singleMatch = gradeLabel.match(/(\d+)\.\s*клас/);
+  if (singleMatch) {
+    return [Number(singleMatch[1])];
+  }
+  return [];
+}
+
+export function matchesLessonGradeFilter(lesson: LessonData, selectedGrade: string): boolean {
+  if (!selectedGrade || selectedGrade === 'Всички класове') return true;
+  if (lesson.grade === selectedGrade) return true;
+
+  const targetNums = parseGradeNumbersFromLabel(selectedGrade);
+  if (targetNums.length === 0) return true;
+  const targetGrade = targetNums[0];
+
+  const monEntry = resolveMonHierarchy(lesson);
+  if (monEntry) {
+    return monEntry.grades.includes(targetGrade);
+  }
+
+  const lessonGrades = parseGradeNumbersFromLabel(lesson.grade);
+  return lessonGrades.includes(targetGrade);
+}
+
+export function matchesLessonExamFilter(lesson: LessonData, selectedExamType: string): boolean {
+  if (!selectedExamType || selectedExamType === 'Всички изпити' || selectedExamType === 'Всички формати') {
+    return true;
+  }
+
+  const monEntry = resolveMonHierarchy(lesson);
+  const sectionId = inferLessonPreparationSection(lesson);
+
+  if (selectedExamType === 'ДЗИ / Матура' || selectedExamType === 'ДЗИ / Матура (12. кл.)') {
+    return Boolean(monEntry?.examTags.includes('ДЗИ')) || lesson.examType === 'ДЗИ / Матура';
+  }
+  if (
+    selectedExamType === 'ДИППК / Професионален изпит' ||
+    selectedExamType === 'ДИППК / Професионален изпит (СПК)'
+  ) {
+    return sectionId === 'section-c' || lesson.examType === 'ДИППК / Професионален изпит';
+  }
+  if (
+    selectedExamType === 'НВО (10. клас)' ||
+    selectedExamType === 'Първи гимназиален етап (8.–10. кл. ООП)'
+  ) {
+    if (monEntry) return monEntry.stageId === 'stage-1';
+    const grades = parseGradeNumbersFromLabel(lesson.grade);
+    return (
+      lesson.examType === 'НВО (10. клас)' ||
+      (sectionId === 'section-a' && grades.some((g) => g >= 8 && g <= 10))
+    );
+  }
+  if (selectedExamType === 'НВО (7. клас)') {
+    const grades = parseGradeNumbersFromLabel(lesson.grade);
+    return lesson.examType === 'НВО (7. клас)' || grades.some((g) => g <= 7);
+  }
+  if (
+    selectedExamType === 'Контролна работа / Класно' ||
+    selectedExamType === 'Текущ контрол и класна работа'
+  ) {
+    return lesson.examType === 'Контролна работа / Класно' || sectionId === 'section-a';
+  }
+
+  return lesson.examType === selectedExamType;
 }
 
 export function matchesHighSchoolProfile(lesson: LessonData, profileId: HighSchoolProfileFilterId): boolean {
@@ -276,21 +395,21 @@ export function matchesHighSchoolProfile(lesson: LessonData, profileId: HighScho
 }
 
 export function getLessonAcademicMetadata(lesson: LessonData): LessonAcademicMetadata {
+  const monEntry = resolveMonHierarchy(lesson);
   const sectionId = inferLessonPreparationSection(lesson);
-  const isJunior =
-    lesson.grade.includes('5.') || lesson.grade.includes('6.') || lesson.grade.includes('7.');
-  const isStage2 =
-    lesson.grade.includes('11.') ||
-    lesson.grade.includes('12.') ||
-    lesson.examType === 'ДЗИ / Матура';
+  const grades = monEntry ? [...monEntry.grades] : parseGradeNumbersFromLabel(lesson.grade);
+  const isJunior = grades.length > 0 && grades.every((g) => g <= 7);
+  const isStage2 = monEntry
+    ? monEntry.stageId === 'stage-2'
+    : grades.some((g) => g >= 11) || lesson.examType === 'ДЗИ / Матура';
 
   let stageId: LessonAcademicMetadata['stageId'] = 'stage-1';
-  let stageTitle = 'Първи гимназиален етап (8.–10. клас • Общообразователна подготовка)';
+  let stageTitle = 'Първи гимназиален етап (8.–10. клас • Общообразователна подготовка и НВО)';
   let stageShort = 'I гимн. етап (8.–10. кл.)';
 
   if (isJunior) {
     stageId = 'junior';
-    stageTitle = 'Прогимназиален етап (5.–7. клас • Мост с Matura+)';
+    stageTitle = 'Прогимназиален етап (5.–7. клас • Мост към НВО и гимназиите)';
     stageShort = 'Прогимназия (5.–7. кл.)';
   } else if (sectionId === 'section-c') {
     stageId = 'stage-vocation';
@@ -306,11 +425,15 @@ export function getLessonAcademicMetadata(lesson: LessonData): LessonAcademicMet
     PREPARATION_SECTIONS.find((s) => s.id === sectionId) ?? PREPARATION_SECTIONS[1];
 
   let monModuleLabel = 'Задължителен учебен план по ДОС на МОН (Раздел А — ООП)';
-  if (sectionId === 'section-b') {
+  if (monEntry) {
+    monModuleLabel = monEntry.subSection
+      ? `${monEntry.domainTitle} · Раздел: ${monEntry.subSection}`
+      : monEntry.domainTitle;
+  } else if (sectionId === 'section-b') {
     monModuleLabel =
       lesson.subject === 'Български език и литература'
-        ? 'Задължителна подготовка за I ДЗИ + Профилирани модули М1–М4'
-        : 'Профилирана подготовка (Модули М1–М4 за Втора задължителна матура ДЗИ)';
+        ? 'Задължителна подготовка за I ДЗИ + Профилирани модули'
+        : 'Профилирана подготовка (Модули М1–М6 за Втора задължителна матура ДЗИ)';
   } else if (sectionId === 'section-c') {
     monModuleLabel = 'Отраслова и специфична професионална подготовка (Държавен изпит за III СПК / ДИППК)';
   }
@@ -320,10 +443,14 @@ export function getLessonAcademicMetadata(lesson: LessonData): LessonAcademicMet
   );
 
   let examWeightLabel = 'Висока тежест при текущ контрол, класна работа и входно/изходно равнище по МОН';
-  if (lesson.examType === 'ДЗИ / Матура') {
+  if (monEntry?.examTags.includes('ДЗИ') || lesson.examType === 'ДЗИ / Матура') {
     examWeightLabel = 'Ключова тема в изпитния формат на ДЗИ (Матура 12. клас — тестови и отворени задачи)';
-  } else if (lesson.examType === 'ДИППК / Професионален изпит') {
-    examWeightLabel = 'Държавен изпит за придобиване на III СПК (Писмена разработка / Дипломен казус)';
+  } else if (monEntry?.examTags.includes('НВО 10') || lesson.examType === 'НВО (10. клас)') {
+    examWeightLabel = 'Задължителна тема в обхвата на Националното външно оценяване (НВО след 10. клас)';
+  } else if (lesson.examType === 'НВО (7. клас)') {
+    examWeightLabel = 'Ключова тема за Национално външно оценяване (НВО след 7. клас) и прием в гимназии';
+  } else if (sectionId === 'section-c') {
+    examWeightLabel = 'Държавен изпит за придобиване на III СПК (Теория и практически дипломен казус — ДИППК)';
   }
 
   const competencies = [
@@ -331,6 +458,9 @@ export function getLessonAcademicMetadata(lesson: LessonData): LessonAcademicMet
     `Прилагане на теоретичните модели при решаване на структурирани тестови и практически задачи`,
     `Аргументирано формулиране на писмена теза / решение за оценка Отличен (6.00) без терминологични грешки`,
   ];
+
+  const thematicDomain = extractThematicDomain(lesson);
+  const domainOrder = computeDomainOrder(lesson, monEntry, sectionId);
 
   return {
     stageId,
@@ -340,7 +470,10 @@ export function getLessonAcademicMetadata(lesson: LessonData): LessonAcademicMet
     sectionLabel: sectionObj.label,
     sectionShort: sectionObj.shortLabel,
     monModuleLabel,
-    thematicDomain: extractThematicDomain(lesson),
+    thematicDomain,
+    domainOrder,
+    monSubSection: monEntry?.subSection ?? null,
+    monPdfUrl: monEntry?.pdfUrl ?? null,
     matchingProfiles,
     examWeightLabel,
     competencies,

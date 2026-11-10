@@ -35,8 +35,10 @@ describe('данни за уроците', () => {
     }
   }, 20_000);
 
-  it('всяка от 56-те теми в дървото на МОН има точен урок (lessonIsApproximate = false) и реален тест', async () => {
+  it('всяка от 72-те теми в дървото на МОН (по всички 14 предмета) има точен урок (lessonIsApproximate = false) и реален тест', async () => {
     await loadFullCurriculumLessons();
+    const coveredSubjects = new Set(BULGARIAN_CURRICULUM_TREE.map((s) => s.subject));
+    expect(coveredSubjects.size).toBe(LESSON_SUBJECTS.length);
     let count = 0;
     for (const subject of BULGARIAN_CURRICULUM_TREE) {
       for (const grade of subject.grades) {
@@ -52,7 +54,7 @@ describe('данни за уроците', () => {
         }
       }
     }
-    expect(count).toBe(56);
+    expect(count).toBe(72);
   });
 
   it('generateLessonFromInput винаги връща проверен тест с реални предметни въпроси', async () => {

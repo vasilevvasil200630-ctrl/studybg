@@ -20,7 +20,7 @@ export interface NotebookDiagnosis {
   lessonIsApproximate?: boolean;
 }
 
-// Изрична карта на всички 56 подтеми от дървото на МОН към техните проверени уроци и тестове
+// Изрична карта на всички 72 подтеми от дървото на МОН (покриващи всички 14 предмета) към техните проверени уроци и тестове
 export const SUBDOMAIN_LESSON_MAP: Record<string, string> = {
   'bel-5-sub1': 'bel-5-myth-prometey',
   'bel-5-sub2': 'bel-5-tri-bratya-zlatnata-yabalka',
@@ -29,21 +29,21 @@ export const SUBDOMAIN_LESSON_MAP: Record<string, string> = {
   'bel-7-sub1': 'bel-7-edna-balgarka',
   'bel-7-sub2': 'literature-botev-dzi',
   'bel-7-sub3': 'bel-7-opalchentsite-shipka',
-  'bel-7-sub4': 'bel-syntax-complex-sentences-comma',
-  'bel-7-sub5': 'bel-8-10-bulgarian-grammar-syntax-punctuation-nvo10',
+  'bel-7-sub4': 'mon10-bel-spelling',
+  'bel-7-sub5': 'bel-syntax-complex-sentences-comma',
   'bel-10-sub1': 'bel-10-paisiy-istoriya-slavyanobalgarska',
   'bel-11-sub1': 'literature-geratsite',
   'bel-11-sub2': 'literature-aleko-dzi',
   'bel-11-sub3': 'literature-yavorov-gradushka',
   'bel-12-sub1': 'literature-tyutyun',
   'bel-12-sub2': 'bel-talev-dimov-romani-dzi',
-  'bel-12-sub3': 'bel-8-10-bulgarian-grammar-syntax-punctuation-nvo10',
+  'bel-12-sub3': 'mon11-bel-spelling-practice',
   'bel-12-sub4': 'bel-12-vaptsarov-vyara-pesen',
   'hist-5-sub1': 'hist-5-ancient-thrace-odrysian',
   'hist-6-sub1': 'history-asparukh-681',
   'hist-6-sub2': 'hist-6-khan-krum-laws-811',
   'hist-10-sub0': 'history-simeon-golden-age',
-  'hist-10-sub1': 'history-tarnovo-constitution-1879',
+  'hist-10-sub1': 'hist-10-unification-independence-1885-1908',
   'hist-10-sub2': 'hist-10-unification-independence-1885-1908',
   'hist-10-sub3': 'history-balkan-wars-ww1-catastrophes',
   'hist-11-sub1': 'history-april-uprising',
@@ -56,10 +56,11 @@ export const SUBDOMAIN_LESSON_MAP: Record<string, string> = {
   'math-8-sub2': 'math-pythagorean-theorem',
   'math-10-sub1': 'math-quadratic-vieta-progressions',
   'math-10-sub2': 'math-trigonometry-sine-cosine-nvo10',
+  'math-12-sub1': 'math-derivatives-extremums-dzi',
   'phys-6-sub1': 'phys-5-6-forces-motion-heat',
   'phys-7-sub1': 'physics-ohms-law',
-  'phys-8-sub1': 'phys-8-10-mechanics-thermodynamics-electricity-complete',
-  'phys-8-sub2': 'phys-newton-laws-mechanics',
+  'phys-8-sub1': 'phys-newton-laws-mechanics',
+  'phys-8-sub2': 'phys-8-10-mechanics-thermodynamics-electricity-complete',
   'geo-5-sub1': 'geo-5-great-discoveries-continents',
   'geo-7-sub1': 'geography-danubian-plain',
   'geo-10-sub1': 'geo-bulgaria-population-settlements-tertiary-dzi',
@@ -76,8 +77,23 @@ export const SUBDOMAIN_LESSON_MAP: Record<string, string> = {
   'eng-7-sub1': 'eng-5-7-tenses-modals-reading-nvo',
   'eng-8-sub1': 'eng-conditionals-passive-reported',
   'eng-10-sub1': 'english-present-perfect-vs-past',
-  'eng-10-sub2': 'english-present-perfect-vs-past',
-  'civ-10-sub1': 'civic-powers-separation'
+  'eng-10-sub2': 'eng-conditionals-passive-reported',
+  'civ-10-sub1': 'civic-powers-separation',
+  'cs-9-sub1': 'cs-algorithms-oop-databases-8-12',
+  'cs-12-sub1': 'cs-web-cybersecurity-ai-10-12',
+  'econ-10-sub1': 'econ-micro-macro-accounting-finance-8-12',
+  'econ-12-sub1': 'econ-marketing-management-ecommerce-10-12',
+  'lang-de-sub1': 'de-a2-8-everyday-life',
+  'lang-fr-es-sub1': 'lang-german-french-spanish-b1-b2-8-12',
+  'arts-11-sub1': 'mon-pp-arts-1-1',
+  'music-11-sub1': 'mon-pp-muzika-m1-1-1',
+  'voc-civil-sub1': 'eng-civil-architecture-geodesy-dippk',
+  'voc-el-sub1': 'eng-electrotechnics-power-renewables-dippk',
+  'voc-mech-sub1': 'eng-mechatronics-plc-electronics-cnc-dippk',
+  'voc-auto-sub1': 'eng-automotive-ev-diagnostics-dippk',
+  'voc-trans-sub1': 'eng-maritime-aviation-logistics-dippk',
+  'voc-bio-sub1': 'eng-biotech-chemical-ecology-vet-dippk',
+  'voc-tour-sub1': 'eng-hospitality-tourism-design-dippk'
 };
 
 export function classifyAndDiagnoseNotebook(inputText: string, fileName = ''): NotebookDiagnosis {

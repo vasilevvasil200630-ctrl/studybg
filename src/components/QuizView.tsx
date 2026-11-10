@@ -3,6 +3,7 @@ import { RefreshCw, ArrowRight, CheckSquare, HelpCircle, Mail, Shuffle, Sparkles
 import type { LessonData, QuizQuestion } from '../types';
 import type { AppNavTab } from './Navbar';
 import { EmailShareModal } from './EmailShareModal';
+import { RichText } from './RichText';
 import { studyProgressService } from '../services/studyProgressService';
 import { generateInfiniteLessonQuiz, topicQuestionPool } from '../services/infiniteQuizGenerator';
 
@@ -585,12 +586,12 @@ export const QuizView: React.FC<QuizViewProps> = ({
               {(worksheetTab === 'A' ? worksheetData.groupA : worksheetData.groupB).map((q, idx) => (
                 <div key={q.id} className="text-xs sm:text-sm text-slate-800 space-y-1 pb-2.5 border-b border-slate-100 last:border-b-0">
                   <div className="font-semibold text-slate-900">
-                    {idx + 1}. {q.question}
+                    {idx + 1}. <RichText text={q.question} />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 pl-4 text-slate-700">
                     {q.options.map((opt, optIdx) => (
                       <div key={optIdx}>
-                        <span className="tabular-nums font-bold text-slate-900">{OPTION_LETTERS[optIdx]})</span> {opt}
+                        <span className="tabular-nums font-bold text-slate-900">{OPTION_LETTERS[optIdx]})</span> <RichText text={opt} />
                       </div>
                     ))}
                   </div>
@@ -607,9 +608,9 @@ export const QuizView: React.FC<QuizViewProps> = ({
                   <div key={q.id} className="text-xs text-slate-700 pb-2 border-b border-slate-100 last:border-b-0">
                     <div>
                       <strong className="tabular-nums text-slate-900">{idx + 1}. {OPTION_LETTERS[q.correctIndex]})</strong>{' '}
-                      <span className="font-semibold text-emerald-900">{q.options[q.correctIndex]}</span>
+                      <span className="font-semibold text-emerald-900"><RichText text={q.options[q.correctIndex]} /></span>
                     </div>
-                    <div className="text-[11px] text-slate-500 mt-0.5">{q.explanation}</div>
+                    <div className="text-[11px] text-slate-500 mt-0.5"><RichText text={q.explanation} /></div>
                   </div>
                 ))}
               </div>
@@ -621,9 +622,9 @@ export const QuizView: React.FC<QuizViewProps> = ({
                   <div key={q.id} className="text-xs text-slate-700 pb-2 border-b border-slate-100 last:border-b-0">
                     <div>
                       <strong className="tabular-nums text-slate-900">{idx + 1}. {OPTION_LETTERS[q.correctIndex]})</strong>{' '}
-                      <span className="font-semibold text-emerald-900">{q.options[q.correctIndex]}</span>
+                      <span className="font-semibold text-emerald-900"><RichText text={q.options[q.correctIndex]} /></span>
                     </div>
-                    <div className="text-[11px] text-slate-500 mt-0.5">{q.explanation}</div>
+                    <div className="text-[11px] text-slate-500 mt-0.5"><RichText text={q.explanation} /></div>
                   </div>
                 ))}
               </div>
@@ -776,7 +777,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                 </span>
                 <div className="flex-1">
                   <h4 className="text-sm sm:text-base font-semibold text-slate-900 leading-snug">
-                    {q.question}
+                    <RichText text={q.question} />
                   </h4>
                 </div>
               </div>
@@ -813,7 +814,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                       <span className="w-5 h-5 rounded bg-slate-100 tabular-nums text-[11px] font-semibold text-slate-600 flex items-center justify-center flex-shrink-0 border border-slate-200">
                         {letters[optIdx]}
                       </span>
-                      <span className="flex-1 leading-snug">{option}</span>
+                      <span className="flex-1 leading-snug"><RichText text={option} /></span>
                     </button>
                   );
                 })}
@@ -825,7 +826,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                   <HelpCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
                   <div>
                     <span className="font-semibold text-slate-900">Методическо обяснение:</span>{' '}
-                    <span>{q.explanation}</span>
+                    <span><RichText text={q.explanation} /></span>
                   </div>
                 </div>
               )}

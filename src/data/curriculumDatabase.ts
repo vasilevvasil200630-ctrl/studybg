@@ -26,7 +26,8 @@ export const SUBJECTS_LIST: SubjectName[] = [
   'Английски език',
   'Чужди езици (Немски, Френски, Испански)',
   'Гражданско образование и философия',
-  'Изкуства и музика'
+  'Изкуства и музика',
+  'Професионални специалности и Инженерство'
 ];
 
 const CORE_CURRICULUM_LESSONS: LessonData[] = [
@@ -1032,7 +1033,42 @@ const CORE_CURRICULUM_LESSONS: LessonData[] = [
 
 ];
 
-function ensureNotebookChecklist(lesson: LessonData): LessonData {
+const NON_DZI_STAGE1_IDS = new Set([
+  'bio-dna-replication-protein',
+  'bio-cell-division-mitosis-meiosis',
+  'geo-8-9-earth-spheres-world-economy-regions',
+  'hist-8-9-modern-european-contemporary-world-history'
+]);
+
+function normalizeLessonMetadata(lesson: LessonData): LessonData {
+  let examType = lesson.examType;
+  if (NON_DZI_STAGE1_IDS.has(lesson.id)) {
+    examType = 'Контролна работа / Класно';
+  } else if (!examType) {
+    const monProg = lesson.monTopicIds?.[0]?.split(':')[0] ?? '';
+    if (
+      lesson.grade === '12. клас (ДЗИ / Матура)' ||
+      monProg.startsWith('pp-') ||
+      monProg === '12-be' ||
+      monProg === '12-lit' ||
+      monProg.endsWith('-b2.1') ||
+      monProg.endsWith('-b1')
+    ) {
+      examType = 'ДЗИ / Матура';
+    } else if (lesson.grade === '10. клас (НВО)' && (monProg === '10-bge' || monProg === '10-lit' || monProg === '10-math')) {
+      examType = 'НВО (10. клас)';
+    } else if (lesson.grade === '7. клас (НВО)') {
+      examType = 'НВО (7. клас)';
+    } else {
+      examType = 'Контролна работа / Класно';
+    }
+  }
+
+  return examType === lesson.examType ? lesson : { ...lesson, examType };
+}
+
+function ensureNotebookChecklist(rawLesson: LessonData): LessonData {
+  const lesson = normalizeLessonMetadata(rawLesson);
   if (lesson.notebookChecklist && lesson.notebookChecklist.length > 0) {
     return lesson;
   }
@@ -1040,7 +1076,11 @@ function ensureNotebookChecklist(lesson: LessonData): LessonData {
   const f1 = lesson.summary.formulasOrDates[1];
   const kp0 = lesson.summary.keyPoints[0] || lesson.summary.overview;
   const kp1 = lesson.summary.keyPoints[1] || lesson.summary.overview;
-  const trap0 = lesson.summary.commonTraps[0] || lesson.summary.examGoldenRule;
+  const kp2 = lesson.summary.keyPoints[2] || kp1;
+  const rawTrap0 = lesson.summary.commonTraps[0];
+  const hasDistinctTrap = Boolean(
+    rawTrap0 && rawTrap0.trim() !== lesson.summary.examGoldenRule.trim()
+  );
 
   const generatedChecklist: NotebookCheckItem[] = [
     {
@@ -1055,21 +1095,23 @@ function ensureNotebookChecklist(lesson: LessonData): LessonData {
       requirement: 'Систематизиран конспект на водещите теоретични зависимости и причинно-следствени връзки',
       whyNeeded: 'Осигурява пълнота на аргументацията при въпроси със свободен отговор и практически казуси.',
       isEssentialForSix: true,
-      suggestedNotes: kp0
+      suggestedNotes: f0 ? kp0 : kp1
     },
     {
       id: `${lesson.id}-chk-3`,
       requirement: f1 ? `Ключови формули, дати и стандарти: ${f1.label}` : 'Практическо приложение и алгоритъм за решаване на типови задачи',
       whyNeeded: 'Без конкретните измерители, формули или хронология решението губи точки за точност.',
       isEssentialForSix: true,
-      suggestedNotes: f1 ? `${f1.label}: ${f1.value}` : kp1
+      suggestedNotes: f1 ? `${f1.label}: ${f1.value}` : kp2
     },
     {
       id: `${lesson.id}-chk-4`,
       requirement: 'Разграничаване на най-честите изпитни капани и златно правило за отличен (6.00)',
       whyNeeded: 'Предпазва от типичните грешки, водещи до отнемане на точки на матура и контролна работа.',
       isEssentialForSix: false,
-      suggestedNotes: `${lesson.summary.examGoldenRule} | Внимание: ${trap0}`
+      suggestedNotes: hasDistinctTrap
+        ? `${lesson.summary.examGoldenRule} | Внимание: ${rawTrap0}`
+        : lesson.summary.examGoldenRule
     }
   ];
 
@@ -1081,7 +1123,7 @@ function ensureNotebookChecklist(lesson: LessonData): LessonData {
 
 // Подреждаме учебната база интердисциплинарно (Round-Robin по предмети),
 // така че началната страница, тренажорът на живо и каталогът да представят
-// балансирано всички предмети, без да се зацикля върху една-единствена тема.
+// балансирано всички 14 предмета, без да се зацикля върху една-единствена тема.
 const SUBJECT_ROTATION_ORDER: string[] = [
   'Български език и литература',
   'Математика',
@@ -1090,11 +1132,13 @@ const SUBJECT_ROTATION_ORDER: string[] = [
   'Физика и астрономия',
   'Химия и ООС',
   'Икономика, Бизнес и Предприемачество',
+  'Професионални специалности и Инженерство',
   'География и икономика',
   'Гражданско образование и философия',
   'Английски език',
   'Чужди езици (Немски, Френски, Испански)',
-  'История и цивилизации'
+  'История и цивилизации',
+  'Изкуства и музика'
 ];
 
 function buildInterleavedCurriculum(allLessons: LessonData[]): LessonData[] {
@@ -1105,9 +1149,9 @@ function buildInterleavedCurriculum(allLessons: LessonData[]): LessonData[] {
   const otherBucket: LessonData[] = [];
 
   for (const lesson of allLessons) {
-    const matchedSubj = SUBJECT_ROTATION_ORDER.find((s) => lesson.subject.includes(s.split(' ')[0]));
-    if (matchedSubj && buckets.has(matchedSubj)) {
-      buckets.get(matchedSubj)!.push(lesson);
+    const bucket = buckets.get(lesson.subject);
+    if (bucket) {
+      bucket.push(lesson);
     } else {
       otherBucket.push(lesson);
     }
@@ -1132,8 +1176,8 @@ function buildInterleavedCurriculum(allLessons: LessonData[]): LessonData[] {
   return [...interleaved, ...otherBucket];
 }
 
-// 108 урока + уроците по темите от каталога на МОН (src/data/monLessons)
-export const TOTAL_CURRICULUM_LESSONS_COUNT = 1540;
+// 115 авторски и интегративни урока + 1432 урока по всички теми от каталога на МОН (src/data/monLessons)
+export const TOTAL_CURRICULUM_LESSONS_COUNT = 1547;
 
 export const CURRICULUM_LESSONS: LessonData[] = buildInterleavedCurriculum(
   CORE_CURRICULUM_LESSONS.map(ensureNotebookChecklist)
@@ -1159,12 +1203,13 @@ export async function loadFullCurriculumLessons(): Promise<LessonData[]> {
     import('./curriculumExpansionLessonsPart1B'),
     import('./curriculumExpansionLessonsPart2'),
     import('./curriculumExpansionLessonsPart3'),
+    import('./vocationalEngineeringLessons'),
     import('./monLessons/groupOopStem'),
     import('./monLessons/groupOopHum'),
     import('./monLessons/groupLang'),
     import('./monLessons/groupPpStem'),
     import('./monLessons/groupPpHum'),
-  ]).then(([corePack, part1A, part1B, part2, part3, oopStem, oopHum, lang, ppStem, ppHum]) => {
+  ]).then(([corePack, part1A, part1B, part2, part3, vocEng, oopStem, oopHum, lang, ppStem, ppHum]) => {
     const fullRaw: LessonData[] = [
       ...oopStem.MON_LESSONS_GROUP_OOP_STEM,
       ...oopHum.MON_LESSONS_GROUP_OOP_HUM,
@@ -1175,6 +1220,7 @@ export async function loadFullCurriculumLessons(): Promise<LessonData[]> {
       ...part1B.EXTRA_CURRICULUM_LESSONS_PART1B,
       ...part2.EXTRA_CURRICULUM_LESSONS_PART2,
       ...part3.EXTRA_CURRICULUM_LESSONS_PART3,
+      ...vocEng.VOCATIONAL_ENGINEERING_LESSONS,
       ...CORE_CURRICULUM_LESSONS,
       ...corePack.CORE_CURRICULUM_PACK
     ].map(ensureNotebookChecklist);

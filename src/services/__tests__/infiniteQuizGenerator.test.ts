@@ -29,12 +29,12 @@ import { LITERATURE_CANON } from '../../data/literatureDatabase';
 import { HISTORICAL_CASES_DATA } from '../../data/historicalCasesData';
 
 describe('MON Curriculum Coverage & Infinite Quiz Generator', () => {
-  it('verifies all 108 core lessons, 56 MON tree subDomains, 58 school specialties, and 51 grade matrix subjects resolve to valid lessons', async () => {
+  it('verifies all 115 core lessons, 72 MON tree subDomains, 58 school specialties, and 51 grade matrix subjects resolve to valid lessons', async () => {
     const lessons = await loadFullCurriculumLessons();
     expect(lessons.length).toBe(TOTAL_CURRICULUM_LESSONS_COUNT);
     const idSet = new Set(lessons.map((l) => l.id));
 
-    // 1. All 56 SubDomains in BULGARIAN_CURRICULUM_TREE
+    // 1. All 72 SubDomains in BULGARIAN_CURRICULUM_TREE (covering all 14 subjects)
     let subDomainCount = 0;
     for (const tree of BULGARIAN_CURRICULUM_TREE) {
       for (const g of tree.grades) {
@@ -48,7 +48,7 @@ describe('MON Curriculum Coverage & Infinite Quiz Generator', () => {
         }
       }
     }
-    expect(subDomainCount).toBe(56);
+    expect(subDomainCount).toBe(72);
 
     // 2. All 58 specialties in SCHOOL_SPECIALTIES_SECTIONS
     for (const sec of SCHOOL_SPECIALTIES_SECTIONS) {

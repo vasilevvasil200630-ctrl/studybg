@@ -24,15 +24,18 @@ import {
   Layers,
   Award,
   Compass,
-  FileCheck2
+  FileCheck2,
+  ExternalLink
 } from 'lucide-react';
 import type { LessonData } from '../types';
 import type { AppNavTab } from './Navbar';
 import { AudioReader } from './AudioReader';
 import { EmailShareModal } from './EmailShareModal';
+import { RichText } from './RichText';
 import { askGeminiMentor, isAiAvailable, isGeminiConfigured, AI_PROVIDER_LABEL } from '../services/geminiService';
 import { studyProgressService } from '../services/studyProgressService';
 import { getLessonAcademicMetadata } from '../lib/curriculumStructure';
+import { loadTopicDetails, type MonTopicDetails } from '../data/monCurriculum';
 
 interface SummaryViewProps {
   lesson: LessonData;
@@ -62,8 +65,9 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
   const { summary } = lesson;
   const noteStorageKey = `studybg_lesson_notes_v1_${lesson.id}`;
   const academicMeta = useMemo(() => getLessonAcademicMetadata(lesson), [lesson]);
+  const [monDetails, setMonDetails] = useState<MonTopicDetails | null>(null);
 
-  // Sync mastered status and personal note when lesson changes
+  // Sync mastered status, personal note, and official MON topic outcomes/concepts when lesson changes
   useEffect(() => {
     setMentorHistory([]);
     setMentorQuestion('');
@@ -76,7 +80,24 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
       setIsMastered(false);
       setPersonalNote('');
     }
-  }, [lesson.id, noteStorageKey]);
+
+    const firstTopicId = lesson.monTopicIds?.[0];
+    if (!firstTopicId) {
+      setMonDetails(null);
+      return;
+    }
+    let cancelled = false;
+    loadTopicDetails(firstTopicId)
+      .then((res) => {
+        if (!cancelled) setMonDetails(res);
+      })
+      .catch(() => {
+        if (!cancelled) setMonDetails(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [lesson.id, lesson.monTopicIds, noteStorageKey]);
 
   const handleAskMentor = async (customPrompt?: string) => {
     const q = (customPrompt ?? mentorQuestion).trim();
@@ -240,7 +261,23 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                 Етап, раздел и модул по МОН
               </div>
               <div className="font-bold text-slate-900">{academicMeta.thematicDomain}</div>
+              {academicMeta.monSubSection && (
+                <div className="text-[11px] font-semibold text-blue-800">
+                  Раздел: {academicMeta.monSubSection}
+                </div>
+              )}
               <div className="text-slate-600 leading-snug">{academicMeta.monModuleLabel}</div>
+              {academicMeta.monPdfUrl && (
+                <a
+                  href={academicMeta.monPdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 pt-1 text-[11px] font-bold text-blue-700 hover:text-blue-900 underline"
+                >
+                  <span>Официална учебна програма (PDF на МОН)</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
             </div>
 
             <div className="p-3 rounded-lg bg-white border border-slate-200/80 space-y-1.5">
@@ -284,19 +321,44 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
           </div>
 
           {/* Очаквани резултати от обучението (ДОС) */}
-          <div className="p-3 rounded-lg bg-white border border-slate-200/80">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-blue-800 mb-1.5 flex items-center gap-1.5">
-              <Compass className="w-3.5 h-3.5 text-blue-600" />
-              <span>Очаквани компетентности и резултати от обучението по ДОС на МОН:</span>
+          <div className="p-3 rounded-lg bg-white border border-slate-200/80 space-y-2.5">
+            <div>
+              <div className="text-[11px] font-bold uppercase tracking-wider text-blue-800 mb-1.5 flex items-center gap-1.5">
+                <Compass className="w-3.5 h-3.5 text-blue-600" />
+                <span>
+                  {monDetails && monDetails.outcomes.length > 0
+                    ? `Очаквани резултати от учебната програма на МОН (${monDetails.outcomes.length}):`
+                    : 'Очаквани компетентности и резултати от обучението по ДОС на МОН:'}
+                </span>
+              </div>
+              <ul className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                {(monDetails && monDetails.outcomes.length > 0
+                  ? monDetails.outcomes.slice(0, 6)
+                  : academicMeta.competencies
+                ).map((comp, idx) => (
+                  <li key={idx} className="text-xs text-slate-700 flex items-start gap-1.5 leading-snug">
+                    <span className="font-bold text-emerald-600 shrink-0">✓</span>
+                    <span><RichText text={comp} /></span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="grid grid-cols-1 md:grid-cols-3 gap-2">
-              {academicMeta.competencies.map((comp, idx) => (
-                <li key={idx} className="text-xs text-slate-700 flex items-start gap-1.5 leading-snug">
-                  <span className="font-bold text-emerald-600 shrink-0">✓</span>
-                  <span>{comp}</span>
-                </li>
-              ))}
-            </ul>
+
+            {monDetails && monDetails.concepts.length > 0 && (
+              <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-1.5">
+                <span className="text-[11px] font-bold text-slate-500">
+                  Нови понятия по програмата на МОН:
+                </span>
+                {monDetails.concepts.map((concept, cIdx) => (
+                  <span
+                    key={cIdx}
+                    className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-900 border border-emerald-200 text-[11px] font-semibold"
+                  >
+                    {concept}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Навигация по 5-те академични раздела на разработката */}
@@ -348,7 +410,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
               1.1. Академично въведение и контекст на темата
             </div>
             <p className="text-sm sm:text-base text-slate-800 leading-relaxed font-normal">
-              {summary.overview}
+              <RichText text={summary.overview} />
             </p>
             {lesson.originalNoteExcerpt && (
               <div className="pt-3 border-t border-slate-200/80">
@@ -356,7 +418,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                   Логическа схема и конспектна рамка по учебната програма:
                 </div>
                 <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-                  {lesson.originalNoteExcerpt}
+                  <RichText text={lesson.originalNoteExcerpt} />
                 </p>
               </div>
             )}
@@ -377,7 +439,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                   <span className="shrink-0 px-2 py-0.5 rounded-md bg-blue-600 text-white font-bold text-[11px] tabular-nums mt-0.5">
                     Теза {index + 1}
                   </span>
-                  <span className="font-medium">{point}</span>
+                  <span className="font-medium"><RichText text={point} /></span>
                 </li>
               ))}
             </ol>
@@ -422,7 +484,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                     <div className="space-y-1.5">
                       <div className="flex items-start justify-between gap-2">
                         <span className="text-xs sm:text-sm font-bold text-slate-900">
-                          Подтема 2.{idx + 1}: {item.requirement}
+                          Подтема 2.{idx + 1}: <RichText text={item.requirement} />
                         </span>
                         {item.isEssentialForSix && (
                           <span className="shrink-0 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
@@ -432,14 +494,14 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                       </div>
                       <p className="text-xs text-slate-600 leading-relaxed">
                         <span className="font-semibold text-slate-700">Защо е важна на изпит: </span>
-                        {item.whyNeeded}
+                        <RichText text={item.whyNeeded} />
                       </p>
                     </div>
                     <div className="p-3 rounded-lg bg-slate-50 border border-slate-200/80 text-xs text-slate-900 font-medium leading-relaxed">
                       <span className="font-bold text-blue-800 block mb-0.5">
                         Задължително съдържание и аргументация:
                       </span>
-                      {item.suggestedNotes}
+                      <RichText text={item.suggestedNotes} />
                     </div>
                   </div>
                 ))}
@@ -449,7 +511,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                 {summary.keyPoints.map((kp, idx) => (
                   <div key={idx} className="p-3.5 rounded-xl bg-white border border-blue-100 space-y-1.5">
                     <div className="text-xs font-bold text-slate-900">Подтема 2.{idx + 1}</div>
-                    <p className="text-xs text-slate-700 leading-relaxed">{kp}</p>
+                    <p className="text-xs text-slate-700 leading-relaxed"><RichText text={kp} /></p>
                   </div>
                 ))}
               </div>
@@ -480,9 +542,9 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                     key={index}
                     className="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-200 text-xs shadow-2xs gap-3"
                   >
-                    <span className="text-slate-700 font-semibold">{item.label}</span>
+                    <span className="text-slate-700 font-semibold"><RichText text={item.label} /></span>
                     <span className="tabular-nums text-slate-950 font-bold text-right bg-amber-50/80 border border-amber-200/80 px-2.5 py-1 rounded-lg">
-                      {item.value}
+                      <RichText text={item.value} />
                     </span>
                   </div>
                 ))}
@@ -512,12 +574,12 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                     className="p-3.5 rounded-xl bg-white border border-blue-100 shadow-2xs space-y-1.5"
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <span className="text-xs font-bold text-blue-950">{card.front}</span>
+                      <span className="text-xs font-bold text-blue-950"><RichText text={card.front} /></span>
                       <span className="text-[10px] font-semibold text-slate-400 shrink-0 tabular-nums">
                         #{cIdx + 1}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-700 leading-relaxed">{card.back}</p>
+                    <p className="text-xs text-slate-700 leading-relaxed"><RichText text={card.back} /></p>
                   </div>
                 ))}
               </div>
@@ -527,7 +589,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
 
         {/* РАЗДЕЛ IV: ПРАКТИЧЕСКИ РАЗБОР НА ИЗПИТНИ ЗАДАЧИ И КАЗУСИ СТЪПКА ПО СТЪПКА */}
         {workedExamCases.length > 0 && (
-          <section id="section-4-worked-cases" className="space-y-4 scroll-mt-24">
+          <section id="section-4-worked-cases" className="cv-auto space-y-4 scroll-mt-24">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2.5">
               <div className="flex items-center gap-2">
                 <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-900 font-bold text-xs">
@@ -558,7 +620,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                           Казус {qIdx + 1}
                         </span>
                         <span className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
-                          {q.question}
+                          <RichText text={q.question} />
                         </span>
                       </div>
                       <span className="shrink-0 text-xs font-semibold text-blue-700 group-open:rotate-180 transition-transform">
@@ -583,7 +645,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                               <span className="font-bold shrink-0">
                                 {OPTION_LETTERS[oIdx] ?? `${oIdx + 1}`})
                               </span>
-                              <span>{opt}</span>
+                              <span><RichText text={opt} /></span>
                             </div>
                           );
                         })}
@@ -599,19 +661,19 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                           <li>
                             <strong className="text-slate-900">Стъпка 1 (Теоретична опора):</strong>{' '}
                             Въпросът проверява владеенето на раздел „{academicMeta.thematicDomain}“ (
-                            {summary.keyPoints[qIdx % summary.keyPoints.length] || summary.overview}).
+                            <RichText text={summary.keyPoints[qIdx % summary.keyPoints.length] || summary.overview} />).
                           </li>
                           <li>
                             <strong className="text-slate-900">Стъпка 2 (Верен отговор по ключа на МОН):</strong>{' '}
                             Правилният избор е{' '}
                             <span className="font-bold text-emerald-800">
-                              вариант {correctLetter}) „{correctText}“
+                              вариант {correctLetter}) „<RichText text={correctText} />“
                             </span>
                             .
                           </li>
                           <li>
                             <strong className="text-slate-900">Стъпка 3 (Академична аргументация):</strong>{' '}
-                            {q.explanation}
+                            <RichText text={q.explanation} />
                           </li>
                         </ol>
                       </div>
@@ -624,7 +686,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
         )}
 
         {/* РАЗДЕЛ V: ЗЛАТНО ПРАВИЛО ЗА 6.00, ТИПИЧНИ КАПАНИ, AI МЕНТОР И ЛИЧЕН БЕЛЕЖНИК */}
-        <section id="section-5-evaluation" className="space-y-5 scroll-mt-24">
+        <section id="section-5-evaluation" className="cv-auto space-y-5 scroll-mt-24">
           <div className="flex items-center gap-2 border-b border-slate-200 pb-2.5">
             <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-900 font-bold text-xs">
               Раздел V
@@ -645,7 +707,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                   Златното правило за оценка Отличен (6.00)
                 </h4>
                 <p className="text-xs sm:text-sm text-emerald-950 font-medium leading-relaxed mt-1">
-                  {summary.examGoldenRule}
+                  <RichText text={summary.examGoldenRule} />
                 </p>
               </div>
             </div>
@@ -666,7 +728,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({
                     {summary.commonTraps.map((trap, idx) => (
                       <li key={idx} className="text-xs text-rose-950 flex items-start gap-2">
                         <AlertTriangle className="w-3.5 h-3.5 mt-0.5 text-rose-600 shrink-0" aria-hidden="true" />
-                        <span>{trap}</span>
+                        <span><RichText text={trap} /></span>
                       </li>
                     ))}
                   </ul>
